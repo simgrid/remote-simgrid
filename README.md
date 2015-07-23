@@ -1,7 +1,7 @@
 # Remote SimGrid
 
 RSG is (will be) a simple solution to execute your distributed
-application on top of (SimGrid)[http://simgrid.org/]. You just have to
+application on top of [SimGrid](http://simgrid.org/). You just have to
 reimplement the little class abstracting every network interactions
 that you have down below in your code architecture. This is easy with
 the RSG client API.
@@ -31,4 +31,4 @@ information.
 
 ## Build dependencies
 
-- SimGrid       -- http://simgrid.org/
+- SimGrid       -- http://simgrid.org/ (which in turn depends on Boost)
