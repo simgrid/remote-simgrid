@@ -1,4 +1,4 @@
 /Debug/
 *~
 *.o
-src/simgrid_server
+src/rsg_server
