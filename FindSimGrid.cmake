@@ -32,7 +32,6 @@ if (NOT EXISTS "${SimGrid_LIBRARY}")
   message(FATAL_ERROR "Unable to find SimGrid library. Please point the SimGrid_PATH variable to the installation directory.")
 endif ()
 
-set(SimGrid_PATH "toto")
 # Extract the actual path
 if (NOT "$SimGrid_INCLUDE_DIR" STREQUAL "${SimGrid_PATH}/include")
       string(REGEX REPLACE "(.*)/include" "\\1" SimGrid_PATH "${SimGrid_INCLUDE_DIR}")
