@@ -84,7 +84,7 @@ static char *sock_POST(int sock, const char *url, const char*data) {
 		xbt_die("Our protocol does not allow whitespaces in the data yet. hack hack...");
 
 	char buff[1024] = {0};
-//	char *header = bprintf("PUT /%s HTTP/1.0\015\012Content-Length: %zd\015\012User-Agent: C RSG Client\015\012\015\012",url,strlen(data));
+	//	char *header = bprintf("PUT /%s HTTP/1.0\015\012Content-Length: %zd\015\012User-Agent: C RSG Client\015\012\015\012",url,strlen(data));
 	char *header = bprintf("PUT /%s/%s HTTP/1.0\015\012User-Agent: C RSG Client\015\012\015\012",url,data);
 	int hlgr=strlen(header);
 	int ret;

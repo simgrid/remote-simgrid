@@ -23,7 +23,7 @@ static int rsg_representative(int argc, char **argv) {
 		// child. It will be blocked in the wait() on bash, but my father will continue.
 		// Yup, that's an awful hack.
 		putenv(bprintf("RSG_PORT=%d",serverPort));
-        execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
+		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
 	}
 	int mysock = rsg_sock_accept(serverSocket);
 
