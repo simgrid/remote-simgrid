@@ -16,11 +16,11 @@
 set(SimGrid_PATH ${SimGrid_PATH} CACHE PATH "Path to SimGrid library and include")
 find_path(SimGrid_INCLUDE_DIR
   NAMES simgrid_config.h
-  HINTS /usr/include /usr/local/include ${SimGrid_PATH}/include
+  HINTS /usr/include /usr/local/include ${SimGrid_PATH}/include /opt/simgrid/include
 )
 find_library(SimGrid_LIBRARY
   NAMES simgrid
-  HINTS /usr/lib /usr/local/lib ${SimGrid_PATH}/lib
+  HINTS /usr/lib /usr/local/lib ${SimGrid_PATH}/lib /opt/simgrid/lib
 )
 mark_as_advanced(SimGrid_INCLUDE_DIR)
 mark_as_advanced(SimGrid_LIBRARY)
