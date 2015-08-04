@@ -7,3 +7,6 @@ add_executable(rsg
                rsg_server.cpp socket.c socket.h)
 target_link_libraries(rsg ${SimGrid_LIBRARY})
 
+add_executable(dumb_client
+               dumb_client.cpp socket.c)
+target_link_libraries(dumb_client ${SimGrid_LIBRARY})

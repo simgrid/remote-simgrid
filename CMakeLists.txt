@@ -17,6 +17,19 @@ else()
           "Please use a decent C++ compiler.")
 endif()
 
+### And we need C11 standard, too
+include(CheckCCompilerFlag)
+CHECK_C_COMPILER_FLAG("-std=gnu11" COMPILER_SUPPORTS_C11)
+if(COMPILER_SUPPORTS_C11)
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
+else()
+  message(FATAL_ERROR 
+          "The compiler ${CMAKE_C_COMPILER} has no C11 support. "
+	  "Please use a decent C compiler "
+	  "(note that ${CMAKE_CXX_COMPILER} seems to support c++11).")
+endif()
+
+
 # Search for SimGrid
 include(FindSimGrid.cmake)
 include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)

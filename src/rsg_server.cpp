@@ -20,18 +20,21 @@ static int rsg_representative(int argc, char **argv) {
 	XBT_INFO("Launching %s",argv[1]);
 
 	if (! fork()) {
-		// child. It will be blocked in the wait() on bash, but my father will continue.
-		// Yup, that's an awful hack.
+		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
 		putenv(bprintf("RSG_PORT=%d",serverPort));
 		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
 	}
 	int mysock = rsg_sock_accept(serverSocket);
 
-	char buff[4096] = {0};
-	read(mysock,buff,4096-1);
-	XBT_INFO("Reading %s",buff);
-
+	char *buffer = NULL;
+	int buffer_size = 0;
 	s4u::Process *self = s4u::Process::current();
+
+	XBT_INFO("%d: Wait for incoming data",getpid());
+	tcp_recv(mysock, &buffer, &buffer_size);
+	XBT_INFO("%d: Reading %s (len:%d, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
+	tcp_send(mysock,"Bonne nuit les petits");
+
 	self->sleep(1);
 	return 0;
 }
@@ -46,6 +49,8 @@ int main(int argc, char **argv) {
 	}
 	XBT_INFO("argc: %d",argc);
 	serverPort = atoi(argv[2]);
+	if (serverPort < 1024)
+		xbt_die("You should not run RSG on lower port %d.",serverPort);
 
 	/* Create a server socket onto the forked applications will connect */
 	serverSocket = rsg_createServerSocket(serverPort);

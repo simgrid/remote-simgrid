@@ -13,9 +13,14 @@ extern "C" {
 #endif
 #endif
 
+void tcp_recv(int sock, char **result, int *result_size);
+void tcp_send(int sock, const char*data);
 
 int rsg_createServerSocket(int port);
 int rsg_sock_accept(int serverSocket);
+int rsg_sock_connect(int port);
+
+void exchange_data(int sock, const char*data, char **result, int *result_size);
 
 #ifdef __cplusplus
 #if 0 /* Don't fool the file indentation */

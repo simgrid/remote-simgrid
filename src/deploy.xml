@@ -1,15 +1,10 @@
 <?xml version='1.0'?>
 <!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
 <platform version="3">
-  <!-- "master" is the name it takes in [the logs of] the SimGrid world
-       "real_master" is the command that we have to fork+exec in the real world
+  <!-- "client" is the name it takes in [the logs of] the SimGrid world
+       "./dumb_client" is the command that we have to fork+exec in the real world
    -->
-  <process host="host0" function="master">
-     <argument value="echo 'Salut je suis master. Server: ${RSG_SERVER}:${RSG_PORT}' | nc 127.0.0.1 8888"/>
-     <argument value="echo 'Salut je suis master' | nc ${RSG_SERVER} ${RSG_PORT}"/>
-  </process>
-  <process host="host1" function="worker">
-     <argument value="echo 'Salut je suis worker' | nc 127.0.0.1 8888"/>
-     <argument value="echo 'Salut je suis worker' | nc ${RSG_SERVER} ${RSG_PORT}"/>
+  <process host="host0" function="client">
+     <argument value="./dumb_client"/>
   </process>
 </platform>
