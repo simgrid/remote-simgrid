@@ -3,10 +3,15 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
+set(RSG_SOURCES
+    command.c       command.h
+    rsg_engine.cpp  ../include/rsg/engine.hpp 
+    rsg_process.cpp ../include/rsg/process.hpp)
+
 add_executable(rsg
                rsg_server.cpp socket.c socket.h)
 target_link_libraries(rsg ${SimGrid_LIBRARY})
 
 add_executable(dumb_client
-               dumb_client.cpp socket.c)
+               dumb_client.cpp socket.c ${RSG_SOURCES})
 target_link_libraries(dumb_client ${SimGrid_LIBRARY})

@@ -32,7 +32,7 @@ static int rsg_representative(int argc, char **argv) {
 
 	XBT_INFO("%d: Wait for incoming data",getpid());
 	tcp_recv(mysock, &buffer, &buffer_size);
-	XBT_INFO("%d: Reading %s (len:%d, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
+	XBT_INFO("%d: Reading %s (len:%ld, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
 	tcp_send(mysock,"Bonne nuit les petits");
 
 	self->sleep(1);

@@ -123,9 +123,8 @@ void tcp_send(int sock, const char*data) {
 	int payload_len = strlen(data);
 	sprintf(buffer,"%d\n",payload_len);
 	tcp_send_chunk(sock, buffer, strlen(buffer));
-	fprintf(stderr,"%d: Sent size: %s",getpid(),buffer);
 	tcp_send_chunk(sock, data,   payload_len);
-	fprintf(stderr,"%d: Sent data %.20s\n", getpid(),data);
+	//fprintf(stderr,"%d: Sent data >>%s<<\n", getpid(),data);
 }
 
 /** Receive one payload. First the size alone on its line, then the content.
@@ -148,17 +147,17 @@ void tcp_recv(int sock, char **result, int *result_size) {
 		*result_size = payload_len+1;
 	}
 
-	fprintf(stderr,"%d: Wait for %d bytes\n",getpid(), payload_len);
+	//fprintf(stderr,"%d: Wait for %d bytes\n",getpid(), payload_len);
 	tcp_recv_chunk(sock, *result, payload_len);
 
 }
 
-void exchange_data(int sock, const char*data, char **result, int *result_size) {
+void exchange_data(int sock, char **data, int *data_size) {
 
-	tcp_send(sock, data);
-	fprintf(stderr,"%d: Data sent. Wait for the answer.\n",getpid());
+	tcp_send(sock, *data);
+	//fprintf(stderr,"%d: Data sent. Wait for the answer.\n",getpid());
 
-	tcp_recv(sock, result, result_size);
+	tcp_recv(sock, data, data_size);
 }
 
 

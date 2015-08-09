@@ -1,7 +1,8 @@
 /Debug/
 *~
 *.o
-src/rsg_server
+src/rsg
+src/dumb_client
 CMakeFiles
 Makefile
 CMakeCache.txt

@@ -6,12 +6,9 @@
 #ifndef SRC_SOCKET_H_
 #define SRC_SOCKET_H_
 
-#ifdef __cplusplus
-extern "C" {
-#if 0 /* Don't fool the file indentation */
-}
-#endif
-#endif
+#include <xbt/misc.h>
+
+SG_BEGIN_DECL();
 
 void tcp_recv(int sock, char **result, int *result_size);
 void tcp_send(int sock, const char*data);
@@ -20,14 +17,11 @@ int rsg_createServerSocket(int port);
 int rsg_sock_accept(int serverSocket);
 int rsg_sock_connect(int port);
 
-void exchange_data(int sock, const char*data, char **result, int *result_size);
+/* Send the content of the buffer (nul-terminated), and receive the answer from the server.
+ * The data may get reallocated if it's too small to receive the answer.
+ */
+void exchange_data(int sock, char **data, int *data_size);
 
-#ifdef __cplusplus
-#if 0 /* Don't fool the file indentation */
-{
-#endif
-}
-#endif
-
+SG_END_DECL();
 
 #endif /* SRC_SOCKET_H_ */

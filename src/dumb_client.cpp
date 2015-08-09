@@ -8,19 +8,11 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include "rsg/process.hpp"
 #include "socket.h"
 
 int main(int argc, char **argv) {
-	char *strport = getenv("RSG_PORT");
-	if (strport == NULL)
-		xbt_die("This binary should be launched from rsg, not directly.");
+	simgrid::rsg::Process &self = simgrid::rsg::Process::self();
 
-	int port = atoi(strport);
-
-	int sock = rsg_sock_connect(port);
-	char *answer = NULL;
-	int answer_size = 0;
-	exchange_data(sock, "Bonjour, serveur!", &answer, &answer_size);
-
-	fprintf(stderr, "%d: Got answer (len:%zd, size=%zd): '%s'\n", getpid(), strlen(answer), answer_size, answer);
+	self.sleep(42);
 }
