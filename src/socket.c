@@ -48,6 +48,7 @@ int rsg_createServerSocket(int port) {
 		perror("Server: error listen");
 		exit(1);
 	}
+	free(serv_addr);
 	return res;
 }
 
@@ -61,7 +62,8 @@ int rsg_sock_accept(int serverSocket) {
 		perror("Server: error accepting real message");
 		exit(1);
 	}
-        fprintf(stderr,"%d: accepted an incoming connection\n",getpid());
+	//fprintf(stderr,"%d: accepted an incoming connection\n",getpid());
+	free(cli_addr);
 	return res;
 }
 

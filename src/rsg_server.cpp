@@ -39,23 +39,23 @@ static int rsg_representative(int argc, char **argv) {
 	tcp_recv(mysock, &buffer, &buffer_size);
 	XBT_INFO("%d: Reading %s (len:%ld, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
 
-	command_type_t cmd = command_identify(buffer,&tokens,&tok_count);
+	command_type_t cmd = request_identify(buffer,&tokens,&tok_count);
 	switch (cmd) {
 	case CMD_SLEEP: {
 		double duration;
-		command_getargs(buffer, &tokens,&tok_count,cmd,&duration);
+		request_getargs(buffer, &tokens,&tok_count,cmd,&duration);
 		XBT_INFO("sleep(%f)",duration);
 		self->sleep(duration);
+		answer_prepare(&buffer,&buffer_size,cmd);
+		tcp_send(mysock,buffer);
 		break;
 	}
 	default:
 		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,buffer);
 	}
 
-	tcp_send(mysock,"Bonne nuit les petits");
-
-
-	self->sleep(1);
+	free(buffer);
+	free(tokens);
 	return 0;
 }
 
@@ -82,5 +82,6 @@ int main(int argc, char **argv) {
 	e->run();
 	XBT_INFO("Simulation done");
 	close(serverPort);
+	delete e;
 	return 0;
 }

@@ -13,7 +13,7 @@ rsg::Engine *rsg::Engine::p_instance = NULL;
 rsg::Engine *rsg::Engine::getInstance() {
 	if (p_instance == NULL) {
 		p_instance = new Engine();
-		check_commands();
+		check_protocol();
 	}
 	return p_instance;
 }
