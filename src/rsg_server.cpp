@@ -14,6 +14,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(rsg_server, "RSG server (Remote SimGrid)");
 int serverSocket;
 int serverPort;
 #include "socket.h"
+#include "command.h"
 
 static int rsg_representative(int argc, char **argv) {
 
@@ -26,14 +27,33 @@ static int rsg_representative(int argc, char **argv) {
 	}
 	int mysock = rsg_sock_accept(serverSocket);
 
+	s4u::Process *self = s4u::Process::current();
+
 	char *buffer = NULL;
 	int buffer_size = 0;
-	s4u::Process *self = s4u::Process::current();
+
+	jsmntok_t *tokens = NULL;
+	size_t tok_count = 0;
 
 	XBT_INFO("%d: Wait for incoming data",getpid());
 	tcp_recv(mysock, &buffer, &buffer_size);
 	XBT_INFO("%d: Reading %s (len:%ld, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
+
+	command_type_t cmd = command_identify(buffer,&tokens,&tok_count);
+	switch (cmd) {
+	case CMD_SLEEP: {
+		double duration;
+		command_getargs(buffer, &tokens,&tok_count,cmd,&duration);
+		XBT_INFO("sleep(%f)",duration);
+		self->sleep(duration);
+		break;
+	}
+	default:
+		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,buffer);
+	}
+
 	tcp_send(mysock,"Bonne nuit les petits");
+
 
 	self->sleep(1);
 	return 0;

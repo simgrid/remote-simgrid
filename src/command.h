@@ -9,6 +9,7 @@
 #define SRC_COMMAND_H
 
 #include <xbt/misc.h>
+#include "jsmn.h"
 
 SG_BEGIN_DECL();
 
@@ -33,7 +34,11 @@ typedef enum {
 //	{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG}}
 
 void check_commands(void);
-void prepare_command(char **buffer, int *buffer_size, command_type_t cmd, ...);
+
+void command_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...);
+
+command_type_t command_identify(char *buffer, jsmntok_t **ptokens, size_t *tok_count);
+void command_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */

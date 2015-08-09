@@ -34,7 +34,7 @@ rsg::Process &rsg::Process::self() {
 }
 
 void rsg::Process::sleep(double duration) {
-	prepare_command(&p_buffer,&p_buffer_size, CMD_SLEEP, duration);
+	command_prepare(&p_buffer,&p_buffer_size, CMD_SLEEP, duration);
 	exchange_data(p_sock, &p_buffer, &p_buffer_size);
 	XBT_INFO("Answer of sleep cmd: >>%s<<",p_buffer);
 }
