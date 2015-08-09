@@ -14,6 +14,11 @@ command_t commands[] = {
 		{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG}}
 };
 
+void check_commands(void) {
+	for (int i=0; i<CMD_COUNT; i++) {
+		xbt_assert(commands[i].code == i, "command[] and command_type_t are out of sync at %d (for command %s).", i, commands[i].name);
+	}
+}
 
 #define guarded_snprintf(fmt, arg)                                       \
 	do {                                                                 \

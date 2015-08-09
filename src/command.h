@@ -26,11 +26,13 @@ typedef struct {
 } command_t;
 
 typedef enum {
-	CMD_SLEEP = 0
+	CMD_SLEEP = 0,
+	CMD_COUNT /* Not a real command, just the sentinel to get the amount of commands */
 } command_type_t;
 
 //	{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG}}
 
+void check_commands(void);
 void prepare_command(char **buffer, int *buffer_size, command_type_t cmd, ...);
 
 SG_END_DECL();
