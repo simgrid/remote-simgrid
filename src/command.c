@@ -71,10 +71,11 @@ void request_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...) {
 	p--; // Remove the last ','
 	guarded_snprintf("%c",'}'); /* Trick to pass an argument anyway */
 }
-void answer_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...) {
+void answer_prepare(char **buffer, int *buffer_size, double clock, command_type_t cmd, ...) {
 	char *p = *buffer;
 	int avail_size, incr;
 	guarded_snprintf("{ret:%s,",commands[cmd].name);
+	guarded_snprintf("clock:%f,",clock);
 
 	if (commands[cmd].retfmt != VOID) {
 		va_list va;

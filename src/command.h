@@ -43,7 +43,7 @@ command_type_t request_identify(char *buffer, jsmntok_t **ptokens, size_t *tok_c
 void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...);
 
 /* Prepare answer on server side */
-void answer_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...);
+void answer_prepare(char **buffer, int *buffer_size, double clock, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */

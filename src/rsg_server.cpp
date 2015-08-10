@@ -46,7 +46,7 @@ static int rsg_representative(int argc, char **argv) {
 		request_getargs(buffer, &tokens,&tok_count,cmd,&duration);
 		XBT_INFO("sleep(%f)",duration);
 		self->sleep(duration);
-		answer_prepare(&buffer,&buffer_size,cmd);
+		answer_prepare(&buffer,&buffer_size,s4u::Engine::getClock(), cmd);
 		tcp_send(mysock,buffer);
 		break;
 	}
