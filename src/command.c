@@ -126,6 +126,13 @@ static char * json_token_tostr(char *js, jsmntok_t *t) {
     js[t->end] = '\0';
     return js + t->start;
 }
+static double json_token_todouble(char *js, jsmntok_t *t) {
+	char *end;
+	double res = strtod(js+ t->start, &end);
+	if (end != js+t->end)
+		xbt_die("Parse error: JSON token '%s' does not seem to be a double", json_token_tostr(js,t));
+	return res;
+}
 
 /** Parse a jsoned command, and return the code of that command */
 command_type_t request_identify(char *buffer, jsmntok_t **ptokens, size_t *tok_count) {
@@ -150,7 +157,9 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 	va_start(va,cmd);
 	for (int it = 0; it<commands[cmd].argc; it++) {
 		arg_t a = commands[cmd].args[it];
-		char *json_ctn = json_token_tostr(buffer, &token[it*2+4]);
+		jsmntok_t *t = &token[it*2+4];
+
+		char *json_ctn = json_token_tostr(buffer, t);
 		switch (a.fmt) {
 		case 'd': {
 			int *vd = va_arg(va, int*);
@@ -158,9 +167,8 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 			break;
 		}
 		case 'f': {
-			//fprintf(stderr,"arg %d: %s\n",it,json_ctn);
 			double *vf = va_arg(va,double*);
-			*vf = strtod(json_ctn,NULL);
+			*vf = json_token_todouble(buffer, t);
 			break;
 		}
 		default:
@@ -168,3 +176,23 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 		}
 	}
 }
+
+extern double NOW; // To change the time directly. I love such nasty hacks.
+
+/** Parse a jsoned command, and return the code of that command */
+void answer_parse(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...) {
+	json_tokenise(buffer, ptokens, tok_count);
+	jsmntok_t *token = *ptokens;
+
+	xbt_assert(json_token_streq(buffer, &token[1],"ret"), "First element of json is not 'ret' but '%s'.",
+			json_token_tostr(buffer, &token[1]));
+	xbt_assert(json_token_streq(buffer, &token[2],commands[cmd].name), "It's not an answer to command %s but to command %s.",
+			commands[cmd].name,  json_token_tostr(buffer, &token[2]));
+	xbt_assert(json_token_streq(buffer, &token[3],"clock"), "Second element of json  is not 'clock' but '%s'.",
+			json_token_tostr(buffer, &token[3]));
+	NOW = json_token_todouble(buffer, &token[4]);
+
+	xbt_assert(commands[cmd].retfmt == VOID, "Not implemented: commands returning something (%s)",
+			commands[cmd].name);
+}
+

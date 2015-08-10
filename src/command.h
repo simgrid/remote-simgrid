@@ -35,7 +35,7 @@ typedef enum {
 
 void check_protocol(void);
 
-/* Prepare request on sender side */
+/* Prepare request on client side */
 void request_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...);
 
 /* Parse on server side */
@@ -44,6 +44,9 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 
 /* Prepare answer on server side */
 void answer_prepare(char **buffer, int *buffer_size, double clock, command_type_t cmd, ...);
+
+/* Parse on client side */
+void answer_parse(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */

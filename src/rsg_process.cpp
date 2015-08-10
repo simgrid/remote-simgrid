@@ -36,5 +36,6 @@ rsg::Process &rsg::Process::self() {
 void rsg::Process::sleep(double duration) {
 	request_prepare(&p_buffer,&p_buffer_size, CMD_SLEEP, duration);
 	exchange_data(p_sock, &p_buffer, &p_buffer_size);
+	answer_parse(p_buffer,(jsmntok_t**)&p_tokens,&p_tok_count,CMD_SLEEP);
 	XBT_INFO("Answer of sleep cmd: >>%s<<",p_buffer);
 }
