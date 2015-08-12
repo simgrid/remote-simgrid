@@ -3,18 +3,19 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#include "rsg/process.hpp"
+#include <rsg/actor.hpp>
+
 #include "socket.h"
 #include "command.h"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_process, RSG, "RSG::Process");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
 namespace rsg = simgrid::rsg;
 
-rsg::Process *rsg::Process::p_self = NULL;
+rsg::Actor *rsg::Actor::p_self = NULL;
 
-rsg::Process::Process() {
+rsg::Actor::Actor() {
 	p_buffer_size = 4096;
 	p_buffer = xbt_new(char,p_buffer_size);
 
@@ -26,14 +27,14 @@ rsg::Process::Process() {
 	p_sock = rsg_sock_connect(port);
 }
 
-rsg::Process &rsg::Process::self() {
+rsg::Actor &rsg::Actor::self() {
 	if (p_self == NULL) {
-		p_self = new Process();
+		p_self = new Actor();
 	}
 	return *p_self;
 }
 
-void rsg::Process::sleep(double duration) {
+void rsg::Actor::sleep(double duration) {
 	request_prepare(&p_buffer,&p_buffer_size, CMD_SLEEP, duration);
 	exchange_data(p_sock, &p_buffer, &p_buffer_size);
 	answer_parse(p_buffer,(jsmntok_t**)&p_tokens,&p_tok_count,CMD_SLEEP);

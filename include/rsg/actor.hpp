@@ -3,8 +3,8 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SRC_RSG_PROCESS_HPP_
-#define SRC_RSG_PROCESS_HPP_
+#ifndef SRC_RSG_ACTOR_HPP_
+#define SRC_RSG_ACTOR_HPP_
 
 #include <xbt.h>
 #include <vector>
@@ -12,17 +12,17 @@
 namespace simgrid {
 namespace rsg {
 
-class Process {
+class Actor {
 private:
-	Process();
+	Actor();
 public:
 	void sleep(double duration);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Process &self();
+	static Actor &self();
 
 private:
-	static Process *p_self;
+	static Actor *p_self;
 
 	/* To exchange data with the central server */
 	int p_sock=-1;
@@ -33,4 +33,4 @@ private:
 };
 }} // namespace simgrid::rsg
 
-#endif /* SRC_RSG_PROCESS_HPP_ */
+#endif /* SRC_RSG_ACTOR_HPP_ */

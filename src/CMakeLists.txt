@@ -11,8 +11,8 @@ set(COMMON_SOURCES
 
 set(CLIENT_SOURCES
     ${COMMON_SOURCES}
-    rsg_engine.cpp  ../include/rsg/engine.hpp 
-    rsg_process.cpp ../include/rsg/process.hpp)
+    rsg_actor.cpp ../include/rsg/actor.hpp
+    rsg_engine.cpp  ../include/rsg/engine.hpp)
 
 add_executable(rsg
                ${COMMON_SOURCES} rsg_server.cpp)

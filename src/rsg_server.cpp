@@ -27,7 +27,7 @@ static int rsg_representative(int argc, char **argv) {
 	}
 	int mysock = rsg_sock_accept(serverSocket);
 
-	s4u::Process *self = s4u::Process::current();
+	s4u::Actor *self = s4u::Actor::current();
 
 	char *buffer = NULL;
 	int buffer_size = 0;
