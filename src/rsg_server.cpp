@@ -32,37 +32,37 @@ static int rsg_representative(int argc, char **argv) {
 
 	bool done = false;
 	while (!done) {
-	XBT_INFO("%d: Wait for incoming data",getpid());
-	tcp_recv(mysock, parsespace);
-	XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
+		XBT_INFO("%d: Wait for incoming data",getpid());
+		tcp_recv(mysock, parsespace);
+		XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
 
-	command_type_t cmd = request_identify(parsespace);
-	switch (cmd) {
-	case CMD_SLEEP: {
-		double duration;
-		rsg_request_getargs(parsespace, cmd, &duration);
-		XBT_INFO("sleep(%f)",duration);
-		self->sleep(duration);
-		rsg_request_doanswer(mysock, parsespace,cmd);
-		break;
-	}
-	case CMD_EXEC: {
-		double flops;
-		rsg_request_getargs(parsespace, cmd, &flops);
-		XBT_INFO("execute(%f)",flops);
-		self->execute(flops);
-		rsg_request_doanswer(mysock, parsespace,cmd);
-		break;
-	}
-	case CMD_QUIT: {
-		XBT_INFO("quit()");
-		done = true;
-		rsg_request_doanswer(mysock, parsespace,cmd);
-		break;
-	}
-	default:
-		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
-	}
+		command_type_t cmd = request_identify(parsespace);
+		switch (cmd) {
+		case CMD_SLEEP: {
+			double duration;
+			rsg_request_getargs(parsespace, cmd, &duration);
+			XBT_INFO("sleep(%f)",duration);
+			self->sleep(duration);
+			rsg_request_doanswer(mysock, parsespace,cmd);
+			break;
+		}
+		case CMD_EXEC: {
+			double flops;
+			rsg_request_getargs(parsespace, cmd, &flops);
+			XBT_INFO("execute(%f)",flops);
+			self->execute(flops);
+			rsg_request_doanswer(mysock, parsespace,cmd);
+			break;
+		}
+		case CMD_QUIT: {
+			XBT_INFO("quit()");
+			done = true;
+			rsg_request_doanswer(mysock, parsespace,cmd);
+			break;
+		}
+		default:
+			xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
+		}
 	}
 
 	rsg_parsespace_free(parsespace);
