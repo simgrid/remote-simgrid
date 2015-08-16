@@ -35,8 +35,6 @@ rsg::Actor &rsg::Actor::self() {
 }
 
 void rsg::Actor::sleep(double duration) {
-	request_prepare(p_workspace, CMD_SLEEP, duration);
-	exchange_data(p_sock, p_workspace);
-	answer_parse(p_workspace,CMD_SLEEP);
+	rsg_request(p_sock, p_workspace, CMD_SLEEP, duration);
 	XBT_INFO("Answer of sleep cmd: >>%s<<",p_workspace->buffer);
 }

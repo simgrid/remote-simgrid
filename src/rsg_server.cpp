@@ -48,9 +48,7 @@ static int rsg_representative(int argc, char **argv) {
 		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
 	}
 
-	free(parsespace->buffer);
-	free(parsespace->tokens);
-	free(parsespace);
+	rsg_parsespace_free(parsespace);
 	return 0;
 }
 
