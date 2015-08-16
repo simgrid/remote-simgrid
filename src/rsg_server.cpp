@@ -44,6 +44,14 @@ static int rsg_representative(int argc, char **argv) {
 		rsg_request_doanswer(mysock, parsespace,cmd);
 		break;
 	}
+	case CMD_EXEC: {
+		double flops;
+		rsg_request_getargs(parsespace, cmd, &flops);
+		XBT_INFO("execute(%f)",flops);
+		self->execute(flops);
+		rsg_request_doanswer(mysock, parsespace,cmd);
+		break;
+	}
 	default:
 		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
 	}

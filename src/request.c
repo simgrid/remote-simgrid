@@ -19,7 +19,8 @@ extern double NOW; // To change the time directly. I love such nasty hacks.
 #define NOARG {NULL,'\0'}
 #define VOID '\0'
 command_t commands[] = {
-		{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID}
+		{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID},
+		{CMD_EXEC, "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID}
 };
 
 void check_protocol(void) {

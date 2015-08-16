@@ -18,6 +18,7 @@ private:
 	Actor();
 public:
 	void sleep(double duration);
+	void execute(double flops);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static Actor &self();

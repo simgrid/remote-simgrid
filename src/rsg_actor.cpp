@@ -38,3 +38,8 @@ void rsg::Actor::sleep(double duration) {
 	rsg_request(p_sock, p_workspace, CMD_SLEEP, duration);
 	XBT_INFO("Answer of sleep cmd: >>%s<<",p_workspace->buffer);
 }
+
+void rsg::Actor::execute(double flops) {
+	rsg_request(p_sock, p_workspace, CMD_EXEC, flops);
+	XBT_INFO("Answer of execute cmd: >>%s<<",p_workspace->buffer);
+}

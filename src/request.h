@@ -27,10 +27,12 @@ typedef struct {
 
 typedef enum {
 	CMD_SLEEP = 0,
+	CMD_EXEC = 1,
 	CMD_COUNT /* Not a real command, just the sentinel to get the amount of commands */
 } command_type_t;
 
-//	{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG}}
+//	{CMD_SLEEP, "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG}, VOID}
+//  {CMD_EXEC,  "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},    VOID}
 
 void check_protocol(void);
 

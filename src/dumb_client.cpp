@@ -14,5 +14,5 @@
 int main(int argc, char **argv) {
 	simgrid::rsg::Actor &self = simgrid::rsg::Actor::self();
 
-	self.sleep(42);
+	self.execute(42000);
 }
