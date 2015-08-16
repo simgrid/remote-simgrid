@@ -30,6 +30,8 @@ static int rsg_representative(int argc, char **argv) {
 	s4u::Actor *self = s4u::Actor::current();
 	rsg_parsespace_t *parsespace = rsg_parsespace_new();
 
+	bool done = false;
+	while (!done) {
 	XBT_INFO("%d: Wait for incoming data",getpid());
 	tcp_recv(mysock, parsespace);
 	XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
@@ -52,8 +54,15 @@ static int rsg_representative(int argc, char **argv) {
 		rsg_request_doanswer(mysock, parsespace,cmd);
 		break;
 	}
+	case CMD_QUIT: {
+		XBT_INFO("quit()");
+		done = true;
+		rsg_request_doanswer(mysock, parsespace,cmd);
+		break;
+	}
 	default:
 		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
+	}
 	}
 
 	rsg_parsespace_free(parsespace);

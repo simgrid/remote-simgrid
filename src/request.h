@@ -28,6 +28,7 @@ typedef struct {
 typedef enum {
 	CMD_SLEEP = 0,
 	CMD_EXEC = 1,
+	CMD_QUIT = 2,
 	CMD_COUNT /* Not a real command, just the sentinel to get the amount of commands */
 } command_type_t;
 

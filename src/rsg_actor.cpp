@@ -43,3 +43,10 @@ void rsg::Actor::execute(double flops) {
 	rsg_request(p_sock, p_workspace, CMD_EXEC, flops);
 	XBT_INFO("Answer of execute cmd: >>%s<<",p_workspace->buffer);
 }
+
+void rsg::Actor::quit(void) {
+	rsg_request(p_sock, p_workspace, CMD_QUIT);
+	XBT_INFO("Answer of quit cmd: >>%s<<",p_workspace->buffer);
+	rsg_parsespace_free(p_workspace);
+	p_workspace=NULL;
+}

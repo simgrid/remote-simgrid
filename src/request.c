@@ -19,8 +19,9 @@ extern double NOW; // To change the time directly. I love such nasty hacks.
 #define NOARG {NULL,'\0'}
 #define VOID '\0'
 command_t commands[] = {
-		{CMD_SLEEP, "sleep",1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID},
-		{CMD_EXEC, "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID}
+		{CMD_SLEEP, "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID},
+		{CMD_EXEC,  "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},   VOID},
+		{CMD_QUIT,  "quit",   0,{NOARG,NOARG,NOARG,NOARG,NOARG,NOARG},           VOID}
 };
 
 void check_protocol(void) {
@@ -36,7 +37,7 @@ static void json_tokenise(char *js, jsmntok_t **tokens, size_t *tok_count) {
     jsmn_init(&parser);
 
     int ret=JSMN_ERROR_NOMEM;
-    if (*tok_count>0)
+    if (*tok_count>0) // On empty workspaces, the tok_count is 0, which drives jsmn_parse() nuts
     	ret = jsmn_parse(&parser, js,strlen(js), *tokens, *tok_count);
 
     while (ret == JSMN_ERROR_NOMEM) {
@@ -129,7 +130,7 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 	json_tokenise(workspace->buffer, (jsmntok_t**)&workspace->tokens, &workspace->tok_count);
 
 	xbt_assert(json_token_streq(workspace,1,"ret"),
-			"First element of json is not 'ret' but '%s'.", json_token_tostr(workspace,1));
+			"In >>%s<<, the first element of json is not 'ret' but '%s'", workspace->buffer, json_token_tostr(workspace,1));
 	xbt_assert(json_token_streq(workspace,2,commands[cmd].name),
 			"It's not an answer to command %s but to command %s.", commands[cmd].name, json_token_tostr(workspace,2));
 	xbt_assert(json_token_streq(workspace,3,"clock"),
