@@ -9,6 +9,7 @@
 #include <stdarg.h>
 #include <xbt/ex.h>
 #include "command.h"
+#include "socket.h"
 
 #define NOARG {NULL,'\0'}
 #define VOID '\0'
@@ -74,7 +75,7 @@ void request_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 }
 extern double NOW; // To change the time directly. I love such nasty hacks.
 
-void answer_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+void request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 	char *p = workspace->buffer;
 	int avail_size, incr;
 	guarded_snprintf("{ret:%s,",commands[cmd].name);
@@ -97,6 +98,7 @@ void answer_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 	}
 	p--; // Remove the last ','
 	guarded_snprintf("%c",'}'); /* Trick to pass an argument anyway */
+	tcp_send(sock, workspace);
 }
 #undef guarded_snprintf
 

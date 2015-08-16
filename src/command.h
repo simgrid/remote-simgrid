@@ -44,7 +44,7 @@ command_type_t request_identify(rsg_parsespace_t *workspace);
 void request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Prepare answer on server side */
-void answer_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...);
+void request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Parse on client side */
 void answer_parse(rsg_parsespace_t *workspace, command_type_t cmd, ...);
