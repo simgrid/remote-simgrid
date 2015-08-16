@@ -139,7 +139,10 @@ void tcp_recv(int sock, rsg_parsespace_t *workspace) {
 
 	/* Read the answer length, as an integer alone on its line */
 	int p = 0;
-	while (read(sock, buffer+p, 1) >0 && buffer[p++] != '\n');
+	int amount=-1;
+	while ( (amount=read(sock, buffer+p, 1))>0 && buffer[p++] != '\n');
+	if (amount <= 0)
+		xbt_die("Error while reading from the socket: %s", strerror(errno));
 	buffer[p] = '\0';
 	payload_len = atoi(buffer);
 
