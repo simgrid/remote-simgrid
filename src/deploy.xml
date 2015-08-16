@@ -7,4 +7,7 @@
   <process host="host0" function="client">
      <argument value="./dumb_client"/>
   </process>
+  <process host="host1" function="server">
+     <argument value="./dumb_server"/>
+  </process>
 </platform>

@@ -20,6 +20,8 @@ public:
 	void sleep(double duration);
 	void execute(double flops);
 	void quit();
+	void send(const char*mailbox, const char*content);
+	char *recv(const char*mailbox);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static Actor &self();

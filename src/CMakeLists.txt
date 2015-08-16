@@ -22,3 +22,7 @@ target_link_libraries(rsg ${SimGrid_LIBRARY})
 add_executable(dumb_client
                ${CLIENT_SOURCES} dumb_client.cpp)
 target_link_libraries(dumb_client ${SimGrid_LIBRARY})
+
+add_executable(dumb_server
+               ${CLIENT_SOURCES} dumb_server.cpp)
+target_link_libraries(dumb_server ${SimGrid_LIBRARY})

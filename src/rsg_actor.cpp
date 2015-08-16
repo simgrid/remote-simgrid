@@ -44,6 +44,17 @@ void rsg::Actor::execute(double flops) {
 	XBT_INFO("Answer of execute cmd: >>%s<<",p_workspace->buffer);
 }
 
+void rsg::Actor::send(const char*mailbox, const char*content) {
+	rsg_request(p_sock, p_workspace, CMD_SEND, mailbox, content);
+	XBT_INFO("Answer of send cmd: >>%s<<",p_workspace->buffer);
+}
+char *rsg::Actor::recv(const char*mailbox) {
+	char *content;
+	rsg_request(p_sock, p_workspace, CMD_RECV, mailbox, &content);
+	XBT_INFO("Answer of recv cmd: >>%s<<",p_workspace->buffer);
+	return content;
+}
+
 void rsg::Actor::quit(void) {
 	rsg_request(p_sock, p_workspace, CMD_QUIT);
 	XBT_INFO("Answer of quit cmd: >>%s<<",p_workspace->buffer);

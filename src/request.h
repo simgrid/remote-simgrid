@@ -26,7 +26,7 @@ typedef struct {
 } command_t;
 
 typedef enum {
-	CMD_SLEEP = 0, CMD_EXEC, CMD_QUIT,
+	CMD_SLEEP = 0, CMD_EXEC, CMD_QUIT, CMD_SEND, CMD_RECV,
 	CMD_COUNT /* Not a real command, just the sentinel to get the amount of commands */
 } command_type_t;
 
@@ -36,7 +36,7 @@ void check_protocol(void);
 void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Parse on server side */
-command_type_t request_identify(rsg_parsespace_t *workspace);
+command_type_t rsg_request_identify(rsg_parsespace_t *workspace);
 void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 /* Send answer from server to client */
 void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);

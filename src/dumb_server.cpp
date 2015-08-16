@@ -14,11 +14,8 @@
 int main(int argc, char **argv) {
 	simgrid::rsg::Actor &self = simgrid::rsg::Actor::self();
 
-	self.sleep(42);
-	self.execute(15.*1000*1000*1000);
-	self.send("toto","message from client");
 	char * msg = self.recv("toto");
-	fprintf(stderr, "Client: Received message: '%s'\n",msg);
-
+	fprintf(stderr, "Server: Received message: '%s'\n",msg);
+	self.send("toto", "Message from server");
 	self.quit();
 }

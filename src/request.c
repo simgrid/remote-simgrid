@@ -19,9 +19,11 @@ extern double NOW; // To change the time directly. I love such nasty hacks.
 #define NOARG {NULL,'\0'}
 #define VOID '\0'
 command_t commands[] = {
-		{CMD_SLEEP, "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},VOID},
-		{CMD_EXEC,  "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},   VOID},
-		{CMD_QUIT,  "quit",   0,{NOARG,NOARG,NOARG,NOARG,NOARG,NOARG},           VOID}
+		{CMD_SLEEP, "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},          VOID},
+		{CMD_EXEC,  "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},             VOID},
+		{CMD_QUIT,  "quit",   0,{NOARG,NOARG,NOARG,NOARG,NOARG,NOARG},                     VOID},
+		{CMD_SEND,  "send",   2,{{"mailbox",'s'},{"content",'s'},NOARG,NOARG,NOARG,NOARG}, VOID},
+		{CMD_RECV,  "recv",   1,{{"mailbox",'s'},NOARG,NOARG,NOARG,NOARG,NOARG},           's'}
 };
 
 void check_protocol(void) {
@@ -116,8 +118,12 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 		case 'f':
 			guarded_snprintf("%f,",va_arg(va,double));
 			break;
+		case 's':
+			guarded_snprintf("\"%s\",",va_arg(va,char*));
+			break;
 		default:
 			xbt_die("Unknown format %c for argument %d of cmd %s",a.fmt,it, commands[cmd].name);
+			break;
 		}
 	}
 	p--; // Remove the last ','
@@ -137,8 +143,33 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 			"Second element of json  is not 'clock' but '%s'.", json_token_tostr(workspace,3));
 	NOW = json_token_todouble(workspace,4);
 
-	xbt_assert(commands[cmd].retfmt == VOID, "Not implemented: commands returning something (%s)",
-			commands[cmd].name);
+	if (commands[cmd].retfmt == VOID)
+		return;
+
+	/* Deal with the return value */
+	xbt_assert(json_token_streq(workspace,5,"retval"),
+			"Third element of json  is not 'retval' but '%s'.", json_token_tostr(workspace,5));
+
+	switch (commands[cmd].retfmt) {
+	case 'd': {
+		int *vd = va_arg(va, int*);
+		*vd = atoi(json_token_tostr(workspace, 6));
+		break;
+	}
+	case 'f': {
+		double *vf = va_arg(va,double*);
+		*vf = json_token_todouble(workspace, 6);
+		break;
+	}
+	case 's': {
+		char **vs = va_arg(va,char**);
+		*vs = json_token_tostr(workspace, 6);
+		break;
+	}
+
+	default:
+		xbt_die("Unknown format %c for retval of cmd %s",commands[cmd].retfmt, commands[cmd].name);
+	}
 }
 
 void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
@@ -153,13 +184,17 @@ void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t 
 
 		switch (commands[cmd].retfmt) {
 		case 'd':
-			guarded_snprintf("retcode:%d,",va_arg(va,int));
+			guarded_snprintf("retval:%d,",va_arg(va,int));
 			break;
 		case 'f':
-			guarded_snprintf("retcode:%f,",va_arg(va,double));
+			guarded_snprintf("retval:%f,",va_arg(va,double));
+			break;
+		case 's':
+			guarded_snprintf("retval:\"%s\",",va_arg(va,char*));
 			break;
 		default:
 			xbt_die("Unknown format %c for return of cmd %s",commands[cmd].retfmt, commands[cmd].name);
+			break;
 		}
 	}
 	p--; // Remove the last ','
@@ -170,7 +205,7 @@ void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t 
 
 
 /** Parse a jsoned command, and return the code of that command */
-command_type_t request_identify(rsg_parsespace_t *workspace) {
+command_type_t rsg_request_identify(rsg_parsespace_t *workspace) {
 	json_tokenise(workspace->buffer, (jsmntok_t**)&workspace->tokens, &workspace->tok_count);
 
 	xbt_assert(json_token_streq(workspace, 1,"cmd"),
@@ -203,8 +238,14 @@ void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 			*vf = json_token_todouble(workspace, pos);
 			break;
 		}
+		case 's': {
+			char **vs = va_arg(va,char**);
+			*vs = json_token_tostr(workspace, pos);
+			break;
+		}
 		default:
 			xbt_die("Unknown format %c for argument %d of cmd %s",a.fmt,it, commands[cmd].name);
+			break;
 		}
 	}
 }

@@ -28,6 +28,7 @@ static int rsg_representative(int argc, char **argv) {
 	int mysock = rsg_sock_accept(serverSocket);
 
 	s4u::Actor *self = s4u::Actor::current();
+	XBT_INFO("My name: %s", self->getName());
 	rsg_parsespace_t *parsespace = rsg_parsespace_new();
 
 	bool done = false;
@@ -36,7 +37,7 @@ static int rsg_representative(int argc, char **argv) {
 		tcp_recv(mysock, parsespace);
 		XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
 
-		command_type_t cmd = request_identify(parsespace);
+		command_type_t cmd = rsg_request_identify(parsespace);
 		switch (cmd) {
 		case CMD_SLEEP: {
 			double duration;
@@ -60,8 +61,26 @@ static int rsg_representative(int argc, char **argv) {
 			rsg_request_doanswer(mysock, parsespace,cmd);
 			break;
 		}
+		case CMD_SEND: {
+			char* mailbox, *content;
+			rsg_request_getargs(parsespace, cmd, &mailbox, &content);
+			XBT_INFO("send(%s,%s)",mailbox,content);
+			self->send(*s4u::Mailbox::byName(mailbox), xbt_strdup(content), strlen(content));
+			rsg_request_doanswer(mysock, parsespace,cmd);
+			break;
+		}
+		case CMD_RECV: {
+			char* mailbox;
+			rsg_request_getargs(parsespace, cmd, &mailbox);
+			char *content = (char*)self->recv(*s4u::Mailbox::byName(mailbox));
+			XBT_INFO("recv(%s) ~> %s",mailbox, content);
+			rsg_request_doanswer(mysock, parsespace,cmd, content);
+			free(content);
+			break;
+		}
 		default:
-			xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
+			xbt_die("Received an unknown (but parsed!) command: %d %s. Did you implement the answer of your command in %s?",
+					cmd,parsespace->buffer,__FILE__);
 		}
 	}
 
@@ -73,12 +92,12 @@ static int rsg_representative(int argc, char **argv) {
 int main(int argc, char **argv) {
 	s4u::Engine *e = new s4u::Engine(&argc,argv);
 
-	if (argc < 3) {
-		fprintf(stderr,"Usage: rsg platform.xml port\n");
+	if (argc < 4) {
+		fprintf(stderr,"Usage: rsg platform.xml deploy.xml port\n");
 		exit(1);
 	}
 	XBT_INFO("argc: %d",argc);
-	serverPort = atoi(argv[2]);
+	serverPort = atoi(argv[3]);
 	if (serverPort < 1024)
 		xbt_die("You should not run RSG on lower port %d.",serverPort);
 
@@ -88,7 +107,7 @@ int main(int argc, char **argv) {
 	/* Initialize the SimGrid world */
 	e->loadPlatform(argv[1]);
 	e->register_default(rsg_representative);
-	e->loadDeployment("deploy.xml");
+	e->loadDeployment(argv[2]);
 	e->run();
 	XBT_INFO("Simulation done");
 	close(serverPort);

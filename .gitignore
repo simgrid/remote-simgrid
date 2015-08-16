@@ -3,6 +3,7 @@
 *.o
 src/rsg
 src/dumb_client
+src/dumb_server
 CMakeFiles
 Makefile
 CMakeCache.txt
