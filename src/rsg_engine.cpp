@@ -4,8 +4,8 @@
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
 #include "rsg/engine.hpp"
-#include "command.h"
 #include "xbt/ex.h"
+#include "request.h"
 
 namespace rsg = simgrid::rsg;
 

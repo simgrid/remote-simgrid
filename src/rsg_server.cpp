@@ -14,7 +14,7 @@ XBT_LOG_NEW_DEFAULT_CATEGORY(rsg_server, "RSG server (Remote SimGrid)");
 int serverSocket;
 int serverPort;
 #include "socket.h"
-#include "command.h"
+#include "request.h"
 
 static int rsg_representative(int argc, char **argv) {
 
@@ -38,10 +38,10 @@ static int rsg_representative(int argc, char **argv) {
 	switch (cmd) {
 	case CMD_SLEEP: {
 		double duration;
-		request_getargs(parsespace, cmd, &duration);
+		rsg_request_getargs(parsespace, cmd, &duration);
 		XBT_INFO("sleep(%f)",duration);
 		self->sleep(duration);
-		request_answer(mysock, parsespace,cmd);
+		rsg_request_answer(mysock, parsespace,cmd);
 		break;
 	}
 	default:

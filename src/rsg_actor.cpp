@@ -6,8 +6,8 @@
 #include <rsg/actor.hpp>
 
 #include "socket.h"
-#include "command.h"
 #include "rsg/parsespace.h"
+#include "request.h"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");

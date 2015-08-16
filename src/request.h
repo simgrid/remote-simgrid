@@ -41,10 +41,10 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 
 /* Parse on server side */
 command_type_t request_identify(rsg_parsespace_t *workspace);
-void request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
+void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Prepare answer on server side */
-void request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
+void rsg_request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */

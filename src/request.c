@@ -4,11 +4,12 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
+#include "request.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <xbt/ex.h>
-#include "command.h"
 #include "socket.h"
 
 extern double NOW; // To change the time directly. I love such nasty hacks.
@@ -136,7 +137,7 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 			commands[cmd].name);
 }
 
-void request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+void rsg_request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 	char *p = workspace->buffer;
 	int avail_size, incr;
 	guarded_snprintf("{ret:%s,",commands[cmd].name);
@@ -178,7 +179,7 @@ command_type_t request_identify(rsg_parsespace_t *workspace) {
 }
 
 /** Extract the args out of a jsoned command that was previously parsed (by command_identify) */
-void request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 
 	va_list va;
 	va_start(va,cmd);
