@@ -10,8 +10,6 @@
 
 #include <rsg/parsespace.h>
 
-#include "jsmn.h"
-
 SG_BEGIN_DECL();
 
 typedef struct {
@@ -42,9 +40,8 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 /* Parse on server side */
 command_type_t request_identify(rsg_parsespace_t *workspace);
 void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
-
-/* Prepare answer on server side */
-void rsg_request_answer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
+/* Send answer from server to client */
+void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */

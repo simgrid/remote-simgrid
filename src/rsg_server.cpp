@@ -41,7 +41,7 @@ static int rsg_representative(int argc, char **argv) {
 		rsg_request_getargs(parsespace, cmd, &duration);
 		XBT_INFO("sleep(%f)",duration);
 		self->sleep(duration);
-		rsg_request_answer(mysock, parsespace,cmd);
+		rsg_request_doanswer(mysock, parsespace,cmd);
 		break;
 	}
 	default:
