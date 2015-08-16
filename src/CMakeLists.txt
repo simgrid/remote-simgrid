@@ -6,6 +6,7 @@
 set(COMMON_SOURCES
     socket.c        socket.h
     command.c       command.h
+    parsespace.c    ../include/rsg/parsespace.h
     jsmn.c          jsmn.h)
 
 

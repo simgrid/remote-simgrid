@@ -28,34 +28,30 @@ static int rsg_representative(int argc, char **argv) {
 	int mysock = rsg_sock_accept(serverSocket);
 
 	s4u::Actor *self = s4u::Actor::current();
-
-	char *buffer = NULL;
-	int buffer_size = 0;
-
-	jsmntok_t *tokens = NULL;
-	size_t tok_count = 0;
+	rsg_parsespace_t *parsespace = rsg_parsespace_new();
 
 	XBT_INFO("%d: Wait for incoming data",getpid());
-	tcp_recv(mysock, &buffer, &buffer_size);
-	XBT_INFO("%d: Reading %s (len:%ld, size:%d)",getpid(), buffer,strlen(buffer),buffer_size);
+	tcp_recv(mysock, parsespace);
+	XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
 
-	command_type_t cmd = request_identify(buffer,&tokens,&tok_count);
+	command_type_t cmd = request_identify(parsespace);
 	switch (cmd) {
 	case CMD_SLEEP: {
 		double duration;
-		request_getargs(buffer, &tokens,&tok_count,cmd,&duration);
+		request_getargs(parsespace, cmd, &duration);
 		XBT_INFO("sleep(%f)",duration);
 		self->sleep(duration);
-		answer_prepare(&buffer,&buffer_size,s4u::Engine::getClock(), cmd);
-		tcp_send(mysock,buffer);
+		answer_prepare(parsespace,cmd);
+		tcp_send(mysock,parsespace);
 		break;
 	}
 	default:
-		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,buffer);
+		xbt_die("Received an unknown (but parsed!) command: %d %s",cmd,parsespace->buffer);
 	}
 
-	free(buffer);
-	free(tokens);
+	free(parsespace->buffer);
+	free(parsespace->tokens);
+	free(parsespace);
 	return 0;
 }
 

@@ -7,6 +7,7 @@
 
 #include "socket.h"
 #include "command.h"
+#include "rsg/parsespace.h"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
@@ -16,8 +17,7 @@ namespace rsg = simgrid::rsg;
 rsg::Actor *rsg::Actor::p_self = NULL;
 
 rsg::Actor::Actor() {
-	p_buffer_size = 4096;
-	p_buffer = xbt_new(char,p_buffer_size);
+	p_workspace = rsg_parsespace_new();
 
 	char *strport = getenv("RSG_PORT");
 	if (strport == NULL)
@@ -35,8 +35,8 @@ rsg::Actor &rsg::Actor::self() {
 }
 
 void rsg::Actor::sleep(double duration) {
-	request_prepare(&p_buffer,&p_buffer_size, CMD_SLEEP, duration);
-	exchange_data(p_sock, &p_buffer, &p_buffer_size);
-	answer_parse(p_buffer,(jsmntok_t**)&p_tokens,&p_tok_count,CMD_SLEEP);
-	XBT_INFO("Answer of sleep cmd: >>%s<<",p_buffer);
+	request_prepare(p_workspace, CMD_SLEEP, duration);
+	exchange_data(p_sock, p_workspace);
+	answer_parse(p_workspace,CMD_SLEEP);
+	XBT_INFO("Answer of sleep cmd: >>%s<<",p_workspace->buffer);
 }

@@ -6,6 +6,7 @@
 #ifndef SRC_RSG_ACTOR_HPP_
 #define SRC_RSG_ACTOR_HPP_
 
+#include <rsg/parsespace.h>
 #include <xbt.h>
 #include <vector>
 
@@ -26,10 +27,7 @@ private:
 
 	/* To exchange data with the central server */
 	int p_sock=-1;
-	char *p_buffer;
-	int p_buffer_size; // length of above buffer
-	void *p_tokens = NULL; // To parse the json
-	size_t p_tok_count = 0; // length of above array
+	rsg_parsespace_t *p_workspace;
 };
 }} // namespace simgrid::rsg
 

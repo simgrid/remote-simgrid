@@ -24,22 +24,23 @@ void check_protocol(void) {
 
 #define guarded_snprintf(fmt, arg)                                       \
 	do {                                                                 \
-		avail_size = *buffer_size - (p-*buffer);                         \
+		avail_size = workspace->buffer_size - (p- (workspace->buffer));  \
 		incr = snprintf(p, avail_size, fmt,arg); /* Payload is here! */  \
                                                                          \
 		if (incr >= avail_size) { /*overflow*/                           \
-			char *oldbuff = *buffer;                                     \
-			*buffer = (char*)realloc(*buffer, *buffer_size+1024);        \
-			if (*buffer == NULL)                                         \
+			char *oldbuff = workspace->buffer;                           \
+			workspace->buffer = (char*)realloc(workspace->buffer,        \
+					                      (workspace->buffer_size)+1024);\
+			if (workspace->buffer == NULL)                               \
 				xbt_die("Cannot get a buffer big enough for command '%s'"\
-						" (asked for %d bytes, got NULL).",              \
-						commands[cmd].name, *buffer_size+1024);          \
+						" (asked for %zd bytes, got NULL).",              \
+						commands[cmd].name, (workspace->buffer_size)+1024);\
                                                                          \
-			*buffer_size += 1024;                                        \
+			workspace->buffer_size += 1024;                              \
 	        /*char *oldp = p; */                                         \
-			p = *buffer + (p-oldbuff);                                   \
+			p = workspace->buffer + (p-oldbuff);                         \
 			/*fprintf(stderr,"Overflow (inc: %d, avail:%d). buff move: %p -> %p (%ld), p move: %p -> %p (%ld), buffsize=%d\n",\
-					 incr, avail_size, oldbuff, *buffer, (*buffer-oldbuff), oldp, p, (p-oldp), *buffer_size);*/\
+					 incr, avail_size, oldbuff, workspace->buffer, (workspace->buffer-oldbuff), oldp, p, (p-oldp), workspace->buffer_size);*/\
 		} else {                                                         \
 			p += incr;                                                   \
 		    /*fprintf(stderr,"no overflow. >>%s<<\n",*buffer); */        \
@@ -47,8 +48,8 @@ void check_protocol(void) {
 	} while (incr >= avail_size)
 
 
-void request_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...) {
-	char *p = *buffer;
+void request_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+	char *p = workspace->buffer;
 	int avail_size, incr;
 	guarded_snprintf("{cmd:%s,",commands[cmd].name);
 
@@ -71,11 +72,13 @@ void request_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...) {
 	p--; // Remove the last ','
 	guarded_snprintf("%c",'}'); /* Trick to pass an argument anyway */
 }
-void answer_prepare(char **buffer, int *buffer_size, double clock, command_type_t cmd, ...) {
-	char *p = *buffer;
+extern double NOW; // To change the time directly. I love such nasty hacks.
+
+void answer_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+	char *p = workspace->buffer;
 	int avail_size, incr;
 	guarded_snprintf("{ret:%s,",commands[cmd].name);
-	guarded_snprintf("clock:%f,",clock);
+	guarded_snprintf("clock:%f,", NOW);
 
 	if (commands[cmd].retfmt != VOID) {
 		va_list va;
@@ -118,48 +121,48 @@ static void json_tokenise(char *js, jsmntok_t **tokens, size_t *tok_count) {
     if (ret == JSMN_ERROR_PART)
         xbt_die("jsmn_parse: truncated JSON string");
 }
-static int json_token_streq(char *js, jsmntok_t *t, const char *s) {
-    return (strncmp(js + t->start, s, t->end - t->start) == 0
+static int json_token_streq(rsg_parsespace_t *workspace, int num, const char *s) {
+	jsmntok_t *t = &((jsmntok_t*)workspace->tokens)[num];
+    return (strncmp(workspace->buffer + t->start, s, t->end - t->start) == 0
             && strlen(s) == (size_t) (t->end - t->start));
 }
-static char * json_token_tostr(char *js, jsmntok_t *t) {
-    js[t->end] = '\0';
-    return js + t->start;
+static char * json_token_tostr(rsg_parsespace_t *workspace, int num) {
+	jsmntok_t *t = &((jsmntok_t*)workspace->tokens)[num];
+    workspace->buffer[t->end] = '\0';
+    return workspace->buffer + t->start;
 }
-static double json_token_todouble(char *js, jsmntok_t *t) {
+static double json_token_todouble(rsg_parsespace_t *workspace, int num) {
+	jsmntok_t *t = &((jsmntok_t*)workspace->tokens)[num];
 	char *end;
-	double res = strtod(js+ t->start, &end);
-	if (end != js+t->end)
-		xbt_die("Parse error: JSON token '%s' does not seem to be a double", json_token_tostr(js,t));
+	double res = strtod(workspace->buffer+ t->start, &end);
+	if (end != workspace->buffer+t->end)
+		xbt_die("Parse error: JSON token '%s' does not seem to be a double", json_token_tostr(workspace,num));
 	return res;
 }
 
 /** Parse a jsoned command, and return the code of that command */
-command_type_t request_identify(char *buffer, jsmntok_t **ptokens, size_t *tok_count) {
-	json_tokenise(buffer, ptokens,tok_count);
-	jsmntok_t *token = *ptokens;
+command_type_t request_identify(rsg_parsespace_t *workspace) {
+	json_tokenise(workspace->buffer, (jsmntok_t**)&workspace->tokens, &workspace->tok_count);
 
-	xbt_assert(json_token_streq(buffer, &token[1],"cmd"), "First element of json is not 'cmd' but '%s'.",json_token_tostr(buffer, &token[1]));
+	xbt_assert(json_token_streq(workspace, 1,"cmd"),
+			"First element of json is not 'cmd' but '%s'.",json_token_tostr(workspace, 1));
 	command_type_t cmd;
-	for (cmd=0;cmd != CMD_COUNT && !json_token_streq(buffer,&token[2],commands[cmd].name); cmd ++) /* Nothing more to do */;
-	xbt_assert(cmd != CMD_COUNT,"Command '%s' not known", json_token_tostr(buffer,&token[2]));
+	for (cmd=0;cmd != CMD_COUNT && !json_token_streq(workspace,2,commands[cmd].name); cmd ++) /* Nothing more to do */;
+	xbt_assert(cmd != CMD_COUNT,"Command '%s' not known", json_token_tostr(workspace,2));
 
 	return cmd;
 }
 
 /** Extract the args out of a jsoned command that was previously parsed (by command_identify) */
-void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...) {
-
-	/* It was already parsed in command_identify() */
-	jsmntok_t *token = *ptokens;
+void request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 
 	va_list va;
 	va_start(va,cmd);
 	for (int it = 0; it<commands[cmd].argc; it++) {
 		arg_t a = commands[cmd].args[it];
-		jsmntok_t *t = &token[it*2+4];
+		int pos = it*2+4;
 
-		char *json_ctn = json_token_tostr(buffer, t);
+		char *json_ctn = json_token_tostr(workspace, pos);
 		switch (a.fmt) {
 		case 'd': {
 			int *vd = va_arg(va, int*);
@@ -168,7 +171,7 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 		}
 		case 'f': {
 			double *vf = va_arg(va,double*);
-			*vf = json_token_todouble(buffer, t);
+			*vf = json_token_todouble(workspace, pos);
 			break;
 		}
 		default:
@@ -177,20 +180,17 @@ void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, comma
 	}
 }
 
-extern double NOW; // To change the time directly. I love such nasty hacks.
-
 /** Parse a jsoned command, and return the code of that command */
-void answer_parse(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...) {
-	json_tokenise(buffer, ptokens, tok_count);
-	jsmntok_t *token = *ptokens;
+void answer_parse(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+	json_tokenise(workspace->buffer, (jsmntok_t**)&workspace->tokens, &workspace->tok_count);
 
-	xbt_assert(json_token_streq(buffer, &token[1],"ret"), "First element of json is not 'ret' but '%s'.",
-			json_token_tostr(buffer, &token[1]));
-	xbt_assert(json_token_streq(buffer, &token[2],commands[cmd].name), "It's not an answer to command %s but to command %s.",
-			commands[cmd].name,  json_token_tostr(buffer, &token[2]));
-	xbt_assert(json_token_streq(buffer, &token[3],"clock"), "Second element of json  is not 'clock' but '%s'.",
-			json_token_tostr(buffer, &token[3]));
-	NOW = json_token_todouble(buffer, &token[4]);
+	xbt_assert(json_token_streq(workspace,1,"ret"),
+			"First element of json is not 'ret' but '%s'.", json_token_tostr(workspace,1));
+	xbt_assert(json_token_streq(workspace,2,commands[cmd].name),
+			"It's not an answer to command %s but to command %s.", commands[cmd].name, json_token_tostr(workspace,2));
+	xbt_assert(json_token_streq(workspace,3,"clock"),
+			"Second element of json  is not 'clock' but '%s'.", json_token_tostr(workspace,3));
+	NOW = json_token_todouble(workspace,4);
 
 	xbt_assert(commands[cmd].retfmt == VOID, "Not implemented: commands returning something (%s)",
 			commands[cmd].name);

@@ -120,20 +120,20 @@ static void tcp_recv_chunk(int sock, char*data,int len) {
 }
 
 /* Send one payload. First the size alone on its line, then the content */
-void tcp_send(int sock, const char*data) {
+void tcp_send(int sock, rsg_parsespace_t *workspace) {
 	char buffer[128];
-	int payload_len = strlen(data);
+	int payload_len = strlen(workspace->buffer);
 	sprintf(buffer,"%d\n",payload_len);
 	tcp_send_chunk(sock, buffer, strlen(buffer));
-	tcp_send_chunk(sock, data,   payload_len);
-	//fprintf(stderr,"%d: Sent data >>%s<<\n", getpid(),data);
+	tcp_send_chunk(sock, workspace->buffer,   payload_len);
+	//fprintf(stderr,"%d: Sent data >>%s<<\n", getpid(),workspace->buffer);
 }
 
 /** Receive one payload. First the size alone on its line, then the content.
  *
  * The result and result_size are allocated or extended on need, just like getline does.
  */
-void tcp_recv(int sock, char **result, int *result_size) {
+void tcp_recv(int sock, rsg_parsespace_t *workspace) {
 	char buffer[128];
 	int payload_len;
 
@@ -144,22 +144,22 @@ void tcp_recv(int sock, char **result, int *result_size) {
 	payload_len = atoi(buffer);
 
 	/* Get ready to receive the answer */
-	if (payload_len+1 > *result_size) {
-		*result = (char*)realloc(*result, payload_len+1);
-		*result_size = payload_len+1;
+	if (payload_len+1 > workspace->buffer_size) {
+		workspace->buffer = (char*)realloc(workspace->buffer, payload_len+1);
+		workspace->buffer_size = payload_len+1;
 	}
 
 	//fprintf(stderr,"%d: Wait for %d bytes\n",getpid(), payload_len);
-	tcp_recv_chunk(sock, *result, payload_len);
+	tcp_recv_chunk(sock, workspace->buffer, payload_len);
 
 }
 
-void exchange_data(int sock, char **data, int *data_size) {
+void exchange_data(int sock, rsg_parsespace_t *workspace) {
 
-	tcp_send(sock, *data);
+	tcp_send(sock, workspace);
 	//fprintf(stderr,"%d: Data sent. Wait for the answer.\n",getpid());
 
-	tcp_recv(sock, data, data_size);
+	tcp_recv(sock, workspace);
 }
 
 

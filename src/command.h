@@ -8,7 +8,8 @@
 #ifndef SRC_COMMAND_H
 #define SRC_COMMAND_H
 
-#include <xbt/misc.h>
+#include <rsg/parsespace.h>
+
 #include "jsmn.h"
 
 SG_BEGIN_DECL();
@@ -36,17 +37,17 @@ typedef enum {
 void check_protocol(void);
 
 /* Prepare request on client side */
-void request_prepare(char **buffer, int *buffer_size, command_type_t cmd, ...);
+void request_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Parse on server side */
-command_type_t request_identify(char *buffer, jsmntok_t **ptokens, size_t *tok_count);
-void request_getargs(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...);
+command_type_t request_identify(rsg_parsespace_t *workspace);
+void request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Prepare answer on server side */
-void answer_prepare(char **buffer, int *buffer_size, double clock, command_type_t cmd, ...);
+void answer_prepare(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 /* Parse on client side */
-void answer_parse(char *buffer, jsmntok_t **ptokens, size_t *tok_count, command_type_t cmd, ...);
+void answer_parse(rsg_parsespace_t *workspace, command_type_t cmd, ...);
 
 SG_END_DECL();
 #endif /* SRC_COMMAND_H */
