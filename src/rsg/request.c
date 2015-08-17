@@ -4,15 +4,15 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
+#include "../rsg/request.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <xbt/ex.h>
 
-#include "jsmn.h"
-#include "socket.h"
-
-#include "request.h"
+#include "../rsg/jsmn.h"
+#include "../rsg/socket.h"
 
 extern double NOW; // To change the time directly. I love such nasty hacks.
 

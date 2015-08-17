@@ -3,11 +3,12 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#include <rsg/actor.hpp>
 
-#include "socket.h"
 #include "rsg/parsespace.h"
-#include "request.h"
+#include "rsg/request.h"
+#include "rsg/socket.h"
+
+#include "rsg/actor.hpp"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");

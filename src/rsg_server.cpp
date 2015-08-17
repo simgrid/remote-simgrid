@@ -14,8 +14,8 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_SERVER, RSG, "RSG server (Remote SimGrid)");
 
 int serverSocket;
 int serverPort;
-#include "socket.h"
-#include "request.h"
+#include "rsg/socket.h"
+#include "rsg/request.h"
 
 static int rsg_representative(int argc, char **argv) {
 

@@ -22,9 +22,10 @@
  * THE SOFTWARE.
  */
 
+#include "../rsg/jsmn.h"
+
 #include <stdlib.h>
 
-#include "jsmn.h"
 
 /**
  * Allocates a fresh unused token from the token pull.

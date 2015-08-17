@@ -5,7 +5,8 @@
 
 #include "rsg/engine.hpp"
 #include "xbt/ex.h"
-#include "request.h"
+
+#include "../rsg/request.h"
 
 namespace rsg = simgrid::rsg;
 

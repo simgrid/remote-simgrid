@@ -4,20 +4,21 @@
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
 set(COMMON_SOURCES
-    socket.c        socket.h
-    request.c       request.h
-    parsespace.c    ../include/rsg/parsespace.h
-    jsmn.c          jsmn.h)
+    rsg/socket.c        rsg/socket.h
+    rsg/request.c       rsg/request.h
+    rsg/parsespace.c    ../include/rsg/parsespace.h
+    rsg/jsmn.c          rsg/jsmn.h)
 
 
 set(CLIENT_SOURCES
     ${COMMON_SOURCES}
-    rsg_actor.cpp ../include/rsg/actor.hpp
-    rsg_engine.cpp  ../include/rsg/engine.hpp)
+    client/rsg_actor.cpp ../include/rsg/actor.hpp
+    client/rsg_async.cpp ../include/rsg/async.hpp
+    client/rsg_engine.cpp  ../include/rsg/engine.hpp)
 
-add_executable(rsg
+add_executable(rsg_server
                ${COMMON_SOURCES} rsg_server.cpp)
-target_link_libraries(rsg ${SimGrid_LIBRARY})
+target_link_libraries(rsg_server ${SimGrid_LIBRARY})
 
 add_executable(dumb_client
                ${CLIENT_SOURCES} dumb_client.cpp)
