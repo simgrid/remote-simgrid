@@ -22,7 +22,7 @@
 
 int rsg_createServerSocket(int port) {
 	int res;
-	fprintf(stderr,"%d: Create a RSG server on %d\n",getpid(),port);
+	//fprintf(stderr,"%d: Create a RSG server on %d\n",getpid(),port);
 	if ((res = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		perror("Server: error socket");
 		exit(1);
@@ -93,7 +93,7 @@ int rsg_sock_connect(int port) {
 		fprintf(stderr, "%d: Cannot connect to local port %d\n",getpid(),port);
 		exit(1);
 	}
-	fprintf(stderr,"%d: Connected to port %d\n",getpid(),port);
+	//fprintf(stderr,"%d: Connected to port %d\n",getpid(),port);
 
 	return sock;
 }

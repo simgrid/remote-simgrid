@@ -9,7 +9,8 @@
 
 using namespace simgrid;
 
-XBT_LOG_NEW_DEFAULT_CATEGORY(rsg_server, "RSG server (Remote SimGrid)");
+XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_SERVER, RSG, "RSG server (Remote SimGrid)");
 
 int serverSocket;
 int serverPort;
@@ -18,7 +19,7 @@ int serverPort;
 
 static int rsg_representative(int argc, char **argv) {
 
-	XBT_INFO("Launching %s",argv[1]);
+	XBT_VERB("Launching %s",argv[1]);
 
 	if (! fork()) {
 		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
@@ -28,14 +29,13 @@ static int rsg_representative(int argc, char **argv) {
 	int mysock = rsg_sock_accept(serverSocket);
 
 	s4u::Actor *self = s4u::Actor::current();
-	XBT_INFO("My name: %s", self->getName());
 	rsg_parsespace_t *parsespace = rsg_parsespace_new();
 
 	bool done = false;
 	while (!done) {
-		XBT_INFO("%d: Wait for incoming data",getpid());
+		XBT_DEBUG("%d: Wait for incoming data",getpid());
 		tcp_recv(mysock, parsespace);
-		XBT_INFO("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
+		XBT_VERB("%d: Reading %s (len:%ld, size:%ld)",getpid(), parsespace->buffer,strlen(parsespace->buffer),parsespace->buffer_size);
 
 		command_type_t cmd = rsg_request_identify(parsespace);
 		switch (cmd) {
