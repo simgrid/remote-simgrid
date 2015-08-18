@@ -8,11 +8,12 @@
 
 int main(int argc, char **argv) {
 	simgrid::rsg::Actor &self = simgrid::rsg::Actor::self();
+	simgrid::rsg::Mailbox *mbox = simgrid::rsg::Mailbox::byName("toto");
 
 	self.sleep(42);
 	self.execute(8095000000); // That's the power of my host on the used platform
-	self.send("toto","message from client");
-	char * msg = self.recv("toto");
+	self.send(mbox,"message from client");
+	char * msg = self.recv(mbox);
 	fprintf(stderr, "Client: Received message: '%s'\n",msg);
 
 	self.quit();

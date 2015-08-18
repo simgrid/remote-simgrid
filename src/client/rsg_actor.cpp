@@ -5,10 +5,10 @@
 
 
 #include "rsg/parsespace.h"
-#include "rsg/request.h"
-#include "rsg/socket.h"
+#include "../rsg/socket.h"
 
 #include "rsg/actor.hpp"
+#include "../rsg/protocol_priv.h"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
@@ -31,10 +31,16 @@ rsg::Actor::Actor() {
 rsg::Actor &rsg::Actor::self() {
 	if (p_self == NULL) {
 		p_self = new Actor();
+		check_protocol();
 	}
 	return *p_self;
 }
 
+void rsg::Actor::request(int cmd, ...) {
+	va_list va;
+	va_start(va,cmd);
+	rsg_vrequest(p_sock, p_workspace, (command_type_t)cmd, va);
+}
 void rsg::Actor::sleep(double duration) {
 	rsg_request(p_sock, p_workspace, CMD_SLEEP, duration);
 	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
@@ -45,13 +51,13 @@ void rsg::Actor::execute(double flops) {
 	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
 }
 
-void rsg::Actor::send(const char*mailbox, const char*content) {
-	rsg_request(p_sock, p_workspace, CMD_SEND, mailbox, content);
+void rsg::Actor::send(Mailbox *mailbox, const char*content) {
+	rsg_request(p_sock, p_workspace, CMD_SEND, mailbox->getRemote(), content);
 	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
 }
-char *rsg::Actor::recv(const char*mailbox) {
+char *rsg::Actor::recv(Mailbox *mailbox) {
 	char *content;
-	rsg_request(p_sock, p_workspace, CMD_RECV, mailbox, &content);
+	rsg_request(p_sock, p_workspace, CMD_RECV, mailbox->getRemote(), &content);
 	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
 	return content;
 }

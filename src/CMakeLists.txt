@@ -5,16 +5,17 @@
 
 set(COMMON_SOURCES
     rsg/socket.c        rsg/socket.h
-    rsg/request.c       rsg/request.h
+    rsg/protocol.c      ../include/rsg/protocol.h    rsg/protocol_priv.h
     rsg/parsespace.c    ../include/rsg/parsespace.h
     rsg/jsmn.c          rsg/jsmn.h)
 
 
 set(CLIENT_SOURCES
     ${COMMON_SOURCES}
-    client/rsg_actor.cpp ../include/rsg/actor.hpp
-    client/rsg_async.cpp ../include/rsg/async.hpp
-    client/rsg_engine.cpp  ../include/rsg/engine.hpp)
+    client/rsg_actor.cpp   ../include/rsg/actor.hpp
+    client/rsg_engine.cpp  ../include/rsg/engine.hpp
+    client/rsg_mailbox.cpp ../include/rsg/mailbox.hpp
+    )
 
 add_executable(rsg_server
                ${COMMON_SOURCES} rsg_server.cpp)

@@ -4,26 +4,25 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#include "../rsg/request.h"
-
 #include <stdlib.h>
 #include <stdio.h>
-#include <stdarg.h>
 #include <xbt/ex.h>
 
-#include "../rsg/jsmn.h"
-#include "../rsg/socket.h"
+#include "jsmn.h"
+#include "protocol_priv.h"
+#include "socket.h"
 
 extern double NOW; // To change the time directly. I love such nasty hacks.
 
 #define NOARG {NULL,'\0'}
 #define VOID '\0'
 command_t commands[] = {
-		{CMD_SLEEP, "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},          VOID},
-		{CMD_EXEC,  "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},             VOID},
-		{CMD_QUIT,  "quit",   0,{NOARG,NOARG,NOARG,NOARG,NOARG,NOARG},                     VOID},
-		{CMD_SEND,  "send",   2,{{"mailbox",'s'},{"content",'s'},NOARG,NOARG,NOARG,NOARG}, VOID},
-		{CMD_RECV,  "recv",   1,{{"mailbox",'s'},NOARG,NOARG,NOARG,NOARG,NOARG},           's'}
+		{CMD_SLEEP,    "sleep",  1,{{"duration",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},          VOID},
+		{CMD_EXEC,     "execute",1,{{"flops",'f'},NOARG,NOARG,NOARG,NOARG,NOARG},             VOID},
+		{CMD_SEND,     "send",   2,{{"mailbox",'p'},{"content",'s'},NOARG,NOARG,NOARG,NOARG}, VOID},
+		{CMD_RECV,     "recv",   1,{{"mailbox",'p'},NOARG,NOARG,NOARG,NOARG,NOARG},           's'} ,
+		{CMD_MB_CREAT, "mb_create", 1,{{"name",'s'},NOARG,NOARG,NOARG,NOARG,NOARG},           'p'} ,
+		{CMD_QUIT,     "quit",   0,{NOARG,NOARG,NOARG,NOARG,NOARG,NOARG},                     VOID},
 };
 
 void check_protocol(void) {
@@ -71,6 +70,14 @@ static double json_token_todouble(rsg_parsespace_t *workspace, int num) {
 		xbt_die("Parse error: JSON token '%s' does not seem to be a double", json_token_tostr(workspace,num));
 	return res;
 }
+static long int json_token_tolongint(rsg_parsespace_t *workspace, int num) {
+	jsmntok_t *t = &((jsmntok_t*)workspace->tokens)[num];
+	char *end;
+	long int res = strtol(workspace->buffer+ t->start, &end, 0);
+	if (end != workspace->buffer+t->end)
+		xbt_die("Parse error: JSON token '%s' does not seem to be a long int", json_token_tostr(workspace,num));
+	return res;
+}
 
 
 #define guarded_snprintf(fmt, arg)                                       \
@@ -98,16 +105,12 @@ static double json_token_todouble(rsg_parsespace_t *workspace, int num) {
 		}                                                                \
 	} while (incr >= avail_size)
 
-
-void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
-
+void rsg_vrequest(int sock, rsg_parsespace_t *workspace, command_type_t cmd, va_list va) {
 	/* Prepare the request as a string */
 	char *p = workspace->buffer;
 	int avail_size, incr;
 	guarded_snprintf("{cmd:%s,",commands[cmd].name);
 
-	va_list va;
-	va_start(va,cmd);
 	for (int it = 0; it<commands[cmd].argc; it++) {
 		arg_t a = commands[cmd].args[it];
 		guarded_snprintf("%s:",a.name);
@@ -117,6 +120,9 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 			break;
 		case 'f':
 			guarded_snprintf("%f,",va_arg(va,double));
+			break;
+		case 'p':
+			guarded_snprintf("%p,",va_arg(va,void*));
 			break;
 		case 's':
 			guarded_snprintf("\"%s\",",va_arg(va,char*));
@@ -161,6 +167,10 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 		*vf = json_token_todouble(workspace, 6);
 		break;
 	}
+	case 'p': {
+		void **vp = va_arg(va, void**);
+		*vp = (void*)json_token_tolongint(workspace, 6);
+	}
 	case 's': {
 		char **vs = va_arg(va,char**);
 		*vs = json_token_tostr(workspace, 6);
@@ -170,6 +180,13 @@ void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...)
 	default:
 		xbt_die("Unknown format %c for retval of cmd %s",commands[cmd].retfmt, commands[cmd].name);
 	}
+}
+
+
+void rsg_request(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
+	va_list va;
+	va_start(va,cmd);
+	rsg_vrequest(sock, workspace, cmd, va);
 }
 
 void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t cmd, ...) {
@@ -188,6 +205,9 @@ void rsg_request_doanswer(int sock, rsg_parsespace_t *workspace, command_type_t 
 			break;
 		case 'f':
 			guarded_snprintf("retval:%f,",va_arg(va,double));
+			break;
+		case 'p':
+			guarded_snprintf("retval:%p,",va_arg(va,void *));
 			break;
 		case 's':
 			guarded_snprintf("retval:\"%s\",",va_arg(va,char*));
@@ -241,6 +261,11 @@ void rsg_request_getargs(rsg_parsespace_t *workspace, command_type_t cmd, ...) {
 		case 's': {
 			char **vs = va_arg(va,char**);
 			*vs = json_token_tostr(workspace, pos);
+			break;
+		}
+		case 'p': {
+			void **vli = va_arg(va,void**);
+			*vli = (void*)json_token_tolongint(workspace, pos);
 			break;
 		}
 		default:

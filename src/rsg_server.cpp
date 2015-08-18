@@ -15,7 +15,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_SERVER, RSG, "RSG server (Remote SimGrid)");
 int serverSocket;
 int serverPort;
 #include "rsg/socket.h"
-#include "rsg/request.h"
+#include "rsg/protocol_priv.h"
 
 static int rsg_representative(int argc, char **argv) {
 
@@ -55,27 +55,36 @@ static int rsg_representative(int argc, char **argv) {
 			rsg_request_doanswer(mysock, parsespace,cmd);
 			break;
 		}
-		case CMD_QUIT: {
-			XBT_INFO("quit()");
-			done = true;
-			rsg_request_doanswer(mysock, parsespace,cmd);
-			break;
-		}
 		case CMD_SEND: {
-			char* mailbox, *content;
-			rsg_request_getargs(parsespace, cmd, &mailbox, &content);
-			XBT_INFO("send(%s,%s)",mailbox,content);
-			self->send(*s4u::Mailbox::byName(mailbox), xbt_strdup(content), strlen(content));
+			s4u::Mailbox *mbox;
+			char *content;
+			rsg_request_getargs(parsespace, cmd, &mbox, &content);
+			XBT_INFO("send(%s,%s)",mbox->getName(),content);
+			self->send(*mbox, xbt_strdup(content), strlen(content));
 			rsg_request_doanswer(mysock, parsespace,cmd);
 			break;
 		}
 		case CMD_RECV: {
-			char* mailbox;
-			rsg_request_getargs(parsespace, cmd, &mailbox);
-			char *content = (char*)self->recv(*s4u::Mailbox::byName(mailbox));
-			XBT_INFO("recv(%s) ~> %s",mailbox, content);
+			s4u::Mailbox *mbox;
+			rsg_request_getargs(parsespace, cmd, &mbox);
+			char *content = (char*)self->recv(*mbox);
+			XBT_INFO("recv(%s) ~> %s",mbox->getName(), content);
 			rsg_request_doanswer(mysock, parsespace,cmd, content);
 			free(content);
+			break;
+		}
+		case CMD_MB_CREAT: {
+			char *name;
+			rsg_request_getargs(parsespace,cmd,&name);
+			s4u::Mailbox *mbox = s4u::Mailbox::byName(name);
+			XBT_INFO("mailbox_create(%s) ~> %p",name,mbox);
+			rsg_request_doanswer(mysock,parsespace,cmd, mbox);
+			break;
+		}
+		case CMD_QUIT: {
+			XBT_INFO("quit()");
+			done = true;
+			rsg_request_doanswer(mysock, parsespace,cmd);
 			break;
 		}
 		default:

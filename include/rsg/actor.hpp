@@ -3,28 +3,36 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SRC_RSG_ACTOR_HPP_
-#define SRC_RSG_ACTOR_HPP_
+#ifndef SIMGRID_RSG_ACTOR_HPP
+#define SIMGRID_RSG_ACTOR_HPP
 
-#include <rsg/parsespace.h>
 #include <xbt.h>
 #include <vector>
+
+#include "rsg/parsespace.h"
+#include "rsg/mailbox.hpp"
 
 namespace simgrid {
 namespace rsg {
 
+class Mailbox;
+
 class Actor {
+	friend Mailbox;
 private:
 	Actor();
 public:
 	void sleep(double duration);
 	void execute(double flops);
 	void quit();
-	void send(const char*mailbox, const char*content);
-	char *recv(const char*mailbox);
+	void send(Mailbox *mailbox, const char*content);
+	char *recv(Mailbox *mailbox);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static Actor &self();
+
+protected:
+	void request(int cmd, ...);
 
 private:
 	static Actor *p_self;
@@ -35,4 +43,4 @@ private:
 };
 }} // namespace simgrid::rsg
 
-#endif /* SRC_RSG_ACTOR_HPP_ */
+#endif /* SIMGRID_RSG_ACTOR_HPP */
