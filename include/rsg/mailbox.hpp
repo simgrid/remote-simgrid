@@ -26,12 +26,12 @@ class Mailbox {
 	friend Comm;
 
 private:
-	Mailbox(const char*name, void* remoteAddr);
+	Mailbox(const char*name, unsigned long int remoteAddr);
 public:
 	~Mailbox();
 	
 //protected:
-	void *getRemote() { return p_remoteAddr; }
+	unsigned long int getRemote() { return p_remoteAddr; }
 
 public:
 	/** Retrieve the mailbox associated to the given string */
@@ -39,7 +39,7 @@ public:
 
 private:
 	std::string p_name;
-	void *p_remoteAddr = NULL;
+	unsigned long int p_remoteAddr = 0;
 	static boost::unordered_map<std::string, Mailbox *> *mailboxes;
 };
 }} // namespace simgrid::rsg

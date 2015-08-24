@@ -18,7 +18,7 @@ using namespace simgrid;
 boost::unordered_map <std::string, rsg::Mailbox *> *rsg::Mailbox::mailboxes = new boost::unordered_map<std::string, rsg::Mailbox*> ();
 
 
-rsg::Mailbox::Mailbox(const char*name, void* remoteAddr) {
+rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 	p_remoteAddr = remoteAddr;
 	p_name=name;
 	mailboxes->insert({name, this});
@@ -38,7 +38,9 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 
 		sendRequest(Actor::self().p_sock, req, ans);
 
-		res = new Mailbox(name, (rsg::Mailbox*) ans.mbcreate().remoteaddr());
+		unsigned long int remoteAddr = ans.mbcreate().remoteaddr();
+		ans.Clear();
+		res = new Mailbox(name, remoteAddr);
 	}
 	return res;
 }

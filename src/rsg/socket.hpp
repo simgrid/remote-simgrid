@@ -6,22 +6,18 @@
 #ifndef SRC_SOCKET_H_
 #define SRC_SOCKET_H_
 
+#include <google/protobuf/message.h>
+
 #include <xbt/misc.h>
-#include "rsg/parsespace.h"
 
 SG_BEGIN_DECL();
-
-void tcp_recv(int sock, rsg_parsespace_t *workspace);
-void tcp_send(int sock, rsg_parsespace_t *workspace);
 
 int rsg_createServerSocket(int port);
 int rsg_sock_accept(int serverSocket);
 int rsg_sock_connect(int port);
 
-/* Send the content of the workspace->buffer (nul-terminated), and receive the answer from the server.
- * The data may get reallocated if it's too small to receive the answer.
- */
-void exchange_data(int sock, rsg_parsespace_t *workspace);
+bool recv_message(int socket, ::google::protobuf::Message *message);
+bool send_message(int socket, ::google::protobuf::Message *message);
 
 SG_END_DECL();
 

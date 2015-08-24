@@ -14,7 +14,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_SERVER, RSG, "RSG server (Remote SimGrid)");
 
 int serverSocket;
 int serverPort;
-#include "rsg/socket.h"
+#include "rsg/socket.hpp"
 #include "rsg.pb.h"
 
 static int rsg_representative(int argc, char **argv) {
@@ -36,9 +36,11 @@ static int rsg_representative(int argc, char **argv) {
 		simgrid::rsg::Answer ans;
 		ans.set_type(request.type());
 
-		XBT_DEBUG("%d: Wait for incoming data",getpid());
-		if (!request.ParseFromFileDescriptor(mysock))
-			xbt_die("ParseFromFileDescriptor returned false");
+		XBT_VERB("Wait for incoming data on fd %d",mysock);
+
+		if (!recv_message(mysock, &request))
+			xbt_die("Cannot receive message!");
+		XBT_VERB("Got a message of type %d: %s", request.type(), request.ShortDebugString().c_str());
 
 		switch (request.type()) {
 		case simgrid::rsg::CMD_SLEEP: {
@@ -62,6 +64,7 @@ static int rsg_representative(int argc, char **argv) {
 		}
 		case simgrid::rsg::CMD_RECV: {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.recv().mbox();
+			XBT_VERB("block on recv(%p)", mbox);
 			char *content = (char*)self->recv(*mbox);
 			XBT_INFO("recv(%s) ~> %s",mbox->getName(), content);
 			ans.mutable_recv()->set_content((const char*)content);
@@ -85,8 +88,10 @@ static int rsg_representative(int argc, char **argv) {
 					request.type(),__FILE__);
 		} // switch request->type()
 
+		request.Clear();
 		ans.set_clock(simgrid::s4u::Engine::getClock());
-		ans.SerializePartialToFileDescriptor(mysock);
+		send_message(mysock, &ans);
+		ans.Clear();
 	}
 
 	return 0;
@@ -105,7 +110,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr,"Usage: rsg platform.xml deploy.xml port\n");
 		exit(1);
 	}
-	XBT_INFO("argc: %d",argc);
 	serverPort = atoi(argv[3]);
 	if (serverPort < 1024)
 		xbt_die("You should not run RSG on lower port %d.",serverPort);

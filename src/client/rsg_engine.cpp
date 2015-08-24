@@ -5,8 +5,8 @@
 
 #include "rsg/engine.hpp"
 #include "xbt/ex.h"
+#include <google/protobuf/stubs/common.h>
 
-#include "../rsg.pb.h"
 
 namespace rsg = simgrid::rsg;
 

@@ -15,7 +15,7 @@ ADD_CUSTOM_COMMAND(
 )
 
 set(COMMON_SOURCES
-    rsg/socket.c        rsg/socket.h
+    rsg/socket.cpp      rsg/socket.hpp
     rsg.pb.h            rsg.pb.cc
 )
 

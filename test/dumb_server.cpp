@@ -12,6 +12,7 @@ int main(int argc, char **argv) {
 
 	char * msg = self.recv(mbox);
 	fprintf(stderr, "Server: Received message: '%s'\n",msg);
+	free(msg);
 	self.send(mbox, "Message from server");
 	self.quit();
 }

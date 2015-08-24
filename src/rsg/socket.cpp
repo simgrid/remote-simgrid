@@ -3,7 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#include "../rsg/socket.h"
+#include "socket.hpp"
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -17,6 +17,9 @@
 #include <netdb.h>
 #include <errno.h>
 #include <time.h>
+
+#include <google/protobuf/io/zero_copy_stream_impl.h>
+#include <google/protobuf/io/coded_stream.h>
 
 #include <xbt.h>
 
@@ -99,71 +102,60 @@ int rsg_sock_connect(int port) {
 	return sock;
 }
 
-/* Send one chunk of data */
-static void tcp_send_chunk(int sock, const char*data, int len) {
-	unsigned long done=0;
-	while (done < len) {
-		int step = write(sock, data+done, len-done);
-		if (step < 0)
-			xbt_die("Problem while sending the data: %s", strerror(errno));
-		done += step;
-	}
+bool send_message(int socket, ::google::protobuf::Message *message)
+{
+  google::protobuf::uint32 message_length = message->ByteSize();
+  int prefix_length = sizeof(message_length);
+  int buffer_length = prefix_length + message_length;
+  google::protobuf::uint8 buffer[buffer_length];
+  memset(buffer, 0, buffer_length);
+
+  google::protobuf::io::ArrayOutputStream array_output(buffer, buffer_length);
+  google::protobuf::io::CodedOutputStream coded_output(&array_output);
+
+  coded_output.WriteLittleEndian32(message_length);
+  //fprintf(stderr,"send_message: %s (msg len: %d)\n",message->ShortDebugString().c_str(),message_length);
+  message->SerializeToCodedStream(&coded_output);
+
+  int sent_bytes = write(socket, buffer, buffer_length);
+  if (sent_bytes != buffer_length) {
+    return false;
+  }
+
+  return true;
 }
 
-static void tcp_recv_chunk(int sock, char*data,int len) {
-	for (int done = 0; done < len;) {
-		int step = read(sock,data+done,len-done);
-		if (step <= 0)
-			xbt_die("CLI: Something went wrong while reading the answer from the server. %d chars so far (%s).", done, data);
-		done += step;
-	}
-	data[len]='\0';
+bool recv_message(int socket, ::google::protobuf::Message *message)
+{
+  google::protobuf::uint32 message_length;
+  int prefix_length = sizeof(message_length);
+  google::protobuf::uint8 prefix[prefix_length];
+
+  if (prefix_length != read(socket, prefix, prefix_length)) {
+    return false;
+  }
+  google::protobuf::io::ArrayInputStream array_prefix(prefix, prefix_length);
+  google::protobuf::io::CodedInputStream coded_prefix(&array_prefix);
+  coded_prefix.ReadLittleEndian32(&message_length);
+
+  google::protobuf::uint8 buffer[message_length];
+  google::protobuf::uint32 got;
+  if (message_length != (got = read(socket, buffer, message_length))) {
+	  fprintf(stderr,"Got %d bytes instead of the %d expected ones\n",got, message_length);
+    return false;
+  }
+  //fprintf(stderr,"I got the %d bytes that I was expecting\n",got);
+  google::protobuf::io::ArrayInputStream array_input(buffer, message_length);
+  google::protobuf::io::CodedInputStream coded_input(&array_input);
+
+  if (!message->ParseFromCodedStream(&coded_input)) {
+    return false;
+  }
+
+  return true;
 }
 
-/* Send one payload. First the size alone on its line, then the content */
-void tcp_send(int sock, rsg_parsespace_t *workspace) {
-	char buffer[128];
-	int payload_len = strlen(workspace->buffer);
-	sprintf(buffer,"%d\n",payload_len);
-	tcp_send_chunk(sock, buffer, strlen(buffer));
-	tcp_send_chunk(sock, workspace->buffer,   payload_len);
-	//fprintf(stderr,"%d: Sent data >>%s<<\n", getpid(),workspace->buffer);
-}
-
-/** Receive one payload. First the size alone on its line, then the content.
- *
- * The result and result_size are allocated or extended on need, just like getline does.
- */
-void tcp_recv(int sock, rsg_parsespace_t *workspace) {
-	char buffer[128];
-	int payload_len;
-
-	/* Read the answer length, as an integer alone on its line */
-	int p = 0;
-	int amount=-1;
-	while ( (amount=read(sock, buffer+p, 1))>0 && buffer[p++] != '\n');
-	if (amount <= 0)
-		xbt_die("Error while reading from the socket: %s", strerror(errno));
-	buffer[p] = '\0';
-	payload_len = atoi(buffer);
-
-	/* Get ready to receive the answer */
-	if (payload_len+1 > workspace->buffer_size) {
-		workspace->buffer = (char*)realloc(workspace->buffer, payload_len+1);
-		workspace->buffer_size = payload_len+1;
-	}
-
-	//fprintf(stderr,"%d: Wait for %d bytes\n",getpid(), payload_len);
-	tcp_recv_chunk(sock, workspace->buffer, payload_len);
-
-}
-
-void exchange_data(int sock, rsg_parsespace_t *workspace) {
-
-	tcp_send(sock, workspace);
-	//fprintf(stderr,"%d: Data sent. Wait for the answer.\n",getpid());
-
-	tcp_recv(sock, workspace);
-}
-
+// http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
+// http://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
+// http://stackoverflow.com/questions/11640864/length-prefix-for-protobuf-messages-in-c
 
