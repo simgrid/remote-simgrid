@@ -1,0 +1,56 @@
+syntax = "proto2";
+
+option java_package = "org.simgrid.rsg";
+
+package simgrid.rsg;
+
+enum Type { 
+  CMD_SLEEP = 1; CMD_EXEC = 2; CMD_SEND = 3; CMD_RECV = 4;
+  CMD_MB_CREATE = 5;
+  CMD_QUIT = 90;
+}
+
+message Request { 
+  // The kind of request that we have today
+  required Type type = 99;
+  
+  // Sleep request
+  message SleepRequest { required double duration = 1; }
+  optional SleepRequest sleep = 1;
+  
+  // Exec request
+  message ExecRequest { required double flops = 1; }
+  optional ExecRequest exec = 2;
+
+  // Send request
+  message SendRequest { 
+    required uint64 mbox = 1;
+    required string content = 2;
+  }
+  optional SendRequest send = 3;
+
+  // Recv request
+  message RecvRequest { required uint64 mbox = 1; }
+  optional RecvRequest recv = 4;
+
+
+  // Mailbox Create
+  message MBCreateRequest { required string name = 1; }
+  optional MBCreateRequest mbCreate = 5;
+}
+
+message Answer {
+  // The kind of request that we are replying to today
+  required Type type = 99;
+  required double clock = 100;
+
+  // Sleep request: no returned type
+  // Exec request: no returned type
+  // Send request: no returned type
+  message RecvAnswer { required string content = 1; }
+  optional RecvAnswer recv = 4;
+  
+  message MBCreateAnswer { required uint64 remoteAddr = 1; }
+  optional MBCreateAnswer mbCreate = 5;
+  
+}

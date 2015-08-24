@@ -9,7 +9,6 @@
 #include <xbt.h>
 #include <vector>
 
-#include "rsg/parsespace.h"
 #include "rsg/mailbox.hpp"
 
 namespace simgrid {
@@ -31,15 +30,11 @@ public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static Actor &self();
 
-protected:
-	void request(int cmd, ...);
-
 private:
 	static Actor *p_self;
 
 	/* To exchange data with the central server */
 	int p_sock=-1;
-	rsg_parsespace_t *p_workspace;
 };
 }} // namespace simgrid::rsg
 

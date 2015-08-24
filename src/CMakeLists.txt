@@ -3,11 +3,21 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
+# gRPC is not suited as we have to have several servers in the same process
+# ADD_CUSTOM_COMMAND(
+#	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.grpc.pb.h ${CMAKE_BINARY_DIR}/src/rsg.grpc.pb.cc
+#	COMMAND ${CMAKE_BINARY_DIR}/opt/protobuf3/bin/protoc --grpc_out=. --plugin=protoc-gen-grpc=${CMAKE_BINARY_DIR}/opt/grpc/bin/grpc_cpp_plugin rsg.proto
+#)
+
+ADD_CUSTOM_COMMAND(
+	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.pb.h ${CMAKE_BINARY_DIR}/src/rsg.pb.cc
+	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/src --cpp_out=. ${CMAKE_SOURCE_DIR}/src/rsg.proto
+)
+
 set(COMMON_SOURCES
     rsg/socket.c        rsg/socket.h
-    rsg/protocol.c      ../include/rsg/protocol.h    rsg/protocol_priv.h
-    rsg/parsespace.c    ../include/rsg/parsespace.h
-    rsg/jsmn.c          rsg/jsmn.h)
+    rsg.pb.h            rsg.pb.cc
+)
 
 
 set(CLIENT_SOURCES
@@ -17,14 +27,13 @@ set(CLIENT_SOURCES
     client/rsg_mailbox.cpp ../include/rsg/mailbox.hpp
     )
 
-add_executable(rsg_server
+#include_directories(../opt/grpc/include/ SYSTEM)
+#include_directories(../opt/protobuf3/include SYSTEM)
+
+add_library(rsg SHARED ${CLIENT_SOURCES})
+target_link_libraries(rsg ${SimGrid_LIBRARY} protobuf)
+
+add_executable(rsg_server 
                ${COMMON_SOURCES} rsg_server.cpp)
-target_link_libraries(rsg_server ${SimGrid_LIBRARY})
-
-add_executable(dumb_client
-               ${CLIENT_SOURCES} dumb_client.cpp)
-target_link_libraries(dumb_client ${SimGrid_LIBRARY})
-
-add_executable(dumb_server
-               ${CLIENT_SOURCES} dumb_server.cpp)
-target_link_libraries(dumb_server ${SimGrid_LIBRARY})
+target_link_libraries(rsg_server 
+                      ${SimGrid_LIBRARY} protobuf)

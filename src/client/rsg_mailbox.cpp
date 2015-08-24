@@ -7,7 +7,7 @@
 #include <xbt/log.h>
 
 #include "rsg/mailbox.hpp"
-#include "rsg/protocol.h"
+#include "../rsg.pb.h"
 
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL,RSG,"RSG Communication Mailboxes");
@@ -23,14 +23,22 @@ rsg::Mailbox::Mailbox(const char*name, void* remoteAddr) {
 	p_name=name;
 	mailboxes->insert({name, this});
 }
+
+extern void sendRequest(int sock, rsg::Request &req, rsg::Answer &ans);
+
 rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	try {
 		res = mailboxes->at(name);
 	} catch (std::out_of_range& e) {
-		void *addr;
-		Actor::self().request(CMD_MB_CREAT,name,&addr);
-		res = new Mailbox(name,  addr);
+		rsg::Request req;
+		rsg::Answer ans;
+		req.set_type(rsg::CMD_MB_CREATE);
+		req.mutable_mbcreate()->set_name(name);
+
+		sendRequest(Actor::self().p_sock, req, ans);
+
+		res = new Mailbox(name, (rsg::Mailbox*) ans.mbcreate().remoteaddr());
 	}
 	return res;
 }

@@ -8,7 +8,7 @@
 #include "../rsg/socket.h"
 
 #include "rsg/actor.hpp"
-#include "../rsg/protocol_priv.h"
+#include "../rsg.pb.h"
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
@@ -18,8 +18,6 @@ namespace rsg = simgrid::rsg;
 rsg::Actor *rsg::Actor::p_self = NULL;
 
 rsg::Actor::Actor() {
-	p_workspace = rsg_parsespace_new();
-
 	char *strport = getenv("RSG_PORT");
 	if (strport == NULL)
 		xbt_die("RSG_PORT not set. Did you launch this binary through rsg as expected?");
@@ -31,40 +29,62 @@ rsg::Actor::Actor() {
 rsg::Actor &rsg::Actor::self() {
 	if (p_self == NULL) {
 		p_self = new Actor();
-		check_protocol();
+		// Verify that the version of the library that we linked against is
+		// compatible with the version of the headers we compiled against.
+		GOOGLE_PROTOBUF_VERIFY_VERSION;
 	}
 	return *p_self;
 }
 
-void rsg::Actor::request(int cmd, ...) {
-	va_list va;
-	va_start(va,cmd);
-	rsg_vrequest(p_sock, p_workspace, (command_type_t)cmd, va);
+extern double NOW;
+
+void sendRequest(int sock, rsg::Request &req, rsg::Answer &ans) {
+	xbt_assert(req.SerializeToFileDescriptor(sock));
+
+	xbt_assert(ans.ParseFromFileDescriptor(sock));
+	NOW = ans.clock();
 }
+
 void rsg::Actor::sleep(double duration) {
-	rsg_request(p_sock, p_workspace, CMD_SLEEP, duration);
-	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_SLEEP);
+	req.mutable_sleep()->set_duration(duration);
+
+	sendRequest(p_sock, req, ans);
 }
 
 void rsg::Actor::execute(double flops) {
-	rsg_request(p_sock, p_workspace, CMD_EXEC, flops);
-	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_EXEC);
+	req.mutable_exec()->set_flops(flops);
+
+	sendRequest(p_sock, req, ans);
 }
 
 void rsg::Actor::send(Mailbox *mailbox, const char*content) {
-	rsg_request(p_sock, p_workspace, CMD_SEND, mailbox->getRemote(), content);
-	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_SEND);
+	req.mutable_send()->set_mbox((google::protobuf::uint64)mailbox);
+	req.mutable_send()->set_content(xbt_strdup(content));
+
+	sendRequest(p_sock, req, ans);
 }
 char *rsg::Actor::recv(Mailbox *mailbox) {
-	char *content;
-	rsg_request(p_sock, p_workspace, CMD_RECV, mailbox->getRemote(), &content);
-	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_RECV);
+	req.mutable_recv()->set_mbox((google::protobuf::uint64)mailbox);
+
+	sendRequest(p_sock, req, ans);
+	char *content = (char*)ans.recv().content().c_str();
 	return content;
 }
 
 void rsg::Actor::quit(void) {
-	rsg_request(p_sock, p_workspace, CMD_QUIT);
-	XBT_VERB("Answer: >>%s<<",p_workspace->buffer);
-	rsg_parsespace_free(p_workspace);
-	p_workspace=NULL;
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_QUIT);
 }
