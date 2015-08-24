@@ -12,17 +12,29 @@
 namespace simgrid {
 namespace rsg {
 
+class Actor;
+class Mailbox;
+
+class Request;
+class Answer;
+
 class Engine {
+	friend Actor;
+	friend Mailbox;
 private:
-	Engine(){}
+	Engine();
 
 public:
 	/* Retrieve your representative in the remote SimGrid world */
-	static Engine *getInstance();
+	static Engine &getInstance();
 	/* Must be called by any new thread that wants a simulation representative */
 	// static Rsg *createProcess(); FIXME: TODO
 
+protected:
+	void sendRequest(rsg::Request &req, rsg::Answer &ans);
+
 private:
+	int p_sock = -1;
 	static Engine *p_instance; // That class is a singleton in each remote application. FIXME: must be thread-local
 };
 

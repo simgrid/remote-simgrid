@@ -32,9 +32,6 @@ public:
 
 private:
 	static Actor *p_self;
-
-	/* To exchange data with the central server */
-	int p_sock=-1;
 };
 }} // namespace simgrid::rsg
 

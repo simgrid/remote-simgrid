@@ -7,6 +7,7 @@
 #include <xbt/log.h>
 
 #include "rsg/mailbox.hpp"
+#include "rsg/engine.hpp"
 #include "../rsg.pb.h"
 
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
@@ -24,8 +25,6 @@ rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 	mailboxes->insert({name, this});
 }
 
-extern void sendRequest(int sock, rsg::Request &req, rsg::Answer &ans);
-
 rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	try {
@@ -36,7 +35,7 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 		req.set_type(rsg::CMD_MB_CREATE);
 		req.mutable_mbcreate()->set_name(name);
 
-		sendRequest(Actor::self().p_sock, req, ans);
+		rsg::Engine::getInstance().sendRequest(req, ans);
 
 		unsigned long int remoteAddr = ans.mbcreate().remoteaddr();
 		ans.Clear();
