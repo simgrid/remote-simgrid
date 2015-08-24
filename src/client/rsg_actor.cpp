@@ -78,5 +78,6 @@ void rsg::Actor::quit(void) {
 	req.set_type(rsg::CMD_QUIT);
 	Engine::getInstance().sendRequest(req,ans);
 	ans.Clear();
+	Engine::getInstance().shutdown();
 	google::protobuf::ShutdownProtobufLibrary();
 }

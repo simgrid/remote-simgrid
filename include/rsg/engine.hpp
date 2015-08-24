@@ -25,8 +25,13 @@ private:
 	Engine();
 
 public:
-	/* Retrieve your representative in the remote SimGrid world */
+	/** Retrieve your representative in the remote SimGrid world */
 	static Engine &getInstance();
+
+protected:
+	/** Shutdown the stub after use. Done automatically on Actor::quit() */
+	void shutdown();
+
 	/* Must be called by any new thread that wants a simulation representative */
 	// static Rsg *createProcess(); FIXME: TODO
 

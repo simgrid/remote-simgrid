@@ -14,6 +14,7 @@ namespace simgrid {
 namespace rsg {
 
 class Comm;
+class Engine;
 
 /** @brief Mailboxes
  *
@@ -24,11 +25,12 @@ class Comm;
  */
 class Mailbox {
 	friend Comm;
+	friend Engine;
 
 private:
 	Mailbox(const char*name, unsigned long int remoteAddr);
 public:
-	~Mailbox();
+	~Mailbox() {}
 	
 //protected:
 	unsigned long int getRemote() { return p_remoteAddr; }
@@ -37,6 +39,8 @@ public:
 	/** Retrieve the mailbox associated to the given string */
 	static Mailbox *byName(const char *name);
 
+protected:
+	static void shutdown(); /* clean all globals */
 private:
 	std::string p_name;
 	unsigned long int p_remoteAddr = 0;

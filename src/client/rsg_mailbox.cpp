@@ -43,3 +43,8 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	}
 	return res;
 }
+
+void rsg::Mailbox::shutdown() {
+	rsg::Mailbox::mailboxes->clear();
+	delete rsg::Mailbox::mailboxes;
+}

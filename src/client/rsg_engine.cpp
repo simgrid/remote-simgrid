@@ -3,7 +3,10 @@
 /* This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
+#include "unistd.h"
+
 #include "rsg/engine.hpp"
+#include "rsg/mailbox.hpp"
 #include "../rsg/socket.hpp"
 #include "../rsg.pb.h"
 
@@ -19,6 +22,11 @@ rsg::Engine::Engine() {
 		xbt_die("RSG_PORT not set. Did you launch this binary through rsg as expected?");
 	int port = atoi(strport);
 	p_sock = rsg_sock_connect(port);
+}
+
+void rsg::Engine::shutdown() {
+	close(p_sock);
+	rsg::Mailbox::shutdown();
 }
 
 rsg::Engine *rsg::Engine::p_instance = NULL;
