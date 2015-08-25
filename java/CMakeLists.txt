@@ -22,8 +22,11 @@ ADD_CUSTOM_COMMAND(
 # 	DEPENDS ${CMAKE_SOURCE_DIR}/java/dumbClient.java
 
 set(JAVA_SOURCE
+    org/simgrid/rsg/Actor.java
+    org/simgrid/rsg/Engine.java
+    org/simgrid/rsg/Mailbox.java
     org/simgrid/rsg/Rsg.java
-    org/simgrid/rsg/Engine.java)
+)
     
 
 add_jar(jrsg ${JAVA_SOURCE}
