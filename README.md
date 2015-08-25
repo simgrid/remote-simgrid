@@ -16,8 +16,8 @@ distributed application or infrastructure !
 ## Current State
 
 SimGrid is a strong and mature framework to study distributed
-algorithms or applications. Remote SimGrid is currently under heavy
-development. It is expected to be usable in production by the end of
+algorithms or applications. Remote SimGrid is usable but still lacking
+some features. It is expected to be usable in production by the end of
 the year (2015).
 
 ## Contact and Licence 
@@ -29,6 +29,32 @@ SimGrid is released under LGPL while RemoteSimGrid is released under
 the GNU Affero Licence. Please see the source packages for more
 information.
 
-## Build dependencies
+## Installing Remote-Simgrid 
 
-- SimGrid       -- http://simgrid.org/ (which in turn depends on Boost)
+- Install [ProtoBuf](https://developers.google.com/protocol-buffers/) (version 2, the stable one)
+```
+# Get it from the official Debian/Ubuntu packages
+sudo apt-get install libprotobuf-dev libprotobuf-java protobuf-compiler
+# Or get it from source and compile it manually
+```
+- Install the S4U branch of [SimGrid](http://simgrid.org/) (which in
+  turn depends on Boost). S4U is a preview of the future SimGrid v4.
+```
+# Fetch the S4U branch
+git clone https://github.com/mquinson/simgrid.git --branch S4U --depth 1
+cd simgrid
+
+# Configure it
+cmake -Denable_documentation=OFF -Denable_smpi=off -DCMAKE_INSTALL_PREFIX=/opt/simgrid .
+
+# Build and install it into /opt (change CMAKE_INSTALL_PREFIX to install elsewhere)
+make install
+```
+
+- And then compile remote-simgrid:
+```
+cmake -DSimGrid_PATH=/opt/simgrid -DCMAKE_INSTALL_PREFIX=/opt/rsg .
+make
+```
+
+There is no way to properly install the soft yet :(
