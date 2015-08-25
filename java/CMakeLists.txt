@@ -10,6 +10,7 @@ set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
 
 ADD_CUSTOM_COMMAND(
 	OUTPUT org/simgrid/rsg/Rsg.java
+	DEPENDS ${CMAKE_SOURCE_DIR}/src/rsg.proto
 	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/src --java_out=. ${CMAKE_SOURCE_DIR}/src/rsg.proto
 )
 

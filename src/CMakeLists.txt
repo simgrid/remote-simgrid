@@ -5,6 +5,7 @@
 
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.pb.h ${CMAKE_BINARY_DIR}/src/rsg.pb.cc
+	DEPENDS ${CMAKE_SOURCE_DIR}/src/rsg.proto
 	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/src --cpp_out=. ${CMAKE_SOURCE_DIR}/src/rsg.proto
 )
 
