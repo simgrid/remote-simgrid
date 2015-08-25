@@ -5,8 +5,8 @@
 
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.pb.h ${CMAKE_BINARY_DIR}/src/rsg.pb.cc
-	DEPENDS ${CMAKE_SOURCE_DIR}/src/rsg.proto
-	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/src --cpp_out=. ${CMAKE_SOURCE_DIR}/src/rsg.proto
+	DEPENDS ${CMAKE_SOURCE_DIR}/proto/rsg.proto
+	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/proto --cpp_out=. ${CMAKE_SOURCE_DIR}/proto/rsg.proto
 )
 
 set(COMMON_SOURCES

@@ -25,7 +25,9 @@ message Request {
   // Send request
   message SendRequest { 
     required uint64 mbox = 1;
-    required string content = 2;
+    required bytes content = 2;
+    required uint64 contentSize = 3;
+    optional uint64 simulatedSize = 4 [default = 0];
   }
   optional SendRequest send = 3;
 
@@ -47,7 +49,10 @@ message Answer {
   // Sleep request: no returned type
   // Exec request: no returned type
   // Send request: no returned type
-  message RecvAnswer { required string content = 1; }
+  message RecvAnswer { 
+  	required bytes content = 1;
+  	required uint64 contentSize = 2;
+  }
   optional RecvAnswer recv = 4;
   
   message MBCreateAnswer { required uint64 remoteAddr = 1; }
