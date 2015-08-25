@@ -6,9 +6,11 @@
 #include <stdio.h>
 #include <rsg/actor.hpp>
 
+using namespace simgrid::rsg;
+
 int main(int argc, char **argv) {
-	simgrid::rsg::Actor &self = simgrid::rsg::Actor::self();
-	simgrid::rsg::Mailbox *mbox = simgrid::rsg::Mailbox::byName("toto");
+	Actor &self = sActor::self();
+	Mailbox *mbox = Mailbox::byName("toto");
 
 	char * msg = self.recv(mbox);
 	fprintf(stderr, "Server: Received message: '%s'\n",msg);
