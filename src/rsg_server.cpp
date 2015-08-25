@@ -59,7 +59,7 @@ static int rsg_representative(int argc, char **argv) {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.send().mbox();
 			char *content = (char*)request.send().content().c_str();
 			XBT_INFO("send(%s,%s)",mbox->getName(),content);
-			self->send(*mbox, xbt_strdup(content), strlen(content));
+			self->send(*mbox, xbt_strdup(content), request.send().simulatedsize());
 			break;
 		}
 		case simgrid::rsg::CMD_RECV: {
@@ -68,6 +68,7 @@ static int rsg_representative(int argc, char **argv) {
 			char *content = (char*)self->recv(*mbox);
 			XBT_INFO("recv(%s) ~> %s",mbox->getName(), content);
 			ans.mutable_recv()->set_content((const char*)content);
+			ans.mutable_recv()->set_contentsize(strlen(content));
 			free(content);
 			break;
 		}

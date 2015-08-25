@@ -51,11 +51,16 @@ void rsg::Actor::execute(double flops) {
 }
 
 void rsg::Actor::send(Mailbox *mailbox, const char*content) {
+	send(mailbox,content, strlen(content)+1);
+}
+void rsg::Actor::send(Mailbox *mailbox, const char*content, int simulatedSize) {
 	rsg::Request req;
 	rsg::Answer ans;
 	req.set_type(rsg::CMD_SEND);
 	req.mutable_send()->set_mbox(mailbox->getRemote());
 	req.mutable_send()->set_content(content);
+	req.mutable_send()->set_contentsize(strlen(content)+1);
+	req.mutable_send()->set_simulatedsize(simulatedSize);
 
 	Engine::getInstance().sendRequest(req, ans);
 	ans.Clear();

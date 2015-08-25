@@ -25,6 +25,7 @@ public:
 	void execute(double flops);
 	void quit();
 	void send(Mailbox *mailbox, const char*content);
+	void send(Mailbox *mailbox, const char*content, int simulatedSize);
 	char *recv(Mailbox *mailbox);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */

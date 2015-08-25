@@ -1,5 +1,7 @@
 package org.simgrid.rsg;
 
+import com.google.protobuf.ByteString;
+
 public class Actor {
 	private Actor() {
 		
@@ -33,14 +35,20 @@ public class Actor {
 				.build();
 		Engine.getInstance().sendRequest(req);
 	}
-	public void send(Mailbox mailbox, String content) {
+	public void send(Mailbox mailbox, String content, int simulatedSize) {
+		ByteString bs = ByteString.copyFrom(content.getBytes());
 		Rsg.Request req = Rsg.Request.newBuilder()
 				.setType(Rsg.Type.CMD_SEND)
 				.setSend(Rsg.Request.SendRequest.newBuilder()
 						.setMbox(mailbox.getRemoteAddr())
-						.setContent(content))
+						.setContent(bs)
+						.setContentSize(content.length())
+						.setSimulatedSize(simulatedSize))
 				.build();
 		Engine.getInstance().sendRequest(req);
+	}
+	public void send(Mailbox mailbox, String content) {
+		send(mailbox,content, content.length());
 	}
 	public String recv(Mailbox mailbox) {
 		Rsg.Request req = Rsg.Request.newBuilder()
@@ -50,6 +58,6 @@ public class Actor {
 				.build();
 		Rsg.Answer ans = Engine.getInstance().sendRequest(req);
 		
-		return ans.getRecv().getContent();
+		return new String(ans.getRecv().getContent().toByteArray());
 	}
 }

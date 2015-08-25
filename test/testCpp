@@ -1,4 +1,4 @@
 make dumb_server
 make dumb_client
 make -C ../src rsg_server
-valgrind ../src/rsg_server two_hosts_platform.xml deploy.xml 9999
+valgrind ../src/rsg_server two_hosts_platform.xml deploy.xml 9997
