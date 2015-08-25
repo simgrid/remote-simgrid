@@ -117,9 +117,10 @@ bool send_message(int socket, ::google::protobuf::Message *message)
   //fprintf(stderr,"send_message: %s (msg len: %d)\n",message->ShortDebugString().c_str(),message_length);
   message->SerializeToCodedStream(&coded_output);
 
-  int sent_bytes = write(socket, buffer, buffer_length);
-  if (sent_bytes != buffer_length) {
-    return false;
+  int sent_bytes = write(socket, buffer,   coded_output.ByteCount());
+  if (sent_bytes != coded_output.ByteCount()) {
+	  fprintf(stderr,"Sent only %d bytes out of the %d waiting",sent_bytes,coded_output.ByteCount());
+	  return false;
   }
 
   return true;
@@ -137,12 +138,15 @@ bool recv_message(int socket, ::google::protobuf::Message *message)
   google::protobuf::io::ArrayInputStream array_prefix(prefix, prefix_length);
   google::protobuf::io::CodedInputStream coded_prefix(&array_prefix);
   coded_prefix.ReadLittleEndian32(&message_length);
+  xbt_assert (message_length < 64 * 1024*1024,
+		  "Received a message of announced size %d. That's too much, giving up.", message_length);
 
-  google::protobuf::uint8 buffer[message_length];
-  google::protobuf::uint32 got;
+  char buffer[message_length];
+  size_t got;
+
   if (message_length != (got = read(socket, buffer, message_length))) {
-	  fprintf(stderr,"Got %d bytes instead of the %d expected ones\n",got, message_length);
-    return false;
+	  fprintf(stderr,"Got %lu bytes instead of the %d expected ones\n",got, message_length);
+      return false;
   }
   //fprintf(stderr,"I got the %d bytes that I was expecting\n",got);
   google::protobuf::io::ArrayInputStream array_input(buffer, message_length);
@@ -151,11 +155,11 @@ bool recv_message(int socket, ::google::protobuf::Message *message)
   if (!message->ParseFromCodedStream(&coded_input)) {
     return false;
   }
-
+  //fprintf(stderr,"msg: %s\n",message->ShortDebugString().c_str());
   return true;
 }
 
 // http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
 // http://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
 // http://stackoverflow.com/questions/11640864/length-prefix-for-protobuf-messages-in-c
-
+// http://stackoverflow.com/questions/5670765/cannot-deserialize-protobuf-data-from-c-in-java

@@ -3,12 +3,6 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
-# gRPC is not suited as we have to have several servers in the same process
-# ADD_CUSTOM_COMMAND(
-#	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.grpc.pb.h ${CMAKE_BINARY_DIR}/src/rsg.grpc.pb.cc
-#	COMMAND ${CMAKE_BINARY_DIR}/opt/protobuf3/bin/protoc --grpc_out=. --plugin=protoc-gen-grpc=${CMAKE_BINARY_DIR}/opt/grpc/bin/grpc_cpp_plugin rsg.proto
-#)
-
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.pb.h ${CMAKE_BINARY_DIR}/src/rsg.pb.cc
 	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/src --cpp_out=. ${CMAKE_SOURCE_DIR}/src/rsg.proto

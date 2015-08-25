@@ -3,7 +3,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.10)
 project (RemoteSimGrid C CXX)
 
 ## We need a decent support of the c++11 standard
@@ -43,4 +43,5 @@ set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
 include_directories(include)
 
 add_subdirectory(src)
+add_subdirectory(java)
 add_subdirectory(test)
