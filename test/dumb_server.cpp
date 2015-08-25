@@ -9,7 +9,7 @@
 using namespace simgrid::rsg;
 
 int main(int argc, char **argv) {
-	Actor &self = sActor::self();
+	Actor &self = Actor::self();
 	Mailbox *mbox = Mailbox::byName("toto");
 
 	char * msg = self.recv(mbox);
