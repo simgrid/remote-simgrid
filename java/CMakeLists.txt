@@ -27,6 +27,7 @@ set(JAVA_SOURCE
 
 add_jar(jrsg ${JAVA_SOURCE}
         INCLUDE_JARS /usr/share/java/protobuf.jar)
+add_custom_target(jrsg_jar ALL DEPENDS ${JAVA_SOURCE})
 
 get_target_property(_jarFile jrsg JAR_FILE)
 get_target_property(_classDir jrsg CLASSDIR)
