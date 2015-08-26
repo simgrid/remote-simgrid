@@ -45,7 +45,7 @@ public class Engine {
 	}
 	static private Engine instance;
 	static public Engine getInstance() {
-		// TODO: make it thread-specific
+		// TODO: make it thread-specific: http://stackoverflow.com/questions/14959295/threadlocal-singleton
 		if (instance == null) {
 			instance = new Engine();
 		}
