@@ -17,17 +17,16 @@ int serverPort;
 #include "rsg/socket.hpp"
 #include "rsg.pb.h"
 
-static int rsg_representative(int argc, char **argv) {
-
+/* Serves a remote process (connected onto mysock), until a CMD_QUIT message is received */
+static void representative_loop(int mysock) {
 	simgrid::rsg::Request request;
-	XBT_VERB("Launching %s",argv[1]);
+	// TODO: recv_message(Register): The client will send a Register message declaring its identity
 
-	if (! fork()) {
-		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
-		putenv(bprintf("RSG_PORT=%d",serverPort));
-		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
-	}
-	int mysock = rsg_sock_accept(serverSocket);
+	// TODO: We should somehow assert that the RSG_HOST sent by the remote host is the one that I just passed by environment variable
+	// TODO: On mismatch (ie, if the accepted socket is not from my remote host but another,
+	// TODO:      we should move to the host that the representative thinks it is on.
+ 	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
+	// TODO: Another representative will take care of my remote (and move back to this host)
 
 	s4u::Actor *self = s4u::Actor::current();
 
@@ -38,6 +37,7 @@ static int rsg_representative(int argc, char **argv) {
 
 		XBT_VERB("Wait for incoming data on fd %d",mysock);
 
+		rsg_sock_maybeaccept(serverSocket);// if non-blocking accept retrieves something, start a new relative for the incoming process
 		if (!recv_message(mysock, &request))
 			xbt_die("Cannot receive message!");
 		XBT_VERB("Got a message of type %d: %s", request.type(), request.ShortDebugString().c_str());
@@ -95,6 +95,23 @@ static int rsg_representative(int argc, char **argv) {
 		ans.Clear();
 	}
 
+}
+
+/* Fork a remote process, and serve it until it CMD_QUITs */
+static int rsg_representative(int argc, char **argv) {
+
+	XBT_VERB("Launching %s",argv[1]);
+
+	if (! fork()) {
+		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
+		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->getName()));
+		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::current()->getName()));
+		putenv(bprintf("RSG_PORT=%d",serverPort));
+		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
+	}
+	int mysock = rsg_sock_accept(serverSocket);
+
+	representative_loop(mysock);
 	return 0;
 }
 

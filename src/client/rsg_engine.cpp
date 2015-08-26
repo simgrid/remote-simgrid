@@ -22,6 +22,7 @@ rsg::Engine::Engine() {
 		xbt_die("RSG_PORT not set. Did you launch this binary through rsg as expected?");
 	int port = atoi(strport);
 	p_sock = rsg_sock_connect(port);
+	//TODO: sendRequest(Register). Send a register message to tell our identity (pid+tid) to the server
 }
 
 void rsg::Engine::shutdown() {
@@ -29,13 +30,16 @@ void rsg::Engine::shutdown() {
 	rsg::Mailbox::shutdown();
 }
 
+
 rsg::Engine *rsg::Engine::p_instance = NULL;
 rsg::Engine &rsg::Engine::getInstance() {
+	// TODO: make it thread-specific
 	if (p_instance == NULL) {
-		p_instance = new Engine();
 		// Verify that the version of the library that we linked against is
 		// compatible with the version of the headers we compiled against.
 		GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+		p_instance = new Engine();
 	}
 	return *p_instance;
 }

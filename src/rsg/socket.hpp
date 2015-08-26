@@ -14,6 +14,7 @@ SG_BEGIN_DECL();
 
 int rsg_createServerSocket(int port);
 int rsg_sock_accept(int serverSocket);
+void rsg_sock_maybeaccept(int serverSocket);
 int rsg_sock_connect(int port);
 
 bool recv_message(int socket, ::google::protobuf::Message *message);

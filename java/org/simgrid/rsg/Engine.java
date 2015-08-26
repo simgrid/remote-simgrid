@@ -29,6 +29,7 @@ public class Engine {
 			mysock = new Socket("127.0.0.1", port);
 			out = mysock.getOutputStream();
 			in = mysock.getInputStream();
+			//TODO: sendRequest(Register). Send a register message to tell our identity (pid+tid) and RSG_HOST to the server
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot connect back to the server on port "+port, e);
 		}
@@ -44,12 +45,17 @@ public class Engine {
 	}
 	static private Engine instance;
 	static public Engine getInstance() {
+		// TODO: make it thread-specific
 		if (instance == null) {
 			instance = new Engine();
 		}
 		return instance;
 	}
 
+	/** Exchange a Request/Answer with the server 
+	 * This is protobuf with our own framing. I did not manage to reuse the Java framing of sendDelimMessage() from the C++ POV.
+	 * See function socket.cpp::send_message() for more information.
+	 * */
 	public Answer sendRequest(Request req) {
 		Answer ret;
 		try {

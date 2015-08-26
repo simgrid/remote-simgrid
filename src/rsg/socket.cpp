@@ -17,13 +17,14 @@
 #include <netdb.h>
 #include <errno.h>
 #include <time.h>
+#include <fcntl.h>
 
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 #include <google/protobuf/io/coded_stream.h>
 
 #include <xbt.h>
 
-
+/** Called by the server before running the simulation. All remote processes will connect to that socket */
 int rsg_createServerSocket(int port) {
 	int res;
 	//fprintf(stderr,"%d: Create a RSG server on %d\n",getpid(),port);
@@ -44,6 +45,11 @@ int rsg_createServerSocket(int port) {
 		exit(1);
 	}
 
+	int flags = fcntl(res, F_GETFL, 0);
+	xbt_assert(flags>=0,"fcntl(GET) on the server socket failed: %s", strerror(errno));
+	flags = flags|O_NONBLOCK;
+	xbt_assert(fcntl(res, F_SETFL, flags) == 0, "fcntl(SET) on the server socket failed: %s",strerror(errno));
+
 	if (bind(res, (struct sockaddr *) serv_addr, sizeof(struct sockaddr_in)) < 0) {
 		perror("Server: error bind");
 		exit(1);
@@ -56,13 +62,44 @@ int rsg_createServerSocket(int port) {
 	return res;
 }
 
+/** Called regularly by the representatives on the server to see whether an unexpected remote process wants to connect to us.
+ *
+ * This will happen when a new thread is created in one of the remote process, demanding the creation of a corresponding representative
+ */
+void rsg_sock_maybeaccept(int serverSocket) {
+	int res;
+	int clilen = sizeof(struct sockaddr_in);
+	struct sockaddr_in cli_addr;
+
+	res = accept(serverSocket, (struct sockaddr *) &cli_addr, (socklen_t *) &clilen);
+	if (res < 0) {
+		if (errno != EAGAIN && errno != EWOULDBLOCK) {
+			perror("Server: error accepting real message");
+			exit(1);
+		}
+		return; // Nobody knocking on our door
+	}
+	xbt_die("TODO: implement serving unexpected remotes, probably calling representative_loop() on the new socket");
+}
+
+/** Called by the representative on the server side on start to get the connection from the remote process that it will serve */
 int rsg_sock_accept(int serverSocket) {
 	int res;
+	bool again = true;
 
 	int clilen = sizeof(struct sockaddr_in);
 	struct sockaddr_in *cli_addr = (struct sockaddr_in *) malloc(sizeof(struct sockaddr_in));
 
-	if ((res = accept(serverSocket, (struct sockaddr *) cli_addr, (socklen_t *) & clilen)) < 0) {
+	while (again) {
+		res = accept(serverSocket, (struct sockaddr *) cli_addr, (socklen_t *) & clilen);
+		if ((res<0 && ((errno == EAGAIN) || (errno == EWOULDBLOCK)))) {
+			xbt_os_sleep(0.01);
+		} else {
+			again=false;
+		}
+	}
+
+	if (res < 0) {
 		perror("Server: error accepting real message");
 		exit(1);
 	}
@@ -71,6 +108,7 @@ int rsg_sock_accept(int serverSocket) {
 	return res;
 }
 
+/** Called by the remote process when using CPP to connect back to the server */
 int rsg_sock_connect(int port) {
 	/* get host info by name :*/
 	struct  hostent *hp;
@@ -102,6 +140,15 @@ int rsg_sock_connect(int port) {
 	return sock;
 }
 
+/** Send the protobuff message on the socket, framing it correctly.
+ * Used by both server and remote processes.
+ * If you change this, you need to adapt the framing in the Java code, too.
+ *
+ * http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
+ * http://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
+ * http://stackoverflow.com/questions/11640864/length-prefix-for-protobuf-messages-in-c
+ * http://stackoverflow.com/questions/5670765/cannot-deserialize-protobuf-data-from-c-in-java
+ */
 bool send_message(int socket, ::google::protobuf::Message *message)
 {
   google::protobuf::uint32 message_length = message->ByteSize();
@@ -126,6 +173,7 @@ bool send_message(int socket, ::google::protobuf::Message *message)
   return true;
 }
 
+/** Used by both server and remote processes */
 bool recv_message(int socket, ::google::protobuf::Message *message)
 {
   google::protobuf::uint32 message_length;
@@ -159,7 +207,3 @@ bool recv_message(int socket, ::google::protobuf::Message *message)
   return true;
 }
 
-// http://stackoverflow.com/questions/9496101/protocol-buffer-over-socket-in-c
-// http://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
-// http://stackoverflow.com/questions/11640864/length-prefix-for-protobuf-messages-in-c
-// http://stackoverflow.com/questions/5670765/cannot-deserialize-protobuf-data-from-c-in-java
