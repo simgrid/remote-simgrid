@@ -1,8 +1,0 @@
-#! /bin/bash
-set -ex
-
-make jrsg
-CLASSPATH=jrsg.jar:/usr/share/java/protobuf.jar:. javac dumbClient.java
-make -C ../src
-make -C ../test dumb_server
-valgrind ../src/rsg_server ../test/two_hosts_platform.xml deploy_java.xml 9995
