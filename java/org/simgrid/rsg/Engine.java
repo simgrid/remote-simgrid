@@ -10,7 +10,6 @@ import org.simgrid.rsg.Rsg.Request;
 
 import com.google.protobuf.CodedInputStream;
 import com.google.protobuf.CodedOutputStream;
-import com.google.protobuf.TextFormat;
 
 public class Engine {
 	private Socket mysock;

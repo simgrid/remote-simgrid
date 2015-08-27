@@ -15,7 +15,7 @@ public class dumbClient {
 					self.execute(8095000000.);
 				}
 			};
-			t.run();
+			t.start();
 		}
 
 		// A regular client doing some communications

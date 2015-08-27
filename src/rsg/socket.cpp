@@ -148,6 +148,8 @@ int rsg_sock_connect(int port) {
  * http://stackoverflow.com/questions/2340730/are-there-c-equivalents-for-the-protocol-buffers-delimited-i-o-functions-in-ja
  * http://stackoverflow.com/questions/11640864/length-prefix-for-protobuf-messages-in-c
  * http://stackoverflow.com/questions/5670765/cannot-deserialize-protobuf-data-from-c-in-java
+ *
+ * http://java-performance.info/protobuf-data-encoding-for-numeric-datatypes/ (explains the wire protocol a bit)
  */
 bool send_message(int socket, ::google::protobuf::Message *message)
 {
