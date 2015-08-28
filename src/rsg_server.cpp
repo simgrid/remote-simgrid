@@ -104,7 +104,7 @@ static int rsg_representative(int argc, char **argv) {
 
 	if (! fork()) {
 		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
-		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->getName()));
+		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->name()));
 		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::current()->getName()));
 		putenv(bprintf("RSG_PORT=%d",serverPort));
 		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
