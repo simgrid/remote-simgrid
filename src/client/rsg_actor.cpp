@@ -7,7 +7,7 @@
 #include "rsg/actor.hpp"
 #include "rsg/engine.hpp"
 
-#include "../rsg.pb.h"
+#include "rsg.pb.h"
 
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");

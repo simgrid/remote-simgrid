@@ -8,7 +8,7 @@
 
 #include "rsg/mailbox.hpp"
 #include "rsg/engine.hpp"
-#include "../rsg.pb.h"
+#include "rsg.pb.h"
 
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL,RSG,"RSG Communication Mailboxes");
