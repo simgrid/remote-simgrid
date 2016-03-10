@@ -24,12 +24,13 @@ public:
 	void sleep(double duration);
 	void execute(double flops);
 	void quit();
-	void send(Mailbox *mailbox, const char*content);
-	void send(Mailbox *mailbox, const char*content, int simulatedSize);
-	char *recv(Mailbox *mailbox);
+	void kill() {this->quit();}
+	void send(Mailbox &mailbox, const char*content);
+	void send(Mailbox &mailbox, const char*content, int simulatedSize);
+	char *recv(Mailbox &mailbox);
 
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Actor &self();
+	static Actor *current();
 
 private:
 	static Actor *p_self;
