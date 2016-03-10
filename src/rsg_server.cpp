@@ -33,7 +33,6 @@ static void representative_loop(int mysock) {
 	bool done = false;
 	while (!done) {
 		simgrid::rsg::Answer ans;
-		ans.set_type(request.type());
 
 		XBT_VERB("Wait for incoming data on fd %d",mysock);
 
@@ -41,6 +40,8 @@ static void representative_loop(int mysock) {
 		if (!recv_message(mysock, &request))
 			xbt_die("Cannot receive message!");
 		XBT_VERB("Got a message of type %d: %s", request.type(), request.ShortDebugString().c_str());
+
+		ans.set_type(request.type());
 
 		switch (request.type()) {
 		case simgrid::rsg::CMD_SLEEP: {

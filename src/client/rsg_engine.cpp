@@ -49,9 +49,12 @@ extern double NOW;
 
 void rsg::Engine::sendRequest(rsg::Request &req, rsg::Answer &ans) {
 	//fprintf(stderr, "Actor sends a request %d: %s\n",req.type(),req.ShortDebugString().c_str());
+	::simgrid::rsg::Type reqtype = req.type();
 	xbt_assert(send_message(p_sock, &req));
 	req.Clear();
 
 	xbt_assert(recv_message(p_sock, &ans));
 	NOW = ans.clock();
+
+	xbt_assert(reqtype == ans.type());
 }
