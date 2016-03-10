@@ -25,12 +25,6 @@ rsg::Engine::Engine() {
 	//TODO: sendRequest(Register). Send a register message to tell our identity (pid+tid) to the server
 }
 
-void rsg::Engine::shutdown() {
-	close(p_sock);
-	rsg::Mailbox::shutdown();
-}
-
-
 rsg::Engine *rsg::Engine::p_instance = NULL;
 rsg::Engine &rsg::Engine::getInstance() {
 	// TODO: make it thread-specific
@@ -44,14 +38,21 @@ rsg::Engine &rsg::Engine::getInstance() {
 	return *p_instance;
 }
 
+void rsg::Engine::shutdown() {
+	close(p_sock);
+	rsg::Mailbox::shutdown();
+}
 
 extern double NOW;
 
 void rsg::Engine::sendRequest(rsg::Request &req, rsg::Answer &ans) {
 	//fprintf(stderr, "Actor sends a request %d: %s\n",req.type(),req.ShortDebugString().c_str());
+	::simgrid::rsg::Type reqtype = req.type();
 	xbt_assert(send_message(p_sock, &req));
 	req.Clear();
 
 	xbt_assert(recv_message(p_sock, &ans));
 	NOW = ans.clock();
+
+	xbt_assert(reqtype == ans.type());
 }

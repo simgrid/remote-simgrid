@@ -20,14 +20,24 @@ rsg::Actor *rsg::Actor::p_self = NULL;
 rsg::Actor::Actor() {
 }
 
-rsg::Actor &rsg::Actor::self() {
+rsg::Actor *rsg::Actor::current() {
 	if (p_self == NULL) {
 		p_self = new Actor();
 		// Verify that the version of the library that we linked against is
 		// compatible with the version of the headers we compiled against.
 		GOOGLE_PROTOBUF_VERIFY_VERSION;
 	}
-	return *p_self;
+	return p_self;
+}
+
+void rsg::Actor::quit(void) {
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_QUIT);
+	Engine::getInstance().sendRequest(req,ans);
+	ans.Clear();
+	Engine::getInstance().shutdown();
+	google::protobuf::ShutdownProtobufLibrary();
 }
 
 void rsg::Actor::sleep(double duration) {
@@ -50,26 +60,11 @@ void rsg::Actor::execute(double flops) {
 	ans.Clear();
 }
 
-void rsg::Actor::send(Mailbox *mailbox, const char*content) {
-	send(mailbox,content, strlen(content)+1);
-}
-void rsg::Actor::send(Mailbox *mailbox, const char*content, int simulatedSize) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_SEND);
-	req.mutable_send()->set_mbox(mailbox->getRemote());
-	req.mutable_send()->set_content(content);
-	req.mutable_send()->set_contentsize(strlen(content)+1);
-	req.mutable_send()->set_simulatedsize(simulatedSize);
-
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
-}
-char *rsg::Actor::recv(Mailbox *mailbox) {
+char *rsg::Actor::recv(Mailbox &mailbox) {
 	rsg::Request req;
 	rsg::Answer ans;
 	req.set_type(rsg::CMD_RECV);
-	req.mutable_recv()->set_mbox(mailbox->getRemote());
+	req.mutable_recv()->set_mbox(mailbox.getRemote());
 
 	Engine::getInstance().sendRequest(req, ans);
 	char *content = xbt_strdup(ans.recv().content().c_str());
@@ -77,12 +72,19 @@ char *rsg::Actor::recv(Mailbox *mailbox) {
 	return content;
 }
 
-void rsg::Actor::quit(void) {
+void rsg::Actor::send(Mailbox &mailbox, const char*content) {
+	send(mailbox,content, strlen(content)+1);
+}
+
+void rsg::Actor::send(Mailbox &mailbox, const char*content, int simulatedSize) {
 	rsg::Request req;
 	rsg::Answer ans;
-	req.set_type(rsg::CMD_QUIT);
-	Engine::getInstance().sendRequest(req,ans);
+	req.set_type(rsg::CMD_SEND);
+	req.mutable_send()->set_mbox(mailbox.getRemote());
+	req.mutable_send()->set_content(content);
+	req.mutable_send()->set_contentsize(strlen(content)+1);
+	req.mutable_send()->set_simulatedsize(simulatedSize);
+
+	Engine::getInstance().sendRequest(req, ans);
 	ans.Clear();
-	Engine::getInstance().shutdown();
-	google::protobuf::ShutdownProtobufLibrary();
 }

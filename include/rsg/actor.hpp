@@ -21,15 +21,16 @@ class Actor {
 private:
 	Actor();
 public:
+	/** Retrieves an instance of your representative in the remote SimGrid world */
+	static Actor *current();
+
+	void quit();
+	void kill() {this->quit();}
 	void sleep(double duration);
 	void execute(double flops);
-	void quit();
-	void send(Mailbox *mailbox, const char*content);
-	void send(Mailbox *mailbox, const char*content, int simulatedSize);
-	char *recv(Mailbox *mailbox);
-
-	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Actor &self();
+	char *recv(Mailbox &mailbox);
+	void send(Mailbox &mailbox, const char*content);
+	void send(Mailbox &mailbox, const char*content, int simulatedSize);
 
 private:
 	static Actor *p_self;
