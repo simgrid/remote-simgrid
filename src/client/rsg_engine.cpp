@@ -8,7 +8,7 @@
 #include "rsg/engine.hpp"
 #include "rsg/mailbox.hpp"
 #include "../rsg/socket.hpp"
-#include "../rsg.pb.h"
+#include "rsg.pb.h"
 
 #include "xbt/ex.h"
 #include <google/protobuf/stubs/common.h>

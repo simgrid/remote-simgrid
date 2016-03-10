@@ -1,13 +1,13 @@
 <?xml version='1.0'?>
-<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
-<platform version="3">
+<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd">
+<platform version="4">
   <!-- "client" is the name it takes in [the logs of] the SimGrid world
        "./dumb_client" is the command that we have to fork+exec in the real world
    -->
   <process host="host0" function="client">
-     <argument value="valgrind ./dumb_client"/>
+     <argument value="./dumb_client"/>
   </process>
   <process host="host1" function="server">
-     <argument value="valgrind ./dumb_server"/>
+     <argument value="./dumb_server"/>
   </process>
 </platform>

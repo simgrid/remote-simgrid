@@ -35,7 +35,7 @@ include(FindSimGrid.cmake)
 include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 
 # Search for ProtoBuff
-find_package(Protocolbuf)
+find_package(Protobuf REQUIRED)
 
 
 set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")

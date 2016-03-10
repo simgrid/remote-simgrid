@@ -3,17 +3,14 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
-ADD_CUSTOM_COMMAND(
-	OUTPUT ${CMAKE_BINARY_DIR}/src/rsg.pb.h ${CMAKE_BINARY_DIR}/src/rsg.pb.cc
-	DEPENDS ${CMAKE_SOURCE_DIR}/proto/rsg.proto
-	COMMAND protoc -I ${CMAKE_SOURCE_DIR}/proto --cpp_out=. ${CMAKE_SOURCE_DIR}/proto/rsg.proto
-)
+protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${CMAKE_SOURCE_DIR}/proto/rsg.proto)
+include_directories(${PROTOBUF_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(COMMON_SOURCES
     rsg/socket.cpp      rsg/socket.hpp
-    rsg.pb.h            rsg.pb.cc
+    ${PROTO_SRCS}       ${PROTO_HDRS}
 )
-
 
 set(CLIENT_SOURCES
     ${COMMON_SOURCES}
@@ -26,9 +23,9 @@ set(CLIENT_SOURCES
 #include_directories(../opt/protobuf3/include SYSTEM)
 
 add_library(rsg SHARED ${CLIENT_SOURCES})
-target_link_libraries(rsg ${SimGrid_LIBRARY} protobuf)
+target_link_libraries(rsg ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})
 
 add_executable(rsg_server 
                ${COMMON_SOURCES} rsg_server.cpp)
 target_link_libraries(rsg_server 
-                      ${SimGrid_LIBRARY} protobuf)
+                      ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})
