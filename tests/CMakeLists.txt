@@ -1,0 +1,11 @@
+
+
+#cmake don't rebuild executables when you change tests:
+#http://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests
+#(and yes for cmake devs it's a feature, not a bug!)
+#you have to do make;ctest when developping your tests!
+set(TEST_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+
+## Add your new test directories here:
+add_subdirectory(dumb_client)

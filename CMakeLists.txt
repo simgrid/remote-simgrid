@@ -6,13 +6,18 @@
 cmake_minimum_required(VERSION 2.8.10)
 project (RemoteSimGrid C CXX)
 
+set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
+set(EXECUTABLE_OUTPUT_PATH ${RSG_BINARY_DIR})
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/tools/cmake/")
+
 ## We need a decent support of the c++11 standard
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=gnu++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-else() 
-  message(FATAL_ERROR 
+else()
+  message(FATAL_ERROR
           "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. "
           "Please use a decent C++ compiler.")
 endif()
@@ -23,7 +28,7 @@ CHECK_C_COMPILER_FLAG("-std=gnu11" COMPILER_SUPPORTS_C11)
 if(COMPILER_SUPPORTS_C11)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu11")
 else()
-  message(FATAL_ERROR 
+  message(FATAL_ERROR
           "The compiler ${CMAKE_C_COMPILER} has no C11 support. "
 	  "Please use a decent C compiler "
 	  "(note that ${CMAKE_CXX_COMPILER} seems to support c++11).")
@@ -31,7 +36,7 @@ endif()
 
 
 # Search for SimGrid
-include(FindSimGrid.cmake)
+find_package(SimGrid REQUIRED)
 include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 
 # Search for ProtoBuff
@@ -44,4 +49,9 @@ include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(java)
-add_subdirectory(test)
+
+# Enable Testing
+enable_testing()
+add_subdirectory(tools/tesh)
+include(${CMAKE_HOME_DIRECTORY}/tools/cmake/Tests.cmake)
+add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
