@@ -28,6 +28,8 @@ public:
 	/** Retrieve your representative in the remote SimGrid world */
 	static Engine &getInstance();
 
+	static double getClock();
+
 protected:
 	/** Shutdown the stub after use. Done automatically on Actor::quit() */
 	void shutdown();

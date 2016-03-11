@@ -73,6 +73,10 @@ static void representative_loop(int mysock) {
 			free(content);
 			break;
 		}
+		case simgrid::rsg::CMD_ENGINE_GETCLOCK: {
+			XBT_INFO("getClock()");
+			break;
+		}
 		case simgrid::rsg::CMD_MB_CREATE: {
 			const char *name = request.mbcreate().name().c_str();
 			s4u::Mailbox *mbox = s4u::Mailbox::byName(name);
