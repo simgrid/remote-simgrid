@@ -34,7 +34,7 @@ public:
 	
 //protected:
 	unsigned long int getRemote() { return p_remoteAddr; }
-
+	const char * getName() { return p_name.c_str(); }
 public:
 	/** Retrieve the mailbox associated to the given string */
 	static Mailbox *byName(const char *name);

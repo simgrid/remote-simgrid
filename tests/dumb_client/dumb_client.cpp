@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 	self->send(*mbox,"message from client");
 	char * msg = self->recv(*mbox);
 	fprintf(stderr, "Client: Received message: '%s'\n",msg);
+	fprintf(stderr,"mailbox name : %s \n" ,mbox->getName());
 	free(msg);
 
 	self->quit();

@@ -8,5 +8,6 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 > [host1:server:(0) 43.000003] [RSG_SERVER/INFO] quit()
 > [host0:client:(0) 43.000003] [RSG_SERVER/INFO] recv(toto) ~> Message from server
 > Client: Received message: 'Message from server'
+> mailbox name : toto 
 > [host0:client:(0) 43.000003] [RSG_SERVER/INFO] quit()
 > [43.000003] [RSG_SERVER/INFO] Simulation done
