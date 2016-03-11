@@ -25,12 +25,6 @@ rsg::Engine::Engine() {
 	//TODO: sendRequest(Register). Send a register message to tell our identity (pid+tid) to the server
 }
 
-void rsg::Engine::shutdown() {
-	close(p_sock);
-	rsg::Mailbox::shutdown();
-}
-
-
 rsg::Engine *rsg::Engine::p_instance = NULL;
 rsg::Engine &rsg::Engine::getInstance() {
 	// TODO: make it thread-specific
@@ -44,6 +38,10 @@ rsg::Engine &rsg::Engine::getInstance() {
 	return *p_instance;
 }
 
+void rsg::Engine::shutdown() {
+	close(p_sock);
+	rsg::Mailbox::shutdown();
+}
 
 extern double NOW;
 
