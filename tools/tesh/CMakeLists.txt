@@ -1,0 +1,8 @@
+configure_file("${CMAKE_HOME_DIRECTORY}/tools/tesh/tesh.pl"
+  "${CMAKE_BINARY_DIR}/bin/tesh" @ONLY IMMEDIATE)
+
+    file(COPY        ${CMAKE_HOME_DIRECTORY}/tools/cmake/scripts/Diff.pm
+         DESTINATION ${CMAKE_BINARY_DIR}/bin
+         FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ)
+    file(COPY        ${CMAKE_HOME_DIRECTORY}/tools/cmake/scripts/IPC
+         DESTINATION ${CMAKE_BINARY_DIR}/bin)
