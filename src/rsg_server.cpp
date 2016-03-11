@@ -76,7 +76,7 @@ static void representative_loop(int mysock) {
 		case simgrid::rsg::CMD_MB_CREATE: {
 			const char *name = request.mbcreate().name().c_str();
 			s4u::Mailbox *mbox = s4u::Mailbox::byName(name);
-			XBT_INFO("mailbox_create(%s) ~> %p",name,mbox);
+			XBT_VERB("mailbox_create(%s)",name);
 			ans.mutable_mbcreate()->set_remoteaddr((google::protobuf::uint64)mbox);
 			break;
 		}
