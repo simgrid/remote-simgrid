@@ -9,3 +9,4 @@ set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 ## Add your new test directories here:
 add_subdirectory(dumb_client)
+add_subdirectory(hostname)

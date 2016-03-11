@@ -25,11 +25,11 @@ static void representative_loop(int mysock) {
 	// TODO: We should somehow assert that the RSG_HOST sent by the remote host is the one that I just passed by environment variable
 	// TODO: On mismatch (ie, if the accepted socket is not from my remote host but another,
 	// TODO:      we should move to the host that the representative thinks it is on.
- 	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
+	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
 	// TODO: Another representative will take care of my remote (and move back to this host)
 
 	s4u::Actor *self = s4u::Actor::current();
-
+	s4u::Host *self_host = NULL;
 	bool done = false;
 	while (!done) {
 		simgrid::rsg::Answer ans;
@@ -85,11 +85,18 @@ static void representative_loop(int mysock) {
 			done = true;
 			break;
 		}
+		case simgrid::rsg::CMD_HOST_CURRENT: {
+			XBT_INFO("CMD_HOST_CURRENT");
+			if(NULL == self_host) {
+				self_host = s4u::Host::current();
+			}
+			ans.mutable_hostgetcurrent()->set_hostname(self_host->name());
+			break;
+		}
 		default:
 			xbt_die("Received an unknown command: %d. Did you implement the answer of your command in %s?",
 					request.type(),__FILE__);
 		} // switch request->type()
-
 		request.Clear();
 		ans.set_clock(simgrid::s4u::Engine::getClock());
 		send_message(mysock, &ans);

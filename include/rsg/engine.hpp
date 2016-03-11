@@ -14,6 +14,7 @@ namespace rsg {
 
 class Actor;
 class Mailbox;
+class Host;
 
 class Request;
 class Answer;
@@ -21,6 +22,8 @@ class Answer;
 class Engine {
 	friend Actor;
 	friend Mailbox;
+	friend Host;
+
 private:
 	Engine();
 
