@@ -108,7 +108,14 @@ static int rsg_representative(int argc, char **argv) {
 		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->name().c_str()));
 		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::current()->getName()));
 		putenv(bprintf("RSG_PORT=%d",serverPort));
-		execl("/bin/sh", "sh", "-c", argv[1], (char *) 0);
+		int newargc = argc-1+2+1;
+		char **newargv = (char**)calloc(newargc, sizeof(char*));
+		newargv[0] = (char*)"/usr/bin/env";
+		newargv[1] = (char*)"--";
+		for(int i=1; i < argc; i++)
+			newargv[1+i] = argv[i];
+		newargv[newargc-1] = NULL;
+		execv(newargv[0], newargv);
 	}
 	int mysock = rsg_sock_accept(serverSocket);
 
