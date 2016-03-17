@@ -8,23 +8,36 @@
 
 #include <boost/unordered_map.hpp>
 #include "rsg/engine.hpp"
+#include <xbt/string.hpp>
 
 namespace simgrid {
   namespace rsg {
 
-    class Host {
+    class Engine;
 
+    class Host {
+    	friend Engine;
     private:
-    	Host(const char *name);
-      Host(const std::string name);
+    	Host(const char *name, unsigned long int remoteAddr);
+      Host(const std::string name, unsigned long int remoteAddr);
 
     public:
-      static Host *current();
-      const char * name() { return p_name.c_str(); }
+      simgrid::xbt::string const& name() const { return name_; }
+      double speed();
       ~Host();
+
+    public:
+      static Host *by_name(std::string name);
+      static Host *current();
+    protected :
+      static void shutdown(); /* clean all globals */
+
     private:
-      std::string p_name;
+      simgrid::xbt::string name_;
+      unsigned long int p_remoteAddr = 0;
       static Host *p_self;
+      static boost::unordered_map<std::string, Host *> *hosts;
+
     };
 
   } // namespace simgrid::rsg

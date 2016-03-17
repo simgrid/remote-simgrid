@@ -7,6 +7,7 @@
 
 #include "rsg/engine.hpp"
 #include "rsg/mailbox.hpp"
+#include "rsg/host.hpp"
 #include "../rsg/socket.hpp"
 #include "rsg.pb.h"
 
@@ -40,6 +41,7 @@ rsg::Engine &rsg::Engine::getInstance() {
 
 void rsg::Engine::shutdown() {
 	close(p_sock);
+	rsg::Host::shutdown();
 	rsg::Mailbox::shutdown();
 }
 

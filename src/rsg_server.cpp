@@ -91,6 +91,28 @@ static void representative_loop(int mysock) {
 				self_host = s4u::Host::current();
 			}
 			ans.mutable_hostgetcurrent()->set_hostname(self_host->name());
+			ans.mutable_hostgetcurrent()->set_remoteaddr((google::protobuf::uint64)self_host);
+			break;
+		}
+		case simgrid::rsg::CMD_HOST_GETBYNAME: {
+			XBT_INFO("CMD_HOST_GETBYNAME");
+			const char *name = request.hostgetbyname().name().c_str();
+			s4u::Host *host = s4u::Host::by_name(name);
+
+			if(host == nullptr) {
+				XBT_INFO("No such Host (%s)", name);
+			}
+
+			XBT_INFO("host get by name (%s)",host->name().c_str());
+			ans.mutable_hostgetbyname()->set_remoteaddr((google::protobuf::uint64)host);
+			ans.mutable_hostgetbyname()->set_hostname(host->name());
+			break;
+		}
+		case simgrid::rsg::CMD_HOST_GETSPEED: {
+			XBT_INFO("CMD_HOST_GETSPEED");
+			s4u::Host *host = (s4u::Host*)request.hostgetspeed().host();
+			double speed = host->speed();
+			ans.mutable_hostgetspeed()->set_speed(speed);
 			break;
 		}
 		default:

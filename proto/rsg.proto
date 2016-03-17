@@ -17,6 +17,7 @@ enum Type {
   //Host
   CMD_HOST_CURRENT = 10;
   CMD_HOST_GETBYNAME = 11;
+  CMD_HOST_GETSPEED = 12;
 
   //Remote-Simgrid specific
   CMD_QUIT = 90;
@@ -63,7 +64,11 @@ message Request {
   //
   //// Host
   //
+  message HOSTGetByNAme { required string name = 1; }
+  optional HOSTGetByNAme hostGetByName = 6;
 
+  message HOSTGetSpeed { required uint64 host = 1; }
+  optional HOSTGetSpeed hostGetSpeed = 7;
 
   //
   //// Remote-Simgrid specific
@@ -103,9 +108,23 @@ message Answer {
   //
   //// Host
   //
-  message HOSTGetCurrent { required string hostname = 1; }
+  message HOSTGetCurrent {
+   required string hostname = 1;
+   required uint64 remoteAddr = 2;
+  }
   optional HOSTGetCurrent hostGetCurrent = 6;
-  
+
+  message HOSTGetByNameAnswer {
+    required string hostname = 1;
+    required uint64 remoteAddr = 2;
+  }
+  optional HOSTGetByNameAnswer hostGetByName = 7;
+
+  message HOSTgetSpeedAnswer {
+    required double speed = 1;
+  }
+  optional HOSTgetSpeedAnswer hostGetSpeed = 8;
+
   //
   //// Remote-Simgrid specific
   //
