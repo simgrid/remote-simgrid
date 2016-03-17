@@ -17,11 +17,16 @@ enum Type {
   //Mailbox
   CMD_MB_CREATE = 5;
 
+  //Host
+  CMD_HOST_CURRENT = 10;
+  CMD_HOST_GETBYNAME = 11;
+  CMD_HOST_GETSPEED = 12;
+
   //Remote-Simgrid specific
   CMD_QUIT = 90;
 }
 
-message Request { 
+message Request {
   // The kind of request that we have today
   required Type type = 99;
 
@@ -32,13 +37,13 @@ message Request {
   // Sleep request
   message SleepRequest { required double duration = 1; }
   optional SleepRequest sleep = 1;
-  
+
   // Exec request
   message ExecRequest { required double flops = 1; }
   optional ExecRequest exec = 2;
 
   // Send request
-  message SendRequest { 
+  message SendRequest {
     required uint64 mbox = 1;
     required bytes content = 2;
     required uint64 contentSize = 3;
@@ -65,6 +70,14 @@ message Request {
   message MBCreateRequest { required string name = 1; }
   optional MBCreateRequest mbCreate = 5;
 
+  //
+  //// Host
+  //
+  message HOSTGetByName { required string name = 1; }
+  optional HOSTGetByName hostGetByName = 6;
+
+  message HOSTGetSpeed { required uint64 host = 1; }
+  optional HOSTGetSpeed hostGetSpeed = 7;
 
   //
   //// Remote-Simgrid specific
@@ -87,7 +100,7 @@ message Answer {
   // Sleep request: no returned type
   // Exec request: no returned type
   // Send request: no returned type
-  message RecvAnswer { 
+  message RecvAnswer {
   	required bytes content = 1;
   	required uint64 contentSize = 2;
   }
@@ -108,6 +121,25 @@ message Answer {
   message MBCreateAnswer { required uint64 remoteAddr = 1; }
   optional MBCreateAnswer mbCreate = 5;
 
+  //
+  //// Host
+  //
+  message HOSTGetCurrent {
+   required string hostname = 1;
+   required uint64 remoteAddr = 2;
+  }
+  optional HOSTGetCurrent hostGetCurrent = 6;
+
+  message HOSTGetByNameAnswer {
+    required string hostname = 1;
+    required uint64 remoteAddr = 2;
+  }
+  optional HOSTGetByNameAnswer hostGetByName = 7;
+
+  message HOSTgetSpeedAnswer {
+    required double speed = 1;
+  }
+  optional HOSTgetSpeedAnswer hostGetSpeed = 8;
 
   //
   //// Remote-Simgrid specific

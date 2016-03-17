@@ -16,6 +16,7 @@ set(CLIENT_SOURCES
     ${COMMON_SOURCES}
     client/rsg_actor.cpp   ../include/rsg/actor.hpp
     client/rsg_engine.cpp  ../include/rsg/engine.hpp
+    client/rsg_host.cpp    ../include/rsg/host.hpp
     client/rsg_mailbox.cpp ../include/rsg/mailbox.hpp
     )
 
@@ -25,7 +26,7 @@ set(CLIENT_SOURCES
 add_library(rsg SHARED ${CLIENT_SOURCES})
 target_link_libraries(rsg ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})
 
-add_executable(rsg_server 
+add_executable(rsg_server
                ${COMMON_SOURCES} rsg_server.cpp)
-target_link_libraries(rsg_server 
+target_link_libraries(rsg_server
                       ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})

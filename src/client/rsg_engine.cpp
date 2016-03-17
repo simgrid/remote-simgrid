@@ -7,6 +7,7 @@
 
 #include "rsg/engine.hpp"
 #include "rsg/mailbox.hpp"
+#include "rsg/host.hpp"
 #include "../rsg/socket.hpp"
 #include "rsg.pb.h"
 
@@ -53,6 +54,7 @@ double rsg::Engine::getClock() {
 
 void rsg::Engine::shutdown() {
 	close(p_sock);
+	rsg::Host::shutdown();
 	rsg::Mailbox::shutdown();
 }
 

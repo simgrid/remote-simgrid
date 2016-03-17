@@ -22,7 +22,7 @@ private:
 	Actor();
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Actor *current();
+	static Actor &self();
 
 	void quit();
 	void kill() {this->quit();}

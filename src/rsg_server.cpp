@@ -25,11 +25,11 @@ static void representative_loop(int mysock) {
 	// TODO: We should somehow assert that the RSG_HOST sent by the remote host is the one that I just passed by environment variable
 	// TODO: On mismatch (ie, if the accepted socket is not from my remote host but another,
 	// TODO:      we should move to the host that the representative thinks it is on.
- 	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
+	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
 	// TODO: Another representative will take care of my remote (and move back to this host)
 
-	s4u::Actor *self = s4u::Actor::current();
-
+	s4u::Actor &self = s4u::Actor::self();
+	s4u::Host *self_host = NULL;
 	bool done = false;
 	while (!done) {
 		simgrid::rsg::Answer ans;
@@ -47,26 +47,26 @@ static void representative_loop(int mysock) {
 		case simgrid::rsg::CMD_SLEEP: {
 			double duration = request.sleep().duration();
 			XBT_INFO("sleep(%f)",duration);
-			self->sleep(duration);
+			self.sleep(duration);
 			break;
 		}
 		case simgrid::rsg::CMD_EXEC: {
 			double flops = request.exec().flops();
 			XBT_INFO("execute(%f)",flops);
-			self->execute(flops);
+			self.execute(flops);
 			break;
 		}
 		case simgrid::rsg::CMD_SEND: {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.send().mbox();
 			char *content = (char*)request.send().content().c_str();
 			XBT_INFO("send(%s,%s)",mbox->getName(),content);
-			self->send(*mbox, xbt_strdup(content), request.send().simulatedsize());
+			self.send(*mbox, xbt_strdup(content), request.send().simulatedsize());
 			break;
 		}
 		case simgrid::rsg::CMD_RECV: {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.recv().mbox();
 			XBT_VERB("block on recv(%p)", mbox);
-			char *content = (char*)self->recv(*mbox);
+			char *content = (char*)self.recv(*mbox);
 			XBT_INFO("recv(%s) ~> %s",mbox->getName(), content);
 			ans.mutable_recv()->set_content((const char*)content);
 			ans.mutable_recv()->set_contentsize(strlen(content));
@@ -89,11 +89,40 @@ static void representative_loop(int mysock) {
 			done = true;
 			break;
 		}
+		case simgrid::rsg::CMD_HOST_CURRENT: {
+			XBT_INFO("CMD_HOST_CURRENT");
+			if(NULL == self_host) {
+				self_host = s4u::Host::current();
+			}
+			ans.mutable_hostgetcurrent()->set_hostname(self_host->name());
+			ans.mutable_hostgetcurrent()->set_remoteaddr((google::protobuf::uint64)self_host);
+			break;
+		}
+		case simgrid::rsg::CMD_HOST_GETBYNAME: {
+			XBT_INFO("CMD_HOST_GETBYNAME");
+			const char *name = request.hostgetbyname().name().c_str();
+			s4u::Host *host = s4u::Host::by_name(name);
+
+			if(host == nullptr) {
+				XBT_INFO("No such Host (%s)", name);
+			}
+
+			XBT_INFO("host get by name (%s)",host->name().c_str());
+			ans.mutable_hostgetbyname()->set_remoteaddr((google::protobuf::uint64)host);
+			ans.mutable_hostgetbyname()->set_hostname(host->name());
+			break;
+		}
+		case simgrid::rsg::CMD_HOST_GETSPEED: {
+			XBT_INFO("CMD_HOST_GETSPEED");
+			s4u::Host *host = (s4u::Host*)request.hostgetspeed().host();
+			double speed = host->speed();
+			ans.mutable_hostgetspeed()->set_speed(speed);
+			break;
+		}
 		default:
 			xbt_die("Received an unknown command: %d. Did you implement the answer of your command in %s?",
 					request.type(),__FILE__);
 		} // switch request->type()
-
 		request.Clear();
 		ans.set_clock(simgrid::s4u::Engine::getClock());
 		send_message(mysock, &ans);
@@ -110,7 +139,7 @@ static int rsg_representative(int argc, char **argv) {
 	if (! fork()) {
 		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
 		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->name().c_str()));
-		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::current()->getName()));
+		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::self().getName()));
 		putenv(bprintf("RSG_PORT=%d",serverPort));
 		int newargc = argc-1+2+1;
 		char **newargv = (char**)calloc(newargc, sizeof(char*));
@@ -149,7 +178,7 @@ int main(int argc, char **argv) {
 
 	/* Initialize the SimGrid world */
 	e->loadPlatform(argv[1]);
-	e->register_default(rsg_representative);
+	e->registerDefault(rsg_representative);
 	e->loadDeployment(argv[2]);
 	e->run();
 	XBT_INFO("Simulation done");
