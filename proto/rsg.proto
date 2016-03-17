@@ -11,6 +11,9 @@ enum Type {
   CMD_SEND = 3;
   CMD_RECV = 4;
 
+  //Engine
+  CMD_ENGINE_GETCLOCK = 50;
+
   //Mailbox
   CMD_MB_CREATE = 5;
 
@@ -51,6 +54,12 @@ message Request {
   // Recv request
   message RecvRequest { required uint64 mbox = 1; }
   optional RecvRequest recv = 4;
+
+  //
+  //// Engine
+  //
+
+  // CMD_ENGINE_GETCLOCK request: no args
 
 
   //
@@ -96,6 +105,13 @@ message Answer {
   	required uint64 contentSize = 2;
   }
   optional RecvAnswer recv = 4;
+
+
+  //
+  //// Engine
+  //
+
+  // CMD_ENGINE_GETCLOCK request: returned info in header
 
 
   //

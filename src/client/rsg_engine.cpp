@@ -39,13 +39,25 @@ rsg::Engine &rsg::Engine::getInstance() {
 	return *p_instance;
 }
 
+double rsg::Engine::getClock() {
+	rsg::Request req;
+	rsg::Answer ans;
+	req.set_type(rsg::CMD_ENGINE_GETCLOCK);
+
+	rsg::Engine::getInstance().sendRequest(req, ans);
+	
+	double clock = ans.clock();
+	ans.Clear();
+	return clock;
+}
+
+
 void rsg::Engine::shutdown() {
 	close(p_sock);
 	rsg::Host::shutdown();
 	rsg::Mailbox::shutdown();
 }
 
-extern double NOW;
 
 void rsg::Engine::sendRequest(rsg::Request &req, rsg::Answer &ans) {
 	//fprintf(stderr, "Actor sends a request %d: %s\n",req.type(),req.ShortDebugString().c_str());
@@ -54,7 +66,6 @@ void rsg::Engine::sendRequest(rsg::Request &req, rsg::Answer &ans) {
 	req.Clear();
 
 	xbt_assert(recv_message(p_sock, &ans));
-	NOW = ans.clock();
 
 	xbt_assert(reqtype == ans.type());
 }
