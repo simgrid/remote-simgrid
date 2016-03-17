@@ -28,7 +28,7 @@ static void representative_loop(int mysock) {
 	// TODO:      we should also change the representative name to RSG_ACTORNAME[+tid] if it happens. (needs S4U support)
 	// TODO: Another representative will take care of my remote (and move back to this host)
 
-	s4u::Actor *self = s4u::Actor::current();
+	s4u::Actor &self = s4u::Actor::self();
 	s4u::Host *self_host = NULL;
 	bool done = false;
 	while (!done) {
@@ -47,26 +47,26 @@ static void representative_loop(int mysock) {
 		case simgrid::rsg::CMD_SLEEP: {
 			double duration = request.sleep().duration();
 			XBT_INFO("sleep(%f)",duration);
-			self->sleep(duration);
+			self.sleep(duration);
 			break;
 		}
 		case simgrid::rsg::CMD_EXEC: {
 			double flops = request.exec().flops();
 			XBT_INFO("execute(%f)",flops);
-			self->execute(flops);
+			self.execute(flops);
 			break;
 		}
 		case simgrid::rsg::CMD_SEND: {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.send().mbox();
 			char *content = (char*)request.send().content().c_str();
 			XBT_INFO("send(%s,%s)",mbox->getName(),content);
-			self->send(*mbox, xbt_strdup(content), request.send().simulatedsize());
+			self.send(*mbox, xbt_strdup(content), request.send().simulatedsize());
 			break;
 		}
 		case simgrid::rsg::CMD_RECV: {
 			s4u::Mailbox *mbox = (s4u::Mailbox*)request.recv().mbox();
 			XBT_VERB("block on recv(%p)", mbox);
-			char *content = (char*)self->recv(*mbox);
+			char *content = (char*)self.recv(*mbox);
 			XBT_INFO("recv(%s) ~> %s",mbox->getName(), content);
 			ans.mutable_recv()->set_content((const char*)content);
 			ans.mutable_recv()->set_contentsize(strlen(content));
@@ -139,7 +139,7 @@ static int rsg_representative(int argc, char **argv) {
 	if (! fork()) {
 		// child. I'm not in the mood of parsing the command line, so have bash do it for me.
 		putenv(bprintf("RSG_HOST=%s",s4u::Host::current()->name().c_str()));
-		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::current()->getName()));
+		putenv(bprintf("RSG_ACTORNAME=%s", s4u::Actor::self().getName()));
 		putenv(bprintf("RSG_PORT=%d",serverPort));
 		int newargc = argc-1+2+1;
 		char **newargv = (char**)calloc(newargc, sizeof(char*));
@@ -178,7 +178,7 @@ int main(int argc, char **argv) {
 
 	/* Initialize the SimGrid world */
 	e->loadPlatform(argv[1]);
-	e->register_default(rsg_representative);
+	e->registerDefault(rsg_representative);
 	e->loadDeployment(argv[2]);
 	e->run();
 	XBT_INFO("Simulation done");

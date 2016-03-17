@@ -23,7 +23,7 @@ rsg::Host::Host(const simgrid::xbt::string name, unsigned long int remoteAddr) {
 
 rsg::Host::~Host() {}
 
-rsg::Host *rsg::Host::current() {
+rsg::Host &rsg::Host::current() {
 	if (p_self == NULL) {
     rsg::Request req;
     rsg::Answer ans;
@@ -37,10 +37,10 @@ rsg::Host *rsg::Host::current() {
 		// compatible with the version of the headers we compiled against.
 		GOOGLE_PROTOBUF_VERIFY_VERSION;
 	}
-	return p_self;
+	return *p_self;
 }
 
-rsg::Host *rsg::Host::by_name(std::string name) {
+rsg::Host &rsg::Host::by_name(std::string name) {
 	rsg::Host * res;
 	try {
 		res = hosts->at(name);
@@ -57,7 +57,7 @@ rsg::Host *rsg::Host::by_name(std::string name) {
 		ans.Clear();
 		res = new rsg::Host(name, remoteAddr);
 	}
-	return res;
+	return *res;
 }
 
 double rsg::Host::speed() {

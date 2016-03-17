@@ -3,15 +3,15 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >Client time: 0.000000
 >[host0:client:(0) 0.000000] [RSG_SERVER/INFO] sleep(42.000000)
 >[host0:client:(0) 42.000000] [RSG_SERVER/INFO] execute(8095000000.000000)
->[host0:client:(0) 42.999988] [RSG_SERVER/INFO] getClock()
->Client time: 42.999988
->[host0:client:(0) 42.999988] [RSG_SERVER/INFO] send(toto,message from client)
->[host1:server:(0) 42.999989] [RSG_SERVER/INFO] recv(toto) ~> message from client
+>[host0:client:(0) 43.000000] [RSG_SERVER/INFO] getClock()
+>Client time: 43.000000
+>[host0:client:(0) 43.000000] [RSG_SERVER/INFO] send(toto,message from client)
+>[host1:server:(0) 43.000001] [RSG_SERVER/INFO] recv(toto) ~> message from client
 >Server: Received message: 'message from client'
->[host1:server:(0) 42.999989] [RSG_SERVER/INFO] send(toto,Message from server)
->[host1:server:(0) 42.999991] [RSG_SERVER/INFO] quit()
->[host0:client:(0) 42.999991] [RSG_SERVER/INFO] recv(toto) ~> Message from server
+>[host1:server:(0) 43.000001] [RSG_SERVER/INFO] send(toto,Message from server)
+>[host1:server:(0) 43.000003] [RSG_SERVER/INFO] quit()
+>[host0:client:(0) 43.000003] [RSG_SERVER/INFO] recv(toto) ~> Message from server
 >Client: Received message: 'Message from server'
 >mailbox name : toto
->[host0:client:(0) 42.999991] [RSG_SERVER/INFO] quit()
->[42.999991] [RSG_SERVER/INFO] Simulation done
+>[host0:client:(0) 43.000003] [RSG_SERVER/INFO] quit()
+>[43.000003] [RSG_SERVER/INFO] Simulation done

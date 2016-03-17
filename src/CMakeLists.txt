@@ -16,7 +16,7 @@ set(CLIENT_SOURCES
     ${COMMON_SOURCES}
     client/rsg_actor.cpp   ../include/rsg/actor.hpp
     client/rsg_engine.cpp  ../include/rsg/engine.hpp
-    client/rsg_host.cpp ../include/rsg/host.hpp
+    client/rsg_host.cpp    ../include/rsg/host.hpp
     client/rsg_mailbox.cpp ../include/rsg/mailbox.hpp
     )
 

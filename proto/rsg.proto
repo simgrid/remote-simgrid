@@ -73,8 +73,8 @@ message Request {
   //
   //// Host
   //
-  message HOSTGetByNAme { required string name = 1; }
-  optional HOSTGetByNAme hostGetByName = 6;
+  message HOSTGetByName { required string name = 1; }
+  optional HOSTGetByName hostGetByName = 6;
 
   message HOSTGetSpeed { required uint64 host = 1; }
   optional HOSTGetSpeed hostGetSpeed = 7;

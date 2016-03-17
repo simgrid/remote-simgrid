@@ -1,4 +1,4 @@
-$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080
+$ ${bindir:=.}/rsg_server ${resources:=.}/dissimilar_two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080
 >[host0:client:(0) 0.000000] [RSG_SERVER/INFO] CMD_HOST_CURRENT
 >[0.000000] [RSG_TEST_OUTPUT/INFO] CURRENT NAME --> host0
 >[host0:client:(0) 0.000000] [RSG_SERVER/INFO] CMD_HOST_GETBYNAME

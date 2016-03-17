@@ -20,14 +20,14 @@ rsg::Actor *rsg::Actor::p_self = NULL;
 rsg::Actor::Actor() {
 }
 
-rsg::Actor *rsg::Actor::current() {
+rsg::Actor &rsg::Actor::self() {
 	if (p_self == NULL) {
 		p_self = new Actor();
 		// Verify that the version of the library that we linked against is
 		// compatible with the version of the headers we compiled against.
 		GOOGLE_PROTOBUF_VERIFY_VERSION;
 	}
-	return p_self;
+	return *p_self;
 }
 
 void rsg::Actor::quit(void) {

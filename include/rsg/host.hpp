@@ -27,8 +27,8 @@ namespace simgrid {
       ~Host();
 
     public:
-      static Host *by_name(std::string name);
-      static Host *current();
+      static Host& by_name(std::string name);
+      static Host& current();
     protected :
       static void shutdown(); /* clean all globals */
 

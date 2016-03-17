@@ -9,11 +9,11 @@
 using namespace simgrid::rsg;
 
 int main(int argc, char **argv) {
-	Actor *self = Actor::current();
+	Actor &self = Actor::self();
 	Mailbox *mbox = Mailbox::byName("toto");
-	char * msg = self->recv(*mbox);
+	char * msg = self.recv(*mbox);
 	fprintf(stderr, "Server: Received message: '%s'\n",msg);
 	free(msg);
-	self->send(*mbox, "Message from server");
-	self->quit();
+	self.send(*mbox, "Message from server");
+	self.quit();
 }
