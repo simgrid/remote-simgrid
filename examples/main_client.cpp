@@ -8,7 +8,7 @@
 
 #include "RsgService.h"
 
-#include "client/ClientEngine.hpp"
+#include "client/RsgClientEngine.hpp"
 #include "xbt.h"
 #include "simgrid/s4u.h"
 

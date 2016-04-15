@@ -7,11 +7,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
-    client/ClientEngine.cpp ../include/client/ClientEngine.hpp
-    server/Socket.cpp ../include/server/Socket.hpp
+    client/RsgClientEngine.cpp ../include/client/RsgClientEngine.hpp
+    rsg/Socket.cpp ../include/rsg/Socket.hpp
 )
 
-add_executable(main_server main_server.cpp server/Server.cpp server/Socket.cpp RsgServiceImpl.cpp)
+add_executable(main_server main_server.cpp rsg/Server.cpp rsg/Socket.cpp rsg/RsgServiceImpl.cpp)
 
 add_library(thriftClient SHARED ${CLIENT_SOURCES_THRIFT})
 

@@ -1,5 +1,5 @@
-#include "client/ClientEngine.hpp"
-#include "server/Socket.hpp"
+#include "client/RsgClientEngine.hpp"
+#include "rsg/Socket.hpp"
 
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TBufferTransports.h>

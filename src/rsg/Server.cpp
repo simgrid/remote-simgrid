@@ -1,6 +1,5 @@
-#include "server/Server.hpp"
-#include "RsgServiceImpl.h"
-#include "server/Socket.hpp"
+#include "rsg/Server.hpp"
+#include "rsg/Socket.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>

@@ -8,7 +8,7 @@
 
 #include "RsgService.h"
 
-#include "server/Server.hpp"
+#include "rsg/Server.hpp"
 #include <iostream>
 #include <vector>
 
