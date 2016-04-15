@@ -5,7 +5,7 @@
 
 
 find_package(Java QUIET)
-if(Java_FOUND AND EXISTS /usr/share/java/protobuf.jar)
+if(!Java_FOUND AND EXISTS /usr/share/java/protobuf.jar)
 
     include(UseJava)
     set(CMAKE_JAVA_COMPILE_FLAGS "-source" "1.7" "-target" "1.7")
@@ -29,11 +29,13 @@ if(Java_FOUND AND EXISTS /usr/share/java/protobuf.jar)
         org/simgrid/rsg/Mailbox.java
         org/simgrid/rsg/Rsg.java
     )
-        
+
 
     add_jar(jrsg ${JAVA_SOURCE}
             INCLUDE_JARS /usr/share/java/protobuf.jar)
+
     add_custom_target(jrsg_jar ALL DEPENDS ${JAVA_SOURCE})
+    add_custom_target(dumbClient ALL DEPENDS ${JAVA_SOURCE})
 
     get_target_property(_jarFile jrsg JAR_FILE)
     get_target_property(_classDir jrsg CLASSDIR)
