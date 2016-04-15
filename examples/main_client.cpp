@@ -2,6 +2,7 @@
 // You should copy it to another filename to avoid overwriting it.
 
 #include <thrift/protocol/TBinaryProtocol.h>
+
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
@@ -27,9 +28,7 @@ using namespace ::RsgService;
 
 int main(int argc, char **argv) {
   ClientEngine engine = ClientEngine("localhost", 9090);
-
-  //boost:shared_ptr<TBufferedTransport> transport(engine.getTransport());
-  RsgServiceClient client(engine.getProtocol());
+  RsgServiceClient client(engine.getMultiplexedProtocol("RsgService"));
 
   XBT_INFO("CLIENT SLEEP 10");
   client.sleep(10);

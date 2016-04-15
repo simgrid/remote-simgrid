@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #include "RsgService.h"
+#include <thrift/processor/TMultiplexedProcessor.h>
 
 #include "rsg/Server.hpp"
 #include <iostream>
@@ -40,8 +41,15 @@ static int rsg_representative(int argc, char **argv) {
     execv(newargv[0], newargv);
 	}
 
+
   shared_ptr<RsgServiceHandler> handler(new RsgServiceHandler());
-  TServerFramework *server = socketServer->acceptClient(new RsgServiceProcessor(handler));
+  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
+
+  processor->registerProcessor(
+      "RsgService",
+      shared_ptr<RsgServiceProcessor>(new RsgServiceProcessor(handler)));
+
+  TServerFramework *server = socketServer->acceptClient(processor);
 
   handler->setServer(server);
   server->serve();

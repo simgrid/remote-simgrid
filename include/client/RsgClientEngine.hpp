@@ -12,6 +12,8 @@
 
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/protocol/TMultiplexedProtocol.h>
+
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
@@ -26,8 +28,10 @@ public:
 
 	ClientEngine(std::string hostname, int port);
 	void closeConnection();
+	boost::shared_ptr<TMultiplexedProtocol>  getMultiplexedProtocol(std::string serviceName) const;
 	boost::shared_ptr<TBinaryProtocol> getProtocol() const ;
 	boost::shared_ptr<TBufferedTransport> getTransport() const;
+
 private:
 
 	int pSock;

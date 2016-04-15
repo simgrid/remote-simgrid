@@ -7,7 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
+#include <string>
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
@@ -51,6 +51,11 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
 boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
   return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
 }
+
+boost::shared_ptr<TMultiplexedProtocol>  ClientEngine::getMultiplexedProtocol(std::string serviceName) const {
+  return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), "RsgService"));
+}
+
 
 boost::shared_ptr<TBufferedTransport>  ClientEngine::getTransport() const {
   return boost::shared_ptr<TBufferedTransport>(this->pTransport);
