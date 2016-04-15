@@ -5,86 +5,30 @@
 
 
 #include "rsg/actor.hpp"
-#include "rsg/engine.hpp"
-
-#include "rsg.pb.h"
+#include "client/RsgClientEngine.hpp"
 
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-namespace rsg = simgrid::rsg;
-
-rsg::Actor *rsg::Actor::p_self = NULL;
+rsg::Actor *rsg::Actor::pSelf = NULL;
 
 rsg::Actor::Actor() {
+	ClientEngine& engine = ClientEngine::getInstance();
+	pActorService = engine.serviceClientFactory<RsgServiceClient>("rsgService");
 }
 
 rsg::Actor &rsg::Actor::self() {
-	if (p_self == NULL) {
-		p_self = new Actor();
-		// Verify that the version of the library that we linked against is
-		// compatible with the version of the headers we compiled against.
-		GOOGLE_PROTOBUF_VERIFY_VERSION;
+	if (pSelf == NULL) {
+		pSelf = new Actor();
 	}
-	return *p_self;
+	return *pSelf;
 }
 
 void rsg::Actor::quit(void) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_QUIT);
-	Engine::getInstance().sendRequest(req,ans);
-	ans.Clear();
-	Engine::getInstance().shutdown();
-	google::protobuf::ShutdownProtobufLibrary();
+	pActorService->close();
 }
 
 void rsg::Actor::sleep(double duration) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_SLEEP);
-	req.mutable_sleep()->set_duration(duration);
-
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
-}
-
-void rsg::Actor::execute(double flops) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_EXEC);
-	req.mutable_exec()->set_flops(flops);
-
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
-}
-
-char *rsg::Actor::recv(Mailbox &mailbox) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_RECV);
-	req.mutable_recv()->set_mbox(mailbox.getRemote());
-
-	Engine::getInstance().sendRequest(req, ans);
-	char *content = xbt_strdup(ans.recv().content().c_str());
-	ans.Clear();
-	return content;
-}
-
-void rsg::Actor::send(Mailbox &mailbox, const char*content) {
-	send(mailbox,content, strlen(content)+1);
-}
-
-void rsg::Actor::send(Mailbox &mailbox, const char*content, int simulatedSize) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_SEND);
-	req.mutable_send()->set_mbox(mailbox.getRemote());
-	req.mutable_send()->set_content(content);
-	req.mutable_send()->set_contentsize(strlen(content)+1);
-	req.mutable_send()->set_simulatedsize(simulatedSize);
-
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
+	pActorService->sleep(duration);
 }

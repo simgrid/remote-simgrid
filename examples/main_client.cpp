@@ -7,9 +7,10 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
-#include "RsgService.h"
-
+#include "rsg/RsgServiceImpl.h"
 #include "client/RsgClientEngine.hpp"
+#include "rsg/actor.hpp"
+
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
@@ -27,15 +28,8 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 
 int main(int argc, char **argv) {
-  ClientEngine engine = ClientEngine("localhost", 9090);
-  RsgServiceClient client(engine.getMultiplexedProtocol("RsgService"));
-
-  XBT_INFO("CLIENT SLEEP 10");
-  client.sleep(10);
-  XBT_INFO("END SLEEP 10");
-
-  client.close();
-  engine.closeConnection();
-  XBT_INFO("Close engine");
+  rsg::Actor &self = rsg::Actor::self();
+	self.sleep(42);
+  self.quit();
   return 0;
 }

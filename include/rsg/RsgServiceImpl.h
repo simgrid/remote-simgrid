@@ -1,8 +1,9 @@
 #ifndef _RSG_SERVICE_IMPL_
 #define _RSG_SERVICE_IMPL_
 
-
 #include "RsgService.h"
+#include "RsgMailBox.h"
+
 #include "simgrid/s4u.h"
 
 #include <thrift/server/TSimpleServer.h>
@@ -19,6 +20,7 @@ class RsgServiceHandler : virtual public RsgServiceIf {
   RsgServiceHandler();
 
   void setServer(TServerFramework *);
+
 
   protected :
     void sleep(const int32_t duration);

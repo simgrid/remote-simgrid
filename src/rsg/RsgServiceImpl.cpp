@@ -19,6 +19,6 @@ void RsgServiceHandler::close() {
 }
 
 void  RsgServiceHandler::sleep(const int32_t duration) {
-  XBT_INFO("Received SLEEP %d", duration);
-  pSelf.sleep(10);
+  pSelf.sleep(duration);
+  XBT_INFO("slept %d secondes", duration);
 }

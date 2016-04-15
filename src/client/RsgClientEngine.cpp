@@ -13,6 +13,14 @@
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
+ClientEngine *ClientEngine::pInstance = NULL;
+ClientEngine& ClientEngine::getInstance() {
+  if (pInstance == NULL) {
+    pInstance = new ClientEngine("localhost", 9090);
+  }
+  return *pInstance;
+}
+
 ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
                                                  pHostname(hostname),
                                                  pPort(port),
@@ -55,7 +63,6 @@ boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
 boost::shared_ptr<TMultiplexedProtocol>  ClientEngine::getMultiplexedProtocol(std::string serviceName) const {
   return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), "RsgService"));
 }
-
 
 boost::shared_ptr<TBufferedTransport>  ClientEngine::getTransport() const {
   return boost::shared_ptr<TBufferedTransport>(this->pTransport);

@@ -14,6 +14,8 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TMultiplexedProtocol.h>
 
+#include <boost/unordered_map.hpp>
+#include "rsg/RsgServiceImpl.h"
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
@@ -26,13 +28,24 @@ class ClientEngine {
 
 public:
 
-	ClientEngine(std::string hostname, int port);
 	void closeConnection();
 	boost::shared_ptr<TMultiplexedProtocol>  getMultiplexedProtocol(std::string serviceName) const;
 	boost::shared_ptr<TBinaryProtocol> getProtocol() const ;
 	boost::shared_ptr<TBufferedTransport> getTransport() const;
 
+	static ClientEngine& getInstance();
+
+	/**
+	* Because thrift doesn't create a generic interface for all clients, we have to store it into a void*.
+	* It is an issue to delete the object when it is done.
+	*/
+	template<class ServiceType> ServiceType* serviceClientFactory(std::string name) {
+			return new ServiceType(getMultiplexedProtocol(name));
+	};
+
 private:
+
+	ClientEngine(std::string hostname, int port);
 
 	int pSock;
   std::string pHostname;
@@ -40,6 +53,7 @@ private:
 	boost::shared_ptr<TBinaryProtocol> pProtocol;
 	boost::shared_ptr<TBufferedTransport> pTransport;
 
+	static ClientEngine* pInstance;
 };
 
 #endif /* SRC_ENGINE_HPP_ */

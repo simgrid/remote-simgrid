@@ -9,15 +9,13 @@
 #include <xbt.h>
 #include <vector>
 
-#include "rsg/mailbox.hpp"
+#include "rsg/RsgServiceImpl.h"
 
 namespace simgrid {
 namespace rsg {
 
-class Mailbox;
 
 class Actor {
-	friend Mailbox;
 private:
 	Actor();
 public:
@@ -25,15 +23,11 @@ public:
 	static Actor &self();
 
 	void quit();
-	void kill() {this->quit();}
 	void sleep(double duration);
-	void execute(double flops);
-	char *recv(Mailbox &mailbox);
-	void send(Mailbox &mailbox, const char*content);
-	void send(Mailbox &mailbox, const char*content, int simulatedSize);
 
 private:
-	static Actor *p_self;
+	static Actor *pSelf;
+	RsgServiceClient *pActorService;
 };
 }} // namespace simgrid::rsg
 

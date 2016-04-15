@@ -8,7 +8,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
     client/RsgClientEngine.cpp ../include/client/RsgClientEngine.hpp
-    rsg/Socket.cpp ../include/rsg/Socket.hpp
+    client/rsg_actor.cpp       ../include/rsg/actor.hpp
+    rsg/Socket.cpp 
 )
 
 add_executable(main_server main_server.cpp rsg/Server.cpp rsg/Socket.cpp rsg/RsgServiceImpl.cpp)
