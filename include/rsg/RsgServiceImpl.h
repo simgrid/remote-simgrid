@@ -21,10 +21,12 @@ class RsgServiceHandler : virtual public RsgServiceIf {
 
   void setServer(TServerFramework *);
 
-
   protected :
-    void sleep(const int32_t duration);
-    void close();
+  void sleep(const double duration);
+
+  void execute(const double flops);
+
+  void close();
 
   private :
     s4u::Actor& pSelf;// =

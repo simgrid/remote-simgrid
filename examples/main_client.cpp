@@ -30,6 +30,7 @@ using namespace ::RsgService;
 int main(int argc, char **argv) {
   rsg::Actor &self = rsg::Actor::self();
 	self.sleep(42);
+  self.execute(8095000000);
   self.quit();
   return 0;
 }

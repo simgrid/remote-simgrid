@@ -29,6 +29,10 @@ void rsg::Actor::quit(void) {
 	pActorService->close();
 }
 
-void rsg::Actor::sleep(double duration) {
+void rsg::Actor::sleep(const double duration) {
 	pActorService->sleep(duration);
+}
+
+void rsg::Actor::execute(const double flops) {
+	pActorService->execute(flops);
 }

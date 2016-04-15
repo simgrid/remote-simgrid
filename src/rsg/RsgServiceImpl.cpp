@@ -18,7 +18,12 @@ void RsgServiceHandler::close() {
   pServer->stop();
 }
 
-void  RsgServiceHandler::sleep(const int32_t duration) {
+void  RsgServiceHandler::sleep(const double duration) {
   pSelf.sleep(duration);
   XBT_INFO("slept %d secondes", duration);
+}
+
+void RsgServiceHandler::execute(const double flops) {
+  pSelf.execute(flops);
+  XBT_INFO("execute %d flops", flops);
 }

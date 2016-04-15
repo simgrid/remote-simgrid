@@ -21,9 +21,10 @@ private:
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static Actor &self();
-
+	void kill() {this->quit();}
 	void quit();
-	void sleep(double duration);
+	void sleep(const double duration);
+	void execute(const double flops);
 
 private:
 	static Actor *pSelf;

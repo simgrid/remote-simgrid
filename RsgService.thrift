@@ -3,7 +3,8 @@
 namespace cpp RsgService
 
 service RsgService {
-  void sleep(1:i32 duration)
+  void sleep(1:double duration)
+  void execute(1:double flops)
   void close()
 }
 
