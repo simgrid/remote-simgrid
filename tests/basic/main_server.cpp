@@ -39,8 +39,6 @@ int main(int argc, char **argv) {
 
   XBT_INFO("Received from client : %s", self.recv(*mbox));
 
-	self.sleep(42);
-  self.execute(8095000000);
   self.quit();
   return 0;
 }

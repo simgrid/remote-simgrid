@@ -49,6 +49,7 @@ class RsgHostHandler : virtual public RsgHostIf {
   RsgHostHandler();
   int64_t by_name(const std::string& name);
   void current(rsgHostCurrentResType& _return);
+  int64_t speed(const int64_t addr);
   private :
     s4u::Host& pSelf;// =
 };

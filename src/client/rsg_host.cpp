@@ -50,7 +50,7 @@ rsg::Host &rsg::Host::by_name(std::string name) {
 }
 
 double rsg::Host::speed() {
-		return 0;
+	return pHostService->speed(p_remoteAddr);
 }
 
 void rsg::Host::initNetworkService() {

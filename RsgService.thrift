@@ -22,4 +22,5 @@ service RsgMailbox {
 service RsgHost {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()
+  i64 speed(1:i64 addr)
 }

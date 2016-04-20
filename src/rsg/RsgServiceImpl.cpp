@@ -21,12 +21,13 @@ void RsgServiceHandler::close() {
 
 void  RsgServiceHandler::sleep(const double duration) {
   pSelf.sleep(duration);
-  XBT_INFO("slept %d secondes", duration);
+  XBT_INFO("slept %f secondes", duration);
 }
 
 void RsgServiceHandler::execute(const double flops) {
+  XBT_INFO(" before execute %f flops", flops);
   pSelf.execute(flops);
-  XBT_INFO("execute %d flops", flops);
+  XBT_INFO("after execute %f flops", flops);
 }
 
 void RsgServiceHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
@@ -63,7 +64,7 @@ int64_t RsgHostHandler::by_name(const std::string& name) {
   }
 
   XBT_INFO("host get by name (%s)",host->name().c_str());
-  
+
   return (int64_t)host;
 }
 
@@ -72,4 +73,10 @@ void RsgHostHandler::current(rsgHostCurrentResType& _return) {
   s4u::Host *host = s4u::Host::current();
   _return.name = host->name();
   _return.addr = (unsigned long int) host;
+}
+
+
+int64_t RsgHostHandler::speed(const int64_t addr) {
+  s4u::Host *host = (s4u::Host*) addr;
+  return (int64_t) host->speed();
 }

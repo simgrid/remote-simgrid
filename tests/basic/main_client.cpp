@@ -33,14 +33,14 @@ int main(int argc, char **argv) {
   XBT_INFO("hello from Client");
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-  rsg::Host::by_name("host0");
 
-  XBT_INFO("hostname -> : %s", rsg::Host::by_name("host1").name().c_str());
-  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
+  rsg::Host host1 = rsg::Host::by_name("host1");
+  XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
+  XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
 
+  self.execute(8095000000 * 1.999999); 
   self.send(*mbox,"Do you copy ?");
-	self.sleep(42);
-  self.execute(8095000000);
+	self.sleep(1);
   self.quit();
   return 0;
 }
