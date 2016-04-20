@@ -1,4 +1,4 @@
-$ ${bindir:=.}/main_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080
+$ ${bindir:=.}/main_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080 | grep -v 'Thrift:'
 >[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hello from Client
 >[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hello from server
 >[host1:server:(0) 0.000001] [RSG_THRIFT_SERVICE/INFO] recv(toto) ~> Do you copy ?

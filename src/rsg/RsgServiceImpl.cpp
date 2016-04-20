@@ -42,7 +42,6 @@ void RsgServiceHandler::recv(std::string& _return, const int64_t mbAddr) {
   _return.assign(content);
 }
 
-
 int64_t RsgMailboxHandler::mb_create(const std::string& name) {
   s4u::Mailbox *mbox = s4u::Mailbox::byName(name.c_str());
   return (int64_t) mbox;
