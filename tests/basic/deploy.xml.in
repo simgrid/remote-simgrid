@@ -5,9 +5,9 @@
        "./dumb_client" is the command that we have to fork+exec in the real world
    -->
   <process host="host0" function="client">
-     <argument value="@CMAKE_CURRENT_BINARY_DIR@/hostname_bin"/>
+     <argument value="@CMAKE_BINARY_DIR@/tests/basic/main_client"/>
   </process>
   <process host="host1" function="server">
-     <argument value="@CMAKE_CURRENT_BINARY_DIR@/hostname_bin"/>
+     <argument value="@CMAKE_BINARY_DIR@/tests/basic/main_server_test"/>
   </process>
 </platform>

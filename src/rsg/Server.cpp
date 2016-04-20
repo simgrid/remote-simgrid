@@ -72,7 +72,7 @@ TServerFramework* SocketServer::acceptClient(TProcessor *processor) {
   //std::thread* clientThread = new std::thread(connectionHandler, server); // and run the server
 
   send(new_sd, &rpcPort, sizeof(int), 0);
-
+ 
   // We could wait for client ack before registering a pointer to the server.
   return server;
 }

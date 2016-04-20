@@ -41,7 +41,6 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
   boost::shared_ptr<TSocket> socket(new TSocket(hostname.c_str(), rpcPort));
   pTransport.reset(new TBufferedTransport(socket));
   pProtocol.reset(new TBinaryProtocol(pTransport));
-
   bool connected = true;
   do {
     try {
@@ -49,11 +48,9 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
       connected = true;
     } catch(apache::thrift::transport::TTransportException &ex) {
       connected = false;
-      XBT_INFO("conneciton failed: Try to reconnect");
       sleep(1);
     }
   } while(!connected);
-  XBT_INFO("Connected");
 }
 
 boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
@@ -61,7 +58,7 @@ boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
 }
 
 boost::shared_ptr<TMultiplexedProtocol>  ClientEngine::getMultiplexedProtocol(std::string serviceName) const {
-  return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), "RsgService"));
+  return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
 }
 
 boost::shared_ptr<TBufferedTransport>  ClientEngine::getTransport() const {

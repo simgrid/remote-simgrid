@@ -58,7 +58,6 @@ include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(java)
-add_subdirectory(examples)
 
 # Enable Testing
 enable_testing()

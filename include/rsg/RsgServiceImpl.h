@@ -2,7 +2,7 @@
 #define _RSG_SERVICE_IMPL_
 
 #include "RsgService.h"
-#include "RsgMailBox.h"
+#include "RsgMailbox.h"
 
 #include "simgrid/s4u.h"
 
@@ -23,14 +23,23 @@ class RsgServiceHandler : virtual public RsgServiceIf {
 
   protected :
   void sleep(const double duration);
-
   void execute(const double flops);
-
+  void recv(std::string& _return, const int64_t mbAddr);
+  void send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize);
   void close();
 
   private :
     s4u::Actor& pSelf;// =
     TServerFramework* pServer;
+
+};
+
+class RsgMailboxHandler : virtual public RsgMailboxIf {
+ public:
+  RsgMailboxHandler() {
+  };
+
+  int64_t mb_create(const std::string& name);
 
 };
 

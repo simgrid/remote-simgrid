@@ -6,7 +6,7 @@
 #include "simgrid/s4u.h"
 #include <stdlib.h>
 
-#include "RsgService.h"
+#include "rsg/RsgServiceImpl.h"
 #include <thrift/processor/TMultiplexedProcessor.h>
 
 #include "rsg/Server.hpp"
@@ -41,13 +41,19 @@ static int rsg_representative(int argc, char **argv) {
     execv(newargv[0], newargv);
 	}
 
-
   shared_ptr<RsgServiceHandler> handler(new RsgServiceHandler());
+  shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
+
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
 
   processor->registerProcessor(
       "RsgService",
       shared_ptr<RsgServiceProcessor>(new RsgServiceProcessor(handler)));
+
+  processor->registerProcessor(
+      "RsgMailbox",
+      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
+
 
   TServerFramework *server = socketServer->acceptClient(processor);
 

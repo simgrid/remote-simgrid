@@ -1,6 +1,7 @@
 #include "rsg/RsgServiceImpl.h"
 
 #include "xbt.h"
+#include "simgrid/s4u.h"
 
 #include <iostream>
 
@@ -27,3 +28,22 @@ void RsgServiceHandler::execute(const double flops) {
   pSelf.execute(flops);
   XBT_INFO("execute %d flops", flops);
 }
+
+void RsgServiceHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
+  s4u::Mailbox *mbox = (s4u::Mailbox*)mbAddr;
+  char *contentChar = (char*) content.c_str();
+  pSelf.send(*mbox, xbt_strdup(contentChar), simulatedSize);
+}
+
+void RsgServiceHandler::recv(std::string& _return, const int64_t mbAddr) {
+  s4u::Mailbox *mbox = (s4u::Mailbox*) mbAddr;
+  char *content = (char*)pSelf.recv(*mbox);
+  XBT_INFO("recv(%s) ~> %s", mbox->getName(), content);
+  _return.assign(content);
+}
+
+
+int64_t RsgMailboxHandler::mb_create(const std::string& name) {
+  s4u::Mailbox *mbox = s4u::Mailbox::byName(name.c_str());
+  return (int64_t) mbox;
+};

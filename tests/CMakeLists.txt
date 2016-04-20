@@ -8,5 +8,4 @@ set(TEST_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 ## Add your new test directories here:
-add_subdirectory(dumb_client)
-add_subdirectory(hostname)
+add_subdirectory(basic)

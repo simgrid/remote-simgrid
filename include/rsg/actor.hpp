@@ -10,10 +10,12 @@
 #include <vector>
 
 #include "rsg/RsgServiceImpl.h"
+#include "rsg/mailbox.hpp"
 
-namespace simgrid {
+namespace simgrid  {
 namespace rsg {
 
+class Mailbox;
 
 class Actor {
 private:
@@ -25,6 +27,9 @@ public:
 	void quit();
 	void sleep(const double duration);
 	void execute(const double flops);
+	char *recv(Mailbox &mailbox);
+	void send(Mailbox &mailbox, const char*content);
+	void send(Mailbox &mailbox, const char*content, int simulatedSize);
 
 private:
 	static Actor *pSelf;

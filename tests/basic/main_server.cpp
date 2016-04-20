@@ -10,6 +10,7 @@
 #include "rsg/RsgServiceImpl.h"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
+#include "rsg/mailbox.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
@@ -28,7 +29,14 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 
 int main(int argc, char **argv) {
+
+  XBT_INFO("hello from server");
+
+  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
+
+  XBT_INFO("Received from client : %s", self.recv(*mbox));
+
 	self.sleep(42);
   self.execute(8095000000);
   self.quit();
