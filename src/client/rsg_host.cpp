@@ -38,7 +38,15 @@ rsg::Host &rsg::Host::current() {
 
 rsg::Host &rsg::Host::by_name(std::string name) {
 	if(!pHostService) initNetworkService();
-	return *pSelf;
+	try {
+		return *Host::hosts->at(name);
+	} catch (std::out_of_range& e) {
+		unsigned long int addr = pHostService->by_name(name);
+		if(addr == 0) {
+ 			xbt_die("No such host: %s", name.c_str());
+		}
+		return *(new rsg::Host(name, addr));
+	}
 }
 
 double rsg::Host::speed() {

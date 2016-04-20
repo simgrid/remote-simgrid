@@ -52,7 +52,19 @@ RsgHostHandler::RsgHostHandler() : pSelf(*s4u::Host::current()) {
 }
 
 int64_t RsgHostHandler::by_name(const std::string& name) {
-  return 0;
+
+  XBT_INFO("CMD_HOST_GETBYNAME");
+  const char *c_name = name.c_str();
+  s4u::Host *host = s4u::Host::by_name(c_name);
+
+  if(host == nullptr) {
+    XBT_INFO("No such Host (%s)", name);
+    return 0;
+  }
+
+  XBT_INFO("host get by name (%s)",host->name().c_str());
+  
+  return (int64_t)host;
 }
 
 void RsgHostHandler::current(rsgHostCurrentResType& _return) {

@@ -33,9 +33,12 @@ int main(int argc, char **argv) {
   XBT_INFO("hello from Client");
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
-  self.send(*mbox,"Do you copy ?");
+  rsg::Host::by_name("host0");
 
+  XBT_INFO("hostname -> : %s", rsg::Host::by_name("host1").name().c_str());
+  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
+
+  self.send(*mbox,"Do you copy ?");
 	self.sleep(42);
   self.execute(8095000000);
   self.quit();
