@@ -46,3 +46,18 @@ int64_t RsgMailboxHandler::mb_create(const std::string& name) {
   s4u::Mailbox *mbox = s4u::Mailbox::byName(name.c_str());
   return (int64_t) mbox;
 };
+
+
+RsgHostHandler::RsgHostHandler() : pSelf(*s4u::Host::current()) {
+}
+
+int64_t RsgHostHandler::by_name(const std::string& name) {
+  return 0;
+}
+
+void RsgHostHandler::current(rsgHostCurrentResType& _return) {
+  XBT_INFO("CMD_HOST_CURRENT");
+  s4u::Host *host = s4u::Host::current();
+  _return.name = host->name();
+  _return.addr = (unsigned long int) host;
+}

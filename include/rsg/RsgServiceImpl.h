@@ -3,6 +3,8 @@
 
 #include "RsgService.h"
 #include "RsgMailbox.h"
+#include "RsgHost.h"
+#include "RsgService_types.h"
 
 #include "simgrid/s4u.h"
 
@@ -38,9 +40,18 @@ class RsgMailboxHandler : virtual public RsgMailboxIf {
  public:
   RsgMailboxHandler() {
   };
-
   int64_t mb_create(const std::string& name);
 
 };
+
+class RsgHostHandler : virtual public RsgHostIf {
+ public:
+  RsgHostHandler();
+  int64_t by_name(const std::string& name);
+  void current(rsgHostCurrentResType& _return);
+  private :
+    s4u::Host& pSelf;// =
+};
+
 
 #endif /* _RSG_SERVICE_IMPL_ */

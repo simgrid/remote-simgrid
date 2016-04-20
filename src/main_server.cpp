@@ -43,6 +43,7 @@ static int rsg_representative(int argc, char **argv) {
 
   shared_ptr<RsgServiceHandler> handler(new RsgServiceHandler());
   shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
+  shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
 
@@ -54,6 +55,9 @@ static int rsg_representative(int argc, char **argv) {
       "RsgMailbox",
       shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
 
+  processor->registerProcessor(
+      "RsgHost",
+      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
 
   TServerFramework *server = socketServer->acceptClient(processor);
 

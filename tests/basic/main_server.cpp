@@ -11,6 +11,7 @@
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
+#include "rsg/host.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
@@ -34,6 +35,7 @@ int main(int argc, char **argv) {
 
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
+  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
 
   XBT_INFO("Received from client : %s", self.recv(*mbox));
 
