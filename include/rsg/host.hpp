@@ -10,31 +10,36 @@
 #include <xbt/string.hpp>
 
 #include "rsg/RsgServiceImpl.h"
-
+#include "rsg/actor.hpp"
 
 namespace simgrid {
 namespace rsg {
 
-  class Engine;
-
+  class Actor;
   class Host {
-  	friend Engine;
+
+  friend Actor;
   private:
   	Host(const char *name, unsigned long int remoteAddr);
     Host(const std::string name, unsigned long int remoteAddr);
+
   public:
-    simgrid::xbt::string const& name() const { return name_; }
     double speed();
     ~Host();
 
-  public:
+    simgrid::xbt::string const& name() const { return name_; }
     static Host& by_name(std::string name);
     static Host& current();
-
+    int core_count();
     void turnOn();
     void turnOff();
     bool isOn();
     bool isOff() { return !isOn(); }
+    double currentPowerPeak();
+    double powerPeakAt(int pstate_index);
+    int pstatesCount() const;
+    void setPstate(int pstate_index);
+    int pstate();
 
   protected :
     static void shutdown(); /* clean all globals */

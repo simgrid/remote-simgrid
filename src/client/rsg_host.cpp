@@ -69,3 +69,27 @@ void rsg::Host::turnOff() {
 bool rsg::Host::isOn() {
 	return pHostService->isOn(p_remoteAddr);
 }
+
+double rsg::Host::currentPowerPeak() {
+  return pHostService->currentPowerPeak(p_remoteAddr);
+}
+double rsg::Host::powerPeakAt(int pstate_index) {
+  return pHostService->powerPeakAt(p_remoteAddr, pstate_index);
+}
+
+int rsg::Host::pstatesCount() const {
+  return pHostService->pstatesCount(p_remoteAddr);
+}
+
+void rsg::Host::setPstate(int pstate_index) {
+  pHostService->setPstate(p_remoteAddr, pstate_index);
+}
+
+int rsg::Host::pstate() {
+  return pHostService->pstate(p_remoteAddr);
+}
+
+int rsg::Host::core_count() {
+  return pHostService->core_count(p_remoteAddr);
+}
+

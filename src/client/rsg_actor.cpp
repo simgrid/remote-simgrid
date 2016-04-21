@@ -15,7 +15,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
 rsg::Actor *rsg::Actor::pSelf = NULL;
 
-rsg::Actor::Actor() {
+rsg::Actor::Actor() : pHost(NULL) {
 	ClientEngine& engine = ClientEngine::getInstance();
 	pActorService = engine.serviceClientFactory<RsgServiceClient>("RsgService");
 }
@@ -53,4 +53,23 @@ char *rsg::Actor::recv(Mailbox &mailbox) {
 	pActorService->recv(res, mailbox.getRemote());
 	char *content = xbt_strdup(res.c_str());
 	return content;
+}
+
+const char* rsg::Actor::getName() {
+  std::string res;
+  pActorService->getName(res, 0);
+  return res.c_str();
+}
+
+rsg::Host* rsg::Actor::getHost() {
+  rsgHostCurrentResType res;
+  if(pHost == NULL) {
+    pActorService->getHost(res, 0);
+    pHost = new Host(res.name, res.addr);
+  }
+  return pHost;
+}
+
+int rsg::Actor::getPid() {
+  return pActorService->getPid(0);
 }

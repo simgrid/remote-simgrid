@@ -11,28 +11,34 @@
 
 #include "rsg/RsgServiceImpl.h"
 #include "rsg/mailbox.hpp"
+#include "rsg/host.hpp"
 
 namespace simgrid  {
 namespace rsg {
 
 class Mailbox;
+class Host;
 
 class Actor {
 private:
 	Actor();
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Actor &self();
-	void kill() {this->quit();}
-	void quit();
-	void sleep(const double duration);
-	void execute(const double flops);
-	char *recv(Mailbox &mailbox);
-	void send(Mailbox &mailbox, const char*content);
-	void send(Mailbox &mailbox, const char*content, int simulatedSize);
+  static Actor &self();
+  void kill() {this->quit();}
+  void quit();
+  void sleep(const double duration);
+  void execute(const double flops);
+  char *recv(Mailbox &mailbox);
+  void send(Mailbox &mailbox, const char*content);
+  void send(Mailbox &mailbox, const char*content, int simulatedSize);
+  const char*getName();
+  Host *getHost();
+  int getPid();
 
 private:
 	static Actor *pSelf;
+  rsg::Host *pHost;
 	RsgServiceClient *pActorService;
 };
 }} // namespace simgrid::rsg

@@ -19,7 +19,7 @@
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_REMOTE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -35,9 +35,20 @@ int main(int argc, char **argv) {
 
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
+  rsg::Host &host = rsg::Host::current();
+  
+  XBT_INFO("Hostname current Peak : %f",  host.currentPowerPeak());
+  XBT_INFO("Hostname current Peak : %f",  host.powerPeakAt(0));
 
+  XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
+  
   XBT_INFO("Received from client : %s", self.recv(*mbox));
+  XBT_INFO("core count : %d", host.core_count());
+  XBT_INFO("state count %d ", host.pstatesCount());
+  XBT_INFO("state -> %d ", host.pstate());
+  XBT_INFO("actor name -> %s", self.getName());
+  XBT_INFO("actor pid -> %d", self.getPid());
+  XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
 
   self.quit();
   return 0;

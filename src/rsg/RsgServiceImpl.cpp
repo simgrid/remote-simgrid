@@ -43,6 +43,24 @@ void RsgServiceHandler::recv(std::string& _return, const int64_t mbAddr) {
   _return.assign(content);
 }
 
+//TODO the three following function assume that you can only have the "self" actor.
+void RsgServiceHandler::getName(std::string& _return, const int64_t addr) {
+  const char * c_name = pSelf.getName();
+  _return.assign(c_name);
+}
+
+//TODO
+void RsgServiceHandler::getHost(rsgHostCurrentResType& _return, const int64_t addr) {
+  s4u::Host *host = pSelf.getHost();
+  _return.name = host->name();
+  _return.addr = (unsigned long int) host;
+}
+
+//TODO
+int32_t RsgServiceHandler::getPid(const int64_t addr) {
+  return pSelf.getPid();
+}
+
 int64_t RsgMailboxHandler::mb_create(const std::string& name) {
   s4u::Mailbox *mbox = s4u::Mailbox::byName(name.c_str());
   return (int64_t) mbox;
@@ -75,10 +93,9 @@ void RsgHostHandler::current(rsgHostCurrentResType& _return) {
   _return.addr = (unsigned long int) host;
 }
 
-
-int64_t RsgHostHandler::speed(const int64_t addr) {
+double RsgHostHandler::speed(const int64_t addr) {
   s4u::Host *host = (s4u::Host*) addr;
-  return (int64_t) host->speed();
+  return (double) host->speed();
 }
 
 void RsgHostHandler::turnOn(const int64_t addr) {
@@ -93,8 +110,42 @@ void RsgHostHandler::turnOff(const int64_t addr) {
   host->turnOff();
 }
 
-
 bool RsgHostHandler::isOn(const int64_t addr) {
 	s4u::Host *host = (s4u::Host*) addr;
     return host->isOn();
+}
+
+double RsgHostHandler::currentPowerPeak(const int64_t addr) {
+	s4u::Host *host = (s4u::Host*) addr;
+	return host->currentPowerPeak();
+}
+
+double RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate_index) {
+	s4u::Host *host = (s4u::Host*) addr;
+	return host->powerPeakAt((int) pstate_index);
+}
+
+int32_t RsgHostHandler::pstatesCount(const int64_t addr) {
+	s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("pstatesCount -> %s ", host->name().c_str());
+  return host->pstatesCount();
+}
+
+void RsgHostHandler::setPstate(const int64_t addr, const int32_t pstate_index) {
+	s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("setPstate -> %s (%d) ", host->name().c_str(), pstate_index);
+  host->setPstate(pstate_index);
+}
+
+int32_t RsgHostHandler::pstate(const int64_t addr) {
+	s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("pstate -> %s ", host->name().c_str());
+  return host->pstate();
+}
+
+
+int32_t RsgHostHandler::core_count(const int64_t addr) {
+  s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("core count -> %s ", host->name().c_str());
+  return host->core_count();
 }

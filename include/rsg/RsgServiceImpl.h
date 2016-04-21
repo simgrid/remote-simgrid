@@ -29,6 +29,9 @@ class RsgServiceHandler : virtual public RsgServiceIf {
   void recv(std::string& _return, const int64_t mbAddr);
   void send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize);
   void close();
+  void getName(std::string& _return, const int64_t addr);
+  void getHost(rsgHostCurrentResType& _return, const int64_t addr);
+  int32_t getPid(const int64_t addr);
 
   private :
     s4u::Actor& pSelf;// =
@@ -49,14 +52,19 @@ class RsgHostHandler : virtual public RsgHostIf {
   RsgHostHandler();
   int64_t by_name(const std::string& name);
   void current(rsgHostCurrentResType& _return);
-  int64_t speed(const int64_t addr);
+  double speed(const int64_t addr);
   void turnOn(const int64_t addr);
   void turnOff(const int64_t addr);
   bool isOn(const int64_t addr);
-  
+  double currentPowerPeak(const int64_t addr);
+  double powerPeakAt(const int64_t addr, const int32_t pstate_index);
+  int32_t pstatesCount(const int64_t addr);
+  void setPstate(const int64_t addr, const int32_t pstate_index);
+  int32_t pstate(const int64_t addr);
+  int32_t core_count(const int64_t addr);
+
   private :
     s4u::Host& pSelf;// =
 };
-
 
 #endif /* _RSG_SERVICE_IMPL_ */
