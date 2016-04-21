@@ -41,15 +41,15 @@ static int rsg_representative(int argc, char **argv) {
     execv(newargv[0], newargv);
 	}
 
-  shared_ptr<RsgServiceHandler> handler(new RsgServiceHandler());
+  shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
   shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
   shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
 
   processor->registerProcessor(
-      "RsgService",
-      shared_ptr<RsgServiceProcessor>(new RsgServiceProcessor(handler)));
+      "RsgActor",
+      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
 
   processor->registerProcessor(
       "RsgMailbox",

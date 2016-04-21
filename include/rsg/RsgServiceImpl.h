@@ -1,7 +1,7 @@
 #ifndef _RSG_SERVICE_IMPL_
 #define _RSG_SERVICE_IMPL_
 
-#include "RsgService.h"
+#include "RsgActor.h"
 #include "RsgMailbox.h"
 #include "RsgHost.h"
 #include "RsgService_types.h"
@@ -16,10 +16,10 @@ using namespace ::apache::thrift::server;
 using namespace  ::RsgService;
 using namespace simgrid;
 
-class RsgServiceHandler : virtual public RsgServiceIf {
+class RsgActorHandler : virtual public RsgActorIf {
 
  public:
-  RsgServiceHandler();
+  RsgActorHandler();
 
   void setServer(TServerFramework *);
 

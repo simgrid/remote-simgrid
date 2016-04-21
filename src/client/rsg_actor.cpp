@@ -17,7 +17,7 @@ rsg::Actor *rsg::Actor::pSelf = NULL;
 
 rsg::Actor::Actor() : pHost(NULL) {
 	ClientEngine& engine = ClientEngine::getInstance();
-	pActorService = engine.serviceClientFactory<RsgServiceClient>("RsgService");
+	pActorService = engine.serviceClientFactory<RsgActorClient>("RsgActor");
 }
 
 rsg::Actor &rsg::Actor::self() {

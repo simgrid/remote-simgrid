@@ -8,35 +8,35 @@
 XBT_LOG_NEW_CATEGORY(RSG_SERVICE, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_SERVICE, RSG_SERVICE , "RSG server (Remote SimGrid)");
 
-RsgServiceHandler::RsgServiceHandler()  : pSelf(s4u::Actor::self()), pServer(NULL) {
+RsgActorHandler::RsgActorHandler()  : pSelf(s4u::Actor::self()), pServer(NULL) {
 }
 
-void RsgServiceHandler::setServer(TServerFramework *server) {
+void RsgActorHandler::setServer(TServerFramework *server) {
   pServer = server;
 }
 
-void RsgServiceHandler::close() {
+void RsgActorHandler::close() {
   pServer->stop();
 }
 
-void  RsgServiceHandler::sleep(const double duration) {
+void  RsgActorHandler::sleep(const double duration) {
   pSelf.sleep(duration);
   XBT_INFO("slept %f secondes", duration);
 }
 
-void RsgServiceHandler::execute(const double flops) {
+void RsgActorHandler::execute(const double flops) {
   XBT_INFO(" before execute %f flops", flops);
   pSelf.execute(flops);
   XBT_INFO("after execute %f flops", flops);
 }
 
-void RsgServiceHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
+void RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
   s4u::Mailbox *mbox = (s4u::Mailbox*)mbAddr;
   char *contentChar = (char*) content.c_str();
   pSelf.send(*mbox, xbt_strdup(contentChar), simulatedSize);
 }
 
-void RsgServiceHandler::recv(std::string& _return, const int64_t mbAddr) {
+void RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
   s4u::Mailbox *mbox = (s4u::Mailbox*) mbAddr;
   char *content = (char*)pSelf.recv(*mbox);
   XBT_INFO("recv(%s) ~> %s", mbox->getName(), content);
@@ -44,20 +44,20 @@ void RsgServiceHandler::recv(std::string& _return, const int64_t mbAddr) {
 }
 
 //TODO the three following function assume that you can only have the "self" actor.
-void RsgServiceHandler::getName(std::string& _return, const int64_t addr) {
+void RsgActorHandler::getName(std::string& _return, const int64_t addr) {
   const char * c_name = pSelf.getName();
   _return.assign(c_name);
 }
 
 //TODO
-void RsgServiceHandler::getHost(rsgHostCurrentResType& _return, const int64_t addr) {
+void RsgActorHandler::getHost(rsgHostCurrentResType& _return, const int64_t addr) {
   s4u::Host *host = pSelf.getHost();
   _return.name = host->name();
   _return.addr = (unsigned long int) host;
 }
 
 //TODO
-int32_t RsgServiceHandler::getPid(const int64_t addr) {
+int32_t RsgActorHandler::getPid(const int64_t addr) {
   return pSelf.getPid();
 }
 

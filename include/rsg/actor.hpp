@@ -39,7 +39,7 @@ public:
 private:
 	static Actor *pSelf;
   rsg::Host *pHost;
-	RsgServiceClient *pActorService;
+	RsgActorClient *pActorService;
 };
 }} // namespace simgrid::rsg
 

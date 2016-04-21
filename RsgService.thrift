@@ -7,7 +7,7 @@ struct rsgHostCurrentResType {
   2:string name
 }
 
-service RsgService {
+service RsgActor {
   void sleep(1:double duration)
   void execute(1:double flops)
   void send(1:i64 mbAddr,2:string content, 3:i64 simulatedSize)
