@@ -57,3 +57,15 @@ void rsg::Host::initNetworkService() {
 	ClientEngine& engine = ClientEngine::getInstance();
 	pHostService = boost::shared_ptr<RsgHostClient>(engine.serviceClientFactory<RsgHostClient>("RsgHost"));
 }
+
+void rsg::Host::turnOn() {
+	pHostService->turnOn(p_remoteAddr);
+}
+
+void rsg::Host::turnOff() {
+	pHostService->turnOff(p_remoteAddr);
+}
+
+bool rsg::Host::isOn() {
+	return pHostService->isOn(p_remoteAddr);
+}

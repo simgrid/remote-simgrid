@@ -35,12 +35,18 @@ int main(int argc, char **argv) {
   rsg::Actor &self = rsg::Actor::self();
 
   rsg::Host host1 = rsg::Host::by_name("host1");
+    
   XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
   XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
-
-  self.execute(8095000000 * 1.999999); 
-  self.send(*mbox,"Do you copy ?");
-	self.sleep(1);
+ 
+  
+  self.execute(8095000000 * 1.999999);
+  self.send(*mbox,"Do you copy ?"); 
+  
+  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+  host1.turnOff();
+  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+  self.sleep(1);
   self.quit();
   return 0;
 }

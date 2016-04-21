@@ -23,4 +23,7 @@ service RsgHost {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()
   i64 speed(1:i64 addr)
+  void turnOn(1:i64 addr)
+  void turnOff(1:i64 addr)
+  bool isOn(1:i64 addr)
 }

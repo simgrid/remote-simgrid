@@ -30,6 +30,12 @@ namespace rsg {
   public:
     static Host& by_name(std::string name);
     static Host& current();
+
+    void turnOn();
+    void turnOff();
+    bool isOn();
+    bool isOff() { return !isOn(); }
+
   protected :
     static void shutdown(); /* clean all globals */
 

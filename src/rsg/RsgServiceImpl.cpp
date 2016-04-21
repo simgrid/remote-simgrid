@@ -80,3 +80,21 @@ int64_t RsgHostHandler::speed(const int64_t addr) {
   s4u::Host *host = (s4u::Host*) addr;
   return (int64_t) host->speed();
 }
+
+void RsgHostHandler::turnOn(const int64_t addr) {
+  s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("turn On host -> %s ", host->name().c_str());
+  host->turnOn();
+}
+
+void RsgHostHandler::turnOff(const int64_t addr) {
+  s4u::Host *host = (s4u::Host*) addr;
+  XBT_INFO("turn Off host -> %s", host->name().c_str());
+  host->turnOff();
+}
+
+
+bool RsgHostHandler::isOn(const int64_t addr) {
+	s4u::Host *host = (s4u::Host*) addr;
+    return host->isOn();
+}
