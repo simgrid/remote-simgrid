@@ -35,11 +35,13 @@ static int rsg_representative(int argc, char **argv) {
     char **newargv = (char**)calloc(newargc, sizeof(char*));
     newargv[0] = (char*)"/usr/bin/env";
     newargv[1] = (char*)"--";
-    for(int i=1; i < argc; i++)
+    for(int i=1; i < argc; i++) {
       newargv[1+i] = argv[i];
+    }
     newargv[newargc-1] = NULL;
     execv(newargv[0], newargv);
 	}
+
 
   shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
   shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
@@ -63,10 +65,60 @@ static int rsg_representative(int argc, char **argv) {
 
   handler->setServer(server);
   server->serve();
+  XBT_INFO("end of rsg_rep");
+  delete server;
 
+
+	return 0;
+}
+
+/*Fork process and launch it with valgring*/
+/*
+static int rsg_representative_valgrind(int argc, char **argv) {
+
+  if (! fork()) {
+    int newargc = argc-1+2+1+1;
+    char **newargv = (char**)calloc(newargc, sizeof(char*));
+    newargv[0] = (char*)"/usr/bin/env";
+    newargv[1] = (char*)"--";
+    newargv[2] = (char*)"valgrind";
+    for(int i=1; i < argc; i++) {
+      newargv[2+i] = argv[i];
+      std::cout<< "ici : " << argv[i] << std::endl;
+    }
+    newargv[newargc-1] = NULL;
+    execv(newargv[0], newargv);
+	}
+
+
+
+  shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
+  shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
+  shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
+
+  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
+
+  processor->registerProcessor(
+      "RsgActor",
+      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
+
+  processor->registerProcessor(
+      "RsgMailbox",
+      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
+
+  processor->registerProcessor(
+      "RsgHost",
+      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
+
+  TServerFramework *server = socketServer->acceptClient(processor);
+
+  handler->setServer(server);
+  server->serve();
+  XBT_INFO("end of rsg_rep");
   delete server;
 	return 0;
 }
+//*/
 
 int main(int argc, char **argv) {
 

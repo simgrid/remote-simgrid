@@ -14,10 +14,13 @@ XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
 rsg::Actor *rsg::Actor::pSelf = NULL;
+boost::shared_ptr<RsgActorClient> rsg::Actor::pActorService(NULL);
 
 rsg::Actor::Actor() : pHost(NULL) {
-	ClientEngine& engine = ClientEngine::getInstance();
-	pActorService = engine.serviceClientFactory<RsgActorClient>("RsgActor");
+  if(!pActorService) {
+	  ClientEngine& engine = ClientEngine::getInstance();
+	  pActorService = boost::shared_ptr<RsgActorClient>(engine.serviceClientFactory<RsgActorClient>("RsgActor"));
+  }
 }
 
 rsg::Actor &rsg::Actor::self() {
@@ -73,3 +76,24 @@ rsg::Host* rsg::Actor::getHost() {
 int rsg::Actor::getPid() {
   return pActorService->getPid(0);
 }
+
+void rsg::Actor::setAutoRestart(bool autorestart) {
+  pActorService->setAutoRestart(0, autorestart);
+}
+
+void rsg::Actor::setKillTime(double time){
+  pActorService->setKillTime(0, time);
+}
+
+double rsg::Actor::getKillTime() {
+	return pActorService->getKillTime(0);
+}
+
+void rsg::Actor::killAll() {
+  if(!pActorService) {
+	  ClientEngine& engine = ClientEngine::getInstance();
+	  pActorService = boost::shared_ptr<RsgActorClient>(engine.serviceClientFactory<RsgActorClient>("RsgActor"));
+  }
+  pActorService->killAll();
+}
+

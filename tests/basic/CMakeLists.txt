@@ -10,7 +10,7 @@ target_link_libraries(main_client ${THRIFT_LIBRARIES})
 target_link_libraries(main_client ${SimGrid_LIBRARY})
 
 
-add_executable(main_server_test main_server.cpp)
+add_executable(main_server_test main_server_test.cpp)
 
 # Libraries to link
 target_link_libraries(main_server_test thriftClient)

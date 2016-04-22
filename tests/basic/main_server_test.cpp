@@ -36,12 +36,13 @@ int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
   rsg::Host &host = rsg::Host::current();
-  
+  self.setAutoRestart(true);
+
   XBT_INFO("Hostname current Peak : %f",  host.currentPowerPeak());
   XBT_INFO("Hostname current Peak : %f",  host.powerPeakAt(0));
 
   XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
-  
+
   XBT_INFO("Received from client : %s", self.recv(*mbox));
   XBT_INFO("core count : %d", host.core_count());
   XBT_INFO("state count %d ", host.pstatesCount());
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
   XBT_INFO("actor name -> %s", self.getName());
   XBT_INFO("actor pid -> %d", self.getPid());
   XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
-
+  XBT_INFO("get kill time -> %d " , self.getKillTime());
   self.quit();
   return 0;
 }

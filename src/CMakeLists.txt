@@ -14,11 +14,11 @@ set(CLIENT_SOURCES_THRIFT
     rsg/Socket.cpp
 )
 
-add_executable(main_server main_server.cpp rsg/Server.cpp rsg/Socket.cpp rsg/RsgServiceImpl.cpp)
+add_executable(rsg_server main_server.cpp rsg/Server.cpp rsg/Socket.cpp rsg/RsgServiceImpl.cpp)
 
 add_library(thriftClient SHARED ${CLIENT_SOURCES_THRIFT})
 
-target_link_libraries(main_server "RsgService.thrift")
+target_link_libraries(rsg_server "RsgService.thrift")
 
 #include_directories(../opt/grpc/include/ SYSTEM)
 #include_directories(../opt/protobuf3/include SYSTEM)
@@ -26,4 +26,4 @@ target_link_libraries(main_server "RsgService.thrift")
 #include_directories(../opt/grpc/include/ SYSTEM)
 #include_directories(../opt/protobuf3/include SYSTEM)
 
-target_link_libraries(main_server ${SimGrid_LIBRARY})
+target_link_libraries(rsg_server ${SimGrid_LIBRARY})

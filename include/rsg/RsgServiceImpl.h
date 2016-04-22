@@ -32,7 +32,10 @@ class RsgActorHandler : virtual public RsgActorIf {
   void getName(std::string& _return, const int64_t addr);
   void getHost(rsgHostCurrentResType& _return, const int64_t addr);
   int32_t getPid(const int64_t addr);
-
+  void setAutoRestart(const int64_t addr, const bool autorestart);
+  void setKillTime(const int64_t addr, const double time);
+  double getKillTime(const int64_t addr);
+  void killAll();
   private :
     s4u::Actor& pSelf;// =
     TServerFramework* pServer;

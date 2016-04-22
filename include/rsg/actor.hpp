@@ -8,6 +8,7 @@
 
 #include <xbt.h>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
 #include "rsg/RsgServiceImpl.h"
 #include "rsg/mailbox.hpp"
@@ -25,8 +26,12 @@ private:
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
   static Actor &self();
-  void kill() {this->quit();}
+	void kill() {this->quit();}
   void quit();
+	static void killAll();
+	void setAutoRestart(bool autorestart);
+	void setKillTime(double time);
+	double getKillTime();
   void sleep(const double duration);
   void execute(const double flops);
   char *recv(Mailbox &mailbox);
@@ -39,7 +44,7 @@ public:
 private:
 	static Actor *pSelf;
   rsg::Host *pHost;
-	RsgActorClient *pActorService;
+	static boost::shared_ptr<RsgActorClient> pActorService;
 };
 }} // namespace simgrid::rsg
 

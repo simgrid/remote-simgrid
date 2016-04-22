@@ -16,6 +16,10 @@ service RsgActor {
   string getName(1:i64 addr)
   rsgHostCurrentResType getHost(1:i64 addr)
   i32 getPid(1:i64 addr)
+  void setAutoRestart(1:i64 addr, 2:bool autorestart)
+  void setKillTime(1:i64 addr, 2:double time)
+  double getKillTime(1:i64 addr)
+  void killAll()
 }
 
 service RsgMailbox {

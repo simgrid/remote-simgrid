@@ -25,9 +25,17 @@ void  RsgActorHandler::sleep(const double duration) {
 }
 
 void RsgActorHandler::execute(const double flops) {
-  XBT_INFO(" before execute %f flops", flops);
-  pSelf.execute(flops);
-  XBT_INFO("after execute %f flops", flops);
+  xbt_ex_t e;
+
+  TRY {
+    XBT_INFO(" before execute %f flops", flops);
+    pSelf.execute(flops);
+    XBT_INFO("after execute %f flops", flops);
+
+  }
+  CATCH(e) {
+    XBT_INFO("Damn, the server is not on ");
+  }
 }
 
 void RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
@@ -43,22 +51,41 @@ void RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
   _return.assign(content);
 }
 
-//TODO the three following function assume that you can only have the "self" actor.
+//FIXME the three following function assume that you can only have the "self" actor.
 void RsgActorHandler::getName(std::string& _return, const int64_t addr) {
   const char * c_name = pSelf.getName();
   _return.assign(c_name);
 }
 
-//TODO
+//FIXME
 void RsgActorHandler::getHost(rsgHostCurrentResType& _return, const int64_t addr) {
   s4u::Host *host = pSelf.getHost();
   _return.name = host->name();
   _return.addr = (unsigned long int) host;
 }
 
-//TODO
+//FIXME
 int32_t RsgActorHandler::getPid(const int64_t addr) {
   return pSelf.getPid();
+}
+
+//FIXME
+void RsgActorHandler::setAutoRestart(const int64_t addr, const bool autorestart) {
+  pSelf.setAutoRestart(autorestart);
+}
+
+//FIXME
+void RsgActorHandler::setKillTime(const int64_t addr, const double time) {
+  pSelf.setKillTime(time);
+}
+
+//FIXME
+double RsgActorHandler::getKillTime(const int64_t addr) {
+  return pSelf.getKillTime();
+}
+
+void RsgActorHandler::killAll() {
+  s4u::Actor::killAll();
 }
 
 int64_t RsgMailboxHandler::mb_create(const std::string& name) {

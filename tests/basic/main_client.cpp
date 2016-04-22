@@ -30,22 +30,28 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 
 int main(int argc, char **argv) {
+
   XBT_INFO("hello from Client");
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
 
   rsg::Host host1 = rsg::Host::by_name("host1");
-    
+  host1.turnOn();
+
   XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
   XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
- 
-  
+  XBT_INFO("actor name -> %s", self.getName());
+
+  self.send(*mbox,"Do you copy ?");
+
   self.execute(8095000000 * 1.999999);
-  self.send(*mbox,"Do you copy ?"); 
-  
-  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+
+  //rsg::Actor::killAll();
   host1.turnOff();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+  host1.turnOn();
+  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+  self.send(*mbox,"Do you copy ?");
   self.sleep(1);
   self.quit();
   return 0;
