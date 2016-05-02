@@ -92,4 +92,3 @@ int rsg::Host::pstate() {
 int rsg::Host::core_count() {
   return pHostService->core_count(p_remoteAddr);
 }
-

@@ -10,6 +10,7 @@ set(CLIENT_SOURCES_THRIFT
     client/RsgClientEngine.cpp ../include/client/RsgClientEngine.hpp
     client/rsg_actor.cpp       ../include/rsg/actor.hpp
     client/rsg_mailbox.cpp     ../include/rsg/mailbox.hpp
+    client/rsg_comm.cpp        ../include/rsg/comm.hpp
     client/rsg_host.cpp        ../include/rsg/host.hpp
     rsg/Socket.cpp
 )

@@ -1,0 +1,15 @@
+$ ${bindir:=.}/main_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080 | grep -v 'Thrift:'
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hello from Client
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hello from server
+>[host0:client:(0) 0.000000] [RSG_THRIFT_SERVICE/INFO] CMD_HOST_GETBYNAME
+>[host0:client:(0) 0.000000] [RSG_THRIFT_SERVICE/INFO] host get by name (host1)
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hostname ->  host1 with speed 8095000000.000000
+>[host0:client:(0) 0.000000] [RSG_THRIFT_SERVICE/INFO] CMD_HOST_CURRENT
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hostname ->  host0 with speed 8095000000.000000
+>[host0:client:(0) 0.000000] [RSG_THRIFT_SERVICE/INFO]  before execute 16189991905.000000 flops
+>[host1:server:(0) 0.000000] [RSG_THRIFT_SERVICE/INFO] CMD_HOST_CURRENT
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] hostname : host1
+>[host0:client:(0) 1.999999] [RSG_THRIFT_SERVICE/INFO] after execute 16189991905.000000 flops
+>[host1:server:(0) 2.000000] [RSG_THRIFT_SERVICE/INFO] recv(toto) ~> Do you copy ?
+>[0.000000] [RSG_THRIFT_CLIENT_REMOTE/INFO] Received from client : Do you copy ?
+>[host0:client:(0) 3.000000] [RSG_THRIFT_SERVICE/INFO] slept 1.000000 secondes

@@ -40,3 +40,25 @@ service RsgHost {
   i32 pstate(1:i64 addr)
   i32 core_count(1:i64 addr)
 }
+
+service RsgComm {
+  i64 send_init(1:i64 sender, 2:i64 dest)
+  i64 recv_init(1:i64 receiver, 2:i64 from_)
+
+  void start(1:i64 addr)
+  binary wait(1:i64 addr)
+  //void wait_timeout(1:i64 addr, 2:double timeout)
+  void setRate(1:double rate);
+
+  void setSrcDataSize(1:i64 addr, 2:i64 size)
+  i64 getDstDataSize(1:i64 addr)
+
+  i64 recv_async(1:i64 receiver, 2:i64 from_)
+  void setDstData(1:i64 addr, 2:i64 size)
+
+  //i64 send_async(1:i64 sender, 2:i64 dest, 3:i32 simulatedByteAmount)
+
+  void setSrcData(1:i64 addr, 2:binary buff)
+  //void setSrcData(void * buff, size_t size);
+  //void setDstData(void ** buff);
+}

@@ -1,4 +1,0 @@
-make -C test dumb_server
-make -C test dumb_client
-make -C src rsg_server
-cd test ; valgrind ../src/rsg_server two_hosts_platform.xml deploy.xml 9997

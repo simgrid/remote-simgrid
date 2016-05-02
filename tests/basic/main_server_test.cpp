@@ -16,6 +16,7 @@
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
+#include <stdio.h>
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
@@ -37,13 +38,17 @@ int main(int argc, char **argv) {
   rsg::Actor &self = rsg::Actor::self();
   rsg::Host &host = rsg::Host::current();
   self.setAutoRestart(true);
-
+  
+  XBT_INFO("begin wait");
+  XBT_INFO("end wait");
   XBT_INFO("Hostname current Peak : %f",  host.currentPowerPeak());
   XBT_INFO("Hostname current Peak : %f",  host.powerPeakAt(0));
 
   XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
 
   XBT_INFO("Received from client : %s", self.recv(*mbox));
+  //XBT_INFO("asyn get datasize : %d",  comm.getDstDataSize());
+
   XBT_INFO("core count : %d", host.core_count());
   XBT_INFO("state count %d ", host.pstatesCount());
   XBT_INFO("state -> %d ", host.pstate());

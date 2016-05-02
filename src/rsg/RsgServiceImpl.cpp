@@ -176,3 +176,96 @@ int32_t RsgHostHandler::core_count(const int64_t addr) {
   XBT_INFO("core count -> %s ", host->name().c_str());
   return host->core_count();
 }
+
+boost::unordered_map<const int64_t ,unsigned long int> *RsgCommHandler::buffers = new boost::unordered_map<const int64_t ,unsigned long int>();
+
+RsgCommHandler::RsgCommHandler() {
+}
+
+int64_t RsgCommHandler::send_init(const int64_t sender, const int64_t dest) {
+  s4u::Mailbox *mbox = (s4u::Mailbox*) dest;
+  s4u::Actor *actorSender = &s4u::Actor::self();
+  XBT_INFO("RsgCommHandler::send_init %s -> %s", actorSender->getName(), mbox->getName());
+  XBT_INFO("mb adress %p", dest);
+  return (int64_t) &s4u::Comm::send_init(actorSender, *mbox);
+}
+
+int64_t RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
+  s4u::Mailbox *mbox = (s4u::Mailbox*) from_;
+  s4u::Actor *actorReceiver = &s4u::Actor::self();
+  XBT_INFO("mb adress %p", from_);
+
+  XBT_INFO("RsgCommHandler::recv_init %s -> %s", actorReceiver->getName(), mbox->getName());
+  return (int64_t) &s4u::Comm::recv_init(actorReceiver, *mbox);
+}
+
+int64_t RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
+  // s4u::Mailbox *mbox = (s4u::Mailbox*) from_;
+  // s4u::Actor *actorReceiver = &s4u::Actor::self();
+  // XBT_INFO("RsgCommHandler::recv_async %s -> %s", actorReceiver->getName(), mbox->getName());
+  // void *buffer = (void*) malloc(sizeof(void*));
+  // unsigned long int comm_addr = (int64_t)&s4u::Comm::recv_async(actorReceiver, *mbox, &buffer);
+  // buffers->insert({comm_addr, buffer});
+  // return comm_addr;
+  return 0;
+}
+
+int64_t RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int32_t simulatedByteAmount) {
+  return 0;
+}
+
+void RsgCommHandler::start(const int64_t addr) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  comm->start();
+}
+
+void RsgCommHandler::wait(std::string& _return, const int64_t addr) {
+  XBT_INFO("wait data");
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  comm->wait();
+  try {
+    void **buffer = (void**) buffers->at((unsigned long int)addr);
+    XBT_INFO("wait comm addr %p, buffer value -> %p",comm, buffer);
+    if(buffer) {
+      printf("comm addr = %p, buffer -> %s\n",comm , (char*)buffer);
+    _return.assign((char*)buffer);
+    } else {
+      xbt_die("Empty dst buffer");
+    }
+  } catch (std::out_of_range& e) {
+    XBT_INFO("sender side");
+	}
+}
+
+void RsgCommHandler::setSrcDataSize(const int64_t addr, const int64_t size) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  comm->setSrcDataSize((size_t)size);
+}
+
+int64_t RsgCommHandler::getDstDataSize(const int64_t addr) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  return comm->getDstDataSize();
+}
+
+void RsgCommHandler::setRate(const double rate) {
+  // Your implementation goes here
+  printf("setRate\n");
+}
+
+void RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  XBT_INFO("set src data %s", buff.c_str());
+  char* binary = (char*) malloc(buff.size()*sizeof(char));
+  memcpy(&binary, buff.c_str(), buff.size()*sizeof(char));
+  comm->setSrcData((void*)binary, sizeof(void*));
+}
+
+void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  unsigned long int *bufferAddr = (unsigned long int*) malloc(sizeof(unsigned long int));
+  unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
+  *bufferAddr = ptr;
+  XBT_INFO("set dst data comm addr %p, buffer value -> %p pointed on -> %p ",comm, *bufferAddr, ptr);
+  comm->setDstData((void**) *bufferAddr, sizeof(void*));
+  buffers->insert({addr, *bufferAddr});
+}

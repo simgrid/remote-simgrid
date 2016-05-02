@@ -13,14 +13,17 @@
 #include "rsg/RsgServiceImpl.h"
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
+#include "rsg/comm.hpp"
 
 namespace simgrid  {
 namespace rsg {
 
 class Mailbox;
 class Host;
+class Comm;
 
 class Actor {
+	friend rsg::Comm;
 private:
 	Actor();
 public:

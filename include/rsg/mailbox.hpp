@@ -11,9 +11,12 @@
 
 #include "rsg/RsgServiceImpl.h"
 #include "actor.hpp"
+#include "comm.hpp"
 
 namespace simgrid {
 namespace rsg {
+
+class Comm;
 
 /** @brief Mailboxes
  *
@@ -23,7 +26,7 @@ namespace rsg {
  * sender and receiver.
  */
 class Mailbox {
-
+	friend rsg::Comm;
 private:
 	Mailbox(const char*name, unsigned long int remoteAddr);
 public:
