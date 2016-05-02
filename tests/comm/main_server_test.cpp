@@ -36,12 +36,12 @@ int main(int argc, char **argv) {
 
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-  char *data;
+  double *data;
   rsg::Comm &comm = rsg::Comm::recv_init(&self, *mbox);
-  comm.setDstData((void**) &data, 8);
+  comm.setDstData((void**) &data, sizeof(double));
   comm.start();
   comm.wait();
-  XBT_INFO("result from wait %s ", data);
+  XBT_INFO("result from wait %f ", *(double*) data);
   self.quit();
   return 0;
 }

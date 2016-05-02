@@ -29,6 +29,7 @@ namespace rsg {
     static Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, int simulatedByteAmount);
     static Comm &recv_init(Actor *receiver, Mailbox &from);
     static rsg::Comm &recv_async(rsg::Actor *receiver, rsg::Mailbox &from, void **data);
+    static rsg::Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size,int simulatedByteAmount);
 
     void start();
     void wait();
@@ -52,7 +53,7 @@ namespace rsg {
     void *dstBuff_ = NULL;
     size_t dstBuffSize_ = 0;
     void *srcBuff_ = NULL;
-    size_t srcBuffSize_ = sizeof(void*);
+    size_t srcBuffSize_ = 0;
     static void initNetworkService();
     static boost::shared_ptr<RsgCommClient> pCommService;
   };

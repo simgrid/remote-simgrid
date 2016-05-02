@@ -225,10 +225,12 @@ void RsgCommHandler::wait(std::string& _return, const int64_t addr) {
   comm->wait();
   try {
     void **buffer = (void**) buffers->at((unsigned long int)addr);
-    XBT_INFO("wait comm addr %p, buffer value -> %p",comm, buffer);
+    XBT_INFO("wait comm addr %p, buffer value -> %p ",comm);
     if(buffer) {
-      printf("comm addr = %p, buffer -> %s\n",comm , (char*)buffer);
-    _return.assign((char*)buffer);
+      printf("comm addr = %p, buffer -> %f\n",comm , *(double*)buffer);
+    _return.assign((char*)buffer, sizeof(double));
+    free(buffer);
+    buffers->erase(addr);
     } else {
       xbt_die("Empty dst buffer");
     }
@@ -247,14 +249,14 @@ int64_t RsgCommHandler::getDstDataSize(const int64_t addr) {
   return comm->getDstDataSize();
 }
 
-void RsgCommHandler::setRate(const double rate) {
-  // Your implementation goes here
-  printf("setRate\n");
+void RsgCommHandler::setRate(const int64_t addr, const double rate) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  comm->setRate(rate);
 }
 
 void RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
   s4u::Comm *comm = (s4u::Comm*) addr;
-  XBT_INFO("set src data %s", buff.c_str());
+  XBT_INFO(" data size %d", buff.size());
   char* binary = (char*) malloc(buff.size()*sizeof(char));
   memcpy(&binary, buff.c_str(), buff.size()*sizeof(char));
   comm->setSrcData((void*)binary, sizeof(void*));
@@ -262,10 +264,10 @@ void RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
 
 void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) {
   s4u::Comm *comm = (s4u::Comm*) addr;
-  unsigned long int *bufferAddr = (unsigned long int*) malloc(sizeof(unsigned long int));
+  unsigned long int bufferAddr;
   unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
-  *bufferAddr = ptr;
-  XBT_INFO("set dst data comm addr %p, buffer value -> %p pointed on -> %p ",comm, *bufferAddr, ptr);
-  comm->setDstData((void**) *bufferAddr, sizeof(void*));
-  buffers->insert({addr, *bufferAddr});
+  bufferAddr = ptr;
+  XBT_INFO("set dst data comm addr %p, buffer value -> %p ",comm, bufferAddr );
+  comm->setDstData((void**) bufferAddr, sizeof(void*));
+  buffers->insert({addr, bufferAddr});
 }

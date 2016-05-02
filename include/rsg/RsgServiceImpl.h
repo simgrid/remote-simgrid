@@ -85,7 +85,7 @@ class RsgCommHandler : virtual public RsgCommIf {
   void wait(std::string& _return, const int64_t addr);
   void setSrcDataSize(const int64_t addr, const int64_t size);
   int64_t getDstDataSize(const int64_t addr);
-  void setRate(const double rate);
+  void setRate(const int64_t addr, const double rate);
   void setSrcData(const int64_t addr, const std::string& buff);
   void setDstData(const int64_t addr, const int64_t size);
 

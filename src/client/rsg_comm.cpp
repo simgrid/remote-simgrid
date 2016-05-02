@@ -17,12 +17,16 @@ rsg::Comm &rsg::Comm::send_init(rsg::Actor *sender, rsg::Mailbox &dest) {
 }
 
 rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, int simulatedByteAmount) {
+  xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) instead");
+}
+
+rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
   if(!pCommService) initNetworkService();
   rsg::Comm &res = *(new rsg::Comm(pCommService->send_init(0, dest.p_remoteAddr))); // FIXME memory leak
 
   //res.setRemains(simulatedByteAmount);
   res.srcBuff_ = data;
-  res.srcBuffSize_ = sizeof(void*);
+  res.srcBuffSize_ = size;
 
   res.start();
   return res;
@@ -48,14 +52,25 @@ void rsg::Comm::start() {
   pCommService->start(p_remoteAddr);
 }
 
-void rsg::Comm::setSrcData(void *data) {
-  std::string dataStr((char*)data);
+void rsg::Comm::setSrcData(void *data, size_t size) {
+  this->srcBuffSize_ = size;
+  size_t dataSize = sizeof(char) * this->srcBuffSize_;
+  char* buffer = (char*) malloc(dataSize);
+  memcpy(buffer, data, dataSize);
+  printf("%d : %f\n",(int)this->srcBuffSize_, *(double*)buffer);
+  std::string dataStr((char*) buffer, size);
   pCommService->setSrcData(p_remoteAddr, dataStr);
+  free(buffer);
 }
 
 void rsg::Comm::setSrcDataSize(size_t size) {
-  pCommService->setSrcDataSize(p_remoteAddr, size);
+  xbt_die("unsupported : use setSrcData(void *data, size_t size) to set both the data and the size");
 }
+
+void rsg::Comm::setSrcData(void *data) {
+  xbt_die("unsupported : use setSrcData(void *data, size_t size) to set both the data and the size");
+}
+
 
 size_t rsg::Comm::getDstDataSize() {
   return pCommService->getDstDataSize(p_remoteAddr);
@@ -65,22 +80,22 @@ void rsg::Comm::wait() {
   if (dstBuff_ != NULL) {
     std::string res;
     pCommService->wait(res, p_remoteAddr);
-    char * chars = (char*) malloc((res.size() * sizeof(char*) + 1));
-    sprintf(chars, "%s", res.c_str());
+    char * chars = (char*) malloc(res.size());
+    memcpy(chars, res.c_str(), res.size());
     *(void**) this->dstBuff_ = (char *) chars;
-    printf("END WAIT %s\n",chars);
   } else {
     std::string res;
     pCommService->wait(res, p_remoteAddr);
-    printf("END WAIT \n");
   }
+  delete this;
 }
 
 void rsg::Comm::setDstData(void **buff) {
-  this->dstBuff_ = buff;
+  xbt_die("size is needed in remote-simgrid. Please use setDstData(void **buff, size_t size) instead.");
 }
 
 void rsg::Comm::setDstData(void ** buff, size_t size) {
   this->dstBuff_ = buff;
+  this->dstBuffSize_ = size;
   pCommService->setDstData(p_remoteAddr, size);
 }

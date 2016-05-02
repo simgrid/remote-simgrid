@@ -33,12 +33,12 @@ using namespace ::RsgService;
 int main(int argc, char **argv) {
 
   XBT_INFO("hello from Client");
-  const char *msg = "balrog";
-  // int dataInt = -42;
+  //const char *msg = "balrog";
+  double dataInt = -80808080;
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
   rsg::Comm &comm = rsg::Comm::send_init(&self, *mbox);
-  comm.setSrcData((void*) msg);
+  comm.setSrcData((void*) &dataInt, sizeof(double));
   comm.start();
   comm.wait();
   self.quit();
