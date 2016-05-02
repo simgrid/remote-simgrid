@@ -48,6 +48,9 @@ include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 find_package(Thrift REQUIRED)
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
+if(NOT ${THRIFT_VERSION_STRING} VERSION_EQUAL "0.9.3" )
+    message(FATAL_ERROR "Remote-Simgrid require Thrift 0.9.3" )
+endif()
 
 include_directories(${THRIFT_INCLUDE_DIRS})
 include_directories(${THRIFT_GEN_INCLUDE_DIR})

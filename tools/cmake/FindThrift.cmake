@@ -56,8 +56,7 @@ find_program(THRIFT_COMPILER
 if (THRIFT_COMPILER)
     exec_program(${THRIFT_COMPILER}
         ARGS -version OUTPUT_VARIABLE __thrift_OUT RETURN_VALUE THRIFT_RETURN)
-    string(REGEX MATCH "[0-9]+.[0-9]+.[0-9]+-[a-z]+$" THRIFT_VERSION_STRING ${__thrift_OUT})
-
+        string(REGEX MATCH "[0-9]+.[0-9]+.[0-9]+(-[a-z]+)*$" THRIFT_VERSION_STRING ${__thrift_OUT})
     # define utility function to generate cpp files
     function(thrift_gen_cpp thrift_file THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
         set(_res)
@@ -74,12 +73,12 @@ if (THRIFT_COMPILER)
                 OUTPUT_VARIABLE __thrift_OUT
                 RETURN_VALUE THRIFT_RETURN)
             file(GLOB_RECURSE __result_src "${CMAKE_BINARY_DIR}/${_target_dir}/*.cpp")
-            
+
             file(GLOB_RECURSE __skeletons "${CMAKE_BINARY_DIR}/${_target_dir}/*.skeleton.cpp")
-            
+
             message("Thrift: You can find skeleton(s) for your server(s) here: ${__skeletons}")
             list(REMOVE_ITEM __result_src ${__skeletons})
-            
+
             file(GLOB_RECURSE __result_hdr "${CMAKE_BINARY_DIR}/${_target_dir}/*.h")
             list(APPEND _res ${__result_src})
             list(APPEND _res ${__result_hdr})
@@ -87,16 +86,16 @@ if (THRIFT_COMPILER)
                 list(GET __result_hdr 0 _res_inc_path)
                 get_filename_component(_res_inc_path ${_res_inc_path} DIRECTORY)
             endif()
-            
-            
-            
+
+
+
             add_library(${thrift_file} STATIC ${_res})
 target_link_libraries(${thrift_file} ${THRIFT_LIBRARIES})
-            
+
 configure_file(${thrift_file} "${CMAKE_BINARY_DIR}/${_target_dir}" COPYONLY)
-            
-            
-            
+
+
+
         else()
             message("thrift_gen_cpp: file ${CMAKE_SOURCE_DIR}/${thrift_file} does not exists")
         endif()
