@@ -56,7 +56,7 @@ find_program(THRIFT_COMPILER
 if (THRIFT_COMPILER)
     exec_program(${THRIFT_COMPILER}
         ARGS -version OUTPUT_VARIABLE __thrift_OUT RETURN_VALUE THRIFT_RETURN)
-    string(REGEX MATCH "[0-9]+.[0-9]+.[0-9]+-[a-z]+$" THRIFT_VERSION_STRING ${__thrift_OUT})
+    string(REGEX MATCH "[0-9]+.[0-9]+.[0-9]+(-[a-z]+)*$" THRIFT_VERSION_STRING ${__thrift_OUT})
 
     # define utility function to generate cpp files
     function(thrift_gen_cpp thrift_file THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
