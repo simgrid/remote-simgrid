@@ -69,10 +69,7 @@ static int rsg_representative(int argc, char **argv) {
 
   handler->setServer(server);
   server->serve();
-  XBT_INFO("end of rsg_rep");
   delete server;
-
-
 	return 0;
 }
 

@@ -61,7 +61,6 @@ void rsg::Comm::setSrcData(void *data, size_t size) {
   size_t dataSize = sizeof(char) * this->srcBuffSize_;
   char* buffer = (char*) malloc(dataSize);
   memcpy(buffer, data, dataSize);
-  printf("%d : %f\n",(int)this->srcBuffSize_, *(double*)buffer);
   std::string dataStr((char*) buffer, size);
   pCommService->setSrcData(p_remoteAddr, dataStr);
   free(buffer);
