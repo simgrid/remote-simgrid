@@ -10,6 +10,10 @@ rsg::Comm::Comm(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr) {
 
 }
 
+rsg::Comm::~Comm() {
+
+}
+
 rsg::Comm &rsg::Comm::send_init(rsg::Actor *sender, rsg::Mailbox &dest) {
   if(!pCommService) initNetworkService();
   rsg::Comm &res = *(new rsg::Comm(pCommService->send_init(0, dest.p_remoteAddr))); // FIXME memory leak
