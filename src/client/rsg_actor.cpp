@@ -47,7 +47,7 @@ void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content) {
 }
 
 void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int simulatedSize) {
-	std::string strContent(content);
+	std::string strContent(content, strlen(content));
 	pActorService->send(mailbox.getRemote(), strContent, simulatedSize);
 }
 
@@ -96,4 +96,3 @@ void rsg::Actor::killAll() {
   }
   pActorService->killAll();
 }
-

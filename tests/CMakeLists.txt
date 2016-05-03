@@ -9,5 +9,6 @@ set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 ## Add your new test directories here:
 add_subdirectory(basic)
-add_subdirectory(comm)
-add_subdirectory(actor)
+#add_subdirectory(comm)
+add_subdirectory(mailbox/send_receive)
+add_subdirectory(turnOffTurnOn)

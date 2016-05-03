@@ -11,16 +11,16 @@
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
-#include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
+#include <stdio.h>
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -32,27 +32,17 @@ using namespace ::RsgService;
 
 int main(int argc, char **argv) {
 
-  XBT_INFO("hello from Client");
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  XBT_INFO("hello from Server");
   rsg::Actor &self = rsg::Actor::self();
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::Host host1 = rsg::Host::by_name("host0");
+  host1.turnOff();
+  host1.turnOff();
   host1.turnOn();
-
-  XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
-  XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
-  XBT_INFO("actor name -> %s", self.getName());
-
-  self.send(*mbox,"Do you copy ?");
-
-  self.execute(8095000000 * 1.999999);
-
-  //rsg::Actor::killAll();
   host1.turnOff();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
   host1.turnOn();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
-  self.send(*mbox,"Do you copy ?");
-  self.sleep(1);
+  
   self.quit();
   return 0;
 }
