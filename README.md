@@ -36,7 +36,7 @@ information.
   ```
 wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
 tar -xvf thrift-0.9.3.tar.gz
-cd thrift-0.9.3.tar.gz
+cd thrift-0.9.3
 ./configure
 make
 [sudo] make install
@@ -47,7 +47,7 @@ make
   ```bash
   wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
   tar -xvf thrift-0.9.3.tar.gz
-  cd thrift-0.9.3.tar.gz
+  cd thrift-0.9.3
   export CXXFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && export CFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && ./configure
   make
   [sudo] make install
