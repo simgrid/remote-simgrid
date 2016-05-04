@@ -11,16 +11,16 @@
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
-#include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
+#include <stdio.h>
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_NODE_2, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -31,16 +31,15 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 
 int main(int argc, char **argv) {
-
-  XBT_INFO("hello from Client");
-  //const char *msg = "balrog";
-  double dataInt = -80808080;
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-  rsg::Comm &comm = rsg::Comm::send_init(&self, *mbox);
-  comm.setSrcData((void*) &dataInt, sizeof(double));
-  comm.start();
-  comm.wait();
+  char *received = self.recv(*mbox);
+  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+  
+  const char * sendMessage = "Ok";
+  self.send(*mbox, sendMessage);
+  XBT_INFO("Received -> %s ", sendMessage);
+  
   self.quit();
   return 0;
 }

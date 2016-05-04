@@ -198,14 +198,15 @@ void RsgCommHandler::wait(std::string& _return, const int64_t addr) {
   try {
     void **buffer = (void**) buffers->at((unsigned long int)addr);
     if(buffer) {
-      _return.assign((char*)buffer, sizeof(double));
+      printf("%s \n", *(char**)buffer);
+      _return.assign(*(char**)buffer, strlen(*(char**)buffer)); //FIXME
       free(buffer);
       buffers->erase(addr);
     } else {
       xbt_die("Empty dst buffer");
     }
   } catch (std::out_of_range& e) {
-
+    XBT_INFO("sender side");
 	}
 }
 
@@ -227,11 +228,12 @@ void RsgCommHandler::setRate(const int64_t addr, const double rate) {
 void RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
   s4u::Comm *comm = (s4u::Comm*) addr;
   char* binary = (char*) malloc(buff.size()*sizeof(char));
-  memcpy(&binary, buff.c_str(), buff.size()*sizeof(char));
+  memcpy(binary, buff.c_str(), buff.size()*sizeof(char));
+  printf("%s\n", buff.c_str());
   comm->setSrcData((void*)binary, sizeof(void*));
 }
 
-void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) {
+void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) { //FIXME USE THE SIZE
   s4u::Comm *comm = (s4u::Comm*) addr;
   unsigned long int bufferAddr;
   unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));

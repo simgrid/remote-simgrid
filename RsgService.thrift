@@ -55,7 +55,6 @@ service RsgComm {
   void setDstData(1:i64 addr, 2:i64 size)
   void setSrcData(1:i64 addr, 2:binary buff);
 
-
   //void wait_timeout(1:i64 addr, 2:double timeout)
   //i64 send_async(1:i64 sender, 2:i64 dest, 3:i32 simulatedByteAmount)
   //void setSrcDataSize(1:i64 addr, 2:i64 size)
