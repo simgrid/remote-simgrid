@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
   
   const char * sendMessage = "Ok";
-  self.send(*mbox, sendMessage);
+  self.send(*mbox, sendMessage, strlen(sendMessage) + 1);
   XBT_INFO("Received -> %s ", sendMessage);
   
   self.quit();

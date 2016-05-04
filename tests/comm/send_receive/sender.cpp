@@ -40,6 +40,5 @@ int main(int argc, char **argv) {
   comm.wait();
   
   self.quit();  
-  XBT_INFO("end of async sender");
   return 0;
 }

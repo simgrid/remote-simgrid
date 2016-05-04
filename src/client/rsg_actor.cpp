@@ -42,19 +42,20 @@ void rsg::Actor::execute(const double flops) {
 	pActorService->execute(flops);
 }
 
-void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content) {
-	this->send(mailbox,content, strlen(content)+1);
+void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int dataSize) {
+	this->send(mailbox, content,dataSize ,dataSize);
 }
 
-void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int simulatedSize) {
-	std::string strContent(content, strlen(content));
+void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content,int dataSize, int simulatedSize) {
+	std::string strContent(content, dataSize);
 	pActorService->send(mailbox.getRemote(), strContent, simulatedSize);
 }
 
 char *rsg::Actor::recv(Mailbox &mailbox) {
 	std::string res;
 	pActorService->recv(res, mailbox.getRemote());
-	char *content = xbt_strdup(res.c_str());
+	char *content = (char*) malloc(sizeof(char*) * res.length());
+  memcpy(content, res.data(), res.length());
 	return content;
 }
 

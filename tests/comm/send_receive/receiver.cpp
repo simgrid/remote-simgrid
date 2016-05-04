@@ -38,12 +38,11 @@ int main(int argc, char **argv) {
   comm.setDstData((void**)&buffer, 14);
   comm.start();
   
-  //self.execute(8095000000 * 1.999999);
+  self.execute(8095000000 * 1.999999);
 
   comm.wait();
   
   XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
   self.quit();
-  XBT_INFO("end of async receiver");
   return 0;
 }

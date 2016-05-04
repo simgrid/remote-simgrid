@@ -83,7 +83,6 @@ void rsg::Comm::wait() {
   if (dstBuff_ != NULL) {
     std::string res;
     pCommService->wait(res, p_remoteAddr);
-    printf("received %s \n", res.c_str());
     char * chars = (char*) malloc(res.size());
     memcpy(chars, res.c_str(), res.size());
     *(void**) this->dstBuff_ = (char *) chars;

@@ -29,14 +29,15 @@ void RsgActorHandler::execute(const double flops) {
 
 void RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
   s4u::Mailbox *mbox = (s4u::Mailbox*)mbAddr;
-  char *contentChar = (char*) content.c_str();
-  pSelf.send(*mbox, xbt_strdup(contentChar), simulatedSize);
+  std::string *internalPtr = new std::string(content.data(), content.length());
+  pSelf.send(*mbox, (void*) internalPtr, simulatedSize);
 }
 
 void RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
   s4u::Mailbox *mbox = (s4u::Mailbox*) mbAddr;
-  char *content = (char*)pSelf.recv(*mbox);
-  _return.assign(content);
+  std::string *content = (std::string*) pSelf.recv(*mbox);
+  _return.assign(content->data(), content->length());
+  delete content;
 }
 
 //FIXME the three following function assume that you can only have the "self" actor.
@@ -198,15 +199,16 @@ void RsgCommHandler::wait(std::string& _return, const int64_t addr) {
   try {
     void **buffer = (void**) buffers->at((unsigned long int)addr);
     if(buffer) {
-      printf("%s \n", *(char**)buffer);
-      _return.assign(*(char**)buffer, strlen(*(char**)buffer)); //FIXME
+      std::string *res = (std::string*) *buffer;
+      _return.assign(res->data(), res->length());
+      delete res;
       free(buffer);
       buffers->erase(addr);
     } else {
       xbt_die("Empty dst buffer");
     }
   } catch (std::out_of_range& e) {
-    XBT_INFO("sender side");
+
 	}
 }
 
@@ -227,10 +229,8 @@ void RsgCommHandler::setRate(const int64_t addr, const double rate) {
 
 void RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
   s4u::Comm *comm = (s4u::Comm*) addr;
-  char* binary = (char*) malloc(buff.size()*sizeof(char));
-  memcpy(binary, buff.c_str(), buff.size()*sizeof(char));
-  printf("%s\n", buff.c_str());
-  comm->setSrcData((void*)binary, sizeof(void*));
+  std::string *payload = new std::string(buff.data(), buff.length());
+  comm->setSrcData((void*)payload, sizeof(void*));
 }
 
 void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) { //FIXME USE THE SIZE
@@ -238,6 +238,6 @@ void RsgCommHandler::setDstData(const int64_t addr, const int64_t size) { //FIXM
   unsigned long int bufferAddr;
   unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
   bufferAddr = ptr;
-  comm->setDstData((void**) bufferAddr, sizeof(void*));
+  comm->setDstData((void**) bufferAddr, size);
   buffers->insert({addr, bufferAddr});
 }

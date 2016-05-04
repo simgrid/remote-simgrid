@@ -38,8 +38,8 @@ public:
   void sleep(const double duration);
   void execute(const double flops);
   char *recv(Mailbox &mailbox);
-  void send(Mailbox &mailbox, const char*content);
-  void send(Mailbox &mailbox, const char*content, int simulatedSize);
+  void send(Mailbox &mailbox,const char*content, int dataSize);
+  void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
   const char*getName();
   Host *getHost();
   int getPid();
