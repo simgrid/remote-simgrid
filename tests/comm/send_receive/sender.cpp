@@ -36,9 +36,23 @@ int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
   rsg::Comm &comm = rsg::Comm::send_init(&self, *mbox);
-  comm.setSrcData((void*)msg, strlen(msg));
+  comm.setSrcData((void*)msg, strlen(msg) + 1);
   comm.start();
   comm.wait();
+  
+  const char *msg2 = "Did you copy ? ";
+  rsg::Comm &comm2 = rsg::Comm::send_async(&self, *mbox, (void*) msg2, strlen(msg2) + 1);
+  comm2.wait();
+  
+  const char *msg3 = "Halo ?!";
+  rsg::Comm &comm3 = rsg::Comm::send_async(&self, *mbox, (void*) msg3, strlen(msg2) + 1);
+  comm3.wait();
+  
+  const char *msg4 = "Se ya ";
+  rsg::Comm &comm4 = rsg::Comm::send_init(&self, *mbox);
+  comm4.setSrcData((void*)msg4, strlen(msg4));
+  comm4.start();
+  comm4.wait();
   
   self.quit();  
   return 0;

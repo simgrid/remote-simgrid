@@ -26,17 +26,24 @@ rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *d
   xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) instead");
 }
 
+rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data) {
+  xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size) instead");
+}
+
+//TODO Use the simulated amount
 rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
   if(!pCommService) initNetworkService();
-  rsg::Comm &res = *(new rsg::Comm(pCommService->send_init(0, dest.p_remoteAddr))); // FIXME memory leak
-
-  //res.setRemains(simulatedByteAmount);
-  res.srcBuff_ = data;
-  res.srcBuffSize_ = size;
-
-  res.start();
+  std::string dataStr((char*) data, size);
+  
+  rsg::Comm &res = *(new rsg::Comm(pCommService->send_async(0, dest.p_remoteAddr, dataStr, size, simulatedByteAmount)));
   return res;
 }
+
+rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size) {
+  if(!pCommService) initNetworkService();
+  return rsg::Comm::send_async(sender, dest, data, size, size);
+}
+
 
 rsg::Comm &rsg::Comm::recv_init(rsg::Actor *receiver, rsg::Mailbox &from) {
   if(!pCommService) initNetworkService();
@@ -44,8 +51,8 @@ rsg::Comm &rsg::Comm::recv_init(rsg::Actor *receiver, rsg::Mailbox &from) {
 }
 
 rsg::Comm &rsg::Comm::recv_async(rsg::Actor *receiver, rsg::Mailbox &from, void **data) {
-  rsg::Comm &res = *(new rsg::Comm(pCommService->recv_async(0, from.p_remoteAddr))); //FIXME memory leaks
-  res.setDstData(data);
+  rsg::Comm &res = *(new rsg::Comm(pCommService->recv_async(0, from.p_remoteAddr))); 
+  res.dstBuff_ = data;
   return res;
 }
 
@@ -96,11 +103,12 @@ void rsg::Comm::wait() {
 }
 
 void rsg::Comm::setDstData(void **buff) {
-  xbt_die("size is needed in remote-simgrid. Please use setDstData(void **buff, size_t size) instead.");
+  this->dstBuff_ = buff;
+  pCommService->setDstData(p_remoteAddr);
 }
 
 void rsg::Comm::setDstData(void ** buff, size_t size) {
   this->dstBuff_ = buff;
   this->dstBuffSize_ = size;
-  pCommService->setDstData(p_remoteAddr, size);
+  pCommService->setDstData(p_remoteAddr);
 }

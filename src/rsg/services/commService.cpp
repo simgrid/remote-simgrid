@@ -25,23 +25,28 @@ int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest)
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
   s4u::Mailbox *mbox = (s4u::Mailbox*) from_;
   s4u::Actor *actorReceiver = &s4u::Actor::self();
-
-  return (int64_t) &s4u::Comm::recv_init(actorReceiver, *mbox);
+  s4u::Comm &res = s4u::Comm::recv_init(actorReceiver, *mbox);
+  
+  return (int64_t) &res; 
 }
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
-  // s4u::Mailbox *mbox = (s4u::Mailbox*) from_;
-  // s4u::Actor *actorReceiver = &s4u::Actor::self();
-  // XBT_INFO("rsg::RsgCommHandler::recv_async %s -> %s", actorReceiver->getName(), mbox->getName());
-  // void *buffer = (void*) malloc(sizeof(void*));
-  // unsigned long int comm_addr = (int64_t)&s4u::Comm::recv_async(actorReceiver, *mbox, &buffer);
-  // buffers->insert({comm_addr, buffer});
-  // return comm_addr;
-  return 0;
+  s4u::Mailbox *mbox = (s4u::Mailbox*) from_;
+  s4u::Actor *actorReceiver = &s4u::Actor::self();
+  unsigned long int bufferAddr;
+  unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
+  bufferAddr = ptr;
+  s4u::Comm &comm = s4u::Comm::recv_init(actorReceiver, *mbox);
+  comm.setDstData((void**) bufferAddr, sizeof(std::string*));
+  buffers->insert({(int64_t) &comm, (unsigned long int) bufferAddr});
+  return (int64_t) &comm;
 }
 
-int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int32_t simulatedByteAmount) {
-  return 0;
+int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
+  s4u::Mailbox *mbox = (s4u::Mailbox*) dest;
+  s4u::Actor *senderAct = &s4u::Actor::self();
+  std::string *strData = new std::string(data.data(), data.length());
+  return (int64_t) &s4u::Comm::send_async(senderAct, *mbox, (void*) strData, simulatedByteAmount);
 }
 
 void rsg::RsgCommHandler::start(const int64_t addr) {
@@ -57,8 +62,8 @@ void rsg::RsgCommHandler::wait(std::string& _return, const int64_t addr) {
     if(buffer) {
       std::string *res = (std::string*) *buffer;
       _return.assign(res->data(), res->length());
-      delete res;
-      free(buffer);
+      //delete res;
+      //free(buffer);
       buffers->erase(addr);
     } else {
       xbt_die("Empty dst buffer");
@@ -89,11 +94,11 @@ void rsg::RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff
   comm->setSrcData((void*)payload, sizeof(void*));
 }
 
-void rsg::RsgCommHandler::setDstData(const int64_t addr, const int64_t size) { //FIXME USE THE SIZE
+void rsg::RsgCommHandler::setDstData(const int64_t addr) { //FIXME USE THE SIZE
   s4u::Comm *comm = (s4u::Comm*) addr;
   unsigned long int bufferAddr;
   unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
   bufferAddr = ptr;
-  comm->setDstData((void**) bufferAddr, size);
+  comm->setDstData((void**) bufferAddr, sizeof(std::string*));
   buffers->insert({addr, bufferAddr});
 }
