@@ -15,7 +15,19 @@ set(CLIENT_SOURCES_THRIFT
     rsg/Socket.cpp
 )
 
-add_executable(rsg_server main_server.cpp rsg/Server.cpp rsg/Socket.cpp rsg/RsgServiceImpl.cpp)
+set(SERVER_SOURCES
+    ${COMMON_SOURCES}
+    main_server.cpp 
+    rsg/Server.cpp 
+    rsg/Socket.cpp 
+    rsg/services/actorService.cpp      ../include/rsg/services/actorService.hpp
+    rsg/services/commService.cpp       ../include/rsg/services/commService.hpp
+    rsg/services/mailboxService.cpp    ../include/rsg/services/mailboxService.hpp
+    rsg/services/hostService.cpp       ../include/rsg/services/actorService.hpp
+)
+
+
+add_executable(rsg_server ${SERVER_SOURCES})
 
 add_library(thriftClient SHARED ${CLIENT_SOURCES_THRIFT})
 

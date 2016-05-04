@@ -10,6 +10,8 @@
 #include <string>
 #include <iostream>
 
+using namespace ::simgrid;
+
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 

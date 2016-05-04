@@ -1,7 +1,8 @@
 #include "rsg/host.hpp"
 #include "client/RsgClientEngine.hpp"
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 
+using namespace ::simgrid;
 
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL_HOST, RSG,"RSG Host");
 XBT_LOG_EXTERNAL_CATEGORY(RSG);

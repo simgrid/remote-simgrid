@@ -7,7 +7,7 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
@@ -26,6 +26,8 @@ using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
+
+using namespace ::simgrid;
 
 using boost::shared_ptr;
 using namespace ::RsgService;

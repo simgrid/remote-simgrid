@@ -6,7 +6,7 @@
 #include "simgrid/s4u.h"
 #include <stdlib.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include <thrift/processor/TMultiplexedProcessor.h>
 
 #include "rsg/Server.hpp"
@@ -19,7 +19,7 @@ using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
-using namespace simgrid;
+using namespace ::simgrid;
 
 SocketServer *socketServer;
 std::vector<std::thread*> threads;
@@ -42,10 +42,10 @@ static int rsg_representative(int argc, char **argv) {
     execv(newargv[0], newargv);
 	}
 
-  shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
-  shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
-  shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
-  shared_ptr<RsgCommHandler> commHandler(new RsgCommHandler());
+  shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
+  shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
+  shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+  shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
 

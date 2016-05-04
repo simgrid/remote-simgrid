@@ -4,6 +4,8 @@
 #include <bitset>
 #include <iostream>
 
+using namespace ::simgrid;
+
 boost::shared_ptr<RsgCommClient> rsg::Comm::pCommService(NULL);
 
 rsg::Comm::Comm(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr) {

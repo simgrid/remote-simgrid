@@ -9,6 +9,8 @@
 #include "rsg/mailbox.hpp"
 #include "client/RsgClientEngine.hpp"
 
+using namespace ::simgrid;
+
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL,RSG,"RSG Communication Mailboxes");
 

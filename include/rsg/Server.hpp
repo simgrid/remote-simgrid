@@ -5,7 +5,7 @@
 #include <sys/socket.h>
 #include <thread>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 
 #include <boost/unordered_map.hpp>
 #include <thrift/server/TSimpleServer.h>

@@ -7,7 +7,7 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
@@ -29,6 +29,7 @@ using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
 using namespace ::RsgService;
+using namespace ::simgrid;
 
 int main(int argc, char **argv) {
 

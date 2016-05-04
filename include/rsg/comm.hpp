@@ -9,7 +9,7 @@
 #include <boost/unordered_map.hpp>
 #include <xbt/string.hpp>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 
