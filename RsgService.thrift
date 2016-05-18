@@ -20,6 +20,7 @@ service RsgActor {
   void setKillTime(1:i64 addr, 2:double time)
   double getKillTime(1:i64 addr)
   void killAll()
+  i64 createActor(1:string name, 2:i64 host, 3:i32 killTime)
 }
 
 service RsgMailbox {

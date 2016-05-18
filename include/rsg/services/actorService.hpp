@@ -9,6 +9,8 @@
 
 #include "simgrid/s4u.h"
 
+#include <vector>
+
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 
@@ -37,6 +39,7 @@ class RsgActorHandler : virtual public RsgActorIf {
   void setKillTime(const int64_t addr, const double time);
   double getKillTime(const int64_t addr);
   void killAll();
+  int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
   private :
     s4u::Actor& pSelf;// =
     TServerFramework* pServer;

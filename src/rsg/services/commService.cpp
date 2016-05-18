@@ -62,8 +62,8 @@ void rsg::RsgCommHandler::wait(std::string& _return, const int64_t addr) {
     if(buffer) {
       std::string *res = (std::string*) *buffer;
       _return.assign(res->data(), res->length());
-      //delete res;
-      //free(buffer);
+      delete res;
+      free(buffer);
       buffers->erase(addr);
     } else {
       xbt_die("Empty dst buffer");

@@ -21,7 +21,6 @@ using namespace ::apache::thrift::server;
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-SocketServer *socketServer;
 std::vector<std::thread*> threads;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
@@ -64,8 +63,9 @@ static int rsg_representative(int argc, char **argv) {
   processor->registerProcessor(
       "RsgComm",
       shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
-
-  TServerFramework *server = socketServer->acceptClient(processor);
+  
+  SocketServer &socketServer = SocketServer::getSocketServer();
+  TServerFramework *server = socketServer.acceptClient(processor);
 
   handler->setServer(server);
   server->serve();
@@ -73,45 +73,10 @@ static int rsg_representative(int argc, char **argv) {
 	return 0;
 }
 
-/*Fork process and launch it with valgring*/
-/*
-  if (! fork()) {
-    int newargc = argc-1+2+1+1;
-    char **newargv = (char**)calloc(newargc, sizeof(char*));
-    newargv[0] = (char*)"/usr/bin/env";
-    newargv[1] = (char*)"--";
-    newargv[2] = (char*)"valgrind";
-    for(int i=1; i < argc; i++) {
-      newargv[2+i] = argv[i];
-      std::cout<< "ici : " << argv[i] << std::endl;
-    }
-    newargv[newargc-1] = NULL;
-    execv(newargv[0], newargv);
-	}
-
-  // With gdb
-  if (! fork()) {
-    int newargc = argc-1+2+1+2;
-    char **newargv = (char**)calloc(newargc, sizeof(char*));
-    newargv[0] = (char*)"/usr/bin/env";
-    newargv[1] = (char*)"--";
-    newargv[2] = (char*)"cgdb";
-    newargv[3] = (char*)"--args";
-    for(int i=1; i < argc; i++) {
-      newargv[3+i] = argv[i];
-      std::cout<< "ici : " << argv[i] << std::endl;
-    }
-    newargv[newargc-1] = NULL;
-    execv(newargv[0], newargv);
-  }
-
-
-//*/
-
 int main(int argc, char **argv) {
 
-  socketServer = new SocketServer("127.0.0.1", 9090);
-  socketServer->connect();
+  SocketServer &socketServer = SocketServer::createSocketServer(std::string("127.0.0.1"), 9090);
+  socketServer.connect();
 
   s4u::Engine *e = new s4u::Engine(&argc,argv);
 
@@ -126,7 +91,6 @@ int main(int argc, char **argv) {
   e->loadDeployment(argv[2]);
   e->run();
 
-  socketServer->closeServer();
-  delete socketServer;
+  socketServer.closeServer();
   return 0;
 }

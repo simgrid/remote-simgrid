@@ -24,6 +24,9 @@ using namespace ::apache::thrift::server;
 using boost::shared_ptr;
 using namespace  ::RsgService;
 
+boost::shared_ptr<SocketServer> SocketServer::sServer(NULL);
+bool SocketServer::sCreated = false;
+
 
 void connectionHandler(TServerFramework *server) {
   server->serve();
@@ -32,11 +35,28 @@ void connectionHandler(TServerFramework *server) {
 SocketServer::SocketServer(std::string hostname, int port) : pHostname(hostname),
                                                              pPort(port),
                                                              pEndServer(false) {
-
+                                                               
 }
 
 SocketServer::~SocketServer() {
 }
+ 
+SocketServer& SocketServer::getSocketServer() {
+  if(!SocketServer::sCreated) {
+    xbt_die("Socket server must be created first");
+  }
+  return *(SocketServer::sServer.get());
+}
+
+SocketServer& SocketServer::createSocketServer(std::string host, int port) {
+  if(SocketServer::sCreated) {
+    xbt_die("Error, this method should be called just once.");
+  }
+  SocketServer::sServer.reset(new SocketServer(host, port));
+  sCreated = true;
+  return *(SocketServer::sServer.get());
+}
+
 
 int SocketServer::closeServer() {
   pEndServer = true;
@@ -71,7 +91,6 @@ TServerFramework* SocketServer::acceptClient(TProcessor *processor) {
   // we send the new port to the clients
 
   send(new_sd, &rpcPort, sizeof(int), 0);
-
   // We could wait for client ack before registering a pointer to the server.
   return server;
 }

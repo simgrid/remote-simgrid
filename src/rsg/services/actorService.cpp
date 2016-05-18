@@ -1,9 +1,19 @@
 #include "rsg/services.hpp"
+#include "rsg/Server.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
 #include <iostream>
+#include <boost/shared_ptr.hpp>
+
+#include <thrift/processor/TMultiplexedProcessor.h>
+
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
+using namespace ::apache::thrift::transport;
+using namespace ::apache::thrift::server;
+
 
 using namespace ::apache::thrift::server;
 using namespace  ::RsgService;
@@ -78,3 +88,47 @@ double rsg::RsgActorHandler::getKillTime(const int64_t addr) {
 void rsg::RsgActorHandler::killAll() {
   s4u::Actor::killAll();
 }
+
+//TODO find the good emplacement
+class Master : public simgrid::s4u::Actor {
+public:
+  Master() : simgrid::s4u::Actor(){}
+  
+    virtual int main(int argc, char **argv) {
+      boost::shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
+      boost::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
+      boost::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+      boost::shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
+
+      TMultiplexedProcessor* processor = new TMultiplexedProcessor();
+
+      processor->registerProcessor(
+          "RsgActor",
+          boost::shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
+
+      processor->registerProcessor(
+          "RsgMailbox",
+          boost::shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
+
+      processor->registerProcessor(
+          "RsgHost",
+          boost::shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
+
+      processor->registerProcessor(
+          "RsgComm",
+          boost::shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
+
+      TServerFramework *server = SocketServer::getSocketServer().acceptClient(processor);
+
+      handler->setServer(server);
+      server->serve();
+      delete server;
+      return 1;
+  };
+};
+
+int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t host, const int32_t killTime) {
+
+  return 0;
+}
+
