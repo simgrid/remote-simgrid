@@ -62,8 +62,6 @@ namespace rsg {
     size_t dstBuffSize_ = 0;
     void *srcBuff_ = NULL;
     size_t srcBuffSize_ = 0;
-    static void initNetworkService();
-    static boost::shared_ptr<RsgCommClient> pCommService;
   };
 
 } // namespace simgrid::rsg

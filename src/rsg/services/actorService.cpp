@@ -90,11 +90,12 @@ void rsg::RsgActorHandler::killAll() {
 }
 
 //TODO find the good emplacement
-class Master : public simgrid::s4u::Actor {
+class RsgActor : public simgrid::s4u::Actor {
 public:
-  Master() : simgrid::s4u::Actor(){}
+  RsgActor() : simgrid::s4u::Actor(){}
   
     virtual int main(int argc, char **argv) {
+      printf("createing an actorrrrr");
       boost::shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
       boost::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
       boost::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
@@ -127,8 +128,9 @@ public:
   };
 };
 
-int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t host, const int32_t killTime) {
-
+int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostAddr, const int32_t killTime) {
+  s4u::Host *host = (s4u::Host*)hostAddr;
+  simgrid::s4u::Actor::createActor<RsgActor>(name.c_str(), host, 0, NULL);
   return 0;
 }
 

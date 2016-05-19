@@ -39,8 +39,15 @@ public:
 	* Because thrift doesn't create a generic interface for all clients, we have to store it into a void*.
 	* It is an issue to delete the object when it is done.
 	*/
-	template<class ServiceType> ServiceType* serviceClientFactory(std::string name) {
-			return new ServiceType(getMultiplexedProtocol(name));
+	template<class ServiceType> ServiceType& serviceClientFactory(std::string name) {			
+			ServiceType * res;
+			try {
+				res = static_cast<ServiceType*>(pServices->at(name));
+			} catch (std::out_of_range& e) {
+				res = new ServiceType(getMultiplexedProtocol(name));
+				pServices->insert({name, res});
+			}
+			return *res;
 	};
 
 private:
@@ -52,7 +59,8 @@ private:
   int pPort;
 	boost::shared_ptr<TBinaryProtocol> pProtocol;
 	boost::shared_ptr<TBufferedTransport> pTransport;
-
+	
+	boost::unordered_map<std::string, void *> *pServices; //FIXME void* means that we canot properly call the destructor.
 	static ClientEngine* pInstance;
 };
 

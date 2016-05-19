@@ -7,7 +7,7 @@ struct rsgHostCurrentResType {
   2:string name
 }
 
-service RsgActor {
+service RsgActor extends IService   {
   void sleep(1:double duration)
   void execute(1:double flops)
   void send(1:i64 mbAddr,2:string content, 3:i64 simulatedSize)
@@ -23,11 +23,11 @@ service RsgActor {
   i64 createActor(1:string name, 2:i64 host, 3:i32 killTime)
 }
 
-service RsgMailbox {
+service RsgMailbox extends IService  {
   i64 mb_create(1:string name)
 }
 
-service RsgHost {
+service RsgHost extends IService  {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()
   double speed(1:i64 addr)
@@ -42,7 +42,7 @@ service RsgHost {
   i32 core_count(1:i64 addr)
 }
 
-service RsgComm {
+service RsgComm extends IService  {
   i64 send_init(1:i64 sender, 2:i64 dest)
   i64 recv_init(1:i64 receiver, 2:i64 from_)
 

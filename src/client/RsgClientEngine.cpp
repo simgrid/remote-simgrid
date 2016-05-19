@@ -15,6 +15,7 @@ using namespace ::simgrid;
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
+
 ClientEngine *ClientEngine::pInstance = NULL;
 ClientEngine& ClientEngine::getInstance() {
   if (pInstance == NULL) {
@@ -27,9 +28,10 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
                                                  pHostname(hostname),
                                                  pPort(port),
                                                  pProtocol(NULL),
-                                                 pTransport(NULL)
+                                                 pTransport(NULL),
+                                                 pServices(new boost::unordered_map<std::string, void*> ())
                                                  {
-
+                                                   
   int connectSock = socket_connect(hostname.c_str() , port);
   if(connectSock <= 0) {
       fprintf(stderr,"error, cannot connect to server\n");

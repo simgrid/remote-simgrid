@@ -29,9 +29,10 @@ private:
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
   static Actor &self();
+	static void killAll();
+	static Actor &createActor();
 	void kill() {this->quit();}
   void quit();
-	static void killAll();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
 	double getKillTime();
@@ -47,7 +48,6 @@ public:
 private:
 	static Actor *pSelf;
   rsg::Host *pHost;
-	static boost::shared_ptr<RsgActorClient> pActorService;
 };
 }} // namespace simgrid::rsg
 

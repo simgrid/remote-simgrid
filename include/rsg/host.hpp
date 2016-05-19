@@ -49,11 +49,9 @@ namespace rsg {
     unsigned long int p_remoteAddr = 0;
 
   private :
-    static void initNetworkService();
 
     static Host *pSelf;
     static boost::unordered_map<std::string, Host *> *hosts;
-    static boost::shared_ptr<RsgHostClient> pHostService;
 
   };
 
