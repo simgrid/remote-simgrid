@@ -48,11 +48,6 @@ namespace rsg {
     simgrid::xbt::string name_;
     unsigned long int p_remoteAddr = 0;
 
-  private :
-
-    static Host *pSelf;
-    static boost::unordered_map<std::string, Host *> *hosts;
-
   };
 
 } // namespace simgrid::rsg

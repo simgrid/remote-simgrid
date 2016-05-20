@@ -8,49 +8,36 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL_HOST, RSG,"RSG Host");
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 
 using namespace simgrid;
-boost::unordered_map <std::string, rsg::Host *> *rsg::Host::hosts = new boost::unordered_map<std::string, rsg::Host*> ();
-
-rsg::Host *rsg::Host::pSelf = NULL;
 
 rsg::Host::Host(const char *name, unsigned long int remoteAddr) {
 	name_ = simgrid::xbt::string(name);
 	p_remoteAddr = remoteAddr;
-	hosts->insert({name, this});
 };
 
 rsg::Host::Host(const simgrid::xbt::string name, unsigned long int remoteAddr) {
 	name_ = simgrid::xbt::string(name);
 	p_remoteAddr = remoteAddr;
-	hosts->insert({name, this});
 };
 
 rsg::Host::~Host() {}
 
 rsg::Host &rsg::Host::current() {
-	if (pSelf == NULL) {
-		
+	rsgHostCurrentResType res;
+	
+	ClientEngine& engine = ClientEngine::getInstance();
+	engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
+	
+  return *(new Host(res.name, res.addr)); // FIXME never deleted
 
-		rsgHostCurrentResType res;
-		
-		ClientEngine& engine = ClientEngine::getInstance();
-		engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
-		
-    pSelf = new Host(res.name, res.addr);
-	}
-	return *pSelf;
 }
 
 rsg::Host &rsg::Host::by_name(std::string name) {
-	try {
-		return *Host::hosts->at(name);
-	} catch (std::out_of_range& e) {
-		ClientEngine& engine = ClientEngine::getInstance();
-		unsigned long int addr = engine.serviceClientFactory<RsgHostClient>("RsgHost").by_name(name);
-		if(addr == 0) {
- 			xbt_die("No such host: %s", name.c_str());
-		}
-		return *(new rsg::Host(name, addr));
+	ClientEngine& engine = ClientEngine::getInstance();
+	unsigned long int addr = engine.serviceClientFactory<RsgHostClient>("RsgHost").by_name(name);
+	if(addr == 0) {
+			xbt_die("No such host: %s", name.c_str());
 	}
+	return *(new rsg::Host(name, addr));
 }
 
 double rsg::Host::speed() {

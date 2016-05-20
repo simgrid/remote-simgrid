@@ -95,7 +95,6 @@ public:
   RsgActor() : simgrid::s4u::Actor(){}
   
     virtual int main(int argc, char **argv) {
-      printf("createing an actorrrrr");
       boost::shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
       boost::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
       boost::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());

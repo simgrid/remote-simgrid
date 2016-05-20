@@ -44,7 +44,6 @@ protected:
 private:
 	std::string p_name;
 	unsigned long int p_remoteAddr = 0;
-	static boost::unordered_map<std::string, Mailbox *> *mailboxes;
 };
 }} // namespace simgrid::rsg
 

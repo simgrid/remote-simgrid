@@ -31,12 +31,28 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 using namespace ::simgrid;
 
+int actor() {
+  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::Actor &self = rsg::Actor::self();
+  char *received = self.recv(*mbox);
+  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+  self.quit();
+  return 1;
+}
+
 int main(int argc, char **argv) {
+  const char *msg = "Do you copy ? ";
   rsg::Actor &self = rsg::Actor::self();
   rsg::Host host1 = rsg::Host::by_name("host1");
 
-  XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
+  rsg::Actor::createActor("receiver" , host1 , actor);
+  
+  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
 
+  self.send(*mbox,msg, strlen(msg) + 1);
+  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  
   self.quit();
   return 0;
 }

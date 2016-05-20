@@ -30,7 +30,7 @@ public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
   static Actor &self();
 	static void killAll();
-	static Actor &createActor();
+	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
 	void kill() {this->quit();}
   void quit();
 	void setAutoRestart(bool autorestart);
@@ -44,9 +44,8 @@ public:
   const char*getName();
   Host *getHost();
   int getPid();
-
+	~Actor() {}
 private:
-	static Actor *pSelf;
   rsg::Host *pHost;
 };
 }} // namespace simgrid::rsg

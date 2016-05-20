@@ -10,6 +10,9 @@ using namespace  ::RsgService;
 
 using namespace  ::simgrid;
 
+XBT_LOG_NEW_CATEGORY(SERVER,"Remote SimGrid");
+XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, SERVER, "RSG::Actor");
+
 rsg::RsgHostHandler::RsgHostHandler() : pSelf(*s4u::Host::current()) {
 }
 
@@ -32,6 +35,8 @@ void rsg::RsgHostHandler::current(rsgHostCurrentResType& _return) {
 }
 
 double rsg::RsgHostHandler::speed(const int64_t addr) {
+  XBT_INFO("HELLO");
+
   s4u::Host *host = (s4u::Host*) addr;
   return (double) host->speed();
 }

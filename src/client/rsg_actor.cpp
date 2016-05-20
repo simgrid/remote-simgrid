@@ -15,21 +15,18 @@ using namespace ::simgrid;
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-rsg::Actor *rsg::Actor::pSelf = NULL;
-
 rsg::Actor::Actor() : pHost(NULL) {
 }
 
 rsg::Actor &rsg::Actor::self() {
-	if (pSelf == NULL) {
-		pSelf = new Actor();
-	}
-	return *pSelf;
+	return *(new Actor());
 }
 
 void rsg::Actor::quit(void) {
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
+	engine.close();
+	ClientEngine::reset();
 }
 
 void rsg::Actor::sleep(const double duration) {
@@ -99,6 +96,22 @@ double rsg::Actor::getKillTime() {
 }
 
 void rsg::Actor::killAll() {
-  ClientEngine& engine = ClientEngine::getInstance();
+	ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").killAll();
+}
+
+rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int()> code) {
+	ClientEngine& engine = ClientEngine::getInstance();
+	engine.close();
+	
+	if(fork()) {
+		ClientEngine::reset();
+		ClientEngine::getInstance();
+		code();
+	}
+	
+	engine.connect();
+	engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(name, host.p_remoteAddr, 10 );
+
+	return NULL;
 }
