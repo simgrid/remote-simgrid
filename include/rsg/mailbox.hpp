@@ -9,11 +9,14 @@
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "actor.hpp"
+#include "comm.hpp"
 
 namespace simgrid {
 namespace rsg {
+
+class Comm;
 
 /** @brief Mailboxes
  *
@@ -23,7 +26,7 @@ namespace rsg {
  * sender and receiver.
  */
 class Mailbox {
-
+	friend rsg::Comm;
 private:
 	Mailbox(const char*name, unsigned long int remoteAddr);
 public:
@@ -41,9 +44,6 @@ protected:
 private:
 	std::string p_name;
 	unsigned long int p_remoteAddr = 0;
-	static boost::unordered_map<std::string, Mailbox *> *mailboxes;
-	static boost::shared_ptr<RsgMailboxClient> pMailboxService;
-
 };
 }} // namespace simgrid::rsg
 

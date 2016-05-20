@@ -7,7 +7,7 @@ struct rsgHostCurrentResType {
   2:string name
 }
 
-service RsgActor {
+service RsgActor    {
   void sleep(1:double duration)
   void execute(1:double flops)
   void send(1:i64 mbAddr,2:string content, 3:i64 simulatedSize)
@@ -20,13 +20,14 @@ service RsgActor {
   void setKillTime(1:i64 addr, 2:double time)
   double getKillTime(1:i64 addr)
   void killAll()
+  i64 createActor(1:string name, 2:i64 host, 3:i32 killTime)
 }
 
-service RsgMailbox {
+service RsgMailbox   {
   i64 mb_create(1:string name)
 }
 
-service RsgHost {
+service RsgHost   {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()
   double speed(1:i64 addr)
@@ -39,4 +40,27 @@ service RsgHost {
   void setPstate(1:i64 addr, 2:i32 pstate_index)
   i32 pstate(1:i64 addr)
   i32 core_count(1:i64 addr)
+}
+
+service RsgComm   {
+  i64 send_init(1:i64 sender, 2:i64 dest)
+  i64 recv_init(1:i64 receiver, 2:i64 from_)
+
+  i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size, 5:i64 simulatedByteAmount)
+  //i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size)
+  
+  void start(1:i64 addr)
+  binary wait(1:i64 addr)
+  void setRate(1:i64 addr, 2:double rate);
+
+  i64 getDstDataSize(1:i64 addr)
+
+  i64 recv_async(1:i64 receiver, 2:i64 from_)
+  void setDstData(1:i64 addr)
+  void setSrcData(1:i64 addr, 2:binary buff);
+
+  //void wait_timeout(1:i64 addr, 2:double timeout)
+  //void setSrcDataSize(1:i64 addr, 2:i64 size)
+  //void setSrcData(1:i64 addr, 2:binary buff)
+  //void setDstData(void ** buff);
 }

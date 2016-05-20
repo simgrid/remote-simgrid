@@ -6,7 +6,7 @@
 #include "simgrid/s4u.h"
 #include <stdlib.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include <thrift/processor/TMultiplexedProcessor.h>
 
 #include "rsg/Server.hpp"
@@ -19,9 +19,8 @@ using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
-using namespace simgrid;
+using namespace ::simgrid;
 
-SocketServer *socketServer;
 std::vector<std::thread*> threads;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
@@ -42,59 +41,10 @@ static int rsg_representative(int argc, char **argv) {
     execv(newargv[0], newargv);
 	}
 
-
-  shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
-  shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
-  shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
-
-  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
-
-  processor->registerProcessor(
-      "RsgActor",
-      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
-
-  processor->registerProcessor(
-      "RsgMailbox",
-      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
-
-  processor->registerProcessor(
-      "RsgHost",
-      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
-
-  TServerFramework *server = socketServer->acceptClient(processor);
-
-  handler->setServer(server);
-  server->serve();
-  XBT_INFO("end of rsg_rep");
-  delete server;
-
-
-	return 0;
-}
-
-/*Fork process and launch it with valgring*/
-/*
-static int rsg_representative_valgrind(int argc, char **argv) {
-
-  if (! fork()) {
-    int newargc = argc-1+2+1+1;
-    char **newargv = (char**)calloc(newargc, sizeof(char*));
-    newargv[0] = (char*)"/usr/bin/env";
-    newargv[1] = (char*)"--";
-    newargv[2] = (char*)"valgrind";
-    for(int i=1; i < argc; i++) {
-      newargv[2+i] = argv[i];
-      std::cout<< "ici : " << argv[i] << std::endl;
-    }
-    newargv[newargc-1] = NULL;
-    execv(newargv[0], newargv);
-	}
-
-
-
-  shared_ptr<RsgActorHandler> handler(new RsgActorHandler());
-  shared_ptr<RsgMailboxHandler> mbHandler(new RsgMailboxHandler());
-  shared_ptr<RsgHostHandler> hostHandler(new RsgHostHandler());
+  shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
+  shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
+  shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+  shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
 
@@ -110,20 +60,23 @@ static int rsg_representative_valgrind(int argc, char **argv) {
       "RsgHost",
       shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
 
-  TServerFramework *server = socketServer->acceptClient(processor);
+  processor->registerProcessor(
+      "RsgComm",
+      shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
+  
+  SocketServer &socketServer = SocketServer::getSocketServer();
+  TServerFramework *server = socketServer.acceptClient(processor);
 
   handler->setServer(server);
   server->serve();
-  XBT_INFO("end of rsg_rep");
   delete server;
 	return 0;
 }
-//*/
 
 int main(int argc, char **argv) {
 
-  socketServer = new SocketServer("127.0.0.1", 9090);
-  socketServer->connect();
+  SocketServer &socketServer = SocketServer::createSocketServer(std::string("127.0.0.1"), 9090);
+  socketServer.connect();
 
   s4u::Engine *e = new s4u::Engine(&argc,argv);
 
@@ -138,7 +91,6 @@ int main(int argc, char **argv) {
   e->loadDeployment(argv[2]);
   e->run();
 
-  socketServer->closeServer();
-  delete socketServer;
+  socketServer.closeServer();
   return 0;
 }

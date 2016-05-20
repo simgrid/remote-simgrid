@@ -9,7 +9,7 @@
 #include <boost/unordered_map.hpp>
 #include <xbt/string.hpp>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "rsg/actor.hpp"
 
 namespace simgrid {
@@ -47,13 +47,6 @@ namespace rsg {
   private:
     simgrid::xbt::string name_;
     unsigned long int p_remoteAddr = 0;
-
-  private :
-    static void initNetworkService();
-
-    static Host *pSelf;
-    static boost::unordered_map<std::string, Host *> *hosts;
-    static boost::shared_ptr<RsgHostClient> pHostService;
 
   };
 

@@ -10,41 +10,43 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
+#include "rsg/comm.hpp"
 
 namespace simgrid  {
 namespace rsg {
 
 class Mailbox;
 class Host;
+class Comm;
 
 class Actor {
+	friend rsg::Comm;
 private:
 	Actor();
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
   static Actor &self();
+	static void killAll();
+	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
 	void kill() {this->quit();}
   void quit();
-	static void killAll();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
 	double getKillTime();
   void sleep(const double duration);
   void execute(const double flops);
   char *recv(Mailbox &mailbox);
-  void send(Mailbox &mailbox, const char*content);
-  void send(Mailbox &mailbox, const char*content, int simulatedSize);
+  void send(Mailbox &mailbox,const char*content, int dataSize);
+  void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
   const char*getName();
   Host *getHost();
   int getPid();
-
+	~Actor() {}
 private:
-	static Actor *pSelf;
   rsg::Host *pHost;
-	static boost::shared_ptr<RsgActorClient> pActorService;
 };
 }} // namespace simgrid::rsg
 

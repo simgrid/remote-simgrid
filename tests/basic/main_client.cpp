@@ -7,10 +7,11 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
+#include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
 #include "xbt.h"
@@ -28,30 +29,17 @@ using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
 using namespace ::RsgService;
+using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-
-  XBT_INFO("hello from Client");
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
-
   rsg::Host host1 = rsg::Host::by_name("host1");
-  host1.turnOn();
 
   XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
   XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
   XBT_INFO("actor name -> %s", self.getName());
 
-  self.send(*mbox,"Do you copy ?");
-
   self.execute(8095000000 * 1.999999);
-
-  //rsg::Actor::killAll();
-  host1.turnOff();
-  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
-  host1.turnOn();
-  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
-  self.send(*mbox,"Do you copy ?");
   self.sleep(1);
   self.quit();
   return 0;

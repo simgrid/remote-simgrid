@@ -7,7 +7,7 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
-#include "rsg/RsgServiceImpl.h"
+#include "rsg/services.hpp"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
@@ -16,6 +16,7 @@
 #include "xbt.h"
 #include "simgrid/s4u.h"
 
+#include <stdio.h>
 #include <iostream>
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
@@ -28,29 +29,25 @@ using namespace ::apache::thrift::server;
 
 using boost::shared_ptr;
 using namespace ::RsgService;
+using namespace ::simgrid;
 
 int main(int argc, char **argv) {
 
   XBT_INFO("hello from server");
 
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::Actor &self = rsg::Actor::self();
   rsg::Host &host = rsg::Host::current();
-  self.setAutoRestart(true);
 
   XBT_INFO("Hostname current Peak : %f",  host.currentPowerPeak());
-  XBT_INFO("Hostname current Peak : %f",  host.powerPeakAt(0));
 
   XBT_INFO("hostname : %s", rsg::Host::current().name().c_str());
 
-  XBT_INFO("Received from client : %s", self.recv(*mbox));
   XBT_INFO("core count : %d", host.core_count());
-  XBT_INFO("state count %d ", host.pstatesCount());
-  XBT_INFO("state -> %d ", host.pstate());
+  XBT_INFO("state count %d", host.pstatesCount());
+  XBT_INFO("state -> %d", host.pstate());
   XBT_INFO("actor name -> %s", self.getName());
   XBT_INFO("actor pid -> %d", self.getPid());
   XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
-  XBT_INFO("get kill time -> %d " , self.getKillTime());
   self.quit();
   return 0;
 }
