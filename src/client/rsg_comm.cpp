@@ -14,7 +14,7 @@ rsg::Comm::~Comm() {
 
 }
 
-rsg::Comm &rsg::Comm::send_init(rsg::Actor *sender, rsg::Mailbox &dest) {
+rsg::Comm &rsg::Comm::send_init(rsg::Mailbox &dest) {
   
   ClientEngine& engine = ClientEngine::getInstance();
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
@@ -23,16 +23,16 @@ rsg::Comm &rsg::Comm::send_init(rsg::Actor *sender, rsg::Mailbox &dest) {
   return res;
 }
 
-rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, int simulatedByteAmount) {
+rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, int simulatedByteAmount) {
   xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) instead");
 }
 
-rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data) {
+rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data) {
   xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size) instead");
 }
 
 //TODO Use the simulated amount
-rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
+rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
   ClientEngine& engine = ClientEngine::getInstance();
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -42,19 +42,19 @@ rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *d
   return res;
 }
 
-rsg::Comm &rsg::Comm::send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size) {
+rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size) {
   
-  return rsg::Comm::send_async(sender, dest, data, size, size);
+  return rsg::Comm::send_async(dest, data, size, size);
 }
 
 
-rsg::Comm &rsg::Comm::recv_init(rsg::Actor *receiver, rsg::Mailbox &from) {
+rsg::Comm &rsg::Comm::recv_init(rsg::Mailbox &from) {
   ClientEngine& engine = ClientEngine::getInstance();
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   return *(new rsg::Comm(commService.recv_init(0, from.p_remoteAddr)));
 }
 
-rsg::Comm &rsg::Comm::recv_async(rsg::Actor *receiver, rsg::Mailbox &from, void **data) {
+rsg::Comm &rsg::Comm::recv_async(rsg::Mailbox &from, void **data) {
   ClientEngine& engine = ClientEngine::getInstance();
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   rsg::Comm &res = *(new rsg::Comm(commService.recv_async(0, from.p_remoteAddr))); 

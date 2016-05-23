@@ -18,9 +18,6 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 rsg::Actor::Actor() : pHost(NULL) {
 }
 
-rsg::Actor &rsg::Actor::self() {
-	return *(new Actor());
-}
 
 void rsg::Actor::quit(void) {
   ClientEngine& engine = ClientEngine::getInstance();
@@ -40,7 +37,7 @@ void rsg::Actor::execute(const double flops) {
 }
 
 void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int dataSize) {
-	this->send(mailbox, content,dataSize ,dataSize);
+	rsg::Actor::send(mailbox, content,dataSize ,dataSize);
 }
 
 void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content,int dataSize, int simulatedSize) {

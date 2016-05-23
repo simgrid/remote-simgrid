@@ -25,19 +25,19 @@ namespace rsg {
 
   public:
     ~Comm();
-    static Comm &send_init(Actor *sender, Mailbox &dest);
+    static Comm &send_init(Mailbox &dest);
 
     /* Unsupported */
-    static Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, int simulatedByteAmount);
+    static Comm &send_async(rsg::Mailbox &dest, void *data, int simulatedByteAmount);
     
     /* Unsupported */
-    static rsg::Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data);
+    static rsg::Comm &send_async(rsg::Mailbox &dest, void *data);
     
-    static rsg::Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount);
-    static rsg::Comm &send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size);
+    static rsg::Comm &send_async(rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount);
+    static rsg::Comm &send_async(rsg::Mailbox &dest, void *data, size_t size);
 
-    static Comm &recv_init(Actor *receiver, Mailbox &from);
-    static rsg::Comm &recv_async(rsg::Actor *receiver, rsg::Mailbox &from, void **data);
+    static Comm &recv_init(Mailbox &from);
+    static rsg::Comm &recv_async(rsg::Mailbox &from, void **data);
 
     void start();
     void wait();

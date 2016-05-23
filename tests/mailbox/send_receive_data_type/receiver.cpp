@@ -36,29 +36,28 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor &self = rsg::Actor::self();
-  char *received = self.recv(*mbox);
+  char *received = rsg::Actor::recv(*mbox);
   XBT_INFO("Received : %s with size of %d ", received, strlen(received) );
   
-  int *recInt = (int*) self.recv(*mbox);
+  int *recInt = (int*) rsg::Actor::recv(*mbox);
   XBT_INFO("Received : %d ", *recInt);
   free(recInt);
   
-  recInt = (int*) self.recv(*mbox);
+  recInt = (int*) rsg::Actor::recv(*mbox);
   XBT_INFO("Received : %d ", *recInt);
   
   int *recTabInt;
-  recTabInt = (int*) self.recv(*mbox);
+  recTabInt = (int*) rsg::Actor::recv(*mbox);
   for(int i = 0; i < *recInt ;i++) {
     XBT_INFO(" tab[%d] = %d", i , recTabInt[i]);
   }
   free(recTabInt);
   free(recInt);
   
-  structMsg *recStruct = (structMsg*) self.recv(*mbox);
+  structMsg *recStruct = (structMsg*) rsg::Actor::recv(*mbox);
   XBT_INFO(" recStruct->intMsg = %d", recStruct->intMsg);
   XBT_INFO(" recStruct->msg = %s", recStruct->msg);
   free(recStruct);
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }

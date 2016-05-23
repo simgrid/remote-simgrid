@@ -32,15 +32,14 @@ using namespace ::RsgService;
 using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-  rsg::Actor &self = rsg::Actor::self();
   rsg::Host host1 = rsg::Host::by_name("host1");
 
   XBT_INFO("hostname ->  %s with speed %f", host1.name().c_str(), host1.speed());
   XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
-  XBT_INFO("actor name -> %s", self.getName());
+  //XBT_INFO("actor name -> %s", self.getName());
 
-  self.execute(8095000000 * 1.999999);
-  self.sleep(1);
-  self.quit();
+  rsg::Actor::execute(8095000000 * 1.999999);
+  rsg::Actor::sleep(1);
+  rsg::Actor::quit();
   return 0;
 }

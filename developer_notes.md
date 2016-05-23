@@ -4,7 +4,7 @@ The following steps describes how to add a new feature into remote-simgrid.
 
 ## What is a service in remote-simgrid (RSG)
 
-A service is an object which can be called by a client remotly (see rpc server).
+A service is an object which can be called by a client remotely (see rpc server).
 In remote simgrid, we use service to access to s4u features such as host or actor etc..
 
 ## How to create a new service

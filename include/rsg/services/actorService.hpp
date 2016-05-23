@@ -41,7 +41,6 @@ class RsgActorHandler : virtual public RsgActorIf {
   void killAll();
   int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
   private :
-    s4u::Actor& pSelf;// =
     TServerFramework* pServer;
 
 };

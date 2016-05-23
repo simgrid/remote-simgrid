@@ -35,7 +35,6 @@ int main(int argc, char **argv) {
 
   XBT_INFO("hello from server");
 
-  rsg::Actor &self = rsg::Actor::self();
   rsg::Host &host = rsg::Host::current();
 
   XBT_INFO("Hostname current Peak : %f",  host.currentPowerPeak());
@@ -45,9 +44,9 @@ int main(int argc, char **argv) {
   XBT_INFO("core count : %d", host.core_count());
   XBT_INFO("state count %d", host.pstatesCount());
   XBT_INFO("state -> %d", host.pstate());
-  XBT_INFO("actor name -> %s", self.getName());
-  XBT_INFO("actor pid -> %d", self.getPid());
-  XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
-  self.quit();
+//  XBT_INFO("actor name -> %s", self.getName());
+//  XBT_INFO("actor pid -> %d", self.getPid());
+//  XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
+  rsg::Actor::quit();
   return 0;
 }

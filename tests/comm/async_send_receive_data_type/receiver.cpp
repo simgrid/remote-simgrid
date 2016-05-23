@@ -35,10 +35,9 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor &self = rsg::Actor::self();
   
   char *buffer = NULL;
-  rsg::Comm &comm = rsg::Comm::recv_init(&self, *mbox);
+  rsg::Comm &comm = rsg::Comm::recv_init(*mbox);
   comm.setDstData((void**)&buffer);
   comm.start();
   comm.wait();
@@ -48,12 +47,12 @@ int main(int argc, char **argv) {
   buffer = NULL;
   
   int *nbElement = NULL;
-  comm = rsg::Comm::recv_async(&self, *mbox, (void**)&nbElement);
+  comm = rsg::Comm::recv_async(*mbox, (void**)&nbElement);
   comm.wait();
   XBT_INFO("I will receive an array of %d elem ", *nbElement);
   
   int *array = NULL;
-  comm = rsg::Comm::recv_async(&self, *mbox, (void**)&array);
+  comm = rsg::Comm::recv_async(*mbox, (void**)&array);
   comm.wait();
   for(int i = 0 ; i < *nbElement; i++) {
     XBT_INFO("array[%d] = %d ", i, array[i]);
@@ -63,7 +62,7 @@ int main(int argc, char **argv) {
   free(array);
   
   structMsg *recStruct = NULL;
-  comm = rsg::Comm::recv_async(&self, *mbox, (void**)&recStruct);
+  comm = rsg::Comm::recv_async(*mbox, (void**)&recStruct);
   comm.wait();
   
   XBT_INFO(" recStruct->intMsg = %d", recStruct->intMsg);
@@ -71,6 +70,6 @@ int main(int argc, char **argv) {
 
   free(recStruct);
 
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }

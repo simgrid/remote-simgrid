@@ -28,19 +28,19 @@ private:
 	Actor();
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-  static Actor &self();
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
+	static void sleep(const double duration);
+	static void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
+	static void send(Mailbox &mailbox,const char*content, int dataSize);
+	static char *recv(Mailbox &mailbox);
+	static void execute(const double flops);
+	static void quit();
+	
 	void kill() {this->quit();}
-  void quit();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
 	double getKillTime();
-  void sleep(const double duration);
-  void execute(const double flops);
-  char *recv(Mailbox &mailbox);
-  void send(Mailbox &mailbox,const char*content, int dataSize);
-  void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
   const char*getName();
   Host *getHost();
   int getPid();

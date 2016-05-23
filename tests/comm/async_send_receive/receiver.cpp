@@ -34,40 +34,39 @@ using namespace ::simgrid;
 int main(int argc, char **argv) {
   char *buffer = NULL;
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor &self = rsg::Actor::self();
-  rsg::Comm &comm = rsg::Comm::recv_init(&self, *mbox);
+  rsg::Comm &comm = rsg::Comm::recv_init(*mbox);
   comm.setDstData((void**)&buffer);
   comm.start();
-  self.execute(8095000000 * 1.999999);
+  rsg::Actor::execute(8095000000 * 1.999999);
   comm.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
   
   free(buffer);
   buffer = NULL;
   
-  rsg::Comm &comm2 = rsg::Comm::recv_async(&self, *mbox, (void**)&buffer);
-  self.execute(8095000000);
+  rsg::Comm &comm2 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
+  rsg::Actor::execute(8095000000);
   comm2.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
   
   free(buffer);
   buffer = NULL;
   
-  rsg::Comm &comm3 = rsg::Comm::recv_init(&self, *mbox);
+  rsg::Comm &comm3 = rsg::Comm::recv_init(*mbox);
   comm3.setDstData((void**)&buffer);
   comm3.start();
-  self.execute(8095000000 * 2);
+  rsg::Actor::execute(8095000000 * 2);
   comm3.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
   
   free(buffer);
   buffer = NULL;
   
-  rsg::Comm &comm4 = rsg::Comm::recv_async(&self, *mbox, (void**)&buffer);
-  self.execute(8095000000);
+  rsg::Comm &comm4 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
+  rsg::Actor::execute(8095000000);
   comm4.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
   
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }

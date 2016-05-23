@@ -36,27 +36,26 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor &self = rsg::Actor::self();
   
   // char*
   const char *msg = "Do you copy ? ";
-  self.send(*mbox,msg, strlen(msg) + 1);
+  rsg::Actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
   //int 
   int intMsg = -808080;
-  self.send(*mbox,(char*) &intMsg, sizeof(int));
+  rsg::Actor::send(*mbox,(char*) &intMsg, sizeof(int));
   
   //int 
   intMsg = 12;
-  self.send(*mbox,(char*) &intMsg, sizeof(int));
+  rsg::Actor::send(*mbox,(char*) &intMsg, sizeof(int));
 
   //int[]
   int tabInt[12];
   for(int i = 0; i < intMsg; i++) {
     tabInt[i] = i*i;
   }
-  self.send(*mbox,(char*) &tabInt, intMsg * sizeof(int));
+  rsg::Actor::send(*mbox,(char*) &tabInt, intMsg * sizeof(int));
   
   structMsg strctMsg;
   strctMsg.intMsg = 123456789;
@@ -67,8 +66,8 @@ int main(int argc, char **argv) {
   strctMsg.msg[4] = 'o';
   strctMsg.msg[5] = 'g';
   strctMsg.msg[6] = '\0';
-  self.send(*mbox,(char*) &strctMsg, sizeof(strctMsg));
+  rsg::Actor::send(*mbox,(char*) &strctMsg, sizeof(strctMsg));
 
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }

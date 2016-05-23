@@ -35,22 +35,21 @@ using namespace ::RsgService;
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor &self = rsg::Actor::self();
-  self.send(*mbox,msg, strlen(msg) + 1);
+  rsg::Actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
   char *rec;
-  rec = self.recv(*mbox);
+  rec = rsg::Actor::recv(*mbox);
   XBT_INFO("Received -> %s ", rec);
 
   rsg::Mailbox *fooMb = rsg::Mailbox::byName("foo");
-  self.send(*fooMb, msg, strlen(msg) + 1);
+  rsg::Actor::send(*fooMb, msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
 
   char *fooRec;
-  fooRec = self.recv(*fooMb);
+  fooRec = rsg::Actor::recv(*fooMb);
   XBT_INFO("Received -> %s ", fooRec);
 
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }

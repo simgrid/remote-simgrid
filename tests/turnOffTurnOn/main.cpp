@@ -35,7 +35,6 @@ using namespace ::RsgService;
 int main(int argc, char **argv) {
 
   XBT_INFO("hello from Server");
-  rsg::Actor &self = rsg::Actor::self();
   rsg::Host host1 = rsg::Host::by_name("host0");
   host1.turnOff();
   host1.turnOff();
@@ -45,6 +44,6 @@ int main(int argc, char **argv) {
   host1.turnOn();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
   
-  self.quit();
+  rsg::Actor::quit();
   return 0;
 }
