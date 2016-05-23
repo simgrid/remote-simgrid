@@ -5,86 +5,110 @@
 
 
 #include "rsg/actor.hpp"
-#include "rsg/engine.hpp"
+#include "client/RsgClientEngine.hpp"
 
-#include "rsg.pb.h"
+#include <string>
+#include <iostream>
 
+using namespace ::simgrid;
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-namespace rsg = simgrid::rsg;
-
-rsg::Actor *rsg::Actor::p_self = NULL;
-
-rsg::Actor::Actor() {
+rsg::Actor::Actor() : pHost(NULL) {
 }
 
-rsg::Actor *rsg::Actor::current() {
-	if (p_self == NULL) {
-		p_self = new Actor();
-		// Verify that the version of the library that we linked against is
-		// compatible with the version of the headers we compiled against.
-		GOOGLE_PROTOBUF_VERIFY_VERSION;
-	}
-	return p_self;
-}
 
 void rsg::Actor::quit(void) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_QUIT);
-	Engine::getInstance().sendRequest(req,ans);
-	ans.Clear();
-	Engine::getInstance().shutdown();
-	google::protobuf::ShutdownProtobufLibrary();
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
+	engine.close();
+	ClientEngine::reset();
 }
 
-void rsg::Actor::sleep(double duration) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_SLEEP);
-	req.mutable_sleep()->set_duration(duration);
-
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
+void rsg::Actor::sleep(const double duration) {
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").sleep(duration);
 }
 
-void rsg::Actor::execute(double flops) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_EXEC);
-	req.mutable_exec()->set_flops(flops);
+void rsg::Actor::execute(const double flops) {
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").execute(flops);
+}
 
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
+void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int dataSize) {
+	rsg::Actor::send(mailbox, content,dataSize ,dataSize);
+}
+
+void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content,int dataSize, int simulatedSize) {
+	std::string strContent(content, dataSize);
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").send(mailbox.getRemote(), strContent, simulatedSize);
 }
 
 char *rsg::Actor::recv(Mailbox &mailbox) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_RECV);
-	req.mutable_recv()->set_mbox(mailbox.getRemote());
-
-	Engine::getInstance().sendRequest(req, ans);
-	char *content = xbt_strdup(ans.recv().content().c_str());
-	ans.Clear();
+	std::string res;
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").recv(res, mailbox.getRemote());
+	char *content = (char*) malloc(sizeof(char*) * res.length());
+  memcpy(content, res.data(), res.length());
 	return content;
 }
 
-void rsg::Actor::send(Mailbox &mailbox, const char*content) {
-	send(mailbox,content, strlen(content)+1);
+const char* rsg::Actor::getName() {
+  std::string res;
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").getName(res, 0);
+  return res.c_str();
 }
 
-void rsg::Actor::send(Mailbox &mailbox, const char*content, int simulatedSize) {
-	rsg::Request req;
-	rsg::Answer ans;
-	req.set_type(rsg::CMD_SEND);
-	req.mutable_send()->set_mbox(mailbox.getRemote());
-	req.mutable_send()->set_content(content);
-	req.mutable_send()->set_contentsize(strlen(content)+1);
-	req.mutable_send()->set_simulatedsize(simulatedSize);
+rsg::Host* rsg::Actor::getHost() {
+  rsgHostCurrentResType res;
+  if(pHost == NULL) {
+    ClientEngine& engine = ClientEngine::getInstance();
+    engine.serviceClientFactory<RsgActorClient>("RsgActor").getHost(res, 0);
+    pHost = new Host(res.name, res.addr);
+  }
+  return pHost;
+}
 
-	Engine::getInstance().sendRequest(req, ans);
-	ans.Clear();
+int rsg::Actor::getPid() {
+   ClientEngine& engine = ClientEngine::getInstance();
+   return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(0);
+}
+
+void rsg::Actor::setAutoRestart(bool autorestart) {
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").setAutoRestart(0, autorestart);
+}
+
+void rsg::Actor::setKillTime(double time){
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").setKillTime(0, time);
+}
+
+double rsg::Actor::getKillTime() {
+  ClientEngine& engine = ClientEngine::getInstance();
+  return engine.serviceClientFactory<RsgActorClient>("RsgActor").getKillTime(0);
+}
+
+void rsg::Actor::killAll() {
+	ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").killAll();
+}
+
+rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int()> code) {
+	ClientEngine& engine = ClientEngine::getInstance();
+	engine.close();
+	
+	if(fork()) {
+		ClientEngine::reset();
+		ClientEngine::getInstance();
+		code();
+	}
+	
+	engine.connect();
+	engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(name, host.p_remoteAddr, 10 );
+
+	return NULL;
 }

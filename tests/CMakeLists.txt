@@ -8,4 +8,11 @@ set(TEST_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 ## Add your new test directories here:
-add_subdirectory(dumb_client)
+add_subdirectory(basic)
+add_subdirectory(actor/basic)
+add_subdirectory(comm/async_send_receive)
+add_subdirectory(comm/async_send_receive_data_type)
+add_subdirectory(mailbox/send_receive)
+add_subdirectory(mailbox/send_receive_data_type)
+add_subdirectory(mailbox/two_way_comm)
+add_subdirectory(turnOffTurnOn)

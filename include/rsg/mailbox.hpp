@@ -7,14 +7,16 @@
 #define SIMGRID_RSG_MAILBOX_HPP
 
 #include <boost/unordered_map.hpp>
+#include <boost/shared_ptr.hpp>
 
+#include "rsg/services.hpp"
 #include "actor.hpp"
+#include "comm.hpp"
 
 namespace simgrid {
 namespace rsg {
 
 class Comm;
-class Engine;
 
 /** @brief Mailboxes
  *
@@ -24,14 +26,12 @@ class Engine;
  * sender and receiver.
  */
 class Mailbox {
-	friend Comm;
-	friend Engine;
-
+	friend rsg::Comm;
 private:
 	Mailbox(const char*name, unsigned long int remoteAddr);
 public:
 	~Mailbox() {}
-	
+
 //protected:
 	unsigned long int getRemote() { return p_remoteAddr; }
 	const char * getName() { return p_name.c_str(); }
@@ -44,7 +44,6 @@ protected:
 private:
 	std::string p_name;
 	unsigned long int p_remoteAddr = 0;
-	static boost::unordered_map<std::string, Mailbox *> *mailboxes;
 };
 }} // namespace simgrid::rsg
 

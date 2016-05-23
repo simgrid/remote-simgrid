@@ -8,32 +8,45 @@
 
 #include <xbt.h>
 #include <vector>
+#include <boost/shared_ptr.hpp>
 
+#include "rsg/services.hpp"
 #include "rsg/mailbox.hpp"
+#include "rsg/host.hpp"
+#include "rsg/comm.hpp"
 
-namespace simgrid {
+namespace simgrid  {
 namespace rsg {
 
 class Mailbox;
+class Host;
+class Comm;
 
 class Actor {
-	friend Mailbox;
+	friend rsg::Comm;
 private:
 	Actor();
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
-	static Actor *current();
-
-	void quit();
+	static void killAll();
+	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
+	static void sleep(const double duration);
+	static void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
+	static void send(Mailbox &mailbox,const char*content, int dataSize);
+	static char *recv(Mailbox &mailbox);
+	static void execute(const double flops);
+	static void quit();
+	
 	void kill() {this->quit();}
-	void sleep(double duration);
-	void execute(double flops);
-	char *recv(Mailbox &mailbox);
-	void send(Mailbox &mailbox, const char*content);
-	void send(Mailbox &mailbox, const char*content, int simulatedSize);
-
+	void setAutoRestart(bool autorestart);
+	void setKillTime(double time);
+	double getKillTime();
+  const char*getName();
+  Host *getHost();
+  int getPid();
+	~Actor() {}
 private:
-	static Actor *p_self;
+  rsg::Host *pHost;
 };
 }} // namespace simgrid::rsg
 

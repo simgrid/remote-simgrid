@@ -3,29 +3,40 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
 
-protobuf_generate_cpp(PROTO_SRCS PROTO_HDRS ${CMAKE_SOURCE_DIR}/proto/rsg.proto)
-include_directories(${PROTOBUF_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(COMMON_SOURCES
-    rsg/socket.cpp      rsg/socket.hpp
-    ${PROTO_SRCS}       ${PROTO_HDRS}
+set(CLIENT_SOURCES_THRIFT
+    ${COMMON_SOURCES}
+    client/RsgClientEngine.cpp ../include/client/RsgClientEngine.hpp
+    client/rsg_actor.cpp       ../include/rsg/actor.hpp
+    client/rsg_mailbox.cpp     ../include/rsg/mailbox.hpp
+    client/rsg_comm.cpp        ../include/rsg/comm.hpp
+    client/rsg_host.cpp        ../include/rsg/host.hpp
+    rsg/Socket.cpp
 )
 
-set(CLIENT_SOURCES
+set(SERVER_SOURCES
     ${COMMON_SOURCES}
-    client/rsg_actor.cpp   ../include/rsg/actor.hpp
-    client/rsg_engine.cpp  ../include/rsg/engine.hpp
-    client/rsg_mailbox.cpp ../include/rsg/mailbox.hpp
-    )
+    main_server.cpp 
+    rsg/Server.cpp 
+    rsg/Socket.cpp 
+    rsg/services/actorService.cpp      ../include/rsg/services/actorService.hpp
+    rsg/services/commService.cpp       ../include/rsg/services/commService.hpp
+    rsg/services/mailboxService.cpp    ../include/rsg/services/mailboxService.hpp
+    rsg/services/hostService.cpp       ../include/rsg/services/actorService.hpp
+)
+
+
+add_executable(rsg_server ${SERVER_SOURCES})
+
+add_library(thriftClient SHARED ${CLIENT_SOURCES_THRIFT})
+
+target_link_libraries(rsg_server "RsgService.thrift")
 
 #include_directories(../opt/grpc/include/ SYSTEM)
 #include_directories(../opt/protobuf3/include SYSTEM)
 
-add_library(rsg SHARED ${CLIENT_SOURCES})
-target_link_libraries(rsg ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})
+#include_directories(../opt/grpc/include/ SYSTEM)
+#include_directories(../opt/protobuf3/include SYSTEM)
 
-add_executable(rsg_server 
-               ${COMMON_SOURCES} rsg_server.cpp)
-target_link_libraries(rsg_server 
-                      ${SimGrid_LIBRARY} ${PROTOBUF_LIBRARIES})
+target_link_libraries(rsg_server ${SimGrid_LIBRARY})
