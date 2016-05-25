@@ -6,6 +6,7 @@
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 set(COMMON_SOURCES rsg/Socket.cpp)
+
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
     client/RsgClientEngine.cpp      ../include/client/RsgClientEngine.hpp

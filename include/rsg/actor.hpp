@@ -25,7 +25,7 @@ class Comm;
 class Actor {
 	friend rsg::Comm;
 private:
-	Actor();
+	Actor(unsigned long int addr);
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static void killAll();
@@ -35,11 +35,12 @@ public:
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
 	double getKillTime();
-  const char*getName();
+  char*getName();
   Host *getHost();
   int getPid();
 	~Actor() {}
 private:
+	unsigned long int p_remoteAddr = 0;
   rsg::Host *pHost;
 };
 

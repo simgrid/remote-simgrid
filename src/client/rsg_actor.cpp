@@ -15,7 +15,7 @@ using namespace ::simgrid;
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-rsg::Actor::Actor() : pHost(NULL) {
+rsg::Actor::Actor(unsigned long int addr) : p_remoteAddr(addr), pHost(NULL) {
 }
 
 //TODO Create dedicated function
@@ -62,18 +62,21 @@ char *rsg::this_actor::recv(Mailbox &mailbox) {
 	return content;
 }
 
-const char* rsg::Actor::getName() {
+char* rsg::Actor::getName() {
   std::string res;
   ClientEngine& engine = ClientEngine::getInstance();
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").getName(res, 0);
-  return res.c_str();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").getName(res, this->p_remoteAddr);
+  char* res_cstr = (char*) malloc( (sizeof(char*) * res.length()) + 1);
+
+  strcpy(res_cstr, res.c_str());
+  return res_cstr;
 }
 
 rsg::Host* rsg::Actor::getHost() {
   rsgHostCurrentResType res;
   if(pHost == NULL) {
     ClientEngine& engine = ClientEngine::getInstance();
-    engine.serviceClientFactory<RsgActorClient>("RsgActor").getHost(res, 0);
+    engine.serviceClientFactory<RsgActorClient>("RsgActor").getHost(res, this->p_remoteAddr);
     pHost = new Host(res.name, res.addr);
   }
   return pHost;
@@ -81,22 +84,22 @@ rsg::Host* rsg::Actor::getHost() {
 
 int rsg::Actor::getPid() {
    ClientEngine& engine = ClientEngine::getInstance();
-   return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(0);
+   return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(this->p_remoteAddr);
 }
 
 void rsg::Actor::setAutoRestart(bool autorestart) {
   ClientEngine& engine = ClientEngine::getInstance();
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").setAutoRestart(0, autorestart);
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").setAutoRestart(this->p_remoteAddr, autorestart);
 }
 
 void rsg::Actor::setKillTime(double time){
   ClientEngine& engine = ClientEngine::getInstance();
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").setKillTime(0, time);
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").setKillTime(this->p_remoteAddr, time);
 }
 
 double rsg::Actor::getKillTime() {
   ClientEngine& engine = ClientEngine::getInstance();
-  return engine.serviceClientFactory<RsgActorClient>("RsgActor").getKillTime(0);
+  return engine.serviceClientFactory<RsgActorClient>("RsgActor").getKillTime(this->p_remoteAddr);
 }
 
 void rsg::Actor::killAll() {
@@ -115,7 +118,7 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::funct
 	}
 	
 	engine.connect();
-	engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(name, host.p_remoteAddr, 10 );
+  unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(name, host.p_remoteAddr, 10 );
 
-	return NULL;
+	return new Actor(addr);
 }

@@ -14,8 +14,6 @@ using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
-
-using namespace ::apache::thrift::server;
 using namespace  ::RsgService;
 
 using namespace  ::simgrid;
@@ -55,7 +53,7 @@ void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
 void rsg::RsgActorHandler::getName(std::string& _return, const int64_t addr) {
     s4u::Actor *actor = (s4u::Actor*) addr;
     const char * c_name = actor->getName();
-  _return.assign(c_name);
+    _return.assign(c_name);
 }
 
 
@@ -134,8 +132,7 @@ int rsgActor() {
 
 int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostAddr, const int32_t killTime) {
   s4u::Host *host = (s4u::Host*)hostAddr;
-  new simgrid::s4u::Actor(name.c_str(), host, rsgActor);
- 
-  return 0;
+  int64_t addr = (int64_t) new simgrid::s4u::Actor(name.c_str(), host, rsgActor);
+  return addr;
 }
 
