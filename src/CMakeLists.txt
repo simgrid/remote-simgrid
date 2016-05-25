@@ -8,12 +8,12 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 set(COMMON_SOURCES rsg/Socket.cpp)
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
-    client/RsgClientEngine.cpp ../include/client/RsgClientEngine.hpp
-    client/rsg_actor.cpp       ../include/rsg/actor.hpp
-    client/rsg_mailbox.cpp     ../include/rsg/mailbox.hpp
-    client/rsg_comm.cpp        ../include/rsg/comm.hpp
-    client/rsg_host.cpp        ../include/rsg/host.hpp
-    
+    client/RsgClientEngine.cpp      ../include/client/RsgClientEngine.hpp
+    client/rsg_actor.cpp            ../include/rsg/actor.hpp
+    client/rsg_mailbox.cpp          ../include/rsg/mailbox.hpp
+    client/rsg_comm.cpp             ../include/rsg/comm.hpp
+    client/rsg_host.cpp             ../include/rsg/host.hpp
+    client/rsg_global_service.cpp   ../include/rsg/global.hpp
 )
 
 set(SERVER_SOURCES
@@ -24,6 +24,7 @@ set(SERVER_SOURCES
     rsg/services/commService.cpp       ../include/rsg/services/commService.hpp
     rsg/services/mailboxService.cpp    ../include/rsg/services/mailboxService.hpp
     rsg/services/hostService.cpp       ../include/rsg/services/actorService.hpp
+    rsg/services/globalService.cpp     ../include/rsg/services/globalService.hpp
 )
 
 

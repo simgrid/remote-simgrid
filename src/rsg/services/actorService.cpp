@@ -99,6 +99,7 @@ int rsgActor() {
       boost::shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
       boost::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
       boost::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+      shared_ptr<rsg::RsgGlobalServiceHandler> gblServiceHandler(new rsg::RsgGlobalServiceHandler());
       boost::shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
       TMultiplexedProcessor* processor = new TMultiplexedProcessor();
@@ -119,6 +120,10 @@ int rsgActor() {
           "RsgComm",
           boost::shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
 
+      processor->registerProcessor(
+          "RsgGlobalService",
+          shared_ptr<RsgGlobalServiceProcessor>(new RsgGlobalServiceProcessor(gblServiceHandler)));
+      
       TServerFramework *server = SocketServer::getSocketServer().acceptClient(processor);
 
       handler->setServer(server);

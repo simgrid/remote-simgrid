@@ -7,6 +7,10 @@ struct rsgHostCurrentResType {
   2:string name
 }
 
+service RsgGlobalService {
+  double getClock()
+}
+
 service RsgActor    {
   void sleep(1:double duration)
   void execute(1:double flops)
