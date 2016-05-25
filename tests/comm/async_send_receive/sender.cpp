@@ -53,6 +53,6 @@ int main(int argc, char **argv) {
   comm4.start();
   comm4.wait();
   
-  rsg::Actor::quit();  
+  rsg::this_actor::quit();  
   return 0;
 }

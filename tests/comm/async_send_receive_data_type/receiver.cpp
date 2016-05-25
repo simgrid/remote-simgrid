@@ -70,6 +70,6 @@ int main(int argc, char **argv) {
 
   free(recStruct);
 
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

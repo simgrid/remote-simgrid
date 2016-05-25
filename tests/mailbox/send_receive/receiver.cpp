@@ -33,8 +33,8 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  char *received = rsg::Actor::recv(*mbox);
+  char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

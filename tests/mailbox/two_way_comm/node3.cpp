@@ -34,12 +34,12 @@ using namespace ::RsgService;
 
 int main(int argc, char **argv) {
   rsg::Mailbox *fooMb = rsg::Mailbox::byName("foo");
-  char *received = rsg::Actor::recv(*fooMb);
+  char *received = rsg::this_actor::recv(*fooMb);
   XBT_INFO("Received -> %s ", received);
   
   const char * sendMessage = "Ok";
-  rsg::Actor::send(*fooMb, sendMessage, strlen(sendMessage) + 1);
+  rsg::this_actor::send(*fooMb, sendMessage, strlen(sendMessage) + 1);
   
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

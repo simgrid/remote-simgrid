@@ -38,8 +38,8 @@ int main(int argc, char **argv) {
   XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current().name().c_str(),rsg::Host::current().speed());
   //XBT_INFO("actor name -> %s", self.getName());
 
-  rsg::Actor::execute(8095000000 * 1.999999);
-  rsg::Actor::sleep(1);
-  rsg::Actor::quit();
+  rsg::this_actor::execute(8095000000 * 1.999999);
+  rsg::this_actor::sleep(1);
+  rsg::this_actor::quit();
   return 0;
 }

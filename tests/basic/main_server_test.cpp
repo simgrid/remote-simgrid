@@ -47,6 +47,6 @@ int main(int argc, char **argv) {
 //  XBT_INFO("actor name -> %s", self.getName());
 //  XBT_INFO("actor pid -> %d", self.getPid());
 //  XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

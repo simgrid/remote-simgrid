@@ -18,35 +18,42 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 rsg::Actor::Actor() : pHost(NULL) {
 }
 
-
-void rsg::Actor::quit(void) {
+//TODO Create dedicated function
+void rsg::Actor::kill() { 
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
 	engine.close();
 	ClientEngine::reset();
 }
 
-void rsg::Actor::sleep(const double duration) {
+void rsg::this_actor::quit(void) {
+  ClientEngine& engine = ClientEngine::getInstance();
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
+	engine.close();
+	ClientEngine::reset();
+}
+
+void rsg::this_actor::sleep(const double duration) {
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").sleep(duration);
 }
 
-void rsg::Actor::execute(const double flops) {
+void rsg::this_actor::execute(const double flops) {
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").execute(flops);
 }
 
-void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content, int dataSize) {
-	rsg::Actor::send(mailbox, content,dataSize ,dataSize);
+void rsg::this_actor::send(rsg::Mailbox &mailbox, const char*content, size_t dataSize) {
+	rsg::this_actor::send(mailbox, content, dataSize, dataSize);
 }
 
-void rsg::Actor::send(rsg::Mailbox &mailbox, const char*content,int dataSize, int simulatedSize) {
+void rsg::this_actor::send(rsg::Mailbox &mailbox, const char*content,size_t dataSize, size_t simulatedSize) {
 	std::string strContent(content, dataSize);
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").send(mailbox.getRemote(), strContent, simulatedSize);
 }
 
-char *rsg::Actor::recv(Mailbox &mailbox) {
+char *rsg::this_actor::recv(Mailbox &mailbox) {
 	std::string res;
   ClientEngine& engine = ClientEngine::getInstance();
   engine.serviceClientFactory<RsgActorClient>("RsgActor").recv(res, mailbox.getRemote());

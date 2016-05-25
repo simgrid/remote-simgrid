@@ -66,6 +66,6 @@ int main(int argc, char **argv) {
   comm = rsg::Comm::send_async(*mbox, (void*) &strctMsg, sizeof(structMsg));
   comm.wait();
 
-  rsg::Actor::quit();  
+  rsg::this_actor::quit();  
   return 0;
 }

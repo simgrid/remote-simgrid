@@ -35,6 +35,6 @@ using namespace ::RsgService;
 int main(int argc, char **argv) {
   XBT_INFO("Client booting");
   XBT_INFO("Client shutting down");
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

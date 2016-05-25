@@ -33,9 +33,9 @@ using namespace ::simgrid;
 
 int actor() {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  char *received = rsg::Actor::recv(*mbox);
+  char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 1;
 }
 
@@ -48,9 +48,9 @@ int main(int argc, char **argv) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
 
-  rsg::Actor::send(*mbox,msg, strlen(msg) + 1);
+  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

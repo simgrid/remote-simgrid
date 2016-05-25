@@ -44,6 +44,6 @@ int main(int argc, char **argv) {
   host1.turnOn();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
   
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

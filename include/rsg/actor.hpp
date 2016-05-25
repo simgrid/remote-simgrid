@@ -30,14 +30,8 @@ public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
-	static void sleep(const double duration);
-	static void send(Mailbox &mailbox,const char*content, int dataSize, int simulatedSize);
-	static void send(Mailbox &mailbox,const char*content, int dataSize);
-	static char *recv(Mailbox &mailbox);
-	static void execute(const double flops);
-	static void quit();
-	
-	void kill() {this->quit();}
+
+	void kill();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
 	double getKillTime();
@@ -48,6 +42,36 @@ public:
 private:
   rsg::Host *pHost;
 };
+
+namespace this_actor {
+
+  // Static methods working on the current actor:
+
+  /** Block the actor sleeping for that amount of seconds (may throws hostFailure) */
+  XBT_PUBLIC(void) sleep(double duration);
+
+  /** Block the actor, computing the given amount of flops */
+  XBT_PUBLIC(void) execute(double flop);
+
+  /** Block the actor until it gets a message from the given mailbox.
+   *
+   * See \ref Comm for the full communication API (including non blocking communications).
+   */
+  XBT_PUBLIC(char*) recv(Mailbox &chan);
+
+  /** Block the actor until it delivers a message of the given simulated size to the given mailbox
+   *
+   * See \ref Comm for the full communication API (including non blocking communications).
+  */	
+	XBT_PUBLIC(void) send(Mailbox &mailbox, const char*content, size_t dataSize);
+
+	XBT_PUBLIC(void) send(Mailbox &mailbox, const char*content, size_t dataSize, size_t simulatedSize);
+
+	XBT_PUBLIC(void) quit();
+
+
+};
+
 }} // namespace simgrid::rsg
 
 #endif /* SIMGRID_RSG_ACTOR_HPP */
