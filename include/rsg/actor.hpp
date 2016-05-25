@@ -10,7 +10,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 
-#include "rsg/services.hpp"
+#include <rsg/services.hpp>
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 #include "rsg/comm.hpp"

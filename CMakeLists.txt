@@ -9,7 +9,7 @@ project (RemoteSimGrid C CXX)
 #To enable pthread
 # I found a similar issue here : https://github.com/potree/PotreeConverter/issues/136
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -lstdc++ -lm")
-
+set (RSG_INSTALL_DIR "/opt/remote-simgrid")
 
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${RSG_BINARY_DIR})
@@ -72,3 +72,7 @@ enable_testing()
 add_subdirectory(tools/tesh)
 include(${CMAKE_HOME_DIRECTORY}/tools/cmake/Tests.cmake)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
+
+FILE(GLOB THRIFT_GEN_INCLUDE_FILES ${THRIFT_GEN_INCLUDE_DIR}/*.h*)
+install(DIRECTORY include DESTINATION ${RSG_INSTALL_DIR})
+install(FILES ${THRIFT_GEN_INCLUDE_FILES} DESTINATION ${RSG_INSTALL_DIR}/include)

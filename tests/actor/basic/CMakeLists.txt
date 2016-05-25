@@ -3,7 +3,7 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 add_executable(actorMain main.cpp)
 
 # Libraries to link
-target_link_libraries(actorMain thriftClient)
+target_link_libraries(actorMain rsg)
 
 target_link_libraries(actorMain "RsgService.thrift")
 target_link_libraries(actorMain ${THRIFT_LIBRARIES})

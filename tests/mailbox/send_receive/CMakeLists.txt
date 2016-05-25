@@ -3,7 +3,7 @@ set(EXECUTABLE_OUTPUT_PATH "${CMAKE_CURRENT_BINARY_DIR}")
 add_executable(send_simple sender.cpp)
 
 # Libraries to link
-target_link_libraries(send_simple thriftClient)
+target_link_libraries(send_simple rsg)
 
 target_link_libraries(send_simple "RsgService.thrift")
 target_link_libraries(send_simple ${THRIFT_LIBRARIES})
@@ -13,7 +13,7 @@ target_link_libraries(send_simple ${SimGrid_LIBRARY})
 add_executable(receive_simple receiver.cpp)
 
 # Libraries to link
-target_link_libraries(receive_simple thriftClient)
+target_link_libraries(receive_simple rsg)
 
 target_link_libraries(receive_simple "RsgService.thrift")
 target_link_libraries(receive_simple ${THRIFT_LIBRARIES})
