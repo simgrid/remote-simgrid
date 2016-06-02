@@ -1,12 +1,12 @@
 #include "rsg/services.hpp"
 #include "rsg/Server.hpp"
+#include "rsg/Socket.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
-
+#include "RsgMsg.hpp"
 #include <iostream>
 #include <boost/shared_ptr.hpp>
-
 #include <thrift/processor/TMultiplexedProcessor.h>
 
 using namespace ::apache::thrift;
@@ -21,7 +21,7 @@ using namespace  ::simgrid;
 rsg::RsgActorHandler::RsgActorHandler()  : pServer(NULL) {
 }
 
-void rsg::RsgActorHandler::setServer(TServerFramework *server) {
+void rsg::RsgActorHandler::setServer(RsgThriftServerFramework *server) {
   pServer = server;
 }
 
@@ -40,12 +40,16 @@ void rsg::RsgActorHandler::execute(const double flops) {
 void rsg::RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
   s4u::Mailbox *mbox = (s4u::Mailbox*)mbAddr;
   std::string *internalPtr = new std::string(content.data(), content.length());
-  s4u::this_actor::send(*mbox, (void*) internalPtr, simulatedSize);
+  debug_server("sending to %s -> %p", mbox->getName(), mbox);
+  s4u::this_actor::send(*mbox, (void*) internalPtr, simulatedSize);   
+  debug_server("sent to -> done %s -> %p", mbox->getName(), mbox);
 }
 
 void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
   s4u::Mailbox *mbox = (s4u::Mailbox*) mbAddr;
-  std::string *content = (std::string*) s4u::this_actor::recv(*mbox);
+  debug_server("rec from %s -> %p", mbox->getName(), mbox);
+  std::string *content = (std::string*) s4u::this_actor::recv(*mbox);  
+  debug_server("rec from %s -> done  -> %p", mbox->getName(), mbox);
   _return.assign(content->data(), content->length());
   delete content;
 }
@@ -93,46 +97,55 @@ void rsg::RsgActorHandler::killAll() {
   s4u::Actor::killAll();
 }
 
-int rsgActor() {
-      boost::shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
-      boost::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
-      boost::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
-      shared_ptr<rsg::RsgGlobalServiceHandler> gblServiceHandler(new rsg::RsgGlobalServiceHandler());
-      boost::shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
-
-      TMultiplexedProcessor* processor = new TMultiplexedProcessor();
-
-      processor->registerProcessor(
-          "RsgActor",
-          boost::shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
-
-      processor->registerProcessor(
-          "RsgMailbox",
-          boost::shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
-
-      processor->registerProcessor(
-          "RsgHost",
-          boost::shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
-
-      processor->registerProcessor(
-          "RsgComm",
-          boost::shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
-
-      processor->registerProcessor(
-          "RsgGlobalService",
-          shared_ptr<RsgGlobalServiceProcessor>(new RsgGlobalServiceProcessor(gblServiceHandler)));
-      
-      TServerFramework *server = SocketServer::getSocketServer().acceptClient(processor);
-
-      handler->setServer(server);
-      server->serve();
-      delete server;
-      return 1;
+void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
+  s4u::Actor *actor = (s4u::Actor*) mbAddr;
+  actor->kill();
 }
 
-int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostAddr, const int32_t killTime) {
-  s4u::Host *host = (s4u::Host*)hostAddr;
-  int64_t addr = (int64_t) new simgrid::s4u::Actor(name.c_str(), host, rsgActor);
+
+void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _return) {
+    int rpcPort = getFreePort(1024);
+    bool connected = false;
+    debug_server("prepare create actor");
+
+    RsgThriftServerFramework* server = NULL;
+    do {
+      server = SocketServer::getSocketServer().createRpcServer(rpcPort);
+      try {
+        server->listen();
+        connected = true;
+      } catch(apache::thrift::transport::TTransportException &ex) {
+        fprintf(stderr, "Error cannot run pServer for new actor : %s on port %d\n" ,ex.what(), rpcPort);
+        rpcPort = getFreePort(1024);
+        delete server;
+      } 
+    } while( ! connected);
+    
+    _return.addr = (unsigned long int) server;
+    _return.port = rpcPort;
+    debug_server("ending of prepare create actor");
+
+}
+
+class RsgActor {
+public:
+  RsgActor(RsgThriftServerFramework *server, int port) : pServer(server), pPort(port) {}
+  RsgThriftServerFramework *pServer;
+  int pPort;
+  int operator()() {
+      debug_server("running new server");
+      pServer->serve();
+      delete pServer;
+
+      return 1;
+  }
+};
+  
+int64_t rsg::RsgActorHandler::createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t hostaddr, const int32_t killTime) {
+  s4u::Host *host = (s4u::Host*) hostaddr;
+  RsgThriftServerFramework* server = (RsgThriftServerFramework*) remoteServerAddr;
+  debug_server("create actor");
+  int64_t addr = (int64_t) new simgrid::s4u::Actor(name.c_str(), host, RsgActor(server, port));
+  debug_server("end of create actor");
   return addr;
 }
-

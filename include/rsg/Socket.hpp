@@ -11,4 +11,5 @@ int getFreePort(unsigned int minValue);
 // Procedure running onto the client side to connect to the server socket.
 int socket_connect(const char *, int port);
 
+int isFreePort(int port);
 #endif

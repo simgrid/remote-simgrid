@@ -7,6 +7,11 @@ struct rsgHostCurrentResType {
   2:string name
 }
 
+struct rsgServerRemoteAddrAndPort {
+  1:i64 addr,
+  2:i32 port
+}
+
 service RsgGlobalService {
   double getClock()
 }
@@ -17,6 +22,7 @@ service RsgActor    {
   void send(1:i64 mbAddr,2:string content, 3:i64 simulatedSize)
   string recv(1:i64 mbAddr)
   void close()
+  void kill(1:i64 mbAddr)
   string getName(1:i64 addr)
   rsgHostCurrentResType getHost(1:i64 addr)
   i32 getPid(1:i64 addr)
@@ -24,7 +30,8 @@ service RsgActor    {
   void setKillTime(1:i64 addr, 2:double time)
   double getKillTime(1:i64 addr)
   void killAll()
-  i64 createActor(1:string name, 2:i64 host, 3:i32 killTime)
+  rsgServerRemoteAddrAndPort createActorPrepare()
+  i64 createActor(1:i64 remoteServerAddr, 2:i32 port , 3:string name, 4:i64 host, 5:i32 killTime)
 }
 
 service RsgMailbox   {

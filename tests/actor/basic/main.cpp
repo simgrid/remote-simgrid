@@ -32,10 +32,15 @@ using namespace ::RsgService;
 using namespace ::simgrid;
 
 int actor() {
+  std::cout << "hello from actor " << std::endl;
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  std::cout << "hello from actor " << std::endl;
+  std::cout << "gettin mailbox  " << std::endl;
   char *received = rsg::this_actor::recv(*mbox);
+  std::cout << "hello from actor " << std::endl;
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
   rsg::this_actor::quit();
+  std::cout << "hello from actor " << std::endl;
   return 1;
 }
 
@@ -43,14 +48,16 @@ int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Host host1 = rsg::Host::by_name("host1");
 
+  std::cout << "before of creare actor " <<  std::endl;
   rsg::Actor::createActor("receiver" , host1 , actor);
-  
+  std::cout << "after of creare actor " << std::endl;
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
+  rsg::this_actor::sleep(10000);
   rsg::this_actor::quit();
   return 0;
 }

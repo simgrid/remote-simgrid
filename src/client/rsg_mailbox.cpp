@@ -8,6 +8,7 @@
 
 #include "rsg/mailbox.hpp"
 #include "client/RsgClientEngine.hpp"
+#include "client/multiThreadedSingletonFactory.hpp"
 
 using namespace ::simgrid;
 
@@ -23,12 +24,17 @@ rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	
-	ClientEngine& engine = ClientEngine::getInstance();
-	unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
-		
-	res = new Mailbox(name, remoteAddr);
-		
-	return res;
+	ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+
+	try {
+		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
+		res = new Mailbox(name, remoteAddr);
+		return res;
+	} catch(apache::thrift::transport::TTransportException &ex) {
+		fprintf(stderr, "error creating mailbox %s in rsg::Mailbox::byName : %s \n", name ,ex.what());
+		_exit(1);
+	}
+	return NULL;
 }
 
 void rsg::Mailbox::shutdown() {

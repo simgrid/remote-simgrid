@@ -8,7 +8,7 @@ project (RemoteSimGrid C CXX)
 
 #To enable pthread
 # I found a similar issue here : https://github.com/potree/PotreeConverter/issues/136
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -lstdc++ -lm")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -lstdc++ -lm -DDEBUG")
 set (RSG_INSTALL_DIR "/opt/remote-simgrid")
 
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)

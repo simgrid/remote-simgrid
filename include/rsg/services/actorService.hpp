@@ -6,6 +6,8 @@
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
+#include "rsg/RsgThriftSimpleServer.hpp"
+#include "rsg/RsgThriftServerFramework.hpp"
 
 #include "simgrid/s4u.h"
 
@@ -24,7 +26,7 @@ class RsgActorHandler : virtual public RsgActorIf {
  public:
   RsgActorHandler();
 
-  void setServer(TServerFramework *);
+  void setServer(RsgThriftServerFramework *);
 
   protected :
   void sleep(const double duration);
@@ -39,10 +41,11 @@ class RsgActorHandler : virtual public RsgActorIf {
   void setKillTime(const int64_t addr, const double time);
   double getKillTime(const int64_t addr);
   void killAll();
-  int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
+  void kill(const int64_t mbAddr);
+  int64_t createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t host, const int32_t killTime);
+  void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
   private :
-    TServerFramework* pServer;
-
+    RsgThriftServerFramework* pServer;
 };
 }
 }

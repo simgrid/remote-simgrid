@@ -1,5 +1,7 @@
+#include "client/multiThreadedSingletonFactory.hpp"
 #include "client/RsgClientEngine.hpp"
 #include "rsg/Socket.hpp"
+#include "RsgMsg.hpp"
 
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TBufferTransports.h>
@@ -16,14 +18,6 @@ XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 
-ClientEngine *ClientEngine::pInstance = NULL;
-ClientEngine& ClientEngine::getInstance() {
-  if (pInstance == NULL) {
-    pInstance = new ClientEngine("localhost", 9090);
-  }
-  return *pInstance;
-}
-
 ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
                                                  pHostname(hostname),
                                                  pPort(port),
@@ -31,30 +25,37 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
                                                  pTransport(NULL),
                                                  pServices(new boost::unordered_map<std::string, void*> ()),
                                                  pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
-                                                                                        
-    int connectSock = socket_connect(hostname.c_str() , port);
-    if(connectSock <= 0) {
-        fprintf(stderr,"error, cannot connect to server\n");
+}
+
+void ClientEngine::init() {
+  int connectSock = socket_connect(pHostname.c_str() , pPort);
+  if(connectSock <= 0) {
+      fprintf(stderr,"error, cannot connect to server\n");
+  }
+
+  this->pSock = connectSock;
+
+  int rpcPort;
+  recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
+  connectToRpc(rpcPort);
+}
+
+void ClientEngine::connectToRpc(int rpcPort) {
+  boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
+  pTransport.reset(new TBufferedTransport(socket));
+  pProtocol.reset(new TBinaryProtocol(pTransport));
+  bool connected = true;
+  do {
+    try {
+      pTransport->open();
+      connected = true;
+    } catch(apache::thrift::transport::TTransportException &ex) {
+      connected = false;
+      debug_process("Engine::Try to connect");
+      sleep(0.1);
     }
-
-    this->pSock = connectSock;
-
-    int rpcPort;
-    recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
-
-    boost::shared_ptr<TSocket> socket(new TSocket(hostname.c_str(), rpcPort));
-    pTransport.reset(new TBufferedTransport(socket));
-    pProtocol.reset(new TBinaryProtocol(pTransport));
-    bool connected = true;
-    do {
-      try {
-        pTransport->open();
-        connected = true;
-      } catch(apache::thrift::transport::TTransportException &ex) {
-        connected = false;
-        sleep(1);
-      }
-    } while(!connected);
+  } while(!connected);
+  debug_process("Engine connected");
 }
 
 boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
@@ -79,17 +80,13 @@ void ClientEngine::connect() {
 
 //FIXME Put this code into the engine destructor.
 void ClientEngine::reset() {
-  ClientEngine& engine = ClientEngine::getInstance();
-  
-  for ( auto it = engine.pServices->begin(); it != engine.pServices->end(); ++it ) {
-   IDel * del = engine.pDestructors->at(it->first);
-   (*del)(engine.pServices->at(it->first));
+
+  for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
+   IDel * del = this->pDestructors->at(it->first);
+   (*del)(this->pServices->at(it->first));
    delete del;
   }
   
-  engine.pDestructors->clear();
-  engine.pServices->clear();
-  
-  delete pInstance; 
-  pInstance = NULL;
+  this->pDestructors->clear();
+  this->pServices->clear();
 }

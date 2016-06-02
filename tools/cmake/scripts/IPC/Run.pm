@@ -3867,7 +3867,7 @@ sub new_string_sink {
 #   $h->timeout( $val );
 #
 #   $val                     Effect
-#   ======================== =====================================
+#   ============================================================
 #   undef                    Timeout timer disabled
 #   ''                       Almost immediate timeout
 #   0                        Almost immediate timeout

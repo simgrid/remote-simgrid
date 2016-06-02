@@ -8,11 +8,14 @@
 
 #include "rsg/global.hpp"
 #include "client/RsgClientEngine.hpp"
+#include "client/multiThreadedSingletonFactory.hpp"
+
 
 using namespace ::simgrid;
 
 double rsg::getClock() {
-  ClientEngine& engine = ClientEngine::getInstance();
+  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+
   return engine.serviceClientFactory<RsgGlobalServiceClient>("RsgGlobalService").getClock();
 }
 

@@ -12,15 +12,18 @@
 
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
-#include <thrift/server/TServerFramework.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/processor/TMultiplexedProcessor.h>
+
+#include "rsg/RsgThriftServerFramework.hpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 
+using namespace ::simgrid;
 using boost::shared_ptr;
 using namespace  ::RsgService;
 
@@ -28,7 +31,7 @@ boost::shared_ptr<SocketServer> SocketServer::sServer(NULL);
 bool SocketServer::sCreated = false;
 
 
-void connectionHandler(TServerFramework *server) {
+void connectionHandler(RsgThriftServerFramework *server) {
   server->serve();
 }
 
@@ -74,7 +77,7 @@ int SocketServer::connect() {
   return 0;
 }
 
-TServerFramework* SocketServer::acceptClient(TProcessor *processor) {
+RsgThriftServerFramework* SocketServer::acceptClient(TProcessor *processor) {
 
   int new_sd = accept(getSocket() , NULL, NULL);
 
@@ -86,7 +89,7 @@ TServerFramework* SocketServer::acceptClient(TProcessor *processor) {
   }
 
   int rpcPort = getFreePort(1024);
-  TServerFramework *server = createRpcServer(rpcPort, processor);
+  RsgThriftServerFramework *server = createRpcServer(rpcPort, processor);
 
   // we send the new port to the clients
 
@@ -95,14 +98,49 @@ TServerFramework* SocketServer::acceptClient(TProcessor *processor) {
   return server;
 }
 
+RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
+  shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
+  shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
+  shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+  shared_ptr<rsg::RsgGlobalServiceHandler> gblServiceHandler(new rsg::RsgGlobalServiceHandler());
+  shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
-TServerFramework* SocketServer::createRpcServer(int port, TProcessor* ptrProcessor) {
+  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
+
+  processor->registerProcessor(
+      "RsgActor",
+      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
+
+  processor->registerProcessor(
+      "RsgMailbox",
+      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
+
+  processor->registerProcessor(
+      "RsgHost",
+      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
+
+  processor->registerProcessor(
+      "RsgComm",
+      shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
+  
+  processor->registerProcessor(
+      "RsgGlobalService",
+      shared_ptr<RsgGlobalServiceProcessor>(new RsgGlobalServiceProcessor(gblServiceHandler)));
+  
+  RsgThriftServerFramework *server = createRpcServer(port, processor);
+  handler->setServer(server);
+  return server;
+  
+}
+
+RsgThriftServerFramework* SocketServer::createRpcServer(int port, TProcessor* ptrProcessor) {
   shared_ptr<TProcessor> processor(ptrProcessor);
-  shared_ptr<TServerTransport> serverTransport(new TServerSocket(port));
+  TServerSocket * thriftServerSocket = new TServerSocket(port);
+  shared_ptr<TServerTransport> serverTransport(thriftServerSocket);
   shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
   shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());
-  TServerFramework *server = new TSimpleServer(processor, serverTransport, transportFactory, protocolFactory); // we create the server
-  return (TServerFramework*) server;
+  RsgThriftServerFramework *server = new RsgThriftSimpleServer(processor, serverTransport, transportFactory, protocolFactory); // we create the server
+  return (RsgThriftServerFramework*) server;
 }
 
 int SocketServer::getSocket() const  {

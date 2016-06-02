@@ -14,6 +14,8 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 #include "rsg/comm.hpp"
+#include <sys/types.h>
+#include <thread>
 
 namespace simgrid  {
 namespace rsg {
@@ -25,12 +27,11 @@ class Comm;
 class Actor {
 	friend rsg::Comm;
 private:
-	Actor(unsigned long int addr);
+	Actor(unsigned long int addr, std::thread::id  );
 public:
 	/** Retrieves an instance of your representative in the remote SimGrid world */
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
-
 	void kill();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
@@ -39,9 +40,12 @@ public:
   Host *getHost();
   int getPid();
 	~Actor() {}
+
 private:
 	unsigned long int p_remoteAddr = 0;
-  rsg::Host *pHost;
+	rsg::Host *pHost;
+public:
+		std::thread::id pThreadId;
 };
 
 namespace this_actor {

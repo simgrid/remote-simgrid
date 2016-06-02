@@ -73,9 +73,10 @@ static int rsg_representative(int argc, char **argv) {
       shared_ptr<RsgGlobalServiceProcessor>(new RsgGlobalServiceProcessor(gblServiceHandler)));
   
   SocketServer &socketServer = SocketServer::getSocketServer();
-  TServerFramework *server = socketServer.acceptClient(processor);
+  RsgThriftServerFramework *server = socketServer.acceptClient(processor);
 
   handler->setServer(server);
+  server->listen();
   server->serve();
   delete server;
 	return 0;
@@ -98,7 +99,7 @@ int main(int argc, char **argv) {
   e->registerDefault(rsg_representative);
   e->loadDeployment(argv[2]);
   e->run();
-
+  
   socketServer.closeServer();
   return 0;
 }
