@@ -130,11 +130,10 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::funct
   rsgServerRemoteAddrAndPort params;
   engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
 
-  std::thread first(actorRunner, code, params.port);     
-  
+  std::thread *nActor = new std::thread(actorRunner, code, params.port);     
+  MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
   unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host.p_remoteAddr, 10);
 
-  rsg::Actor *act = new Actor(addr, first.get_id());
-  first.detach();
+  rsg::Actor *act = new Actor(addr, nActor->get_id());
   return act;
 }

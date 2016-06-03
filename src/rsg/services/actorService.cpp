@@ -103,7 +103,6 @@ void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _retur
     int rpcPort = getFreePort(1024);
     bool connected = false;
 
-
     RsgThriftServerFramework* server = NULL;
     do {
       server = SocketServer::getSocketServer().createRpcServer(rpcPort);
@@ -118,8 +117,6 @@ void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _retur
     
     _return.addr = (unsigned long int) server;
     _return.port = rpcPort;
-
-
 }
 
 class RsgActor {
@@ -128,7 +125,6 @@ public:
   RsgThriftServerFramework *pServer;
   int pPort;
   int operator()() {
-
   
       pServer->serve();
       delete pServer;
