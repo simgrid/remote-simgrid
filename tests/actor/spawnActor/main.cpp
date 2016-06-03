@@ -47,73 +47,55 @@ class PidComp {
   PidComp(std::string name) : pName(name) {}
   std::string pName;
   int operator()() {
-    debug_actor("PidComp:: getting mailbox");
     rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
-    debug_actor("PidComp:: end of getting mailbox");
-    debug_actor("PidComp:: recv");
     uint64_t *pid = (uint64_t*) rsg::this_actor::recv(*mbox);
-    debug_actor("PidComp:: end of recv");
 
     std::stringstream ssid;
     ssid << std::this_thread::get_id();
     uint64_t id = std::stoull(ssid.str());
     
-    debug_actor("PidComp -> mon pid connu %" PRIu64 " <-> mon pid %" PRIu64 " -> %" PRIu64 "", *pid , id, id - *pid);
+    XBT_INFO("PidComp ->  %" PRIu64 "", id - *pid);
     rsg::this_actor::quit();
-    debug_actor("J'ai fini XD" );
     return 1;
   }
 };
 
 
 int Spwaner() {
-  std::cout << "I am a Spawner thread -> " << std::this_thread::get_id() << std::endl;
-  debug_actor("spawner:: getting host");
   rsg::Host host1 = rsg::Host::by_name("host1");
-  debug_actor("spawner:: end getting host");
 
   for(int i = 0; i < 100; i++) {
     std::stringstream ss;
     boost::uuids::uuid uuid = boost::uuids::random_generator()();
     ss << uuid;
-    debug_actor("spawner:: getting mb");
     rsg::Mailbox *mbox = rsg::Mailbox::byName(ss.str().c_str());
-    debug_actor("spawner:: end getting mb");
 
-    debug_actor("spawner:: creating actor");
     rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(std::string(ss.str())));
-    debug_actor("spawner:: end of creating actor");
 
     std::stringstream ssid;
     ssid << actor->pThreadId;
     uint64_t id = std::stoull(ssid.str());
     
-    debug_actor("spawner:: sending");
     rsg::this_actor::send(*mbox, (char*) &(id), sizeof(uint64_t));
-    debug_actor("spawner::end of sending");
-
-    std::cout << "Spawner -> sent to mb  " <<  ss.str() <<  std::endl;
     // delete actor;
   }
 
-  printf("I quit tchô \n");
+  XBT_INFO("Spawner quit");
   rsg::this_actor::quit();
   return 1;
 }
 
 int main(int argc, char **argv) {
-  // const char *msg = "Do you copy ? ";
-  std::cout << "I am a main thread -> " << std::this_thread::get_id() << std::endl;
   rsg::Host host1 = rsg::Host::by_name("host1");
 
-  for(int i = 0; i < 10; i++) {
+  for(int i = 0; i < 4; i++) {
     rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner);
     UNUSED(actor);
 //    delete actor;
   }
-
+  
   rsg::this_actor::sleep(1000);
   rsg::this_actor::quit();
-  printf("bye \n");
+  
   return 0; 
 }

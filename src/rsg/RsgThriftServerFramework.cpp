@@ -3,6 +3,7 @@
 #include <stdint.h>
 
 #include "rsg/RsgThriftServerFramework.hpp"
+#include "RsgMsg.hpp"
 
 namespace apache {
 namespace thrift {
@@ -129,7 +130,7 @@ void RsgThriftServerFramework::serve() {
           mon_.wait();
         }
       }
-
+      
       client = serverTransport_->accept();
 
       inputTransport = inputTransportFactory_->getTransport(client);

@@ -5,7 +5,11 @@
        "./dumb_client" is the command that we have to fork+exec in the real world
    -->
   <process host="host0" function="client">
-     <argument value="@CMAKE_CURRENT_BINARY_DIR@/killActor"/>
+     <argument value="@CMAKE_CURRENT_BINARY_DIR@/spawnActor"/>
   </process>
+  <process host="host1" function="client">
+     <argument value="@CMAKE_CURRENT_BINARY_DIR@/spawnActor"/>
+  </process>
+
   
 </platform>

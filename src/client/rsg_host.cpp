@@ -36,9 +36,7 @@ rsg::Host &rsg::Host::current() {
 rsg::Host &rsg::Host::by_name(std::string name) {
 	ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
-	debug_process("Begin getting host by name");
 	unsigned long int addr = engine.serviceClientFactory<RsgHostClient>("RsgHost").by_name(name);
-	debug_process("end of Begin getting host by name");
 	if(addr == 0) {
 			xbt_die("No such host: %s", name.c_str());
 	}

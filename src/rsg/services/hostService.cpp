@@ -17,7 +17,6 @@ rsg::RsgHostHandler::RsgHostHandler() : pSelf(*s4u::Host::current()) {
 }
 
 int64_t rsg::RsgHostHandler::by_name(const std::string& name) {
-  debug_server("Reeived getting host by name");
   const char *c_name = name.c_str();
   s4u::Host *host = s4u::Host::by_name(c_name);
 
@@ -25,7 +24,6 @@ int64_t rsg::RsgHostHandler::by_name(const std::string& name) {
     xbt_die("No such Host (%s)", name);
     return 0;
   }
-  debug_server("end of getting host by name");
   return (int64_t)host;
 }
 

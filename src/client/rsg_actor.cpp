@@ -24,15 +24,10 @@ rsg::Actor::Actor(unsigned long int addr, std::thread::id pid) : p_remoteAddr(ad
 
 
 void rsg::Actor::kill() { 
-  // ::kill(this->pPid, SIGKILL);
 
   ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
   engine.serviceClientFactory<RsgActorClient>("RsgActor").kill(this->p_remoteAddr);
   
-    /* in parent */
-  // if (waitpid(this->pPid, NULL, 0) < 0) {
-  //     perror("Failed to collect child process");
-  // }
 }
 
 void rsg::this_actor::quit(void) {
@@ -119,13 +114,9 @@ void rsg::Actor::killAll() {
 }
 
 void actorRunner(std::function<int()> code, int port) {
-  debug_process("Creating engine");
   MultiThreadedSingletonFactory::getInstance().getEngineOrCreate(std::this_thread::get_id(), port);
-  debug_process("End of Create engine");
   try {
-    debug_process("before code");
     code();
-    debug_process("after codde  ");
   } catch(apache::thrift::TApplicationException &ex) {
     std::cerr<< "apache::thrift::TApplicationException in thread : " << ex.what() << std::endl;
   } catch(apache::thrift::transport::TTransportException &ex) {
@@ -134,22 +125,16 @@ void actorRunner(std::function<int()> code, int port) {
 }
 
 rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int()> code) {
-  debug_process("create actor");
+  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
-	ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
   rsgServerRemoteAddrAndPort params;
-  debug_process("call prepare create actor");
   engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
-  debug_process("return from prepare create actor");
 
   std::thread first(actorRunner, code, params.port);     
   
-  debug_process("call create actor");
   unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host.p_remoteAddr, 10);
-  debug_process("return from call create actor");
 
   rsg::Actor *act = new Actor(addr, first.get_id());
   first.detach();
-  debug_process("end of create actor");
   return act;
 }

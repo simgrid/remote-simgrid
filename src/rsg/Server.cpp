@@ -136,6 +136,9 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
 RsgThriftServerFramework* SocketServer::createRpcServer(int port, TProcessor* ptrProcessor) {
   shared_ptr<TProcessor> processor(ptrProcessor);
   TServerSocket * thriftServerSocket = new TServerSocket(port);
+  // thriftServerSocket->setSendTimeout(5);
+  // thriftServerSocket->setRecvTimeout(5);
+  // thriftServerSocket->setAcceptTimeout(5);
   shared_ptr<TServerTransport> serverTransport(thriftServerSocket);
   shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
   shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());

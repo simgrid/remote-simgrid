@@ -28,6 +28,7 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
 }
 
 void ClientEngine::init() {
+
   int connectSock = socket_connect(pHostname.c_str() , pPort);
   if(connectSock <= 0) {
       fprintf(stderr,"error, cannot connect to server\n");
@@ -51,11 +52,9 @@ void ClientEngine::connectToRpc(int rpcPort) {
       connected = true;
     } catch(apache::thrift::transport::TTransportException &ex) {
       connected = false;
-      debug_process("Engine::Try to connect");
       sleep(0.1);
     }
   } while(!connected);
-  debug_process("Engine connected");
 }
 
 boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {

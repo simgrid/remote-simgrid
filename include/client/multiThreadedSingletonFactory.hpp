@@ -11,6 +11,7 @@
 #include <string>
 #include <thread>
 #include <map>
+#include <mutex>          // std::mutex
 
 #include "rsg/services.hpp"
 #include "client/RsgClientEngine.hpp"
@@ -28,6 +29,8 @@ class MultiThreadedSingletonFactory {
   private:
     static MultiThreadedSingletonFactory* pInstance;
     std::map<std::thread::id, ClientEngine*> *pEngines; 
+    static std::mutex mtx;           // mutex for critical section
+
 };
 
 
