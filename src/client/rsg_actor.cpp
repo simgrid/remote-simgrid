@@ -120,7 +120,10 @@ void actorRunner(std::function<int()> code, int port) {
   } catch(apache::thrift::TApplicationException &ex) {
     std::cerr<< "apache::thrift::TApplicationException in thread : " << ex.what() << std::endl;
   } catch(apache::thrift::transport::TTransportException &ex) {
-    std::cerr<< "apache::thrift::transport::TTransportException in thread : " << ex.what() << std::endl;
+    //std::cerr<< "apache::thrift::transport::TTransportException in thread : " << ex.what() << std::endl;
+    // this exeption occure when the process have been killed on the server by another process.
+    MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
+    factory.clearEngine(std::this_thread::get_id());
   }
 }
 
