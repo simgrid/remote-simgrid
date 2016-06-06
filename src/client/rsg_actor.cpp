@@ -30,6 +30,13 @@ void rsg::Actor::kill() {
   
 }
 
+void rsg::Actor::kill(int PID) {
+  
+    ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+    engine.serviceClientFactory<RsgActorClient>("RsgActor").killPid(PID);
+    
+}
+
 void rsg::this_actor::quit(void) {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();

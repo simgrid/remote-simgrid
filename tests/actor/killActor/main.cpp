@@ -65,8 +65,10 @@ int Spwaner() {
     rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp("hello"));
     if(rand() % 2 == 0) {
       rsg::this_actor::sleep(1);
+      rsg::Actor::kill(actor->getPid());
+    } else {
+      actor->kill();
     }
-    actor->kill();
     delete actor;
   }
 
@@ -84,6 +86,7 @@ int main(int argc, char **argv) {
     delete actor;
   }
   
+  rsg::Actor::kill(-1);
   rsg::this_actor::quit();
   
   return 0; 

@@ -6,6 +6,7 @@
 #include "simgrid/s4u.h"
 #include "RsgMsg.hpp"
 #include <iostream>
+#include <stdexcept>
 #include <boost/shared_ptr.hpp>
 #include <thrift/processor/TMultiplexedProcessor.h>
 
@@ -98,6 +99,13 @@ void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
   actor->kill();
 }
 
+void rsg::RsgActorHandler::killPid(const int32_t pid) {
+  try {
+    s4u::Actor::kill(pid);
+  } catch( const std::exception & e ) {
+    std::cerr << e.what();
+  }
+}
 
 void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _return) {
     int rpcPort = getFreePort(1024);

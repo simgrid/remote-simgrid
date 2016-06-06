@@ -42,6 +42,7 @@ class RsgActorHandler : virtual public RsgActorIf {
   double getKillTime(const int64_t addr);
   void killAll();
   void kill(const int64_t mbAddr);
+  void killPid(const int32_t pid);
   int64_t createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t host, const int32_t killTime);
   void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
   void deleteActor(const int64_t addr);

@@ -31,6 +31,7 @@ private:
 public:
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
+	static void kill(int PID);
 	void kill();
 	void setAutoRestart(bool autorestart);
 	void setKillTime(double time);
