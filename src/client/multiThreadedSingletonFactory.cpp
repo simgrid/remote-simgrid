@@ -89,7 +89,7 @@ void MultiThreadedSingletonFactory::waitAll() {
         (*iterator)->join();
         joined.push(*iterator);
       } else {
-        debug_process("Unjoinable thread reaming in the vector");
+        debug_process("Unjoinable thread remaiming in the vector");
       }
     }
     

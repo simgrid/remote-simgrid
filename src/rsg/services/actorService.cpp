@@ -139,3 +139,8 @@ int64_t rsg::RsgActorHandler::createActor(const int64_t remoteServerAddr, const 
   int64_t addr = (int64_t) new simgrid::s4u::Actor(name.c_str(), host, RsgActor(server, port));
   return addr;
 }
+
+void rsg::RsgActorHandler::deleteActor(const int64_t addr)  {
+  s4u::Actor *actor = (s4u::Actor*) addr;
+  delete actor;
+}

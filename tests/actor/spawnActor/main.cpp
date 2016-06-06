@@ -77,7 +77,7 @@ int Spwaner() {
     uint64_t id = std::stoull(ssid.str());
     
     rsg::this_actor::send(*mbox, (char*) &(id), sizeof(uint64_t));
-    // delete actor;
+    delete actor;
   }
 
   XBT_INFO("Spawner quit");
@@ -91,7 +91,7 @@ int main(int argc, char **argv) {
   for(int i = 0; i < 4; i++) {
     rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner);
     UNUSED(actor);
-//    delete actor;
+    delete actor;
   }
   
   rsg::this_actor::sleep(1000);

@@ -39,7 +39,7 @@ public:
   char*getName();
   Host *getHost();
   int getPid();
-	~Actor() {}
+	~Actor();
 
 private:
 	unsigned long int p_remoteAddr = 0;

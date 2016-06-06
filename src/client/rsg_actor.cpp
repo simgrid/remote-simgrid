@@ -137,3 +137,8 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::funct
   rsg::Actor *act = new Actor(addr, nActor->get_id());
   return act;
 }
+
+rsg::Actor::~Actor() {
+  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  engine.serviceClientFactory<RsgActorClient>("RsgActor").deleteActor(this->p_remoteAddr);
+}
