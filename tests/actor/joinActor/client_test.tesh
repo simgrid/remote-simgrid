@@ -4,8 +4,8 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hello
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Spawner quit
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] joined spawner n°0 
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hello
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] join spawner n°1 
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hello
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hello
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Spawner quit
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] joined spawner n°1 

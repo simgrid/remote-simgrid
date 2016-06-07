@@ -128,10 +128,11 @@ void rsg::Actor::killAll() {
   engine.serviceClientFactory<RsgActorClient>("RsgActor").killAll();
 }
 
-void actorRunner(std::function<int()> code, int port) {
+
+void actorRunner(std::function<int(void *)> code, int port, void *data ) {
   MultiThreadedSingletonFactory::getInstance().getEngineOrCreate(std::this_thread::get_id(), port);
   try {
-    code();
+    code(data);
   } catch(apache::thrift::TApplicationException &ex) {
     std::cerr<< "apache::thrift::TApplicationException in thread : " << ex.what() << std::endl;
   } catch(apache::thrift::transport::TTransportException &ex) {
@@ -142,13 +143,13 @@ void actorRunner(std::function<int()> code, int port) {
   }
 }
 
-rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int()> code) {
+rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data) {
   ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   rsgServerRemoteAddrAndPort params;
   engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
 
-  std::thread *nActor = new std::thread(actorRunner, code, params.port);     
+  std::thread *nActor = new std::thread(actorRunner, code, params.port, data);     
   MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
   unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host.p_remoteAddr, 10);
 

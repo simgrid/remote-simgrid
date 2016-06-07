@@ -46,7 +46,7 @@ class PidComp {
   public:
   PidComp(std::string name) : pName(name) {}
   std::string pName;
-  int operator()() {
+  int operator()(void *) {
     XBT_INFO("hello");
 
     rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
@@ -58,11 +58,11 @@ class PidComp {
 };
 
 
-int Spwaner() {
+int Spwaner(void *) {
   rsg::Host host1 = rsg::Host::by_name("host1");
   /* generate secret number between 1 and 10: */
   for(int i = 0; i < 10; i++) {
-    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp("hello"));
+    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp("hello"), NULL);
     if(rand() % 2 == 0) {
       rsg::this_actor::sleep(1);
       rsg::Actor::kill(actor->getPid());
@@ -71,8 +71,6 @@ int Spwaner() {
     }
     delete actor;
   }
-
-  XBT_INFO("Spawner quit");
   rsg::this_actor::quit();
   return 1;
 }
@@ -81,8 +79,9 @@ int main(int argc, char **argv) {
   rsg::Host host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 4; i++) {
-    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner);
+    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
     UNUSED(actor);
+    actor->join();
     delete actor;
   }
   

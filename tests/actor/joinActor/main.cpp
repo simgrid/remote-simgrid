@@ -41,7 +41,7 @@ class hello {
  public:
  hello(std::string name) : pName(name) {}
  std::string pName;
- int operator()() {
+ int operator()(void *) {
    XBT_INFO("hello");
 
    rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
@@ -53,11 +53,11 @@ class hello {
 };
 
 
-int Spwaner() {
+int Spwaner(void *) {
  rsg::Host host1 = rsg::Host::by_name("host1");
  /* generate secret number between 1 and 10: */
  for(int i = 0; i < 2; i++) {
-   rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , hello("hello"));
+   rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , hello("hello"), NULL);
    if(rand() % 2 == 0) {
      rsg::this_actor::sleep(1);
      rsg::Actor::kill(actor->getPid());
@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
  rsg::Host host1 = rsg::Host::by_name("host1");
 
  for(int i = 0; i < 4; i++) {
-   rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner);
+   rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
    XBT_INFO("join spawner n°%d ", i);
    actor->join();
    XBT_INFO("joined spawner n°%d ", i);

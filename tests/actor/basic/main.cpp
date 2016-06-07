@@ -31,7 +31,7 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 using namespace ::simgrid;
 
-int actor() {
+int actor(void *) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Host host1 = rsg::Host::by_name("host1");
 
-  rsg::Actor::createActor("receiver" , host1 , actor);
+  rsg::Actor::createActor("receiver" , host1 , actor, NULL);
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
 

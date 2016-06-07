@@ -13,7 +13,6 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
-#include "rsg/global.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
@@ -32,34 +31,20 @@ using boost::shared_ptr;
 using namespace ::RsgService;
 using namespace ::simgrid;
 
+int actor(void *data) {
 
-
-int actor(void *) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  XBT_INFO("get clock before receive : %f", rsg::getClock());
-  rsg::this_actor::recv(*mbox);
-  XBT_INFO("get clock after receive : %f", rsg::getClock());
+  XBT_INFO("data -> %s ", (char*) data );
   rsg::this_actor::quit();
   return 1;
+
 }
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Host host1 = rsg::Host::by_name("host1");
 
-  XBT_INFO("get clock before execute : %f", rsg::getClock());
-  rsg::this_actor::execute(8095000000 * 2);
-  XBT_INFO("get clock after execute : %f", rsg::getClock());
-  
-  rsg::Actor::createActor("receiver" , host1 , actor, NULL);
-  
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  
-  XBT_INFO("get clock before send : %f", rsg::getClock());
-  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1, 115476000);
-  XBT_INFO("get clock after send : %f", rsg::getClock());
-  
+  rsg::Actor::createActor("receiver" ,host1 , actor,(void*) msg);
+
   rsg::this_actor::quit();
   return 0;
 }
-

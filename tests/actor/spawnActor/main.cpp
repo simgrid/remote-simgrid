@@ -46,7 +46,7 @@ class PidComp {
   public:
   PidComp(std::string name) : pName(name) {}
   std::string pName;
-  int operator()() {
+  int operator()(void * ) {
     rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
     uint64_t *pid = (uint64_t*) rsg::this_actor::recv(*mbox);
 
@@ -61,7 +61,7 @@ class PidComp {
 };
 
 
-int Spwaner() {
+int Spwaner(void * ) {
   rsg::Host host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 100; i++) {
@@ -70,7 +70,7 @@ int Spwaner() {
     ss << uuid;
     rsg::Mailbox *mbox = rsg::Mailbox::byName(ss.str().c_str());
 
-    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(std::string(ss.str())));
+    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(std::string(ss.str())), NULL);
 
     std::stringstream ssid;
     ssid << actor->pThreadId;
@@ -80,7 +80,6 @@ int Spwaner() {
     delete actor;
   }
 
-  XBT_INFO("Spawner quit");
   rsg::this_actor::quit();
   return 1;
 }
@@ -89,7 +88,7 @@ int main(int argc, char **argv) {
   rsg::Host host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 4; i++) {
-    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner);
+    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
     UNUSED(actor);
     delete actor;
   }

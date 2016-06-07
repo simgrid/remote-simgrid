@@ -33,7 +33,7 @@ using namespace ::simgrid;
 
 #define UNUSED(x) (void)(x)
 
-int simpleReceiver() {
+int simpleReceiver(void * ) {
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::recv(*mbox);
   rsg::this_actor::quit();
@@ -46,7 +46,7 @@ int main(int argc, char **argv) {
 
 
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor* actor = rsg::Actor::createActor("receiver" , host1 , simpleReceiver);
+  rsg::Actor* actor = rsg::Actor::createActor("receiver" , host1 , simpleReceiver, NULL);
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   char *actorname = actor->getName();

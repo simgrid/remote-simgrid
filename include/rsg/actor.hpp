@@ -30,7 +30,7 @@ private:
 	Actor(unsigned long int addr, std::thread::id  );
 public:
 	static void killAll();
-	static Actor *createActor(std::string name, rsg::Host host, std::function<int()> code);
+	static Actor *createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data);
 	static void kill(int pid);
 	void kill();
 	void join();
