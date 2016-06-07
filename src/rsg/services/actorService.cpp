@@ -107,6 +107,11 @@ void rsg::RsgActorHandler::killPid(const int32_t pid) {
   }
 }
 
+void rsg::RsgActorHandler::join(const int64_t addr) {
+  s4u::Actor *actor = (s4u::Actor*) addr;
+  actor->join();
+}
+
 void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _return) {
     int rpcPort = getFreePort(1024);
     bool connected = false;
