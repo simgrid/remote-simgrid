@@ -113,13 +113,13 @@ void rsg::Comm::wait() {
   
   if (dstBuff_ != NULL) {
     std::string res;
-    commService.wait(res, p_remoteAddr);
+    commService.waitComm(res, p_remoteAddr);
     char * chars = (char*) malloc(res.size());
     memcpy(chars, res.c_str(), res.size());
     *(void**) this->dstBuff_ = (char *) chars;
   } else {
     std::string res;
-    commService.wait(res, p_remoteAddr);
+    commService.waitComm(res, p_remoteAddr);
   }
   delete this;
 }

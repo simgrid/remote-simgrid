@@ -50,7 +50,7 @@ void rsg::RsgCommHandler::start(const int64_t addr) {
   comm->start();
 }
 
-void rsg::RsgCommHandler::wait(std::string& _return, const int64_t addr) {
+void rsg::RsgCommHandler::waitComm(std::string& _return, const int64_t addr) {
   s4u::Comm *comm = (s4u::Comm*) addr;
   comm->wait();
   try {

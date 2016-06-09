@@ -53,6 +53,7 @@ endif()
 
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
+thrift_gen_java(RsgService.thrift THRIFT_JAVA_FILES_LIST THRIFT_GEN_JAVA_INCLUDE_DIR)
 if(NOT ${THRIFT_VERSION_STRING} VERSION_EQUAL "0.9.3" )
     message(FATAL_ERROR "Remote-Simgrid require Thrift 0.9.3" )
 endif()
@@ -64,15 +65,17 @@ set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
 include_directories(include)
 
+enable_testing()
+
 add_subdirectory(src)
 add_subdirectory(java)
 
 # Enable Testing
-enable_testing()
 add_subdirectory(tools/tesh)
 include(${CMAKE_HOME_DIRECTORY}/tools/cmake/Tests.cmake)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 
 FILE(GLOB THRIFT_GEN_INCLUDE_FILES ${THRIFT_GEN_INCLUDE_DIR}/*.h*)
+
 install(DIRECTORY include DESTINATION ${RSG_INSTALL_DIR})
 install(FILES ${THRIFT_GEN_INCLUDE_FILES} DESTINATION ${RSG_INSTALL_DIR}/include)

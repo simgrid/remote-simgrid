@@ -103,6 +103,30 @@ configure_file(${thrift_file} "${CMAKE_BINARY_DIR}/${_target_dir}" COPYONLY)
         set(${THRIFT_CPP_FILES_LIST} "${_res}" PARENT_SCOPE)
         set(${THRIFT_GEN_INCLUDE_DIR} "${_res_inc_path}" PARENT_SCOPE)
     endfunction()
+    
+    # define utility function to generate cpp files
+    function(thrift_gen_java thrift_file THRIFT_JAVA_FILES_LIST THRIFT_GEN_JAVA_INCLUDE_DIR)
+        set(_res)
+        set(_res_inc_path)
+        if(EXISTS "${CMAKE_SOURCE_DIR}/${thrift_file}")
+            get_filename_component(_target_dir "${CMAKE_SOURCE_DIR}/${thrift_file}" NAME_WE)
+            message("thrift_gen_java: ${CMAKE_SOURCE_DIR}/${thrift_file}")
+
+            if(NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_dir})
+                file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${_target_dir})
+            endif()
+            exec_program(${THRIFT_COMPILER}
+                ARGS -r -o "${CMAKE_BINARY_DIR}/${_target_dir}" --gen java "${CMAKE_SOURCE_DIR}/${thrift_file}"
+                OUTPUT_VARIABLE __thrift_OUT
+                RETURN_VALUE THRIFT_RETURN)
+            file(GLOB_RECURSE __result_src "${CMAKE_BINARY_DIR}/${_target_dir}/*.java")
+
+            set(${THRIFT_JAVA_FILES_LIST} "${__result_src}" PARENT_SCOPE)
+            set(${THRIFT_GEN_JAVA_INCLUDE_DIR} "${_res_inc_path}" PARENT_SCOPE)
+          endif ()
+
+    endfunction()
+    
 endif ()
 
 

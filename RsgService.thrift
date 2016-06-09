@@ -1,6 +1,7 @@
 #!/usr/local/bin/thrift --gen cpp
 
 namespace cpp RsgService
+namespace java RsgService
 
 struct rsgHostCurrentResType {
   1:i64 addr,
@@ -63,8 +64,9 @@ service RsgComm   {
   i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size, 5:i64 simulatedByteAmount)
   //i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size)
   
+  string waitComm(1:i64 commAddr)
+
   void start(1:i64 addr)
-  binary wait(1:i64 addr)
   void setRate(1:i64 addr, 2:double rate);
 
   i64 getDstDataSize(1:i64 addr)
