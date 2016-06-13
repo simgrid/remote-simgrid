@@ -20,19 +20,19 @@
 class MultiThreadedSingletonFactory {
   public:
 	  static MultiThreadedSingletonFactory& getInstance();
-    Client &getEngine(std::thread::id id);
-    Client &getEngineOrCreate(std::thread::id id, int rpcPort);
-    void clearEngine(std::thread::id id);
+    Client &getClient(std::thread::id id);
+    Client &getClientOrCreate(std::thread::id id, int rpcPort);
+    void clearClient(std::thread::id id);
     void registerNewThread(std::thread *thread);
     void waitAll();
-    // Client &getEngineOrCreate(std::thread::id id);
+    // Client &getClientOrCreate(std::thread::id id);
   protected:
-    MultiThreadedSingletonFactory() : pEngines(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()) {};
+    MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()) {};
   private:
     static MultiThreadedSingletonFactory* pInstance;
     static std::mutex mtx;           // mutex for critical section
     static std::mutex threadMutex;           // mutex for critical section
-    std::map<std::thread::id, Client*> *pEngines; 
+    std::map<std::thread::id, Client*> *pClients; 
     std::vector<std::thread*> *pThreads; 
     std::thread::id pMainThreadID;
 

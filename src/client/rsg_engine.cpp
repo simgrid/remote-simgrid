@@ -14,7 +14,7 @@
 using namespace ::simgrid;
 
 double rsg::getClock() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 
   return engine.serviceClientFactory<RsgEngineClient>("RsgEngine").getClock();
 }

@@ -24,7 +24,7 @@ rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 
 	try {
 		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
