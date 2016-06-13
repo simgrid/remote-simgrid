@@ -5,7 +5,7 @@
 #include "services/actorService.hpp"
 #include "services/commService.hpp"
 #include "services/hostService.hpp"
-#include "services/globalService.hpp"
+#include "services/engineService.hpp"
 #include "services/mailboxService.hpp"
 #include "services/mutexService.hpp"
 

@@ -1,5 +1,5 @@
 #include "rsg/comm.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"
 
 
@@ -18,7 +18,7 @@ rsg::Comm::~Comm() {
 
 rsg::Comm &rsg::Comm::send_init(rsg::Mailbox &dest) {
   
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -36,7 +36,7 @@ rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data) {
 
 //TODO Use the simulated amount
 rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -53,14 +53,14 @@ rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size) {
 
 
 rsg::Comm &rsg::Comm::recv_init(rsg::Mailbox &from) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   return *(new rsg::Comm(commService.recv_init(0, from.p_remoteAddr)));
 }
 
 rsg::Comm &rsg::Comm::recv_async(rsg::Mailbox &from, void **data) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   rsg::Comm &res = *(new rsg::Comm(commService.recv_async(0, from.p_remoteAddr))); 
@@ -69,14 +69,14 @@ rsg::Comm &rsg::Comm::recv_async(rsg::Mailbox &from, void **data) {
 }
 
 void rsg::Comm::start() {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   commService.start(p_remoteAddr);
 }
 
 void rsg::Comm::setSrcData(void *data, size_t size) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -99,7 +99,7 @@ void rsg::Comm::setSrcData(void *data) {
 
 
 size_t rsg::Comm::getDstDataSize() {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -107,7 +107,7 @@ size_t rsg::Comm::getDstDataSize() {
 }
 
 void rsg::Comm::wait() {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -125,7 +125,7 @@ void rsg::Comm::wait() {
 }
 
 void rsg::Comm::setDstData(void **buff) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
@@ -134,7 +134,7 @@ void rsg::Comm::setDstData(void **buff) {
 }
 
 void rsg::Comm::setDstData(void ** buff, size_t size) {
-  ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   

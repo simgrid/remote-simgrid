@@ -41,7 +41,7 @@ template<class Obj> class ObjDeleter : public  IDel {
  * The engine will create the connection to the rpcServer. First of all engine try to connect to the localhost.
  * Once the first connection is made, the Engine will wait for the entry point to be able to connect to the rpc server.
  */
-class ClientEngine {
+class Client {
 
 public:
 
@@ -74,8 +74,8 @@ public:
 	void connectToRpc(int rpcPort);	
 	void connect();
 
-	ClientEngine(std::string hostname, int port);
-	ClientEngine(std::string hostname);
+	Client(std::string hostname, int port);
+	Client(std::string hostname);
 
 private: 
 

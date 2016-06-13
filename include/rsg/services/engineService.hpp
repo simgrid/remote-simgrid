@@ -1,8 +1,8 @@
-#ifndef _RSG_GLOBAL_SERVICE_IMPL_
-#define _RSG_GLOBAL_SERVICE_IMPL_
+#ifndef _RSG_ENGINE_IMPL_
+#define _RSG_ENGINE_IMPL_
 
 
-#include "RsgGlobalService.h"
+#include "RsgEngine.h"
 #include "RsgService_types.h"
 
 #include "simgrid/s4u.h"
@@ -16,9 +16,9 @@ using namespace  ::RsgService;
 namespace simgrid  {
 namespace rsg {
 
-class RsgGlobalServiceHandler : virtual public RsgGlobalServiceIf {
+class RsgEngineHandler : virtual public RsgEngineIf {
  public:
-  RsgGlobalServiceHandler() {
+  RsgEngineHandler() {
   }
 
   double getClock();

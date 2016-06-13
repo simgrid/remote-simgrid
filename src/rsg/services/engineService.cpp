@@ -10,6 +10,6 @@ using namespace  ::RsgService;
 
 using namespace ::simgrid;
 
-double rsg::RsgGlobalServiceHandler::getClock() {
+double rsg::RsgEngineHandler::getClock() {
     return SIMIX_get_clock();
 }

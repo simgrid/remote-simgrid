@@ -24,7 +24,7 @@ The following steps describes how to create new service.
 Once the service is created and the project compile,if you have not implemented the service yet, you may need to modify some functions. Otherwise the project won't compile.
 
 To use the service into the remote process, you need to add the service to the server processor in the file `src/main_server.cpp` into the function `rsg_representative`.
-Once the service is added to the server, you will be able to get an instance thanks to the function `template<class ServiceType> ServiceType* ClientEngine::serviceClientFactory(std::string name)`.
+Once the service is added to the server, you will be able to get an instance thanks to the function `template<class ServiceType> ServiceType* Client::serviceClientFactory(std::string name)`.
 
 # Run remote process with gdb or valgring
 

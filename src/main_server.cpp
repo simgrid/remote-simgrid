@@ -47,7 +47,7 @@ static int rsg_representative(int argc, char **argv) {
   shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
   shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
   shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
-  shared_ptr<rsg::RsgGlobalServiceHandler> gblServiceHandler(new rsg::RsgGlobalServiceHandler());
+  shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
   shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
   shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
@@ -70,8 +70,8 @@ static int rsg_representative(int argc, char **argv) {
       shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
   
   processor->registerProcessor(
-      "RsgGlobalService",
-      shared_ptr<RsgGlobalServiceProcessor>(new RsgGlobalServiceProcessor(gblServiceHandler)));
+      "RsgEngine",
+      shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
   
   processor->registerProcessor(
       "RsgMutex",

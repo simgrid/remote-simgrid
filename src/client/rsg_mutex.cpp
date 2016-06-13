@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2015. The SimGrid Team.
+/* Copyright (c) 2006-2016. The SimGrid Team.
  * All rights reserved.                                                     */
 
 /* This program is free software; you can redistribute it and/or modify it
@@ -7,7 +7,7 @@
 #include <xbt/log.h>
 
 #include "rsg/mutex.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"
 
 using namespace ::simgrid;
@@ -15,7 +15,7 @@ using namespace ::simgrid;
 rsg::Mutex::Mutex() {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  ClientEngine& engine = factory.getEngine(std::this_thread::get_id());
+  Client& engine = factory.getEngine(std::this_thread::get_id());
   this->p_remoteAddr = engine.serviceClientFactory<RsgMutexClient>("RsgMutex").mutexInit();
 
 }
@@ -23,7 +23,7 @@ rsg::Mutex::Mutex() {
 void rsg::Mutex::lock(void) {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  ClientEngine& engine = factory.getEngine(std::this_thread::get_id());
+  Client& engine = factory.getEngine(std::this_thread::get_id());
   engine.serviceClientFactory<RsgMutexClient>("RsgMutex").lock(this->p_remoteAddr);
 
 }
@@ -31,7 +31,7 @@ void rsg::Mutex::lock(void) {
 void rsg::Mutex::unlock(void) {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  ClientEngine& engine = factory.getEngine(std::this_thread::get_id());
+  Client& engine = factory.getEngine(std::this_thread::get_id());
   engine.serviceClientFactory<RsgMutexClient>("RsgMutex").unlock(this->p_remoteAddr);
 
 }
@@ -39,7 +39,7 @@ void rsg::Mutex::unlock(void) {
 bool rsg::Mutex::try_lock(void) {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  ClientEngine& engine = factory.getEngine(std::this_thread::get_id());
+  Client& engine = factory.getEngine(std::this_thread::get_id());
   return engine.serviceClientFactory<RsgMutexClient>("RsgMutex").try_lock(this->p_remoteAddr);
 
 }
@@ -47,7 +47,7 @@ bool rsg::Mutex::try_lock(void) {
 void rsg::Mutex::destroy() {
   
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  ClientEngine& engine = factory.getEngine(std::this_thread::get_id());
+  Client& engine = factory.getEngine(std::this_thread::get_id());
   engine.serviceClientFactory<RsgMutexClient>("RsgMutex").destroy(this->p_remoteAddr);
 
 }

@@ -8,12 +8,12 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
-#include "rsg/global.hpp"
+#include "rsg/engine.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.h"

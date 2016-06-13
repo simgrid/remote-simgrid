@@ -1,5 +1,5 @@
 #include "client/multiThreadedSingletonFactory.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/Socket.hpp"
 #include "RsgMsg.hpp"
 
@@ -18,7 +18,7 @@ XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 
-ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
+Client::Client(std::string hostname, int port) : pSock(-1),
                                                  pHostname(hostname),
                                                  pPort(port),
                                                  pProtocol(NULL),
@@ -27,7 +27,7 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
                                                  pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
 }
 
-void ClientEngine::init() {
+void Client::init() {
   int connectSock = socket_connect(pHostname.c_str() , pPort);
   if(connectSock <= 0) {
       fprintf(stderr,"error, cannot connect to server\n");
@@ -40,7 +40,7 @@ void ClientEngine::init() {
   connectToRpc(rpcPort);
 }
 
-void ClientEngine::connectToRpc(int rpcPort) {
+void Client::connectToRpc(int rpcPort) {
   boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
   pTransport.reset(new TBufferedTransport(socket));
   pProtocol.reset(new TBinaryProtocol(pTransport));
@@ -56,28 +56,28 @@ void ClientEngine::connectToRpc(int rpcPort) {
   } while(!connected);
 }
 
-boost::shared_ptr<TBinaryProtocol>  ClientEngine::getProtocol() const {
+boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
   return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
 }
 
-boost::shared_ptr<TMultiplexedProtocol>  ClientEngine::getMultiplexedProtocol(std::string serviceName) const {
+boost::shared_ptr<TMultiplexedProtocol>  Client::getMultiplexedProtocol(std::string serviceName) const {
   return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
 }
 
-boost::shared_ptr<TBufferedTransport>  ClientEngine::getTransport() const {
+boost::shared_ptr<TBufferedTransport>  Client::getTransport() const {
   return boost::shared_ptr<TBufferedTransport>(this->pTransport);
 }
 
-void ClientEngine::close() {
+void Client::close() {
   pTransport->close();
 };
 
-void ClientEngine::connect() {
+void Client::connect() {
   pTransport->open();
 };
 
 //FIXME Put this code into the engine destructor.
-void ClientEngine::reset() {
+void Client::reset() {
 
   for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
    IDel * del = this->pDestructors->at(it->first);

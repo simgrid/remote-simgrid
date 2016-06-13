@@ -27,7 +27,7 @@ class Comm;
 class Actor {
 	friend rsg::Comm;
 private:
-	Actor(unsigned long int addr, std::thread::id  );
+	Actor(unsigned long int remoteAddr, std::thread::id);
 public:
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data);

@@ -9,14 +9,14 @@ set(COMMON_SOURCES rsg/Socket.cpp ../include/RsgMsg.hpp)
 
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
-    client/RsgClientEngine.cpp                   ../include/client/RsgClientEngine.hpp
+    client/RsgClient.cpp                   ../include/client/RsgClient.hpp
     client/multiThreadedSingletonFactory.cpp     ../include/client/multiThreadedSingletonFactory.hpp
     client/rsg_actor.cpp                         ../include/rsg/actor.hpp
     client/rsg_mailbox.cpp                       ../include/rsg/mailbox.hpp
     client/rsg_comm.cpp                          ../include/rsg/comm.hpp
     client/rsg_host.cpp                          ../include/rsg/host.hpp
     client/rsg_mutex.cpp                         ../include/rsg/mutex.hpp
-    client/rsg_global_service.cpp                ../include/rsg/global.hpp
+    client/rsg_engine.cpp                        ../include/rsg/engine.hpp
 )
 
 set(SERVER_SOURCES
@@ -27,7 +27,7 @@ set(SERVER_SOURCES
     rsg/services/commService.cpp       ../include/rsg/services/commService.hpp
     rsg/services/mailboxService.cpp    ../include/rsg/services/mailboxService.hpp
     rsg/services/hostService.cpp       ../include/rsg/services/actorService.hpp
-    rsg/services/globalService.cpp     ../include/rsg/services/globalService.hpp
+    rsg/services/engineService.cpp     ../include/rsg/services/engineService.hpp
     rsg/services/mutexService.cpp      ../include/rsg/services/mutexService.hpp
     rsg/RsgThriftServerFramework.cpp   ../include/rsg/RsgThriftServerFramework.hpp
     rsg/RsgThriftSimpleServer.cpp      ../include/rsg/RsgThriftSimpleServer.hpp

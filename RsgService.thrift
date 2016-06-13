@@ -13,7 +13,7 @@ struct rsgServerRemoteAddrAndPort {
   2:i32 port
 }
 
-service RsgGlobalService {
+service RsgEngine {
   double getClock()
 }
 

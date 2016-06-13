@@ -13,13 +13,13 @@ MultiThreadedSingletonFactory& MultiThreadedSingletonFactory::getInstance() {
   return *pInstance;
 }
 
-ClientEngine &MultiThreadedSingletonFactory::getEngine(std::thread::id id) {
+Client &MultiThreadedSingletonFactory::getEngine(std::thread::id id) {
   MultiThreadedSingletonFactory::mtx.lock();
-  ClientEngine *res;
+  Client *res;
   try {
     res = pEngines->at(id);
   } catch (std::out_of_range& e) {
-    res = new ClientEngine("localhost", 9090);
+    res = new Client("localhost", 9090);
     res->init();
     pEngines->insert({std::this_thread::get_id(), res});
     pMainThreadID = std::this_thread::get_id();
@@ -28,13 +28,13 @@ ClientEngine &MultiThreadedSingletonFactory::getEngine(std::thread::id id) {
   return *res;
 }
 
-ClientEngine &MultiThreadedSingletonFactory::getEngineOrCreate(std::thread::id id, int rpcPort) {
-  ClientEngine *res;
+Client &MultiThreadedSingletonFactory::getEngineOrCreate(std::thread::id id, int rpcPort) {
+  Client *res;
   MultiThreadedSingletonFactory::mtx.lock();
   try {
     res = pEngines->at(id);
   } catch (std::out_of_range& e) {
-    res = new ClientEngine("localhost", 9090);
+    res = new Client("localhost", 9090);
     res->connectToRpc(rpcPort);
     pEngines->insert({std::this_thread::get_id(), res});
   }
@@ -45,7 +45,7 @@ ClientEngine &MultiThreadedSingletonFactory::getEngineOrCreate(std::thread::id i
 void MultiThreadedSingletonFactory::clearEngine(std::thread::id id) {
   MultiThreadedSingletonFactory::mtx.lock();
   try {
-    ClientEngine *engine;
+    Client *engine;
     engine = pEngines->at(id);
     engine->close();
     engine->reset();

@@ -1,4 +1,4 @@
-/* Copyright (c) 2006-2015. The SimGrid Team.
+/* Copyright (c) 2006-2016. The SimGrid Team.
  * All rights reserved.                                                     */
 
 /* This program is free software; you can redistribute it and/or modify it
@@ -7,7 +7,7 @@
 #include <xbt/log.h>
 
 #include "rsg/mailbox.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"
 
 using namespace ::simgrid;
@@ -24,7 +24,7 @@ rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	
-	ClientEngine& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getEngine(std::this_thread::get_id());
 
 	try {
 		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
