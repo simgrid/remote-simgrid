@@ -42,6 +42,14 @@ service RsgMailbox   {
   i64 mb_create(1:string name)
 }
 
+service RsgMutex   {
+  i64 mutexInit()
+  void destroy(1:i64 rmtAddr)
+  void lock(1:i64 rmtAddr)
+  void unlock(1:i64 rmtAddr)
+  bool try_lock(1:i64 rmtAddr)
+}
+
 service RsgHost   {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()

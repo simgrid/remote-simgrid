@@ -103,6 +103,7 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
   shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
   shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
   shared_ptr<rsg::RsgGlobalServiceHandler> gblServiceHandler(new rsg::RsgGlobalServiceHandler());
+  shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
   shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
@@ -122,6 +123,10 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
   processor->registerProcessor(
       "RsgComm",
       shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
+  
+  processor->registerProcessor(
+      "RsgMutex",
+      shared_ptr<RsgMutexProcessor>(new RsgMutexProcessor(mutexServiceHandler)));
   
   processor->registerProcessor(
       "RsgGlobalService",

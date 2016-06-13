@@ -15,6 +15,7 @@ set(CLIENT_SOURCES_THRIFT
     client/rsg_mailbox.cpp                       ../include/rsg/mailbox.hpp
     client/rsg_comm.cpp                          ../include/rsg/comm.hpp
     client/rsg_host.cpp                          ../include/rsg/host.hpp
+    client/rsg_mutex.cpp                         ../include/rsg/mutex.hpp
     client/rsg_global_service.cpp                ../include/rsg/global.hpp
 )
 
@@ -27,6 +28,7 @@ set(SERVER_SOURCES
     rsg/services/mailboxService.cpp    ../include/rsg/services/mailboxService.hpp
     rsg/services/hostService.cpp       ../include/rsg/services/actorService.hpp
     rsg/services/globalService.cpp     ../include/rsg/services/globalService.hpp
+    rsg/services/mutexService.cpp      ../include/rsg/services/mutexService.hpp
     rsg/RsgThriftServerFramework.cpp   ../include/rsg/RsgThriftServerFramework.hpp
     rsg/RsgThriftSimpleServer.cpp      ../include/rsg/RsgThriftSimpleServer.hpp
 )

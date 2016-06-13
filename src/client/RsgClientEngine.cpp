@@ -28,7 +28,6 @@ ClientEngine::ClientEngine(std::string hostname, int port) : pSock(-1),
 }
 
 void ClientEngine::init() {
-
   int connectSock = socket_connect(pHostname.c_str() , pPort);
   if(connectSock <= 0) {
       fprintf(stderr,"error, cannot connect to server\n");

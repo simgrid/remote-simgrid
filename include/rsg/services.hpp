@@ -7,5 +7,6 @@
 #include "services/hostService.hpp"
 #include "services/globalService.hpp"
 #include "services/mailboxService.hpp"
+#include "services/mutexService.hpp"
 
 #endif /* _RSG_SERVICE_ */ 
