@@ -55,12 +55,12 @@ bool rsg::RsgHostHandler::isOn(const int64_t addr) {
 
 double rsg::RsgHostHandler::currentPowerPeak(const int64_t addr) {
 	s4u::Host *host = (s4u::Host*) addr;
-	return host->currentPowerPeak();
+	return host->getPstateSpeedCurrent(); //FIXME Change the name to fit s4u
 }
 
 double rsg::RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate_index) {
 	s4u::Host *host = (s4u::Host*) addr;
-	return host->powerPeakAt((int) pstate_index);
+  return host->getPstateSpeed((int) pstate_index); //FIXME Change the name to fit s4u
 }
 
 int32_t rsg::RsgHostHandler::pstatesCount(const int64_t addr) {
@@ -81,5 +81,5 @@ int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
 
 int32_t rsg::RsgHostHandler::core_count(const int64_t addr) {
   s4u::Host *host = (s4u::Host*) addr;
-  return host->core_count();
+  return host->coresCount();
 }
