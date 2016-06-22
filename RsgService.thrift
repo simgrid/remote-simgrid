@@ -50,6 +50,16 @@ service RsgMutex   {
   bool try_lock(1:i64 rmtAddr)
 }
 
+service RsgConditionVariable {
+  i64 conditionVariableInit()
+  void conditionVariableDestroy(1:i64 remoteAddr)
+  void wait(1:i64 remoteAddr, 2:i64 mutexAddr)
+  void wait_for(1:i64 remoteAddr, 2:i64 mutexAddr, 3:double timeout)
+  void notify(1:i64 remoteAddr)
+  void notify_all(1:i64 remoteAddr)
+}
+
+
 service RsgHost   {
   i64 by_name(1:string name)
   rsgHostCurrentResType current()

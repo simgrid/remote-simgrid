@@ -77,7 +77,7 @@ int SocketServer::connect() {
   return 0;
 }
 
-RsgThriftServerFramework* SocketServer::acceptClient(TProcessor *processor) {
+RsgThriftServerFramework* SocketServer::acceptClient() {
 
   int new_sd = accept(getSocket() , NULL, NULL);
 
@@ -89,7 +89,7 @@ RsgThriftServerFramework* SocketServer::acceptClient(TProcessor *processor) {
   }
 
   int rpcPort = getFreePort(1024);
-  RsgThriftServerFramework *server = createRpcServer(rpcPort, processor);
+  RsgThriftServerFramework *server = createRpcServer(rpcPort);
 
   // we send the new port to the clients
 
@@ -104,6 +104,7 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
   shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
   shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
   shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
+  shared_ptr<rsg::RsgConditionVariableHandler> conditionVariableServiceHandler(new rsg::RsgConditionVariableHandler());
   shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
 
   TMultiplexedProcessor* processor = new TMultiplexedProcessor();
@@ -131,6 +132,10 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
   processor->registerProcessor(
       "RsgEngine",
       shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
+  
+  processor->registerProcessor(
+      "RsgConditionVariable",
+      shared_ptr<RsgConditionVariableProcessor>(new RsgConditionVariableProcessor(conditionVariableServiceHandler)));
   
   RsgThriftServerFramework *server = createRpcServer(port, processor);
   handler->setServer(server);

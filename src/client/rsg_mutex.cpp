@@ -5,6 +5,7 @@
  * under the terms of the license (GNU LGPL) which comes with this package. */
 
 #include <xbt/log.h>
+#include <iostream>
 
 #include "rsg/mutex.hpp"
 #include "client/RsgClient.hpp"
@@ -13,7 +14,6 @@
 using namespace ::simgrid;
 
 rsg::Mutex::Mutex() {
-
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
   Client& engine = factory.getClient(std::this_thread::get_id());
   this->p_remoteAddr = engine.serviceClientFactory<RsgMutexClient>("RsgMutex").mutexInit();

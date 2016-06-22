@@ -43,45 +43,9 @@ static int rsg_representative(int argc, char **argv) {
     newargv[newargc-1] = NULL;
     execv(newargv[0], newargv);
 	}
-
-  shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
-  shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
-  shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
-  shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
-  shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
-  shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
-
-  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
-
-  processor->registerProcessor(
-      "RsgActor",
-      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
-
-  processor->registerProcessor(
-      "RsgMailbox",
-      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
-
-  processor->registerProcessor(
-      "RsgHost",
-      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
-
-  processor->registerProcessor(
-      "RsgComm",
-      shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
-  
-  processor->registerProcessor(
-      "RsgEngine",
-      shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
-  
-  processor->registerProcessor(
-      "RsgMutex",
-      shared_ptr<RsgMutexProcessor>(new RsgMutexProcessor(mutexServiceHandler)));
-  
       
   SocketServer &socketServer = SocketServer::getSocketServer();
-  RsgThriftServerFramework *server = socketServer.acceptClient(processor);
-
-  handler->setServer(server);
+  RsgThriftServerFramework *server = socketServer.acceptClient();
   server->listen();
   server->serve();
   delete server;

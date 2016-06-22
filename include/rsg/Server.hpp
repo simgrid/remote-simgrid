@@ -33,7 +33,7 @@ class SocketServer  {
     int connect();
     int closeServer();
 
-    RsgThriftServerFramework* acceptClient(TProcessor *processor);
+    RsgThriftServerFramework* acceptClient();
     RsgThriftServerFramework* createRpcServer(int port, TProcessor *processor);
     RsgThriftServerFramework* createRpcServer(int port);
   protected :

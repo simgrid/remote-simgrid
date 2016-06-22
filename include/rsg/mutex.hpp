@@ -10,11 +10,14 @@
 #include <boost/shared_ptr.hpp>
 
 #include "rsg/services.hpp"
+#include "rsg/conditionVariable.hpp"
 
 namespace simgrid {
 namespace rsg {
 
+class ConditionVariable;
 class Mutex {
+	friend ConditionVariable;
 public:
 	Mutex();
 	~Mutex();
