@@ -19,7 +19,7 @@ using namespace ::simgrid;
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-rsg::Actor::Actor(unsigned long int remoteAddr, std::thread::id pid) : p_remoteAddr(remoteAddr), pHost(NULL), pThreadId(pid) {
+rsg::Actor::Actor(unsigned long int remoteAddr, int pid) : p_remoteAddr(remoteAddr), pHost(NULL), pThreadId(pid) {
 }
 
 
@@ -128,6 +128,11 @@ void rsg::Actor::killAll() {
   engine.serviceClientFactory<RsgActorClient>("RsgActor").killAll();
 }
 
+rsg::Actor* rsg::Actor::forPid(int pid) {
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+  unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").forPid(pid);
+  return new Actor(addr, pid);
+}
 
 void actorRunner(std::function<int(void *)> code, int port, void *data ) {
   MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), port);
@@ -152,9 +157,14 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::funct
   std::thread *nActor = new std::thread(actorRunner, code, params.port, data);     
   MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
   unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host.p_remoteAddr, 10);
-
-  rsg::Actor *act = new Actor(addr, nActor->get_id());
+  int newPid = engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(addr);
+  rsg::Actor *act = new Actor(addr, newPid);
   return act;
+}
+
+int rsg::this_actor::getPid() {
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+  return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPid();
 }
 
 rsg::Actor::~Actor() {

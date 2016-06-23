@@ -28,7 +28,7 @@ class RsgActorHandler : virtual public RsgActorIf {
 
   void setServer(RsgThriftServerFramework *);
 
-  protected :
+  protected:
   void sleep(const double duration);
   void execute(const double flops);
   void recv(std::string& _return, const int64_t mbAddr);
@@ -47,6 +47,8 @@ class RsgActorHandler : virtual public RsgActorIf {
   int64_t createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t host, const int32_t killTime);
   void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
   void deleteActor(const int64_t addr);
+  int32_t this_actorGetPid();
+  int64_t forPid(const int32_t pid);
   private :
     RsgThriftServerFramework* pServer;
 };

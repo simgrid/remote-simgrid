@@ -27,10 +27,11 @@ class Comm;
 class Actor {
 	friend rsg::Comm;
 private:
-	Actor(unsigned long int remoteAddr, std::thread::id);
+	Actor(unsigned long int remoteAddr, int);
 public:
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data);
+	static Actor *forPid(int pid);
 	static void kill(int pid);
 	void kill();
 	void join();
@@ -46,7 +47,7 @@ private:
 	unsigned long int p_remoteAddr = 0;
 	rsg::Host *pHost;
 public:
-		std::thread::id pThreadId;
+		int pThreadId;
 };
 
 namespace this_actor {
@@ -74,6 +75,8 @@ namespace this_actor {
 	XBT_PUBLIC(void) send(Mailbox &mailbox, const char*content, size_t dataSize, size_t simulatedSize);
 
 	XBT_PUBLIC(void) quit();
+	
+	XBT_PUBLIC(int) getPid();
 
 
 };

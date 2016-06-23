@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <sys/types.h>
+#include <string>
 #include <unistd.h>
 #include <thread>
 #include <inttypes.h>
@@ -48,12 +49,8 @@ class PidComp {
   std::string pName;
   int operator()(void * ) {
     rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
-    uint64_t *pid = (uint64_t*) rsg::this_actor::recv(*mbox);
-
-    std::stringstream ssid;
-    ssid << std::this_thread::get_id();
-    uint64_t id = std::stoull(ssid.str());
-    
+    int *pid = (int*) rsg::this_actor::recv(*mbox);
+    int id = rsg::this_actor::getPid();
     XBT_INFO("PidComp ->  %" PRIu64 "", id - *pid);
     rsg::this_actor::quit();
     return 1;
@@ -65,18 +62,12 @@ int Spwaner(void * ) {
   rsg::Host host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 100; i++) {
-    std::stringstream ss;
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-    ss << uuid;
-    rsg::Mailbox *mbox = rsg::Mailbox::byName(ss.str().c_str());
+    std::string name = "PidComp" + std::to_string(i);
+    rsg::Mailbox *mbox = rsg::Mailbox::byName(name.c_str());
 
-    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(std::string(ss.str())), NULL);
-
-    std::stringstream ssid;
-    ssid << actor->pThreadId;
-    uint64_t id = std::stoull(ssid.str());
-    
-    rsg::this_actor::send(*mbox, (char*) &(id), sizeof(uint64_t));
+    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(name), NULL);
+    int pid = actor->getPid();
+    rsg::this_actor::send(*mbox, (char*) &(pid), sizeof(int));
     delete actor;
   }
 

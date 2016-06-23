@@ -29,12 +29,14 @@ service RsgActor    {
   string getName(1:i64 addr)
   rsgHostCurrentResType getHost(1:i64 addr)
   i32 getPid(1:i64 addr)
+  i32 this_actorGetPid()
   void setAutoRestart(1:i64 addr, 2:bool autorestart)
   void setKillTime(1:i64 addr, 2:double time)
   double getKillTime(1:i64 addr)
   void killAll()
   rsgServerRemoteAddrAndPort createActorPrepare()
   i64 createActor(1:i64 remoteServerAddr, 2:i32 port , 3:string name, 4:i64 host, 5:i32 killTime)
+  i64 forPid(1:i32 pid)
   void deleteActor(1:i64 addr)
 }
 

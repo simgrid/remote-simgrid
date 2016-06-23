@@ -157,3 +157,11 @@ void rsg::RsgActorHandler::deleteActor(const int64_t addr)  {
   s4u::Actor *actor = (s4u::Actor*) addr;
   delete actor;
 }
+
+int32_t rsg::RsgActorHandler::this_actorGetPid() {
+  return s4u::this_actor::getPid();
+}
+
+int64_t rsg::RsgActorHandler::forPid(const int32_t pid) {
+  return (int64_t) new s4u::Actor(s4u::Actor::forPid(pid));
+}

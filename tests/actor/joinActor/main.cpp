@@ -77,7 +77,6 @@ int main(int argc, char **argv) {
 
  for(int i = 0; i < 4; i++) {
    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
-   XBT_INFO("join spawner n°%d ", i);
    actor->join();
    XBT_INFO("joined spawner n°%d ", i);
    delete actor;

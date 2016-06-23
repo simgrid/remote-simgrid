@@ -34,7 +34,7 @@ void rsg::RsgConditionVariableHandler::wait_for(const int64_t remoteAddr, const 
 }
 
 void rsg::RsgConditionVariableHandler::notify(const int64_t remoteAddr) {
-  ((s4u::ConditionVariable*) remoteAddr)->notify();
+  ((s4u::ConditionVariable*) remoteAddr)->notify_one();
 }
 
 void rsg::RsgConditionVariableHandler::notify_all(const int64_t remoteAddr) {
