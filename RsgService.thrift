@@ -13,6 +13,11 @@ struct rsgServerRemoteAddrAndPort {
   2:i32 port
 }
 
+enum rsgConditionVariableStatus {
+    cv_timeout = 1,
+    cv_no_timeout = 2
+}    
+
 service RsgEngine {
   double getClock()
 }
@@ -53,10 +58,10 @@ service RsgMutex   {
 }
 
 service RsgConditionVariable {
-  i64 conditionVariableInit()
+  i64  conditionVariableInit()
   void conditionVariableDestroy(1:i64 remoteAddr)
   void wait(1:i64 remoteAddr, 2:i64 mutexAddr)
-  void wait_for(1:i64 remoteAddr, 2:i64 mutexAddr, 3:double timeout)
+  rsgConditionVariableStatus wait_for(1:i64 remoteAddr, 2:i64 mutexAddr, 3:double timeout)
   void notify(1:i64 remoteAddr)
   void notify_all(1:i64 remoteAddr)
 }

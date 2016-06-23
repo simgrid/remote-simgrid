@@ -26,11 +26,16 @@ void rsg::RsgConditionVariableHandler::wait(const int64_t remoteAddr, const int6
   cond->wait(lock);
 }
 
-void rsg::RsgConditionVariableHandler::wait_for(const int64_t remoteAddr, const int64_t mutexAddr, const double timeout) {
+rsgConditionVariableStatus::type rsg::RsgConditionVariableHandler::wait_for(const int64_t remoteAddr, const int64_t mutexAddr, const double timeout) {
   s4u::ConditionVariable *cond = (s4u::ConditionVariable*) remoteAddr;
   s4u::Mutex *mutex = (s4u::Mutex*) mutexAddr;
-  std::unique_lock<s4u::Mutex> lock(*mutex, std::adopt_lock);
-  cond->wait_for(lock, timeout);
+  std::unique_lock<s4u::Mutex> lock(*mutex, std::defer_lock);
+  std::cv_status status = cond->wait_for(lock, timeout);
+  if(status == std::cv_status::timeout) {
+    return rsgConditionVariableStatus::type::cv_timeout;
+  } else {
+    return rsgConditionVariableStatus::type::cv_no_timeout;
+  }
 }
 
 void rsg::RsgConditionVariableHandler::notify(const int64_t remoteAddr) {

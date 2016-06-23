@@ -111,5 +111,3 @@ void MultiThreadedSingletonFactory::waitAll() {
     copied.clear();
   }  
 }
-
-

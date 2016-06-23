@@ -27,7 +27,7 @@ public:
   * Wait functions
   */
   void wait(Mutex *mutex);
-  void wait_for(Mutex *mutex, double time);
+  std::cv_status wait_for(Mutex *mutex, double time);
 
   /**
   * Notify functions

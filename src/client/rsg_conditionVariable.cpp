@@ -35,9 +35,10 @@ void rsg::ConditionVariable::wait(rsg::Mutex *mutex) {
   engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").wait(this->p_remoteAddr, mutex->p_remoteAddr);
 }
 
-void rsg::ConditionVariable::wait_for(rsg::Mutex *mutex, double timeout) {
+std::cv_status rsg::ConditionVariable::wait_for(rsg::Mutex *mutex, double timeout) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").wait_for(this->p_remoteAddr, mutex->p_remoteAddr, timeout);
+  rsgConditionVariableStatus::type status = engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").wait_for(this->p_remoteAddr, mutex->p_remoteAddr, timeout);
+  return (status == rsgConditionVariableStatus::type::cv_timeout) ? std::cv_status::timeout : std::cv_status::no_timeout;
 }
 
 /**
