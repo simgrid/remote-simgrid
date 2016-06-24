@@ -27,15 +27,17 @@ class MultiThreadedSingletonFactory {
     void waitAll();
     // Client &getClientOrCreate(std::thread::id id);
   protected:
-    MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()) {};
+    MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()), pMainThreadID(new size_t) {};
   private:
     static MultiThreadedSingletonFactory* pInstance;
     static std::mutex mtx;           // mutex for critical section
     static std::mutex threadMutex;           // mutex for critical section
+    //FIXME I had huge problem whith std::thread::id. If for some reason you have 
+    //`thread::id of a non-executing thread` when a thread id is printed (with std::cout). Don't hesitate to remplace by hashes.
+    // as its the case for pMainThreadID.
     std::map<std::thread::id, Client*> *pClients; 
     std::vector<std::thread*> *pThreads; 
-    std::thread::id pMainThreadID;
-
+    size_t* pMainThreadID;
 };
 
 

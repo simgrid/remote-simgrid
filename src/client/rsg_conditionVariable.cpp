@@ -5,7 +5,7 @@
  * under the terms of the license (GNU LGPL) which comes with this package. */
 
 #include <xbt/log.h>
-
+#include <iostream>
 #include "rsg/conditionVariable.hpp"
 #include "client/RsgClient.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"

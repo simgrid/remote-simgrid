@@ -10,6 +10,7 @@ using namespace  ::RsgService;
 
 using namespace ::simgrid;
 
+
 int64_t rsg::RsgMutexHandler::mutexInit() {
   return (int64_t) new s4u::Mutex();
 }

@@ -21,21 +21,18 @@ rsg::Mutex::Mutex() {
 }
 
 void rsg::Mutex::lock(void) {
-
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
   Client& engine = factory.getClient(std::this_thread::get_id());
   engine.serviceClientFactory<RsgMutexClient>("RsgMutex").lock(this->p_remoteAddr);
-
 }
 
 void rsg::Mutex::unlock(void) {
-
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
   Client& engine = factory.getClient(std::this_thread::get_id());
   engine.serviceClientFactory<RsgMutexClient>("RsgMutex").unlock(this->p_remoteAddr);
-
 }
 
+ 
 bool rsg::Mutex::try_lock(void) {
 
   MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
@@ -53,5 +50,4 @@ void rsg::Mutex::destroy() {
 }
 
 rsg::Mutex::~Mutex() {
-
 }

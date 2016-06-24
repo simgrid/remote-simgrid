@@ -8,21 +8,24 @@ MultiThreadedSingletonFactory *MultiThreadedSingletonFactory::pInstance = NULL;
 std::mutex MultiThreadedSingletonFactory::mtx;
 std::mutex MultiThreadedSingletonFactory::threadMutex;
 
-MultiThreadedSingletonFactory& MultiThreadedSingletonFactory::getInstance() {
-  if(pInstance == NULL) pInstance = new MultiThreadedSingletonFactory();
+MultiThreadedSingletonFactory& MultiThreadedSingletonFactory::getInstance()  {
+  if(pInstance == NULL) {
+     pInstance = new MultiThreadedSingletonFactory();
+   }
   return *pInstance;
 }
 
 Client &MultiThreadedSingletonFactory::getClient(std::thread::id id) {
   MultiThreadedSingletonFactory::mtx.lock();
   Client *res;
+  std::hash<std::thread::id> hasher;
   try {
     res = pClients->at(id);
   } catch (std::out_of_range& e) {
     res = new Client("localhost", 9090);
     res->init();
     pClients->insert({std::this_thread::get_id(), res});
-    pMainThreadID = std::this_thread::get_id();
+    *pMainThreadID = hasher(std::this_thread::get_id());
   }
   MultiThreadedSingletonFactory::mtx.unlock();
   return *res;
@@ -51,13 +54,13 @@ void MultiThreadedSingletonFactory::clearClient(std::thread::id id) {
     client->reset();
     delete client;
     pClients->erase(id);
-
   } catch (std::out_of_range& e) {
     std::cerr << "Engine already cleared or not existing " << std::endl;
   }
   MultiThreadedSingletonFactory::mtx.unlock();
-  
-  if(id == pMainThreadID) {
+  std::hash<std::thread::id> hasher;
+  size_t hash = hasher(id);
+  if(hash == *pMainThreadID) {
     waitAll();
   }
   
