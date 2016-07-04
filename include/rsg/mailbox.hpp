@@ -17,6 +17,7 @@ namespace simgrid {
 namespace rsg {
 
 class Comm;
+class Actor;
 
 /** @brief Mailboxes
  *
@@ -38,6 +39,14 @@ public:
 public:
 	/** Retrieve the mailbox associated to the given string */
 	static Mailbox *byName(const char *name);
+	/** Declare that the specified process is a permanent receiver on that mailbox
+   *
+   * It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
+   * This models the real behavior of TCP and MPI communications, amongst other.
+   */
+  void setReceiver(rsg::Actor process);
+  /** Return the process declared as permanent receiver, or nullptr if none **/
+  rsg::Actor* receiver();
 
 protected:
 	static void shutdown(); /* clean all globals */

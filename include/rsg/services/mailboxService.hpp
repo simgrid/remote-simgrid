@@ -23,7 +23,10 @@ class RsgMailboxHandler : virtual public RsgMailboxIf {
   RsgMailboxHandler() {
   };
   int64_t mb_create(const std::string& name);
+  void setReceiver(const int64_t remoteAddrMailbox, const int64_t remoteAddrActor);
+  int64_t getReceiver(const int64_t remoteAddrMailbox);
 };
+
 
 }
 }

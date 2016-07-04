@@ -26,8 +26,9 @@ class Comm;
 
 class Actor {
 	friend rsg::Comm;
-private:
-	Actor(unsigned long int remoteAddr, int);
+	friend rsg::Mailbox;
+private: 
+	Actor(unsigned long int remoteAddr, int);  //FIXME Pid seems not used
 public:
 	static void killAll();
 	static Actor *createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data);

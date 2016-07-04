@@ -39,3 +39,21 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 
 void rsg::Mailbox::shutdown() {
 }
+
+/** Declare that the specified process is a permanent receiver on that mailbox
+ *
+ * It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
+ * This models the real behavior of TCP and MPI communications, amongst other.
+ */
+void rsg::Mailbox::setReceiver(rsg::Actor process) {
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").setReceiver(p_remoteAddr, process.p_remoteAddr);
+}
+
+/** Return the process declared as permanent receiver, or nullptr if none **/
+rsg::Actor* rsg::Mailbox::receiver() {
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	int64_t res = engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").getReceiver(p_remoteAddr);
+	
+	return new Actor(res,-1);
+}

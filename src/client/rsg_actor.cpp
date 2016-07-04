@@ -105,7 +105,7 @@ rsg::Host* rsg::Actor::getHost() {
 
 int rsg::Actor::getPid() {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-   return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(this->p_remoteAddr);
+  return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(this->p_remoteAddr);
 }
 
 void rsg::Actor::setAutoRestart(bool autorestart) {
