@@ -3,6 +3,8 @@
 #include "rsg/services.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"
 #include "RsgMsg.hpp"
+
+#include <iostream>
 using namespace ::simgrid;
 
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL_HOST, RSG,"RSG Host");
@@ -101,4 +103,23 @@ int rsg::Host::core_count() {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 
 	return engine.serviceClientFactory<RsgHostClient>("RsgHost").core_count(p_remoteAddr);
+}
+
+/** Retrieve the property value (or nullptr if not set) */
+const char*rsg::Host::property(const char*key) {
+	std::string res; 
+	char *res_cstr = NULL;
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	engine.serviceClientFactory<RsgHostClient>("RsgHost").getProperty(res, p_remoteAddr, std::string(key).c_str());
+	if(res.size() == 0) {
+		 return res_cstr;
+	}
+	res_cstr = new char[res.size() + 1];
+	strcpy(res_cstr, res.c_str());
+	return res_cstr;
+}
+
+void rsg::Host::setProperty(const char*key, const char *value){
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	engine.serviceClientFactory<RsgHostClient>("RsgHost").setProperty(p_remoteAddr, std::string(key), std::string(value));
 }

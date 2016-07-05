@@ -83,3 +83,19 @@ int32_t rsg::RsgHostHandler::core_count(const int64_t addr) {
   s4u::Host *host = (s4u::Host*) addr;
   return host->coresCount();
 }
+
+void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {
+  s4u::Host *host = (s4u::Host*) remoteAddr;
+  const char *prop = host->property(key.c_str());
+  if(prop != NULL) {
+    _return = std::string(prop); 
+  } else {
+    _return = ""; //FIXME Is that the right thing to do if the prop does not exists ? 
+  }
+  
+}
+
+void rsg::RsgHostHandler::setProperty(const int64_t remoteAddr, const std::string& key, const std::string& data) {
+  s4u::Host *host = (s4u::Host*) remoteAddr;
+  host->setProperty(key.c_str(), data.c_str());
+}

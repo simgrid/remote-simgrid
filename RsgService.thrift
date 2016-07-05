@@ -82,6 +82,8 @@ service RsgHost   {
   void setPstate(1:i64 addr, 2:i32 pstate_index)
   i32 pstate(1:i64 addr)
   i32 core_count(1:i64 addr)
+  string getProperty(1:i64 remoteAddr, 2:string key)
+  void setProperty(1:i64 remoteAddr, 2:string key, 3:binary data)
 }
 
 service RsgComm   {
@@ -100,7 +102,7 @@ service RsgComm   {
 
   i64 recv_async(1:i64 receiver, 2:i64 from_)
   void setDstData(1:i64 addr)
-  void setSrcData(1:i64 addr, 2:binary buff);
+  void setSrcData(1:i64 addr, 2:binary buff)
 
   //void wait_timeout(1:i64 addr, 2:double timeout)
   //void setSrcDataSize(1:i64 addr, 2:i64 size)
