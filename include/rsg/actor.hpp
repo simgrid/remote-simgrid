@@ -42,6 +42,7 @@ public:
   char*getName();
   Host *getHost();
   int getPid();
+	bool valid() const;
 	~Actor();
 
 private:

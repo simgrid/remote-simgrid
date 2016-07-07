@@ -167,6 +167,11 @@ int rsg::this_actor::getPid() {
   return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPid();
 }
 
+bool rsg::Actor::valid() const { 
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+  return engine.serviceClientFactory<RsgActorClient>("RsgActor").isValideActor(this->p_remoteAddr);
+}
+
 rsg::Actor::~Actor() {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
   engine.serviceClientFactory<RsgActorClient>("RsgActor").deleteActor(this->p_remoteAddr);

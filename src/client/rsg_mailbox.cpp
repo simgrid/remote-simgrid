@@ -54,6 +54,8 @@ void rsg::Mailbox::setReceiver(rsg::Actor process) {
 rsg::Actor* rsg::Mailbox::receiver() {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	int64_t res = engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").getReceiver(p_remoteAddr);
-	
+	if(!engine.serviceClientFactory<RsgActorClient>("RsgActor").isValideActor(res)) {
+		return NULL;
+	}
 	return new Actor(res,-1);
 }

@@ -34,11 +34,17 @@ using namespace ::simgrid;
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  
+  rsg::Mailbox *fakeMbox = rsg::Mailbox::byName("fake");
+
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   // XBT_INFO("pid of receiver : %d", receiver->getPid());
   rsg::this_actor::sleep(2);
   // receiver = mbox->receiver();
   rsg::Actor *receiver = mbox->receiver();
+  if(fakeMbox->receiver() == NULL) {
+    XBT_INFO("no receiver on mb with name : fake");
+  }
   XBT_INFO("pid of receiver : %d", receiver->getPid());
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   delete receiver;

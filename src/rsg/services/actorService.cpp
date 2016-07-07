@@ -165,3 +165,8 @@ int32_t rsg::RsgActorHandler::this_actorGetPid() {
 int64_t rsg::RsgActorHandler::forPid(const int32_t pid) {
   return (int64_t) new s4u::Actor(s4u::Actor::forPid(pid));
 }
+
+bool rsg::RsgActorHandler::isValideActor(const int64_t remoteAddr) {
+  s4u::Actor *actor = (s4u::Actor*) remoteAddr;
+  return actor->valid();
+}

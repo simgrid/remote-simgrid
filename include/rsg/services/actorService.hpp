@@ -49,6 +49,7 @@ class RsgActorHandler : virtual public RsgActorIf {
   void deleteActor(const int64_t addr);
   int32_t this_actorGetPid();
   int64_t forPid(const int32_t pid);
+  bool isValideActor(const int64_t remoteAddr);
   private :
     RsgThriftServerFramework* pServer;
 };
