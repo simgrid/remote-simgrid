@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
@@ -44,6 +44,6 @@ int main(int argc, char **argv) {
   host1.turnOn();
   XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
   
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

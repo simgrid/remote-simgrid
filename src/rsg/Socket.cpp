@@ -9,7 +9,8 @@
 #include <fcntl.h>
 #include <string.h>
 #include <netdb.h>
-
+#include <sys/types.h>
+#include <errno.h>
 
 int createServerSocket(int port) {
   int resSocket;
@@ -91,6 +92,29 @@ int getFreePort() {
   socklen_t restrict =  sizeof(info);
   getsockname(rpcSocket, (struct sockaddr *)&info, &restrict); // then we get the port given by bind
   return info.sin_port;
+}
+
+int isFreePort(int port) {
+  int rpcSocket; // we create a temporary socket
+
+  rpcSocket = socket(AF_INET , SOCK_STREAM , 0);
+
+  struct sockaddr_in rcp_server;
+  rcp_server.sin_family = AF_INET;
+  rcp_server.sin_addr.s_addr = INADDR_ANY;
+  rcp_server.sin_port = port;
+
+  // Then we try bind it on port 0, as the funciton will return a free port.
+  if(bind(rpcSocket ,(struct sockaddr *)&rcp_server , sizeof(rcp_server)) < 0)  {
+    if(errno == EADDRINUSE) {
+      printf("the port is not available. already to other process %d\n", port);
+    } else {
+      printf("could not bind to process (%d) %s\n", errno, strerror(errno));
+    }
+    return -1;
+  }
+  close(rpcSocket);
+  return  1;
 }
 
 int getFreePort(unsigned int minValue) {

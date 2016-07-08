@@ -2,14 +2,17 @@
 // You should copy it to another filename to avoid overwriting it.
 
 
+
+
 #include "xbt.h"
 #include "simgrid/s4u.h"
-#include <stdlib.h>
 
 #include "rsg/services.hpp"
+#include "rsg/Server.hpp"
+
 #include <thrift/processor/TMultiplexedProcessor.h>
 
-#include "rsg/Server.hpp"
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 
@@ -40,34 +43,10 @@ static int rsg_representative(int argc, char **argv) {
     newargv[newargc-1] = NULL;
     execv(newargv[0], newargv);
 	}
-
-  shared_ptr<rsg::RsgActorHandler> handler(new rsg::RsgActorHandler());
-  shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
-  shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
-  shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
-
-  TMultiplexedProcessor* processor = new TMultiplexedProcessor();
-
-  processor->registerProcessor(
-      "RsgActor",
-      shared_ptr<RsgActorProcessor>(new RsgActorProcessor(handler)));
-
-  processor->registerProcessor(
-      "RsgMailbox",
-      shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
-
-  processor->registerProcessor(
-      "RsgHost",
-      shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
-
-  processor->registerProcessor(
-      "RsgComm",
-      shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
-  
+      
   SocketServer &socketServer = SocketServer::getSocketServer();
-  TServerFramework *server = socketServer.acceptClient(processor);
-
-  handler->setServer(server);
+  RsgThriftServerFramework *server = socketServer.acceptClient();
+  server->listen();
   server->serve();
   delete server;
 	return 0;
@@ -90,7 +69,7 @@ int main(int argc, char **argv) {
   e->registerDefault(rsg_representative);
   e->loadDeployment(argv[2]);
   e->run();
-
+  
   socketServer.closeServer();
   return 0;
 }

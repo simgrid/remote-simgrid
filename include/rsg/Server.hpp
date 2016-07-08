@@ -6,6 +6,8 @@
 #include <thread>
 
 #include "rsg/services.hpp"
+#include "rsg/RsgThriftSimpleServer.hpp"
+#include "rsg/RsgThriftServerFramework.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
@@ -31,9 +33,9 @@ class SocketServer  {
     int connect();
     int closeServer();
 
-    TServerFramework* acceptClient(TProcessor *processor);
-    TServerFramework* createRpcServer(int port, TProcessor *processor);
-
+    RsgThriftServerFramework* acceptClient();
+    RsgThriftServerFramework* createRpcServer(int port, TProcessor *processor);
+    RsgThriftServerFramework* createRpcServer(int port);
   protected :
     SocketServer(std::string host, int port);
     int getSocket() const;

@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
@@ -66,6 +66,6 @@ int main(int argc, char **argv) {
   comm = rsg::Comm::send_async(*mbox, (void*) &strctMsg, sizeof(structMsg));
   comm.wait();
 
-  rsg::Actor::quit();  
+  rsg::this_actor::quit();  
   return 0;
 }

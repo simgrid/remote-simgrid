@@ -2,7 +2,7 @@
 
 #include "xbt.h"
 #include "simgrid/s4u.h"
-
+#include "RsgMsg.hpp"
 #include <iostream>
 
 using namespace ::apache::thrift::server;
@@ -17,7 +17,6 @@ rsg::RsgHostHandler::RsgHostHandler() : pSelf(*s4u::Host::current()) {
 }
 
 int64_t rsg::RsgHostHandler::by_name(const std::string& name) {
-
   const char *c_name = name.c_str();
   s4u::Host *host = s4u::Host::by_name(c_name);
 
@@ -56,12 +55,12 @@ bool rsg::RsgHostHandler::isOn(const int64_t addr) {
 
 double rsg::RsgHostHandler::currentPowerPeak(const int64_t addr) {
 	s4u::Host *host = (s4u::Host*) addr;
-	return host->currentPowerPeak();
+	return host->getPstateSpeedCurrent(); //FIXME Change the name to fit s4u
 }
 
 double rsg::RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate_index) {
 	s4u::Host *host = (s4u::Host*) addr;
-	return host->powerPeakAt((int) pstate_index);
+  return host->getPstateSpeed((int) pstate_index); //FIXME Change the name to fit s4u
 }
 
 int32_t rsg::RsgHostHandler::pstatesCount(const int64_t addr) {
@@ -82,5 +81,21 @@ int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
 
 int32_t rsg::RsgHostHandler::core_count(const int64_t addr) {
   s4u::Host *host = (s4u::Host*) addr;
-  return host->core_count();
+  return host->coresCount();
+}
+
+void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {
+  s4u::Host *host = (s4u::Host*) remoteAddr;
+  const char *prop = host->property(key.c_str());
+  if(prop != NULL) {
+    _return = std::string(prop); 
+  } else {
+    _return = ""; //FIXME Is that the right thing to do if the prop does not exists ? 
+  }
+  
+}
+
+void rsg::RsgHostHandler::setProperty(const int64_t remoteAddr, const std::string& key, const std::string& data) {
+  s4u::Host *host = (s4u::Host*) remoteAddr;
+  host->setProperty(key.c_str(), data.c_str());
 }

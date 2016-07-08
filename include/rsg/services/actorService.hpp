@@ -6,6 +6,8 @@
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
+#include "rsg/RsgThriftSimpleServer.hpp"
+#include "rsg/RsgThriftServerFramework.hpp"
 
 #include "simgrid/s4u.h"
 
@@ -24,9 +26,9 @@ class RsgActorHandler : virtual public RsgActorIf {
  public:
   RsgActorHandler();
 
-  void setServer(TServerFramework *);
+  void setServer(RsgThriftServerFramework *);
 
-  protected :
+  protected:
   void sleep(const double duration);
   void execute(const double flops);
   void recv(std::string& _return, const int64_t mbAddr);
@@ -39,10 +41,17 @@ class RsgActorHandler : virtual public RsgActorIf {
   void setKillTime(const int64_t addr, const double time);
   double getKillTime(const int64_t addr);
   void killAll();
-  int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
+  void kill(const int64_t mbAddr);
+  void join(const int64_t addr);
+  void killPid(const int32_t pid);
+  int64_t createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t host, const int32_t killTime);
+  void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
+  void deleteActor(const int64_t addr);
+  int32_t this_actorGetPid();
+  int64_t forPid(const int32_t pid);
+  bool isValideActor(const int64_t remoteAddr);
   private :
-    TServerFramework* pServer;
-
+    RsgThriftServerFramework* pServer;
 };
 }
 }

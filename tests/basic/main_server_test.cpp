@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
@@ -44,9 +44,7 @@ int main(int argc, char **argv) {
   XBT_INFO("core count : %d", host.core_count());
   XBT_INFO("state count %d", host.pstatesCount());
   XBT_INFO("state -> %d", host.pstate());
-//  XBT_INFO("actor name -> %s", self.getName());
-//  XBT_INFO("actor pid -> %d", self.getPid());
-//  XBT_INFO("host name accessing by actor -> %s", self.getHost()->name().c_str());
-  rsg::Actor::quit();
+
+  rsg::this_actor::quit();
   return 0;
 }

@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
@@ -34,8 +34,8 @@ using namespace ::simgrid;
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  rsg::Actor::send(*mbox,msg, strlen(msg) + 1);
+  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

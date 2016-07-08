@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd">
+<platform version="4">
+  <!-- "client" is the name it takes in [the logs of] the SimGrid world
+       "./dumb_client" is the command that we have to fork+exec in the real world
+   -->
+  <process host="host0" function="client">
+     <argument value="@CMAKE_CURRENT_BINARY_DIR@/killActor"/>
+  </process>
+  
+  <process host="host1" function="client">
+     <argument value="@CMAKE_CURRENT_BINARY_DIR@/killActor"/>
+  </process>
+  
+</platform>

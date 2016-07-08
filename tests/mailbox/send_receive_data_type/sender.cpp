@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
@@ -39,23 +39,23 @@ int main(int argc, char **argv) {
   
   // char*
   const char *msg = "Do you copy ? ";
-  rsg::Actor::send(*mbox,msg, strlen(msg) + 1);
+  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
   //int 
   int intMsg = -808080;
-  rsg::Actor::send(*mbox,(char*) &intMsg, sizeof(int));
+  rsg::this_actor::send(*mbox,(char*) &intMsg, sizeof(int));
   
   //int 
   intMsg = 12;
-  rsg::Actor::send(*mbox,(char*) &intMsg, sizeof(int));
+  rsg::this_actor::send(*mbox,(char*) &intMsg, sizeof(int));
 
   //int[]
   int tabInt[12];
   for(int i = 0; i < intMsg; i++) {
     tabInt[i] = i*i;
   }
-  rsg::Actor::send(*mbox,(char*) &tabInt, intMsg * sizeof(int));
+  rsg::this_actor::send(*mbox,(char*) &tabInt, intMsg * sizeof(int));
   
   structMsg strctMsg;
   strctMsg.intMsg = 123456789;
@@ -66,8 +66,8 @@ int main(int argc, char **argv) {
   strctMsg.msg[4] = 'o';
   strctMsg.msg[5] = 'g';
   strctMsg.msg[6] = '\0';
-  rsg::Actor::send(*mbox,(char*) &strctMsg, sizeof(strctMsg));
+  rsg::this_actor::send(*mbox,(char*) &strctMsg, sizeof(strctMsg));
 
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }

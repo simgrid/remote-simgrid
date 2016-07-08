@@ -41,16 +41,16 @@ template<class Obj> class ObjDeleter : public  IDel {
  * The engine will create the connection to the rpcServer. First of all engine try to connect to the localhost.
  * Once the first connection is made, the Engine will wait for the entry point to be able to connect to the rpc server.
  */
-class ClientEngine {
+class Client {
 
 public:
 
 	boost::shared_ptr<TMultiplexedProtocol>  getMultiplexedProtocol(std::string serviceName) const;
 	boost::shared_ptr<TBinaryProtocol> getProtocol() const ;
 	boost::shared_ptr<TBufferedTransport> getTransport() const;
-	static void reset();
-	static ClientEngine& getInstance();
 
+	void reset();
+	
 	/**
 	* Because thrift doesn't create a generic interface for all clients, we have to store it into a void*.
 	* It is an issue to delete the object when it is done.
@@ -70,12 +70,12 @@ public:
 	
 	
 	void close();	
+	void init();	
+	void connectToRpc(int rpcPort);	
 	void connect();
 
-	
-private:
-
-	ClientEngine(std::string hostname, int port);
+	Client(std::string hostname, int port);
+	Client(std::string hostname);
 
 private: 
 
@@ -85,9 +85,9 @@ private:
 	boost::shared_ptr<TBinaryProtocol> pProtocol;
 	boost::shared_ptr<TBufferedTransport> pTransport;
 	
-	boost::unordered_map<std::string, void *> *pServices; //FIXME void* means that we canot properly call the destructor.
+	boost::unordered_map<std::string, void *> *pServices; 
 	boost::unordered_map<std::string, IDel* > *pDestructors;
-	static ClientEngine* pInstance;
+	
 };
 
 #endif /* SRC_ENGINE_HPP_ */

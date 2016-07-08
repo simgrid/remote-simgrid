@@ -8,7 +8,7 @@
 #include <thrift/transport/TBufferTransports.h>
 
 #include "rsg/services.hpp"
-#include "client/RsgClientEngine.hpp"
+#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   rsg::Comm &comm = rsg::Comm::recv_init(*mbox);
   comm.setDstData((void**)&buffer);
   comm.start();
-  rsg::Actor::execute(8095000000 * 1.999999);
+  rsg::this_actor::execute(8095000000 * 1.999999);
   comm.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
   
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
   buffer = NULL;
   
   rsg::Comm &comm2 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
-  rsg::Actor::execute(8095000000);
+  rsg::this_actor::execute(8095000000);
   comm2.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
   
@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
   rsg::Comm &comm3 = rsg::Comm::recv_init(*mbox);
   comm3.setDstData((void**)&buffer);
   comm3.start();
-  rsg::Actor::execute(8095000000 * 2);
+  rsg::this_actor::execute(8095000000 * 2);
   comm3.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
   
@@ -63,10 +63,10 @@ int main(int argc, char **argv) {
   buffer = NULL;
   
   rsg::Comm &comm4 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
-  rsg::Actor::execute(8095000000);
+  rsg::this_actor::execute(8095000000);
   comm4.wait();
   XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
   
-  rsg::Actor::quit();
+  rsg::this_actor::quit();
   return 0;
 }
