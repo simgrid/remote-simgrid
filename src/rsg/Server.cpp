@@ -9,7 +9,6 @@
 #include <iostream>
 #include <thread>
 #include <string>     // std::string, std::stoi
-
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>

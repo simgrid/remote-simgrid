@@ -45,7 +45,7 @@ void rsg::Mailbox::shutdown() {
  * It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
  * This models the real behavior of TCP and MPI communications, amongst other.
  */
-void rsg::Mailbox::setReceiver(rsg::Actor process) {
+void rsg::Mailbox::setReceiver(const rsg::Actor &process) {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").setReceiver(p_remoteAddr, process.p_remoteAddr);
 }
