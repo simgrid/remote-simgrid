@@ -50,6 +50,7 @@ service RsgMailbox   {
   i64 mb_create(1:string name)
   void setReceiver(1:i64 remoteAddrMailbox, 2:i64 remoteAddrActor)
   i64 getReceiver(1:i64 remoteAddrMailbox)
+  bool empty(1:i64 remoteAddrMailbox)
 }
 
 service RsgMutex   {

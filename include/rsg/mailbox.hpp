@@ -50,6 +50,7 @@ public:
   void setReceiver(const rsg::Actor &process);
   /** Return the process declared as permanent receiver, or nullptr if none **/
   rsg::Actor* receiver();
+	bool empty();
 
 protected:
 	static void shutdown(); /* clean all globals */

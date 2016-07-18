@@ -58,3 +58,8 @@ rsg::Actor* rsg::Mailbox::receiver() {
 	}
 	return new Actor(res,-1);
 }
+
+bool rsg::Mailbox::empty() {
+	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	return engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").empty(p_remoteAddr);
+}

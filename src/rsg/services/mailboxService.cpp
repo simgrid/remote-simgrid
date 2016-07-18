@@ -36,3 +36,9 @@ int64_t rsg::RsgMailboxHandler::getReceiver(const int64_t remoteAddrMailbox) {
   RsgActorHandler::pActors.insert({newId, actor});
   return newId;
 }
+
+
+bool rsg::RsgMailboxHandler::empty(const int64_t remoteAddrMailbox) {
+  s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(remoteAddrMailbox);
+  return mbox->empty();
+}
