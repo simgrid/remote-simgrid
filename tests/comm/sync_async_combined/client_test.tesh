@@ -1,0 +1,5 @@
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Do you copy ?  with size of 14 
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Did you copy ?  with size of 15 
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Halo ?! with size of 7 
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Se ya  with size of 6 

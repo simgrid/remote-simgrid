@@ -31,7 +31,7 @@ rsg::Host &rsg::Host::current() {
 
 	engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
 	
-  return *(new Host(res.name, res.addr)); // FIXME never deleted
+  return *(new Host(res.name, res.addr)); 
 
 }
 

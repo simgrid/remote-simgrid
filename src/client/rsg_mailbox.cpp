@@ -5,7 +5,7 @@
  * under the terms of the license (GNU LGPL) which comes with this package. */
 
 #include <xbt/log.h>
-
+#include <iostream>
 #include "rsg/mailbox.hpp"
 #include "client/RsgClient.hpp"
 #include "client/multiThreadedSingletonFactory.hpp"
@@ -14,7 +14,6 @@ using namespace ::simgrid;
 
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL,RSG,"RSG Communication Mailboxes");
-
 
 rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 	p_remoteAddr = remoteAddr;
@@ -54,7 +53,7 @@ void rsg::Mailbox::setReceiver(const rsg::Actor &process) {
 rsg::Actor* rsg::Mailbox::receiver() {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	int64_t res = engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").getReceiver(p_remoteAddr);
-	if(!engine.serviceClientFactory<RsgActorClient>("RsgActor").isValideActor(res)) {
+	if(res == 0) {
 		return NULL;
 	}
 	return new Actor(res,-1);

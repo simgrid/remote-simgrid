@@ -10,10 +10,14 @@
 using namespace ::apache::thrift::server;
 
 using namespace  ::RsgService;
+
 namespace simgrid  {
 namespace rsg {
-
+  
+  class RsgConditionVariableHandler;
+  
   class RsgMutexHandler : virtual public RsgMutexIf {
+    friend RsgConditionVariableHandler;
    public:
     RsgMutexHandler() {}
     int64_t mutexInit();
@@ -21,6 +25,9 @@ namespace rsg {
     void unlock(const int64_t rmtAddr);
     bool try_lock(const int64_t rmtAddr);
     void destroy(const int64_t rmtAddr);
+   private:
+    static std::unordered_map<int, simgrid::s4u::MutexPtr> pMutexes;
+    static unsigned long long pMutexsMapId;
   };
 }
 }

@@ -22,7 +22,7 @@ rsg::Comm &rsg::Comm::send_init(rsg::Mailbox &dest) {
 
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
-  rsg::Comm &res = *(new rsg::Comm(commService.send_init(0, dest.p_remoteAddr))); // FIXME memory leak
+  rsg::Comm &res = *(new rsg::Comm(commService.send_init(0, dest.p_remoteAddr))); 
   return res;
 }
 

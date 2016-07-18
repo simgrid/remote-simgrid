@@ -7,6 +7,8 @@
 #include "RsgComm.h"
 #include "RsgService_types.h"
 
+#include "rsg/services/actorService.hpp"
+
 #include "simgrid/s4u.h"
 
 #include <thrift/server/TSimpleServer.h>
@@ -18,13 +20,21 @@ using namespace  ::RsgService;
 namespace simgrid  {
 namespace rsg {
 
+class RsgActorHandler;
+class RsgCommHandler;
+
 class RsgMailboxHandler : virtual public RsgMailboxIf {
+  friend RsgActorHandler;
+  friend RsgCommHandler;
  public:
   RsgMailboxHandler() {
   };
   int64_t mb_create(const std::string& name);
   void setReceiver(const int64_t remoteAddrMailbox, const int64_t remoteAddrActor);
   int64_t getReceiver(const int64_t remoteAddrMailbox);
+ private:
+   static std::unordered_map<int, simgrid::s4u::MailboxPtr> pMailboxes;
+   static unsigned long long pMailboxesMapId;
 };
 
 

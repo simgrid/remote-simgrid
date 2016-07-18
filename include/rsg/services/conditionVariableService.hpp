@@ -3,6 +3,7 @@
 
 #include "RsgConditionVariable.h"
 #include "RsgService_types.h"
+#include "rsg/services/mutexService.hpp"
 
 #include "simgrid/s4u.h"
 
@@ -12,6 +13,7 @@ using namespace  ::RsgService;
 
 namespace simgrid  {
 namespace rsg {
+  class RsgMutexHandler;
 
 class RsgConditionVariableHandler : virtual public RsgConditionVariableIf {
  public:
@@ -24,6 +26,9 @@ class RsgConditionVariableHandler : virtual public RsgConditionVariableIf {
   void notify(const int64_t remoteAddr);
   void notify_all(const int64_t remoteAddr);
 
+private:
+  static std::unordered_map<int, simgrid::s4u::ConditionVariablePtr> pConditionVariables;
+  static unsigned long long pConditionVariablesMapId;
 };
 
 }} // namespace simgrid::rsg

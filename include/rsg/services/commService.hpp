@@ -37,6 +37,7 @@ class RsgCommHandler : virtual public RsgCommIf {
 
   private :
   static boost::unordered_map<const int64_t, unsigned long int> *buffers;
+
 };
 
 }

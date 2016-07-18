@@ -12,7 +12,7 @@
 #include "simgrid/s4u.h"
 
 #include <vector>
-
+#include <unordered_map>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 
@@ -21,11 +21,12 @@ using namespace ::apache::thrift::server;
 using namespace  ::RsgService;
 namespace simgrid  {
 namespace rsg {
+  class RsgMailboxHandler;
 class RsgActorHandler : virtual public RsgActorIf {
-
+  friend RsgMailboxHandler;
  public:
   RsgActorHandler();
-
+  ~RsgActorHandler() {};
   void setServer(RsgThriftServerFramework *);
 
   protected:
@@ -50,9 +51,16 @@ class RsgActorHandler : virtual public RsgActorIf {
   int32_t this_actorGetPid();
   int64_t forPid(const int32_t pid);
   bool isValideActor(const int64_t remoteAddr);
+  
   private :
     RsgThriftServerFramework* pServer;
+    static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;
+    static unsigned long long pActorMapId;
 };
 }
 }
 #endif /* _RSG_ACTOR_SERVICE_IMPL_ */
+
+
+
+
