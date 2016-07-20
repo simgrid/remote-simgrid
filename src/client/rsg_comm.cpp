@@ -9,17 +9,17 @@
 using namespace ::simgrid;
 
 rsg::Comm::Comm(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr) {
-
+  
 }
 
 rsg::Comm::~Comm() {
-
+  
 }
 
 rsg::Comm &rsg::Comm::send_init(rsg::Mailbox &dest) {
   
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   rsg::Comm &res = *(new rsg::Comm(commService.send_init(0, dest.p_remoteAddr))); 
@@ -37,7 +37,7 @@ rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data) {
 //TODO Use the simulated amount
 rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   std::string dataStr((char*) data, size);
@@ -54,14 +54,14 @@ rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, size_t size) {
 
 rsg::Comm &rsg::Comm::recv_init(rsg::Mailbox &from) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   return *(new rsg::Comm(commService.recv_init(0, from.p_remoteAddr)));
 }
 
 rsg::Comm &rsg::Comm::recv_async(rsg::Mailbox &from, void **data) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   rsg::Comm &res = *(new rsg::Comm(commService.recv_async(0, from.p_remoteAddr))); 
   res.dstBuff_ = data;
@@ -70,14 +70,14 @@ rsg::Comm &rsg::Comm::recv_async(rsg::Mailbox &from, void **data) {
 
 void rsg::Comm::start() {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   commService.start(p_remoteAddr);
 }
 
 void rsg::Comm::setSrcData(void *data, size_t size) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   this->srcBuffSize_ = size;
@@ -100,7 +100,7 @@ void rsg::Comm::setSrcData(void *data) {
 
 size_t rsg::Comm::getDstDataSize() {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   return commService.getDstDataSize(p_remoteAddr);
@@ -108,7 +108,7 @@ size_t rsg::Comm::getDstDataSize() {
 
 void rsg::Comm::wait() {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   if (dstBuff_ != NULL) {
@@ -126,7 +126,7 @@ void rsg::Comm::wait() {
 
 void rsg::Comm::setDstData(void **buff) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   this->dstBuff_ = buff;
@@ -135,10 +135,27 @@ void rsg::Comm::setDstData(void **buff) {
 
 void rsg::Comm::setDstData(void ** buff, size_t size) {
   Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+  
   RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
   
   this->dstBuff_ = buff;
   this->dstBuffSize_ = size;
   commService.setDstData(p_remoteAddr);
+}
+
+bool rsg::Comm::test() {
+  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+  RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
+  
+  rsgCommBoolAndData res;
+  commService.test(res, p_remoteAddr);
+  if(res.cond) {
+    if (dstBuff_ != NULL) {
+      char * chars = (char*) malloc(res.data.size());
+      memcpy(chars, res.data.c_str(), res.data.size());
+      *(void**) this->dstBuff_ = (char *) chars;
+    }
+    return true;
+  } 
+  return false;
 }

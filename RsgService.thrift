@@ -13,6 +13,12 @@ struct rsgServerRemoteAddrAndPort {
   2:i32 port
 }
 
+
+struct rsgCommBoolAndData {
+  1:bool cond,
+  2:binary data
+}
+
 enum rsgConditionVariableStatus {
     cv_timeout = 1,
     cv_no_timeout = 2
@@ -105,6 +111,7 @@ service RsgComm   {
   i64 recv_async(1:i64 receiver, 2:i64 from_)
   void setDstData(1:i64 addr)
   void setSrcData(1:i64 addr, 2:binary buff)
+  rsgCommBoolAndData test(1:i64 addr)
 
   //void wait_timeout(1:i64 addr, 2:double timeout)
   //void setSrcDataSize(1:i64 addr, 2:i64 size)

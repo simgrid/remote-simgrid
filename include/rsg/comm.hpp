@@ -42,7 +42,7 @@ namespace rsg {
     void start();
     void wait();
     void wait(double timeout);
-
+    bool test();
     public :
     void setRate(double rate);
 

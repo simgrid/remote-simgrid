@@ -34,7 +34,7 @@ class RsgCommHandler : virtual public RsgCommIf {
   void setRate(const int64_t addr, const double rate);
   void setSrcData(const int64_t addr, const std::string& buff);
   void setDstData(const int64_t addr);
-
+  void test(rsgCommBoolAndData& _return, const int64_t addr);
   private :
   static boost::unordered_map<const int64_t, unsigned long int> *buffers;
 

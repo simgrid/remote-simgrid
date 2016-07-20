@@ -18,13 +18,13 @@ rsg::RsgCommHandler::RsgCommHandler() {
 
 int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest) {
   s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
-
+  
   return (int64_t) &s4u::Comm::send_init(*mbox);
 }
 
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
   s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
-
+  
   s4u::Comm &res = s4u::Comm::recv_init(*mbox);
   
   return (int64_t) &res; 
@@ -32,7 +32,7 @@ int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t fro
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
   s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
-
+  
   unsigned long int bufferAddr;
   unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
   bufferAddr = ptr;
@@ -68,8 +68,8 @@ void rsg::RsgCommHandler::waitComm(std::string& _return, const int64_t addr) {
       xbt_die("Empty dst buffer");
     }
   } catch (std::out_of_range& e) {
-
-	}
+    
+  }
 }
 
 void rsg::RsgCommHandler::setSrcDataSize(const int64_t addr, const int64_t size) {
@@ -101,3 +101,24 @@ void rsg::RsgCommHandler::setDstData(const int64_t addr) { //FIXME USE THE SIZE
   comm->setDstData((void**) bufferAddr, sizeof(std::string*));
   buffers->insert({addr, bufferAddr});
 }
+
+void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) {
+  s4u::Comm *comm = (s4u::Comm*) addr;
+  if(comm->test()) {
+    _return.cond = true;
+    if (buffers->find((unsigned long int)addr) != buffers->end()) {
+      void **buffer = (void**) buffers->at((unsigned long int)addr);
+      if(buffer) {
+        std::string *res = (std::string*) *buffer;
+        _return.data.assign(res->data(), res->length());
+        delete res;
+        free(buffer);
+        buffers->erase(addr);
+      }
+    }
+  } else {    
+    _return.data.assign("", 0);
+    _return.cond = false;
+  }
+}
+
