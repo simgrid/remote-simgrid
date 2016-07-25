@@ -46,10 +46,6 @@ using namespace ::simgrid;
 
 
 #define NB_WORKER 10
-#define SEED 1991
-
-// initialize a random generator
-std::mt19937 generator(SEED);
 
 struct s_consistency {
   simgrid::rsg::Mutex *g_lock; 
@@ -64,7 +60,7 @@ static int Worker(void *params)
   XBT_INFO("worker begin...");
   
   // Generate a random number to compute
-  int gen = (1 + generator() % 10);
+  int gen = (1 + rand() % 10);
   int waitFor = gen * 2500000;
   
   // Compute it

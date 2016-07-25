@@ -34,7 +34,7 @@ void rsg::RsgActorHandler::close() {
 }
 
 void  rsg::RsgActorHandler::sleep(const double duration) {
-  s4u::this_actor::sleep(duration);
+  s4u::this_actor::sleep_for(duration);
 }
 
 void rsg::RsgActorHandler::execute(const double flops) {
