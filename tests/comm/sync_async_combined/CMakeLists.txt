@@ -20,4 +20,4 @@ target_link_libraries(sync_async_combined_receive_simple ${THRIFT_LIBRARIES})
 target_link_libraries(sync_async_combined_receive_simple ${SimGrid_LIBRARY})
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")
-ADD_TESH(sync_sync_async_combined_combined --setenv resources=${TEST_RESOURCES_DIR} --setenv bindir=${RSG_BINARY_DIR} --setenv bintestdir=${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/client_test.tesh)
+ADD_TESH(async_sync_combined_combined --setenv resources=${TEST_RESOURCES_DIR} --setenv bindir=${RSG_BINARY_DIR} --setenv bintestdir=${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/client_test.tesh)

@@ -35,7 +35,9 @@ class RsgCommHandler : virtual public RsgCommIf {
   void setSrcData(const int64_t addr, const std::string& buff);
   void setDstData(const int64_t addr);
   void test(rsgCommBoolAndData& _return, const int64_t addr);
-  private :
+  void wait_any(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms);
+  void wait_any_for(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms, const double timeout);
+  private:
   static boost::unordered_map<const int64_t, unsigned long int> *buffers;
 
 };

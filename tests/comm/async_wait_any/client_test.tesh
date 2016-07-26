@@ -1,0 +1,12 @@
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>results 0 at pos 1
+>90
+>0
+>10
+>20
+>30
+>40
+>50
+>60
+>70
+>80

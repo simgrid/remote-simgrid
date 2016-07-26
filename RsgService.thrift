@@ -13,9 +13,13 @@ struct rsgServerRemoteAddrAndPort {
   2:i32 port
 }
 
-
 struct rsgCommBoolAndData {
   1:bool cond,
+  2:binary data
+}
+
+struct rsgCommIndexAndData {
+  1:i64 index,
   2:binary data
 }
 
@@ -111,6 +115,8 @@ service RsgComm   {
   i64 recv_async(1:i64 receiver, 2:i64 from_)
   void setDstData(1:i64 addr)
   void setSrcData(1:i64 addr, 2:binary buff)
+  rsgCommIndexAndData wait_any(1:list<i64> comms)
+  rsgCommIndexAndData wait_any_for(1:list<i64>  comms, 2:double timeout)
   rsgCommBoolAndData test(1:i64 addr)
 
   //void wait_timeout(1:i64 addr, 2:double timeout)

@@ -122,3 +122,52 @@ void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) 
   }
 }
 
+void rsg::RsgCommHandler::wait_any(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms) {
+  std::vector<s4u::Comm*> s4uComms;
+  for(auto it = comms.begin(); it != comms.end(); it++) {
+    s4u::Comm *comm = (s4u::Comm*) *it;
+    s4uComms.push_back(comm);
+  }
+  auto commResIt = s4u::Comm::wait_any(s4uComms.begin(), s4uComms.end());
+  
+  _return.index = commResIt - s4uComms.begin();
+  
+  if (buffers->find((unsigned long int)*commResIt) != buffers->end()) {
+    void **buffer = (void**) buffers->at((unsigned long int)*commResIt);
+    if(buffer) {
+      std::string *res = (std::string*) *buffer;
+      _return.data.assign(res->data(), res->length());
+      delete res;
+      free(buffer);
+      buffers->erase((int64_t)*commResIt);
+    }
+  }
+}
+
+void rsg::RsgCommHandler::wait_any_for(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms, const double timeout) {
+  std::vector<s4u::Comm*> s4uComms;
+  for(auto it = comms.begin(); it != comms.end(); it++) {
+    s4u::Comm *comm = (s4u::Comm*) *it;
+    s4uComms.push_back(comm);
+  }
+  auto commResIt = s4u::Comm::wait_any_for(s4uComms.begin(), s4uComms.end(), timeout);
+  if(commResIt == s4uComms.end()) {
+    _return.index = - 1;
+    _return.data.assign("", 0);
+    return;
+  }
+  
+  _return.index = commResIt - s4uComms.begin();
+  
+  if (buffers->find((unsigned long int)*commResIt) != buffers->end()) {
+    void **buffer = (void**) buffers->at((unsigned long int)*commResIt);
+    if(buffer) {
+      std::string *res = (std::string*) *buffer;
+      _return.data.assign(res->data(), res->length());
+      delete res;
+      free(buffer);
+      buffers->erase((int64_t)*commResIt);
+    }
+  }
+}
+

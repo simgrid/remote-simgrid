@@ -155,6 +155,7 @@ bool rsg::Comm::test() {
       memcpy(chars, res.data.c_str(), res.data.size());
       *(void**) this->dstBuff_ = (char *) chars;
     }
+    delete this;
     return true;
   } 
   return false;
