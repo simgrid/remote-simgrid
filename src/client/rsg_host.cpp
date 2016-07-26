@@ -106,7 +106,7 @@ int rsg::Host::core_count() {
 }
 
 /** Retrieve the property value (or nullptr if not set) */
-const char*rsg::Host::property(const char*key) {
+char* rsg::Host::property(const char*key) {
 	std::string res; 
 	char *res_cstr = NULL;
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
