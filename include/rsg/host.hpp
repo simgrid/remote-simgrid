@@ -41,7 +41,7 @@ namespace rsg {
     void setPstate(int pstate_index);
     int pstate();
     /** Retrieve the property value (or nullptr if not set) */
-    const char*property(const char*key);
+    char* property(const char*key);
     void setProperty(const char*key, const char *value);
   protected :
     static void shutdown(); /* clean all globals */
