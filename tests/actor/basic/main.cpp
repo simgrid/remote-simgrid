@@ -16,7 +16,7 @@
 #include "rsg/engine.hpp"
 
 #include "xbt.h"
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include <iostream>
 #define UNUSED(x) (void)(x)

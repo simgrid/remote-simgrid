@@ -5,7 +5,7 @@
 
 
 #include "xbt.h"
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include "rsg/services.hpp"
 #include "rsg/Server.hpp"

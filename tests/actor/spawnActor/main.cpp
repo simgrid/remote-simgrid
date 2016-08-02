@@ -16,7 +16,7 @@
 #include "RsgMsg.hpp"
 
 #include "xbt.h"
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include <iostream>
 #include <sys/types.h>

@@ -15,7 +15,7 @@
 #include "rsg/host.hpp"
 
 #include "xbt.h"
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include <iostream>
 

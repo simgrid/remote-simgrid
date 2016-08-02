@@ -1,7 +1,7 @@
 #ifndef _RSG_MUTEX_SERVICE_IMPL_
 #define _RSG_MUTEX_SERVICE_IMPL_
 
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 #include "RsgMutex.h"
 
 #include <thrift/server/TSimpleServer.h>

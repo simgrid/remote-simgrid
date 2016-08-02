@@ -9,7 +9,7 @@
 
 #include "rsg/services/actorService.hpp"
 
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>

@@ -9,7 +9,7 @@
 #include "rsg/RsgThriftSimpleServer.hpp"
 #include "rsg/RsgThriftServerFramework.hpp"
 
-#include "simgrid/s4u.h"
+#include <simgrid/s4u.hpp>
 
 #include <vector>
 #include <unordered_map>

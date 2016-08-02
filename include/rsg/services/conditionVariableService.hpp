@@ -5,7 +5,7 @@
 #include "RsgService_types.h"
 #include "rsg/services/mutexService.hpp"
 
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 using namespace ::apache::thrift::server;
 

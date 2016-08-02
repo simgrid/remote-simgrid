@@ -5,7 +5,7 @@
 #include "RsgEngine.h"
 #include "RsgService_types.h"
 
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>

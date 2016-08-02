@@ -3,8 +3,9 @@
 #include "rsg/Socket.hpp"
 
 #include "xbt.h"
-#include "simgrid/s4u.h"
+#include "simgrid/s4u.hpp"
 #include "RsgMsg.hpp"
+#include <xbt/string.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
@@ -57,7 +58,7 @@ void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
 void rsg::RsgActorHandler::getName(std::string& _return, const int64_t addr) {
   try {
     simgrid::s4u::ActorPtr actor = pActors.at(addr);
-    const char * c_name = actor->getName();
+    simgrid::xbt::string c_name = actor->getName();
     _return.assign(c_name);
   } catch(std::out_of_range& e) {
     std::cerr << "rsg::RsgActorHandler::getName no actors for this addr" << std::endl; 
