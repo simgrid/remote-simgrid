@@ -10,8 +10,8 @@ std::mutex MultiThreadedSingletonFactory::threadMutex;
 
 MultiThreadedSingletonFactory& MultiThreadedSingletonFactory::getInstance()  {
   if(pInstance == NULL) {
-     pInstance = new MultiThreadedSingletonFactory();
-   }
+    pInstance = new MultiThreadedSingletonFactory();
+  }
   return *pInstance;
 }
 
@@ -31,15 +31,29 @@ Client &MultiThreadedSingletonFactory::getClient(std::thread::id id) {
   return *res;
 }
 
+void MultiThreadedSingletonFactory::registerClient(Client *client) {
+  MultiThreadedSingletonFactory::mtx.lock();
+  std::hash<std::thread::id> hasher;
+  pClients->insert({std::this_thread::get_id(), client});
+  if(pClients->size() == 1) {
+    *pMainThreadID = hasher(std::this_thread::get_id());
+  }
+  MultiThreadedSingletonFactory::mtx.unlock();
+}
+
 Client &MultiThreadedSingletonFactory::getClientOrCreate(std::thread::id id, int rpcPort) {
   Client *res;
   MultiThreadedSingletonFactory::mtx.lock();
+  std::hash<std::thread::id> hasher;
   try {
     res = pClients->at(id);
   } catch (std::out_of_range& e) {
     res = new Client("localhost", 9090);
     res->connectToRpc(rpcPort);
     pClients->insert({std::this_thread::get_id(), res});
+    if(pClients->size() == 1) {
+      *pMainThreadID = hasher(std::this_thread::get_id());
+    }
   }
   MultiThreadedSingletonFactory::mtx.unlock();
   return *res;
@@ -97,13 +111,13 @@ void MultiThreadedSingletonFactory::waitAll() {
     }
     
     while(!joined.empty()) {
-        std::thread *t = joined.top();
-        joined.pop();
-        MultiThreadedSingletonFactory::threadMutex.lock();
-        it_type elem = std::find (pThreads->begin(), pThreads->end(), t);        
-        pThreads->erase(elem);
-        MultiThreadedSingletonFactory::threadMutex.unlock();
-        delete t;
+      std::thread *t = joined.top();
+      joined.pop();
+      MultiThreadedSingletonFactory::threadMutex.lock();
+      it_type elem = std::find (pThreads->begin(), pThreads->end(), t);        
+      pThreads->erase(elem);
+      MultiThreadedSingletonFactory::threadMutex.unlock();
+      delete t;
     }
     
     sleep(0.01);
@@ -113,4 +127,21 @@ void MultiThreadedSingletonFactory::waitAll() {
     MultiThreadedSingletonFactory::threadMutex.unlock();
     copied.clear();
   }  
+}
+
+void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
+  for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
+    delete *it;
+  }
+  pThreads->clear();
+  
+  for(auto it = pClients->begin(); it != pClients->end(); ++it) {
+    if(keepConnectionsOpen) {
+      it->second->close();
+      it->second->reset();
+    }
+    delete it->second;
+  }
+  pClients->clear();
+  
 }

@@ -14,11 +14,16 @@
 
 namespace simgrid {
 namespace rsg {
+  
+  namespace this_actor {
+    extern int fork();
+  }
 
   class Actor;
   class Host {
 
-  friend Actor;
+  friend Actor;    
+  friend int simgrid::rsg::this_actor::fork();
   private:
   	Host(const char *name, unsigned long int remoteAddr);
     Host(const std::string name, unsigned long int remoteAddr);

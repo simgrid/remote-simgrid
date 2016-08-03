@@ -51,7 +51,7 @@ class RsgActorHandler : virtual public RsgActorIf {
   int32_t this_actorGetPid();
   int64_t forPid(const int32_t pid);
   bool isValideActor(const int64_t remoteAddr);
-  
+  void createActorForFork(rsgServerRemoteAddrAndPort& _return);
   private :
     RsgThriftServerFramework* pServer;
     static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;

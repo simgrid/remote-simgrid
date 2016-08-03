@@ -79,7 +79,8 @@ namespace this_actor {
 	XBT_PUBLIC(void) quit();
 	
 	XBT_PUBLIC(int) getPid();
-
+	
+	XBT_PUBLIC(int) fork();
 
 };
 

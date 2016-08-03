@@ -25,6 +25,8 @@ class MultiThreadedSingletonFactory {
     void clearClient(std::thread::id id);
     void registerNewThread(std::thread *thread);
     void waitAll();
+    void registerClient(Client *client);
+    void clearAll(bool keepConnectionsOpen);
     // Client &getClientOrCreate(std::thread::id id);
   protected:
     MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()), pMainThreadID(new size_t) {};
