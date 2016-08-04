@@ -179,15 +179,14 @@ int rsg::this_actor::fork() {
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
     
     pid_t pid = ::fork();
-    if(pid) {
-        MultiThreadedSingletonFactory::getInstance().clearAll(false);
-        MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
-        return rsg::this_actor::getPid();
+    if(0 == pid) {
+        std::thread nActor(actorForkRunner,(int64_t) engine, params.addr, params.port, Host::current().p_remoteAddr);    
+        nActor.join();
+        return 0;
     }
-    
-    std::thread nActor(actorForkRunner,(int64_t) engine, params.addr, params.port, Host::current().p_remoteAddr);    
-    nActor.join();
-    return 0;
+    MultiThreadedSingletonFactory::getInstance().clearAll(false);
+    MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
+    return rsg::this_actor::getPid();
 }
 
 bool rsg::Actor::valid() const { 
