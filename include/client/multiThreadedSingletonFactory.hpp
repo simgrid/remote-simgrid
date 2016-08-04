@@ -1,7 +1,7 @@
 /* Copyright (c) 2015. The SimGrid Team. All rights reserved.              */
 
 /* This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNUClient Affero Licence (see in file LICENCE).        */
+* under the terms of the GNUClient Affero Licence (see in file LICENCE).        */
 
 #ifndef _MULTITHREADED_SINGLETON_FACTORY_
 #define _MULTITHREADED_SINGLETON_FACTORY_
@@ -18,8 +18,8 @@
 #include "client/RsgClient.hpp"
 
 class MultiThreadedSingletonFactory {
-  public:
-	  static MultiThreadedSingletonFactory& getInstance();
+public:
+    static MultiThreadedSingletonFactory& getInstance();
     Client &getClient(std::thread::id id);
     Client &getClientOrCreate(std::thread::id id, int rpcPort);
     void clearClient(std::thread::id id);
@@ -28,9 +28,9 @@ class MultiThreadedSingletonFactory {
     void registerClient(Client *client);
     void clearAll(bool keepConnectionsOpen);
     // Client &getClientOrCreate(std::thread::id id);
-  protected:
+protected:
     MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()), pMainThreadID(new size_t) {};
-  private:
+private:
     static MultiThreadedSingletonFactory* pInstance;
     static std::mutex mtx;           // mutex for critical section
     static std::mutex threadMutex;           // mutex for critical section

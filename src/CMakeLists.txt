@@ -11,13 +11,13 @@ set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
     client/RsgClient.cpp                         ../include/client/RsgClient.hpp
     client/multiThreadedSingletonFactory.cpp     ../include/client/multiThreadedSingletonFactory.hpp
-    client/rsg_actor.cpp                         ../include/rsg/actor.hpp
-    client/rsg_mailbox.cpp                       ../include/rsg/mailbox.hpp
-    client/rsg_comm.cpp                          ../include/rsg/comm.hpp
-    client/rsg_host.cpp                          ../include/rsg/host.hpp
-    client/rsg_mutex.cpp                         ../include/rsg/mutex.hpp
-    client/rsg_conditionVariable.cpp             ../include/rsg/conditionVariable.hpp
-    client/rsg_engine.cpp                        ../include/rsg/engine.hpp
+        client/rsg_actor.cpp                         ../include/rsg/actor.hpp
+        client/rsg_mailbox.cpp                       ../include/rsg/mailbox.hpp
+        client/rsg_comm.cpp                          ../include/rsg/comm.hpp
+        client/rsg_host.cpp                          ../include/rsg/host.hpp
+        client/rsg_mutex.cpp                         ../include/rsg/mutex.hpp
+        client/rsg_conditionVariable.cpp             ../include/rsg/conditionVariable.hpp
+        client/rsg_engine.cpp                        ../include/rsg/engine.hpp
 )
 
 set(SERVER_SOURCES

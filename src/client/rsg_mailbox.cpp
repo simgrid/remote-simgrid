@@ -1,8 +1,8 @@
 /* Copyright (c) 2006-2016. The SimGrid Team.
- * All rights reserved.                                                     */
+* All rights reserved.                                                     */
 
 /* This program is free software; you can redistribute it and/or modify it
- * under the terms of the license (GNU LGPL) which comes with this package. */
+* under the terms of the license (GNU LGPL) which comes with this package. */
 
 #include <xbt/log.h>
 #include <iostream>
@@ -24,7 +24,7 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	rsg::Mailbox * res;
 	
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
+	
 	try {
 		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
 		res = new Mailbox(name, remoteAddr);
@@ -40,10 +40,10 @@ void rsg::Mailbox::shutdown() {
 }
 
 /** Declare that the specified process is a permanent receiver on that mailbox
- *
- * It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
- * This models the real behavior of TCP and MPI communications, amongst other.
- */
+*
+* It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
+* This models the real behavior of TCP and MPI communications, amongst other.
+*/
 void rsg::Mailbox::setReceiver(const rsg::Actor &process) {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").setReceiver(p_remoteAddr, process.p_remoteAddr);

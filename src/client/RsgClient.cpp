@@ -19,72 +19,72 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "R
 
 
 Client::Client(std::string hostname, int port) : pSock(-1),
-                                                 pHostname(hostname),
-                                                 pPort(port),
-                                                 pProtocol(NULL),
-                                                 pTransport(NULL),
-                                                 pServices(new boost::unordered_map<std::string, void*> ()),
-                                                 pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
+pHostname(hostname),
+pPort(port),
+pProtocol(NULL),
+pTransport(NULL),
+pServices(new boost::unordered_map<std::string, void*> ()),
+pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
 }
 
 void Client::init() {
-  int connectSock = socket_connect(pHostname.c_str() , pPort);
-  if(connectSock <= 0) {
-      fprintf(stderr,"error, cannot connect to server\n");
-  }
-
-  this->pSock = connectSock;
-
-  int rpcPort;
-  recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
-  connectToRpc(rpcPort);
+    int connectSock = socket_connect(pHostname.c_str() , pPort);
+    if(connectSock <= 0) {
+        fprintf(stderr,"error, cannot connect to server\n");
+    }
+    
+    this->pSock = connectSock;
+    
+    int rpcPort;
+    recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
+    connectToRpc(rpcPort);
 }
 
 void Client::connectToRpc(int rpcPort) {
-  boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
-  pTransport.reset(new TBufferedTransport(socket));
-  pProtocol.reset(new TBinaryProtocol(pTransport));
-  bool connected = true;
-  do {
-    try {
-      pTransport->open();
-      connected = true;
-    } catch(apache::thrift::transport::TTransportException &ex) {
-      connected = false;
-      sleep(0.1);
-    }
-  } while(!connected);
+    boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
+    pTransport.reset(new TBufferedTransport(socket));
+    pProtocol.reset(new TBinaryProtocol(pTransport));
+    bool connected = true;
+    do {
+        try {
+            pTransport->open();
+            connected = true;
+        } catch(apache::thrift::transport::TTransportException &ex) {
+            connected = false;
+            sleep(0.1);
+        }
+    } while(!connected);
 }
 
 boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
-  return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
+    return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
 }
 
 boost::shared_ptr<TMultiplexedProtocol>  Client::getMultiplexedProtocol(std::string serviceName) const {
-  return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
+    return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
 }
 
 boost::shared_ptr<TBufferedTransport>  Client::getTransport() const {
-  return boost::shared_ptr<TBufferedTransport>(this->pTransport);
+    return boost::shared_ptr<TBufferedTransport>(this->pTransport);
 }
 
 void Client::close() {
-  pTransport->close();
+    pTransport->close();
 };
 
 void Client::connect() {
-  pTransport->open();
+    pTransport->open();
 };
 
 //FIXME Put this code into the engine destructor.
 void Client::reset() {
-
-  for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
-   IDel * del = this->pDestructors->at(it->first);
-   (*del)(this->pServices->at(it->first));
-   delete del;
-  }
-  
-  this->pDestructors->clear();
-  this->pServices->clear();
+    
+    for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
+        IDel * del = this->pDestructors->at(it->first);
+        (*del)(this->pServices->at(it->first));
+        delete del;
+    }
+    
+    this->pDestructors->clear();
+    this->pServices->clear();
 }

@@ -1,8 +1,8 @@
 /* Copyright (c) 2006-2016. The SimGrid Team.
- * All rights reserved.                                                     */
+* All rights reserved.                                                     */
 
 /* This program is free software; you can redistribute it and/or modify it
- * under the terms of the license (GNU LGPL) which comes with this package. */
+* under the terms of the license (GNU LGPL) which comes with this package. */
 
 #include <xbt/log.h>
 
@@ -14,8 +14,8 @@
 using namespace ::simgrid;
 
 double rsg::getClock() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-
-  return engine.serviceClientFactory<RsgEngineClient>("RsgEngine").getClock();
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    
+    return engine.serviceClientFactory<RsgEngineClient>("RsgEngine").getClock();
 }
 

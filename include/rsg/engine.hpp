@@ -10,11 +10,11 @@
 #include <xbt/string.hpp>
 
 namespace simgrid {
-namespace rsg {
-
-double getClock();
-
-} // namespace simgrid::rsg
+    namespace rsg {
+        
+        double getClock();
+        
+    } // namespace simgrid::rsg
 } // namespace simgrid
 
 #endif /* SRC_RSG_GLOBAL_HPP_ */

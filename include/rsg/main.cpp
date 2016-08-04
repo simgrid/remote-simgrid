@@ -32,25 +32,25 @@ using namespace ::RsgService;
 using namespace ::simgrid;
 
 int actor() {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  char *received = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
-  rsg::this_actor::quit();
-  return 1;
+    rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+    char *received = rsg::this_actor::recv(*mbox);
+    XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+    rsg::this_actor::quit();
+    return 1;
 }
 
 int main(int argc, char **argv) {
-  const char *msg = "Do you copy ? ";
-  rsg::Host host1 = rsg::Host::by_name("host1");
-
-  rsg::Actor::createActor("receiver" , host1 , actor);
-  
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
-  XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
-
-  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
-  
-  rsg::this_actor::quit();
-  return 0;
+    const char *msg = "Do you copy ? ";
+    rsg::Host host1 = rsg::Host::by_name("host1");
+    
+    rsg::Actor::createActor("receiver" , host1 , actor);
+    
+    rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+    XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
+    
+    rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
+    XBT_INFO("send %s with size : %d", msg, strlen(msg));
+    
+    rsg::this_actor::quit();
+    return 0;
 }

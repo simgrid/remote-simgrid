@@ -14,18 +14,18 @@ using namespace ::apache::thrift::server;
 
 using namespace  ::RsgService;
 namespace simgrid  {
-namespace rsg {
-
-class RsgEngineHandler : virtual public RsgEngineIf {
- public:
-  RsgEngineHandler() {
-  }
-
-  double getClock();
-
-};
-
-
-}
+    namespace rsg {
+        
+        class RsgEngineHandler : virtual public RsgEngineIf {
+        public:
+            RsgEngineHandler() {
+            }
+            
+            double getClock();
+            
+        };
+        
+        
+    }
 }
 #endif /* _RSG_GLOBAL_SERVICE_IMPL_ */ 
