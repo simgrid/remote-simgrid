@@ -42,6 +42,7 @@ int main(int argc, char **argv) {
   pid_t pid = rsg::this_actor::fork();
   if(pid) {
     XBT_INFO("[child]My id is  : %d",rsg::this_actor::getPid());
+    XBT_INFO("[child]Fork returned : %d",pid);
     
     XBT_INFO("[child]Message from Daddy : %s", rsg::this_actor::recv(*mbox));
     rsg::this_actor::quit();

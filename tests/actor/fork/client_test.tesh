@@ -1,4 +1,5 @@
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]My id is  : 2
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 2
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Message from Daddy : GaBuZoMeu
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [parent]My id is  : 1
