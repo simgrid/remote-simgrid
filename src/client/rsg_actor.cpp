@@ -167,9 +167,11 @@ int rsg::this_actor::getPid() {
     return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPid();
 }
 
-void actorForkRunner(int64_t client, int64_t addr, int port, int64_t hostAddr) {
+void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr, int port, int64_t hostAddr) {
     Client *engine = (Client*)client;
-    engine->serviceClientFactory<RsgActorClient>("RsgActor").createActor(addr, port ,"forked", hostAddr, 10);
+    unsigned long long newActorAddr = engine->serviceClientFactory<RsgActorClient>("RsgActor").createActor(addr, port ,"forked", hostAddr, 10);
+    int newPid = engine->serviceClientFactory<RsgActorClient>("RsgActor").getPid(newActorAddr);
+    child_pid.set_value(newPid);
 }
 
 int rsg::this_actor::fork() {
@@ -179,14 +181,20 @@ int rsg::this_actor::fork() {
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
     
     pid_t pid = ::fork();
-    if(0 == pid) {
-        std::thread nActor(actorForkRunner,(int64_t) engine, params.addr, params.port, Host::current().p_remoteAddr);    
-        nActor.join();
+    if(0 == pid) { // Child
+        MultiThreadedSingletonFactory::getInstance().clearAll(false);
+        MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
         return 0;
     }
-    MultiThreadedSingletonFactory::getInstance().clearAll(false);
-    MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
-    return rsg::this_actor::getPid();
+    
+    std::promise<int> child_pid;
+    std::future<int> future = child_pid.get_future();
+
+    std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, Host::current().p_remoteAddr);
+    nActor.join();
+    future.wait();
+    int res = future.get(); 
+    return res;
 }
 
 bool rsg::Actor::valid() const { 
