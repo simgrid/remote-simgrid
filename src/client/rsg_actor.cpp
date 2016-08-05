@@ -130,8 +130,8 @@ void rsg::Actor::killAll() {
 
 rsg::Actor* rsg::Actor::forPid(int pid) {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").forPid(pid);
-    if(addr == 0)
+    int64_t addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").forPid(pid);
+    if(addr == -1)
         return 0;
     else
         return new Actor(addr, pid);
