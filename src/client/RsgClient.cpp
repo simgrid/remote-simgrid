@@ -35,7 +35,6 @@ void Client::init() {
     if(rpcEnvPort != NULL) {
         //We first try to get env variable.
         rpcPort = std::stoi(rpcEnvPort, NULL);
-        printf("found rpcPort : %d\n", rpcPort);
     } else {
         //If no environments variables is setted, we need to ask the server the new port.
         int connectSock = socket_connect(pHostname.c_str() , pPort);
