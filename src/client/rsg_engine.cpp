@@ -29,7 +29,7 @@ int rsg::getRpcPort() {
     return engine.getRpcPort();
 }
 
-void rsg::setKeepAliveOnClientDisconnect(bool newValue) {
+void rsg::setKeepAliveOnNextClientDisconnect(bool newValue) {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgEngineClient>("RsgEngine").setKeepAliveOnClientDisconnect(newValue);
+    engine.serviceClientFactory<RsgEngineClient>("RsgEngine").setKeepAliveOnNextClientDisconnect(newValue);
 }

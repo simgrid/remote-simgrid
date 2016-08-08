@@ -20,7 +20,7 @@ double rsg::RsgEngineHandler::getClock() {
 }
 
 
-void rsg::RsgEngineHandler::setKeepAliveOnClientDisconnect(const bool newValue) {
+void rsg::RsgEngineHandler::setKeepAliveOnNextClientDisconnect(const bool newValue) {
 // Your implementation goes here
-    pServer->setKeepAliveOnClientDisconnect(newValue);
+    pServer->setKeepAliveOnNextClientDisconnect(newValue);
 }

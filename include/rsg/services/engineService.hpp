@@ -22,7 +22,7 @@ namespace simgrid  {
             }
             void setServer(RsgThriftServerFramework *);
             double getClock();
-            void setKeepAliveOnClientDisconnect(const bool newValue);
+            void setKeepAliveOnNextClientDisconnect(const bool newValue);
         private:
             RsgThriftServerFramework* pServer;
         };

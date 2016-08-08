@@ -104,7 +104,7 @@ namespace apache {
                     */
                     virtual void setConcurrentClientLimit(int64_t newLimit);
 
-                    virtual void setKeepAliveOnClientDisconnect(bool newValue);
+                    virtual void setKeepAliveOnNextClientDisconnect(bool newValue);
                     
                 protected:
                     /**
