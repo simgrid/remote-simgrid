@@ -64,7 +64,6 @@ void Client::connectToRpc(int rpcPort) {
             sleep(0.1);
         }
     } while(!connected);
-    printf("connected\n");
 }
 
 boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
