@@ -211,7 +211,7 @@ int64_t rsg::RsgActorHandler::forPid(const int32_t pid) {
         pActors.insert({newId, actor});
         return newId;
     } else {
-        return 0;
+        return -1;
     }
 }
 
