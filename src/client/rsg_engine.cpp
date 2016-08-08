@@ -19,3 +19,17 @@ double rsg::getClock() {
     return engine.serviceClientFactory<RsgEngineClient>("RsgEngine").getClock();
 }
 
+void rsg::closeConnection() {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    engine.close();
+}
+
+int rsg::getRpcPort() {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    return engine.getRpcPort();
+}
+
+void rsg::setKeepAliveOnClientDisconnect(bool newValue) {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    engine.serviceClientFactory<RsgEngineClient>("RsgEngine").setKeepAliveOnClientDisconnect(newValue);
+}

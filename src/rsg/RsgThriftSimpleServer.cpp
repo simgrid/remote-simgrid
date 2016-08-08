@@ -1,5 +1,5 @@
 #include "rsg/RsgThriftSimpleServer.hpp"
-
+#include <iostream>
 namespace apache {
 namespace thrift {
 namespace server {
@@ -75,6 +75,10 @@ void RsgThriftSimpleServer::onClientConnected(const shared_ptr<TConnectedClient>
  * RsgThriftSimpleServer does not track clients so there is nothing to do here.
  */
 void RsgThriftSimpleServer::onClientDisconnected(TConnectedClient*) {
+    if(!this->keepAliveOnClientDisconnect)
+        this->stop();
+    else 
+        std::cout << "seerver closed " << std::endl;
 }
 
 /**

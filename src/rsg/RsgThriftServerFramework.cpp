@@ -210,6 +210,11 @@ void RsgThriftServerFramework::newlyConnectedClient(const boost::shared_ptr<TCon
   hwm_ = std::max(hwm_, clients_);
 }
 
+void  RsgThriftServerFramework::setKeepAliveOnClientDisconnect(bool newValue) {
+    this->keepAliveOnClientDisconnect = newValue;
+}
+
+
 void RsgThriftServerFramework::disposeConnectedClient(TConnectedClient* pClient) {
   {
     // Count a concurrent client removed.

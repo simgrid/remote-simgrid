@@ -10,6 +10,17 @@ using namespace  ::RsgService;
 
 using namespace ::simgrid;
 
+
+void rsg::RsgEngineHandler::setServer(RsgThriftServerFramework *server) {
+    pServer = server;
+}
+
 double rsg::RsgEngineHandler::getClock() {
     return SIMIX_get_clock();
+}
+
+
+void rsg::RsgEngineHandler::setKeepAliveOnClientDisconnect(const bool newValue) {
+// Your implementation goes here
+    pServer->setKeepAliveOnClientDisconnect(newValue);
 }

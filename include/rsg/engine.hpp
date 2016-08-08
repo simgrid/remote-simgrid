@@ -13,7 +13,9 @@ namespace simgrid {
     namespace rsg {
         
         double getClock();
-        
+        void closeConnection();
+        int getRpcPort();
+        void setKeepAliveOnClientDisconnect(bool newValue);
     } // namespace simgrid::rsg
 } // namespace simgrid
 

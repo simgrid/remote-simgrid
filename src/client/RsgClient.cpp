@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 using namespace ::simgrid;
 
@@ -28,15 +29,23 @@ pDestructors(new boost::unordered_map<std::string, IDel*>()) {
 }
 
 void Client::init() {
-    int connectSock = socket_connect(pHostname.c_str() , pPort);
-    if(connectSock <= 0) {
-        fprintf(stderr,"error, cannot connect to server\n");
-    }
     
-    this->pSock = connectSock;
-    
+    char *rpcEnvPort = std::getenv("RsgRpcPort");
     int rpcPort;
-    recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
+    if(rpcEnvPort != NULL) {
+        //We first try to get env variable.
+        rpcPort = std::stoi(rpcEnvPort, NULL);
+        printf("found rpcPort : %d\n", rpcPort);
+    } else {
+        //If no environments variables is setted, we need to ask the server the new port.
+        int connectSock = socket_connect(pHostname.c_str() , pPort);
+        if(connectSock <= 0) {
+            fprintf(stderr,"error, cannot connect to server\n");
+        }
+        
+        this->pSock = connectSock;
+        recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
+    }
     connectToRpc(rpcPort);
 }
 
@@ -48,12 +57,14 @@ void Client::connectToRpc(int rpcPort) {
     do {
         try {
             pTransport->open();
+            pRpcPort = rpcPort;
             connected = true;
         } catch(apache::thrift::transport::TTransportException &ex) {
             connected = false;
             sleep(0.1);
         }
     } while(!connected);
+    printf("connected\n");
 }
 
 boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {

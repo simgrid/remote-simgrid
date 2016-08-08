@@ -20,9 +20,11 @@ namespace simgrid  {
         public:
             RsgEngineHandler() {
             }
-            
+            void setServer(RsgThriftServerFramework *);
             double getClock();
-            
+            void setKeepAliveOnClientDisconnect(const bool newValue);
+        private:
+            RsgThriftServerFramework* pServer;
         };
         
         

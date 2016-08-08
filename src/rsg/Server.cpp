@@ -138,6 +138,7 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port) {
   
   RsgThriftServerFramework *server = createRpcServer(port, processor);
   handler->setServer(server);
+  gblServiceHandler->setServer(server);
   return server;
   
 }

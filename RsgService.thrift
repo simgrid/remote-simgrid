@@ -30,6 +30,7 @@ enum rsgConditionVariableStatus {
 
 service RsgEngine {
     double getClock()
+    void setKeepAliveOnClientDisconnect(1:bool newValue)
 }
 
 service RsgActor    {
