@@ -66,10 +66,8 @@ namespace simgrid {
                     char * chars = (char*) malloc(_return.data.size());
                     memcpy(chars, _return.data.c_str(), _return.data.size());
                     *(void**) (*terminatedComm)->dstBuff_ = (char *) chars;
-                } else {
-                    std::cerr << "cannot wait any with an empty buffer " << std::endl;
                 }
-                
+            
                 return terminatedComm;
             }
             
@@ -94,8 +92,6 @@ namespace simgrid {
                     char * chars = (char*) malloc(_return.data.size());
                     memcpy(chars, _return.data.c_str(), _return.data.size());
                     *(void**) (*terminatedComm)->dstBuff_ = (char *) chars;
-                } else {
-                    std::cerr << "cannot wait any with an empty buffer " << std::endl;
                 }
                 
                 return terminatedComm;
