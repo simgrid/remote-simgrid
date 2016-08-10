@@ -1,4 +1,4 @@
-#include "rsg/RsgThriftSimpleServer.hpp"
+#include "RsgThriftSimpleServer.hpp"
 #include <iostream>
 namespace apache {
 namespace thrift {

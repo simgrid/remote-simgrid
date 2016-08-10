@@ -1,6 +1,6 @@
 #include "rsg/comm.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+#include "multiThreadedSingletonFactory.hpp"
 
 
 #include <bitset>

@@ -1,4 +1,4 @@
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "multiThreadedSingletonFactory.hpp"
 #include "RsgMsg.hpp"
 #include <iostream>
 #include <stack>

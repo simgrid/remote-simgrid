@@ -6,8 +6,9 @@
 
 #include "rsg/actor.hpp"
 #include "RsgMsg.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+#include "../rsg/services.hpp"
+#include "multiThreadedSingletonFactory.hpp"
 
 #include <sys/wait.h> 
 #include <string>

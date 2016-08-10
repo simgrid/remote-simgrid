@@ -9,7 +9,6 @@
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "rsg/services.hpp"
 #include "actor.hpp"
 #include "comm.hpp"
 

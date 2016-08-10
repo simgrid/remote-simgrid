@@ -2,8 +2,6 @@
 // You should copy it to another filename to avoid overwriting it.
 
 
-#include "rsg/services.hpp"
-#include "client/RsgClient.hpp"
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"

@@ -7,8 +7,8 @@
 #include <xbt/log.h>
 #include <iostream>
 #include "rsg/mailbox.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+#include "multiThreadedSingletonFactory.hpp"
 
 using namespace ::simgrid;
 

@@ -1,4 +1,4 @@
-#include "rsg/services.hpp"
+#include "../services.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.hpp"

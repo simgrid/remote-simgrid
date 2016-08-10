@@ -8,8 +8,8 @@
 #include <iostream>
 
 #include "rsg/mutex.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+#include "multiThreadedSingletonFactory.hpp"
 
 using namespace ::simgrid;
 

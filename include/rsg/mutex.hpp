@@ -9,8 +9,7 @@
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "rsg/services.hpp"
-#include "rsg/conditionVariable.hpp"
+#include "conditionVariable.hpp"
 
 namespace simgrid {
     namespace rsg {
