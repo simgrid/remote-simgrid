@@ -1,6 +1,6 @@
-#include "rsg/services.hpp"
-#include "rsg/Server.hpp"
-#include "rsg/Socket.hpp"
+#include "../services.hpp"
+#include "../Server.hpp"
+#include "../Socket.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.hpp"

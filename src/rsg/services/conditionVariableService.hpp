@@ -3,7 +3,7 @@
 
 #include "RsgConditionVariable.h"
 #include "RsgService_types.h"
-#include "rsg/services/mutexService.hpp"
+#include "mutexService.hpp"
 
 #include "simgrid/s4u.hpp"
 

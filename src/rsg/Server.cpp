@@ -1,5 +1,5 @@
-#include "rsg/Server.hpp"
-#include "rsg/Socket.hpp"
+#include "Server.hpp"
+#include "Socket.hpp"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,7 +15,7 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/processor/TMultiplexedProcessor.h>
 
-#include "rsg/RsgThriftServerFramework.hpp"
+#include "RsgThriftServerFramework.hpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;

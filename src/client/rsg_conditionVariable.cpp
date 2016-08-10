@@ -7,8 +7,10 @@
 #include <xbt/log.h>
 #include <iostream>
 #include "rsg/conditionVariable.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+#include "multiThreadedSingletonFactory.hpp"
+#include "../rsg/services.hpp"
+
 
 using namespace ::simgrid;
 

@@ -1,6 +1,7 @@
-#include "client/multiThreadedSingletonFactory.hpp"
-#include "client/RsgClient.hpp"
-#include "rsg/Socket.hpp"
+#include "multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
+
+#include "../rsg/Socket.hpp"
 #include "RsgMsg.hpp"
 
 #include <thrift/transport/TSocket.h>

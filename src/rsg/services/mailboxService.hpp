@@ -7,7 +7,7 @@
 #include "RsgComm.h"
 #include "RsgService_types.h"
 
-#include "rsg/services/actorService.hpp"
+#include "actorService.hpp"
 
 #include "simgrid/s4u.hpp"
 

@@ -9,7 +9,6 @@
 #include <boost/unordered_map.hpp>
 #include <xbt/string.hpp>
 
-#include "rsg/services.hpp"
 #include "rsg/actor.hpp"
 
 namespace simgrid {

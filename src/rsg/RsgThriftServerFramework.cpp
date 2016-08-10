@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include <stdint.h>
 
-#include "rsg/RsgThriftServerFramework.hpp"
+#include "RsgThriftServerFramework.hpp"
 #include "RsgMsg.hpp"
 
 namespace apache {

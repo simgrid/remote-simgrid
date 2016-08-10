@@ -6,16 +6,16 @@
 #ifndef SRC_RSG_COMM_HPP_
 #define SRC_RSG_COMM_HPP_
 
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
-
 #include <vector>
 #include <boost/unordered_map.hpp>
 #include <xbt/string.hpp>
 #include <iostream>
-#include "rsg/services.hpp"
+
 #include "rsg/actor.hpp"
 #include "rsg/mailbox.hpp"
+
+#include "RsgService_types.h"
+#include "RsgComm.h"
 
 namespace simgrid {
     namespace rsg {
@@ -52,24 +52,19 @@ namespace simgrid {
             template<class I> static
             I wait_any(I first, I last)
             {
-                rsgCommIndexAndData _return;
-                Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-                RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
                 std::vector<int64_t> comms;
                 for(auto it = first; it != last; it++) {
                     comms.push_back((*it)->p_remoteAddr);
                 }
-                
-                commService.wait_any(_return, comms);
+                RsgService::rsgCommIndexAndData _return;
+                waitAnyWrapper(_return, comms);
                 auto terminatedComm = std::next(first, _return.index);
                 if ((*terminatedComm)->dstBuff_ != NULL) {
                     char * chars = (char*) malloc(_return.data.size());
                     memcpy(chars, _return.data.c_str(), _return.data.size());
                     *(void**) (*terminatedComm)->dstBuff_ = (char *) chars;
-                } else {
-                    std::cerr << "cannot wait any with an empty buffer " << std::endl;
                 }
-                
+            
                 return terminatedComm;
             }
             
@@ -77,14 +72,12 @@ namespace simgrid {
             template<class I> static
             I wait_any_for(I first, I last, double timeout)
             {
-                rsgCommIndexAndData _return;
-                Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-                RsgCommClient& commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
                 std::vector<int64_t> comms;
                 for(auto it = first; it != last; it++) {
                     comms.push_back((*it)->p_remoteAddr);
                 }
-                commService.wait_any_for(_return, comms, timeout);
+                RsgService::rsgCommIndexAndData _return;
+                waitAnyForWrapper(_return, comms, timeout);
                 if(_return.index == -1)  {
                     return last;
                 }
@@ -94,8 +87,6 @@ namespace simgrid {
                     char * chars = (char*) malloc(_return.data.size());
                     memcpy(chars, _return.data.c_str(), _return.data.size());
                     *(void**) (*terminatedComm)->dstBuff_ = (char *) chars;
-                } else {
-                    std::cerr << "cannot wait any with an empty buffer " << std::endl;
                 }
                 
                 return terminatedComm;
@@ -120,6 +111,11 @@ namespace simgrid {
             size_t dstBuffSize_ = 0;
             void *srcBuff_ = NULL;
             size_t srcBuffSize_ = 0;
+            
+            //Those two fonction has been created to avoid unwanted include into this file. 
+            //Without them, we must include MultiThreadedSingletonFactory.hpp and RsgClient.hpp which are not parts of the rsg API.
+            static void waitAnyWrapper(RsgService::rsgCommIndexAndData& _return, const std::vector<int64_t> & comms);
+            static void waitAnyForWrapper(RsgService::rsgCommIndexAndData& _return, const std::vector<int64_t> & comms, const double timeout);
         };
         
     } // namespace simgrid::rsg

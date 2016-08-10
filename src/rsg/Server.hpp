@@ -5,9 +5,9 @@
 #include <sys/socket.h>
 #include <thread>
 
-#include "rsg/services.hpp"
-#include "rsg/RsgThriftSimpleServer.hpp"
-#include "rsg/RsgThriftServerFramework.hpp"
+#include "services.hpp"
+#include "RsgThriftSimpleServer.hpp"
+#include "RsgThriftServerFramework.hpp"
 
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>

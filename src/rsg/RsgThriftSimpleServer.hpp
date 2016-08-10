@@ -20,7 +20,7 @@
 #ifndef _RSG_THRIFT_SERVER_TSIMPLESERVER_H_
 #define _RSG_THRIFT_SERVER_TSIMPLESERVER_H_ 1
 
-#include "rsg/RsgThriftServerFramework.hpp"
+#include "RsgThriftServerFramework.hpp"
 
 namespace apache {
     namespace thrift {

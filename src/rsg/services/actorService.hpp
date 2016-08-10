@@ -6,8 +6,8 @@
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
-#include "rsg/RsgThriftSimpleServer.hpp"
-#include "rsg/RsgThriftServerFramework.hpp"
+#include "../RsgThriftSimpleServer.hpp"
+#include "../RsgThriftServerFramework.hpp"
 
 #include <simgrid/s4u.hpp>
 
