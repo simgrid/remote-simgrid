@@ -10,6 +10,8 @@
 #include "rsg/mutex.hpp"
 #include "RsgClient.hpp"
 #include "multiThreadedSingletonFactory.hpp"
+#include "../rsg/services.hpp"
+
 
 using namespace ::simgrid;
 

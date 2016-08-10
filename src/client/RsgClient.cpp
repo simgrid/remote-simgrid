@@ -1,5 +1,6 @@
 #include "multiThreadedSingletonFactory.hpp"
 #include "RsgClient.hpp"
+
 #include "../rsg/Socket.hpp"
 #include "RsgMsg.hpp"
 

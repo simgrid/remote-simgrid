@@ -14,7 +14,6 @@
 #include <map>
 #include <mutex>          // std::mutex
 
-#include "../rsg/services.hpp"
 #include "RsgClient.hpp"
 
 class MultiThreadedSingletonFactory {

@@ -1,7 +1,7 @@
 #include "rsg/host.hpp"
-#include "RsgClient.hpp"
 #include "../rsg/services.hpp"
 #include "multiThreadedSingletonFactory.hpp"
+
 #include "RsgMsg.hpp"
 
 #include <iostream>

@@ -10,7 +10,10 @@
 #include "RsgClient.hpp"
 #include "multiThreadedSingletonFactory.hpp"
 
+#include "../rsg/services.hpp"
+
 using namespace ::simgrid;
+using namespace ::RsgService;
 
 XBT_LOG_EXTERNAL_CATEGORY(RSG);
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_CHANNEL,RSG,"RSG Communication Mailboxes");
@@ -26,7 +29,7 @@ rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	
 	try {
-		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgMailboxClient>("RsgMailbox").mb_create(name);
+		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgService::RsgMailboxClient>("RsgMailbox").mb_create(name);
 		res = new Mailbox(name, remoteAddr);
 		return res;
 	} catch(apache::thrift::transport::TTransportException &ex) {

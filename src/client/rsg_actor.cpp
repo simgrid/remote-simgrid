@@ -4,11 +4,13 @@
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
 
-#include "rsg/actor.hpp"
 #include "RsgMsg.hpp"
-#include "RsgClient.hpp"
 #include "../rsg/services.hpp"
+
+#include "rsg/actor.hpp"
+#include "RsgClient.hpp"
 #include "multiThreadedSingletonFactory.hpp"
+
 
 #include <sys/wait.h> 
 #include <string>

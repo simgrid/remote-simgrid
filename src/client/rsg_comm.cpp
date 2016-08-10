@@ -2,6 +2,8 @@
 #include "RsgClient.hpp"
 #include "multiThreadedSingletonFactory.hpp"
 
+#include "../rsg/services.hpp"
+
 
 #include <bitset>
 #include <iostream>
@@ -159,4 +161,16 @@ bool rsg::Comm::test() {
         return true;
     } 
     return false;
+}
+
+void rsg::Comm::waitAnyWrapper(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms) {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
+    commService.wait_any(_return, comms);
+}
+
+void rsg::Comm::waitAnyForWrapper(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms, const double timeout) {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    RsgCommClient commService = engine.serviceClientFactory<RsgCommClient>("RsgComm");
+    commService.wait_any_for(_return, comms, timeout);
 }

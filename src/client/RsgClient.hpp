@@ -15,7 +15,6 @@
 #include <thrift/protocol/TMultiplexedProtocol.h>
 
 #include <boost/unordered_map.hpp>
-#include "../rsg/services.hpp"
 
 using namespace apache::thrift;
 using namespace apache::thrift::protocol;
