@@ -7,14 +7,11 @@
 #define SIMGRID_RSG_ACTOR_HPP
 
 #include <xbt.h>
-#include <vector>
-#include <boost/shared_ptr.hpp>
 
-#include "rsg/mailbox.hpp"
-#include "rsg/host.hpp"
-#include "rsg/comm.hpp"
-#include <sys/types.h>
-#include <thread>
+#include <rsg/mailbox.hpp>
+#include <rsg/host.hpp>
+#include <rsg/comm.hpp>
+
 
 namespace simgrid  {
     namespace rsg {

@@ -6,10 +6,8 @@
 #ifndef SRC_RSG_HOST_HPP_
 #define SRC_RSG_HOST_HPP_
 
-#include <boost/unordered_map.hpp>
 #include <xbt/string.hpp>
-
-#include "rsg/actor.hpp"
+#include <rsg/actor.hpp>
 
 namespace simgrid {
     namespace rsg {

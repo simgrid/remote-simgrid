@@ -9,8 +9,8 @@
 #include <boost/unordered_map.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include "actor.hpp"
-#include "comm.hpp"
+#include <rsg/actor.hpp>
+#include <rsg/comm.hpp>
 
 namespace simgrid {
     namespace rsg {

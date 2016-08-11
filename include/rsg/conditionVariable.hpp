@@ -6,10 +6,8 @@
 #ifndef RSG_COND_VARIABLE_HPP
 #define RSG_COND_VARIABLE_HPP
 
-#include <boost/unordered_map.hpp>
-#include <boost/shared_ptr.hpp>
 #include <condition_variable>
-#include "rsg/mutex.hpp"
+#include <rsg/mutex.hpp>
 
 namespace simgrid {
     namespace rsg {

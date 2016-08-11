@@ -6,16 +6,11 @@
 #ifndef SRC_RSG_COMM_HPP_
 #define SRC_RSG_COMM_HPP_
 
-#include <vector>
-#include <boost/unordered_map.hpp>
-#include <xbt/string.hpp>
-#include <iostream>
+#include <rsg/actor.hpp>
+#include <rsg/mailbox.hpp>
 
-#include "rsg/actor.hpp"
-#include "rsg/mailbox.hpp"
-
-#include "RsgService_types.h"
-#include "RsgComm.h"
+#include <RsgService_types.h>
+#include <RsgComm.h>
 
 namespace simgrid {
     namespace rsg {
