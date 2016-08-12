@@ -38,6 +38,7 @@ namespace simgrid  {
             char*getName();
             Host *getHost();
             int getPid();
+            int getPPid();
             bool valid() const;
             ~Actor();
             
@@ -75,6 +76,8 @@ namespace simgrid  {
             XBT_PUBLIC(void) quit();
             
             XBT_PUBLIC(int) getPid();
+
+            XBT_PUBLIC(int) getPPid();
             
             XBT_PUBLIC(int) fork();
             

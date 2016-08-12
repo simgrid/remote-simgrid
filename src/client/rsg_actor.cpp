@@ -111,6 +111,11 @@ int rsg::Actor::getPid() {
     return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(this->p_remoteAddr);
 }
 
+int rsg::Actor::getPPid() {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPPid(this->p_remoteAddr);
+}
+
 void rsg::Actor::setAutoRestart(bool autorestart) {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
     engine.serviceClientFactory<RsgActorClient>("RsgActor").setAutoRestart(this->p_remoteAddr, autorestart);
@@ -171,6 +176,11 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::funct
 int rsg::this_actor::getPid() {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
     return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPid();
+}
+
+int rsg::this_actor::getPPid() {
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPPid();
 }
 
 void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr, int port, int64_t hostAddr) {

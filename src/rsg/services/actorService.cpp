@@ -204,6 +204,16 @@ int32_t rsg::RsgActorHandler::this_actorGetPid() {
     return s4u::this_actor::getPid();
 }
 
+int32_t rsg::RsgActorHandler::this_actorGetPPid() {
+    return s4u::this_actor::getPpid();
+}
+
+
+int32_t rsg::RsgActorHandler::getPPid(const int64_t addr) {
+    simgrid::s4u::ActorPtr actor = pActors.at(addr);
+    return actor->getPpid();
+}
+
 int64_t rsg::RsgActorHandler::forPid(const int32_t pid) {
     simgrid::s4u::ActorPtr actor = s4u::Actor::forPid(pid);
     if(actor != nullptr) {

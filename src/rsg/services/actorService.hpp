@@ -49,9 +49,11 @@ namespace simgrid  {
             void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
             void deleteActor(const int64_t addr);
             int32_t this_actorGetPid();
+            int32_t this_actorGetPPid();
             int64_t forPid(const int32_t pid);
             bool isValideActor(const int64_t remoteAddr);
             void createActorForFork(rsgServerRemoteAddrAndPort& _return);
+            int32_t getPPid(const int64_t addr);
             private :
             RsgThriftServerFramework* pServer;
             static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;

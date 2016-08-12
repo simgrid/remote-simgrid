@@ -130,7 +130,9 @@ void MultiThreadedSingletonFactory::waitAll() {
 }
 
 void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
+
     for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
+        (*it)->detach();
         delete *it;
     }
     pThreads->clear();
@@ -143,5 +145,9 @@ void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
         delete it->second;
     }
     pClients->clear();
-    
 }
+
+
+
+
+
