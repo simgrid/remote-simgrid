@@ -76,8 +76,11 @@ void MultiThreadedSingletonFactory::clearClient(std::thread::id id) {
     size_t hash = hasher(id);
     if(hash == *pMainThreadID) {
         waitAll();
+        if(pThreads->size() > 0) {
+            std::cerr << "ERROR : rsg process is leaving whereas some actors may still be alives." << std::endl;
+        }
+        delete pInstance;
     }
-    
 }
 
 void MultiThreadedSingletonFactory::registerNewThread(std::thread *thread) {

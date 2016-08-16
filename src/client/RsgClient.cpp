@@ -29,6 +29,11 @@ pServices(new boost::unordered_map<std::string, void*> ()),
 pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
 }
 
+Client::~Client() { 
+    delete pServices;
+    delete pDestructors;
+}
+
 void Client::init() {
     
     char *rpcEnvPort = std::getenv("RsgRpcPort");

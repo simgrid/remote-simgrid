@@ -75,6 +75,7 @@ public:
 	int getRpcPort() { return pRpcPort; }
 	Client(std::string hostname, int port);
 	Client(std::string hostname);
+    ~Client();
 	
 private: 
 	
