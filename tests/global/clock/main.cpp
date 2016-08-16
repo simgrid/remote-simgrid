@@ -28,7 +28,7 @@ int actor(void *) {
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   XBT_INFO("get clock before execute : %f", rsg::getClock());
   rsg::this_actor::execute(8095000000 * 2);

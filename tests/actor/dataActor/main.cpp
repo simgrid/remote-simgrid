@@ -24,7 +24,7 @@ int actor(void *data) {
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   rsg::Actor::createActor("receiver" ,host1 , actor,(void*) msg);
 

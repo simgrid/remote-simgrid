@@ -46,7 +46,7 @@ class hello {
 
 
 int Spwaner(void *) {
- rsg::Host host1 = rsg::Host::by_name("host1");
+ rsg::HostPtr host1 = rsg::Host::by_name("host1");
  /* generate secret number between 1 and 10: */
  for(int i = 0; i < 2; i++) {
    rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , hello("hello"), NULL);
@@ -65,7 +65,7 @@ int Spwaner(void *) {
 }
 
 int main(int argc, char **argv) {
- rsg::Host host1 = rsg::Host::by_name("host1");
+ rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
  for(int i = 0; i < 4; i++) {
    rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);

@@ -46,7 +46,7 @@ class PidComp {
 
 
 int Spwaner(void * ) {
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 100; i++) {
     std::string name = "PidComp" + std::to_string(i);
@@ -63,7 +63,7 @@ int Spwaner(void * ) {
 }
 
 int main(int argc, char **argv) {
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 4; i++) {
     rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);

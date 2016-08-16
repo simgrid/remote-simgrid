@@ -22,27 +22,28 @@ rsg::Host::Host(const simgrid::xbt::string name, unsigned long int remoteAddr) {
 	p_remoteAddr = remoteAddr;
 };
 
-rsg::Host::~Host() {}
+rsg::Host::~Host() {
+    
+}
 
-rsg::Host &rsg::Host::current() {
+rsg::HostPtr rsg::Host::current() {
 	rsgHostCurrentResType res;
 	
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	
 	engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
 	
-	return *(new Host(res.name, res.addr)); 
-	
+	return HostPtr(new Host(res.name, res.addr)); 
 }
 
-rsg::Host &rsg::Host::by_name(std::string name) {
+rsg::HostPtr rsg::Host::by_name(std::string name) {
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	
 	unsigned long int addr = engine.serviceClientFactory<RsgHostClient>("RsgHost").by_name(name);
 	if(addr == 0) {
 		xbt_die("No such host: %s", name.c_str());
 	}
-	return *(new rsg::Host(name, addr));
+	return HostPtr(new rsg::Host(name, addr));
 }
 
 double rsg::Host::speed() {

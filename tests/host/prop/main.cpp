@@ -12,11 +12,11 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-  const char *prop_msg = rsg::Host::current().property("message");
-  const char *prop_msg_null = rsg::Host::current().property("nothing");
+  const char *prop_msg = rsg::Host::current()->property("message");
+  const char *prop_msg_null = rsg::Host::current()->property("nothing");
   XBT_INFO("Host message : %s", prop_msg);
   XBT_INFO("nothing : %s", prop_msg_null);
   rsg::this_actor::quit();
-  delete prop_msg;
+  delete[] prop_msg;
   return 0;
 }

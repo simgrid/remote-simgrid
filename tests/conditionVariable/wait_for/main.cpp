@@ -113,7 +113,7 @@ static int Main(void *)
 }
 
 int main(int argc, char **argv) {
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
   
   rsg::Actor* producer =  rsg::Actor::createActor("main" , host1 , Main, NULL);
   // producer->join();

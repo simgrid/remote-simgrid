@@ -18,14 +18,14 @@ using boost::shared_ptr;
 int main(int argc, char **argv) {
 
   XBT_INFO("hello from Server");
-  rsg::Host host1 = rsg::Host::by_name("host0");
-  host1.turnOff();
-  host1.turnOff();
-  host1.turnOn();
-  host1.turnOff();
-  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
-  host1.turnOn();
-  XBT_INFO("isOn %s -> %s",  host1.name().c_str(), host1.isOn() ? "YES" : "NO");
+  rsg::HostPtr host1 = rsg::Host::by_name("host0");
+  host1->turnOff();
+  host1->turnOff();
+  host1->turnOn();
+  host1->turnOff();
+  XBT_INFO("isOn %s -> %s",  host1->name().c_str(), host1->isOn() ? "YES" : "NO");
+  host1->turnOn();
+  XBT_INFO("isOn %s -> %s",  host1->name().c_str(), host1->isOn() ? "YES" : "NO");
   
   rsg::this_actor::quit();
   return 0;

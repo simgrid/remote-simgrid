@@ -7,7 +7,7 @@
 #define SRC_RSG_HOST_HPP_
 
 #include <xbt/string.hpp>
-#include <rsg/actor.hpp>
+#include <memory>
 
 namespace simgrid {
     namespace rsg {
@@ -26,12 +26,13 @@ namespace simgrid {
             Host(const std::string name, unsigned long int remoteAddr);
             
         public:
+            using Ptr = std::shared_ptr<Host>;
             double speed();
             ~Host();
             
             simgrid::xbt::string const& name() const { return name_; }
-            static Host& by_name(std::string name);
-            static Host& current();
+            static Ptr by_name(std::string name);
+            static Ptr current();
             int core_count();
             void turnOn();
             void turnOff();
@@ -54,7 +55,10 @@ namespace simgrid {
             
         };
         
+        using HostPtr = Host::Ptr;
     } // namespace simgrid::rsg
+
+
 } // namespace simgrid
 
 #endif /* SRC_RSG_HOST_HPP_ */

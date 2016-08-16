@@ -38,7 +38,7 @@ public:
 
 int main(int argc, char **argv) {
 
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
   
   int * results = new int;
   *results = 0;

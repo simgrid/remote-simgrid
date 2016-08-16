@@ -27,7 +27,7 @@ namespace simgrid  {
             Actor(unsigned long int remoteAddr, int);  //FIXME Pid seems not used
         public:
             static void killAll();
-            static Actor *createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data);
+            static Actor *createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data);
             static Actor *forPid(int pid);
             static void kill(int pid);
             void kill();

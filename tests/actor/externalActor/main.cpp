@@ -30,7 +30,7 @@ int simpleReceiver(void * ) {
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Host host1 = rsg::Host::by_name("host1");
+  rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
 
   rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
