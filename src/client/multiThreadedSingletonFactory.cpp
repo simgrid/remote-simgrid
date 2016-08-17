@@ -15,6 +15,12 @@ MultiThreadedSingletonFactory& MultiThreadedSingletonFactory::getInstance()  {
     return *pInstance;
 }
 
+MultiThreadedSingletonFactory::~MultiThreadedSingletonFactory() {
+    delete pClients;
+    delete pThreads;
+    delete pMainThreadID;
+}
+
 Client &MultiThreadedSingletonFactory::getClient(std::thread::id id) {
     MultiThreadedSingletonFactory::mtx.lock();
     Client *res;

@@ -28,8 +28,8 @@ rsg::Host::~Host() {
 
 rsg::HostPtr rsg::Host::current() {
 	rsgHostCurrentResType res;
-	
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+	MultiThreadedSingletonFactory &instance = MultiThreadedSingletonFactory::getInstance();
+	Client& engine = instance.getClient(std::this_thread::get_id());
 	
 	engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
 	

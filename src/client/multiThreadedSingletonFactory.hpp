@@ -27,8 +27,14 @@ public:
     void registerClient(Client *client);
     void clearAll(bool keepConnectionsOpen);
     // Client &getClientOrCreate(std::thread::id id);
+    ~MultiThreadedSingletonFactory();
 protected:
     MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()), pThreads(new std::vector<std::thread*>()), pMainThreadID(new size_t) {};
+    // delete copy and move constructors and assign operators
+    MultiThreadedSingletonFactory(MultiThreadedSingletonFactory const&) = delete;             // Copy construct
+    MultiThreadedSingletonFactory(MultiThreadedSingletonFactory&&) = delete;                  // Move construct
+    MultiThreadedSingletonFactory& operator=(MultiThreadedSingletonFactory const&) = delete;  // Copy assign
+    MultiThreadedSingletonFactory& operator=(MultiThreadedSingletonFactory &&) = delete;      // Move assign
 private:
     static MultiThreadedSingletonFactory* pInstance;
     static std::mutex mtx;           // mutex for critical section

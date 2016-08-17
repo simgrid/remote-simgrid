@@ -42,7 +42,7 @@ void rsg::Actor::kill(int pid) {
 
 void rsg::Actor::join(void) {
     
-    MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
+    MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
     Client& engine = factory.getClient(std::this_thread::get_id());
     engine.serviceClientFactory<RsgActorClient>("RsgActor").join(this->p_remoteAddr);
     
@@ -50,7 +50,7 @@ void rsg::Actor::join(void) {
 
 void rsg::this_actor::quit(void) {
     
-    MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
+    MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
     Client& engine = factory.getClient(std::this_thread::get_id());
     engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
     factory.clearClient(std::this_thread::get_id());
@@ -154,7 +154,7 @@ void actorRunner(std::function<int(void *)> code, int port, void *data ) {
     } catch(apache::thrift::transport::TTransportException &ex) {
         //std::cerr<< "apache::thrift::transport::TTransportException in thread : " << ex.what() << std::endl;
         // this exeption occure when the process have been killed on the server by another process.
-        MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
+        MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
         factory.clearClient(std::this_thread::get_id());
     }
 }
