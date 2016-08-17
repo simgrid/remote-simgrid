@@ -36,7 +36,7 @@ class hello {
  int operator()(void *) {
    XBT_INFO("hello");
 
-   rsg::Mailbox *mbox = rsg::Mailbox::byName(this->pName.c_str());
+   rsg::MailboxPtr mbox = rsg::Mailbox::byName(this->pName.c_str());
    uint64_t *pid = (uint64_t*) rsg::this_actor::recv(*mbox);
    UNUSED(pid);
    rsg::this_actor::quit();

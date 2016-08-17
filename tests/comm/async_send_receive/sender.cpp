@@ -19,7 +19,7 @@ using boost::shared_ptr;
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::Comm &comm = rsg::Comm::send_init(*mbox);
   comm.setSrcData((void*)msg, strlen(msg) + 1);
   comm.start();

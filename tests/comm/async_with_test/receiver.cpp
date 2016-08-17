@@ -17,7 +17,7 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   char *buffer = NULL;
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   char *message = rsg::this_actor::recv(*mbox);
   XBT_INFO("Async Received : %s with size of %d ", message, (int) strlen(message));

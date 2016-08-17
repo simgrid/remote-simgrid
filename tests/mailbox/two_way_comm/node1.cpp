@@ -17,7 +17,7 @@ using boost::shared_ptr;
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
   
@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
   rec = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received -> %s ", rec);
 
-  rsg::Mailbox *fooMb = rsg::Mailbox::byName("foo");
+  rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
   rsg::this_actor::send(*fooMb, msg, strlen(msg) + 1);
   XBT_INFO("send %s with size : %d", msg, strlen(msg));
 

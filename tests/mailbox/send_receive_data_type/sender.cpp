@@ -17,7 +17,7 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   // char*
   const char *msg = "Do you copy ? ";

@@ -24,7 +24,7 @@ namespace simgrid {
             
         public:
             ~Comm();
-            static Comm &send_init(Mailbox &dest);
+            static Comm &send_init(rsg::Mailbox &dest);
             
             /* Unsupported */
             static Comm &send_async(rsg::Mailbox &dest, void *data, int simulatedByteAmount);
@@ -35,7 +35,7 @@ namespace simgrid {
             static rsg::Comm &send_async(rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount);
             static rsg::Comm &send_async(rsg::Mailbox &dest, void *data, size_t size);
             
-            static Comm &recv_init(Mailbox &from);
+            static Comm &recv_init(rsg::Mailbox &from);
             static rsg::Comm &recv_async(rsg::Mailbox &from, void **data);
             
             void start();

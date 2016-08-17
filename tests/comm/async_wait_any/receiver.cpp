@@ -20,7 +20,7 @@ int Worker(void* arg) {
   int *msg = (int*) malloc(sizeof(int));
   *msg = *(int*) arg * 10;
   rsg::this_actor::sleep(1);
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("test");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("test");
   rsg::this_actor::send(*mbox, (char*) msg, sizeof(int));
   rsg::this_actor::quit();  
   free(msg);
@@ -30,7 +30,7 @@ int Worker(void* arg) {
 int main(int argc, char **argv) {
   int *mboxbuff[10];
   std::vector<rsg::Comm*> comms;
-  rsg::Mailbox *mb = rsg::Mailbox::byName("test");
+  rsg::MailboxPtr mb = rsg::Mailbox::byName("test");
 
   for(int i = 0 ; i <  nbWorker; i++) {    
     rsg::Comm *comm = &rsg::Comm::recv_init(*mb);

@@ -63,15 +63,15 @@ namespace simgrid  {
             *
             * See \ref Comm for the full communication API (including non blocking communications).
             */
-            XBT_PUBLIC(char*) recv(Mailbox &chan);
+            XBT_PUBLIC(char*) recv(rsg::Mailbox &chan);
             
             /** Block the actor until it delivers a message of the given simulated size to the given mailbox
             *
             * See \ref Comm for the full communication API (including non blocking communications).
             */	
-            XBT_PUBLIC(void) send(Mailbox &mailbox, const char*content, size_t dataSize);
+            XBT_PUBLIC(void) send(rsg::Mailbox &mailbox, const char*content, size_t dataSize);
             
-            XBT_PUBLIC(void) send(Mailbox &mailbox, const char*content, size_t dataSize, size_t simulatedSize);
+            XBT_PUBLIC(void) send(rsg::Mailbox &mailbox, const char*content, size_t dataSize, size_t simulatedSize);
             
             XBT_PUBLIC(void) quit();
             

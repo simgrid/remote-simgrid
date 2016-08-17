@@ -18,7 +18,7 @@ using namespace ::simgrid;
 
 
 int actor(void *) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   XBT_INFO("get clock before receive : %f", rsg::getClock());
   rsg::this_actor::recv(*mbox);
   XBT_INFO("get clock after receive : %f", rsg::getClock());
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
   
   rsg::Actor::createActor("receiver" , host1 , actor, NULL);
   
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   XBT_INFO("get clock before send : %f", rsg::getClock());
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1, 115476000);

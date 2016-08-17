@@ -21,7 +21,7 @@ using namespace ::simgrid;
 using namespace ::RsgService;
 
 int main(int argc, char **argv) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   const char *msg = "Do you copy ? ";
   rsg::Comm &comm = rsg::Comm::send_init(*mbox);

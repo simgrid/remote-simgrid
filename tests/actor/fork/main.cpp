@@ -23,7 +23,7 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   // XBT_INFO("[parent]My id is  : %d",rsg::this_actor::getPid());
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   pid_t pid = rsg::this_actor::fork();
   if(0 == pid) { // child

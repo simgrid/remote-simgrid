@@ -6,8 +6,7 @@
 #ifndef SIMGRID_RSG_MAILBOX_HPP
 #define SIMGRID_RSG_MAILBOX_HPP
 
-#include <boost/unordered_map.hpp>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 
 #include <rsg/actor.hpp>
 #include <rsg/comm.hpp>
@@ -31,13 +30,13 @@ namespace simgrid {
             Mailbox(const char*name, unsigned long int remoteAddr);
         public:
             ~Mailbox() {}
-            
+            using Ptr = std::shared_ptr<Mailbox>; 
             //protected:
             unsigned long int getRemote() { return p_remoteAddr; }
             const char * getName() { return p_name.c_str(); }
         public:
             /** Retrieve the mailbox associated to the given string */
-            static Mailbox *byName(const char *name);
+            static Ptr byName(const char *name);
             /** Declare that the specified process is a permanent receiver on that mailbox
             *
             * It means that the communications sent to this mailbox will start flowing to its host even before he does a recv().
@@ -57,6 +56,8 @@ namespace simgrid {
             std::string p_name;
             unsigned long int p_remoteAddr = 0;
         };
-    }} // namespace simgrid::rsg
+        using MailboxPtr = Mailbox::Ptr;
+    }
+} // namespace simgrid::rsg
     
     #endif /* SIMGRID_RSG_MAILBOX_HPP */

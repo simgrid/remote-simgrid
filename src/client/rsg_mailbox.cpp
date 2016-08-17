@@ -23,14 +23,14 @@ rsg::Mailbox::Mailbox(const char*name, unsigned long int remoteAddr) {
 	p_name=name;
 }
 
-rsg::Mailbox *rsg::Mailbox::byName(const char*name) {
-	rsg::Mailbox * res;
+rsg::MailboxPtr rsg::Mailbox::byName(const char*name) {
+	rsg::MailboxPtr res;
 	
 	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
 	
 	try {
 		unsigned long int remoteAddr =  engine.serviceClientFactory<RsgService::RsgMailboxClient>("RsgMailbox").mb_create(name);
-		res = new Mailbox(name, remoteAddr);
+		res.reset(new Mailbox(name, remoteAddr));
 		return res;
 	} catch(apache::thrift::transport::TTransportException &ex) {
 		fprintf(stderr, "error creating mailbox %s in rsg::Mailbox::byName : %s \n", name ,ex.what());

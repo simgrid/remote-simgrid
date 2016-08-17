@@ -16,9 +16,9 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
-  rsg::Mailbox *fakeMbox = rsg::Mailbox::byName("fake");
+  rsg::MailboxPtr fakeMbox = rsg::Mailbox::byName("fake");
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
   // XBT_INFO("pid of receiver : %d", receiver->getPid());

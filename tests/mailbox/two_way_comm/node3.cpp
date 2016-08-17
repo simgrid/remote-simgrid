@@ -16,7 +16,7 @@ using namespace ::simgrid;
 using boost::shared_ptr;
 
 int main(int argc, char **argv) {
-  rsg::Mailbox *fooMb = rsg::Mailbox::byName("foo");
+  rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
   char *received = rsg::this_actor::recv(*fooMb);
   XBT_INFO("Received -> %s ", received);
   

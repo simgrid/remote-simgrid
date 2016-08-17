@@ -22,7 +22,7 @@ using namespace ::RsgService;
 using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   char *buffer = NULL;
   rsg::Comm &comm = rsg::Comm::recv_init(*mbox);

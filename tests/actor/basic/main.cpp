@@ -22,7 +22,7 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 int actor(void *) {
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
   XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   rsg::Actor *act = rsg::Actor::createActor("receiver" , host1 , actor, NULL);
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);

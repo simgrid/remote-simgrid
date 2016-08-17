@@ -20,7 +20,7 @@ using namespace ::simgrid;
 
 int main(int argc, char **argv) {
   char *buffer = NULL;
-  rsg::Mailbox *mbox = rsg::Mailbox::byName("toto");
+  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::Comm &comm = rsg::Comm::recv_init(*mbox);
   comm.setDstData((void**)&buffer);
   comm.start();
