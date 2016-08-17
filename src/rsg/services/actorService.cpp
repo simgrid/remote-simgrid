@@ -45,12 +45,12 @@ void rsg::RsgActorHandler::execute(const double flops) {
 void rsg::RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
     std::string *internalPtr = new std::string(content.data(), content.length());
-    s4u::this_actor::send(*mbox, (void*) internalPtr, simulatedSize);   
+    s4u::this_actor::send(mbox, (void*) internalPtr, simulatedSize);   
 }
 
 void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
-    std::string *content = (std::string*) s4u::this_actor::recv(*mbox);  
+    std::string *content = (std::string*) s4u::this_actor::recv(mbox);  
     _return.assign(content->data(), content->length());
     delete content;
 }
