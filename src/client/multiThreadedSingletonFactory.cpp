@@ -147,7 +147,7 @@ void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
     pThreads->clear();
     
     for(auto it = pClients->begin(); it != pClients->end(); ++it) {
-        if(keepConnectionsOpen) {
+        if(!keepConnectionsOpen) {
             it->second->close();
             it->second->reset();
         }

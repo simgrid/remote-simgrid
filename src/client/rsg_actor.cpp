@@ -198,7 +198,10 @@ int rsg::this_actor::fork() {
     
     pid_t pid = ::fork();
     if(0 == pid) { // Child
-        MultiThreadedSingletonFactory::getInstance().clearAll(false);
+        //FIXME There is a memory leak in fork because we cannot clear call "reset" on all client before clear them. 
+        // It willl lead to a leak of all created client. But if we clear all client the programme will block (with fork_from_spwaned_actor test for example).
+        // This happends becaus when we delete a client, it closes its connection. 
+        MultiThreadedSingletonFactory::getInstance().clearAll(true);
         MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
         return 0;
     }
