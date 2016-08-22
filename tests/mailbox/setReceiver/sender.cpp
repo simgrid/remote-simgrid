@@ -15,22 +15,28 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 int main(int argc, char **argv) {
-  const char *msg = "Do you copy ? ";
-  rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
-  
-  rsg::MailboxPtr fakeMbox = rsg::Mailbox::byName("fake");
+    const char *msg = "Do you copy ? ";
+    rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
+    
+    rsg::MailboxPtr fakeMbox = rsg::Mailbox::byName("fake");
+    
+    rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
+    rsg::this_actor::sleep(2);
+    rsg::Actor *receiver = mbox->receiver();
+    if(fakeMbox->receiver() == NULL) {
+        XBT_INFO("no receiver on mb with name : fake");
+    }
+    XBT_INFO("pid of receiver : %d", receiver->getPid());
+    XBT_INFO("send %s with size : %d", msg, strlen(msg));
+    delete receiver;
 
-  rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  // XBT_INFO("pid of receiver : %d", receiver->getPid());
-  rsg::this_actor::sleep(2);
-  // receiver = mbox->receiver();
-  rsg::Actor *receiver = mbox->receiver();
-  if(fakeMbox->receiver() == NULL) {
-    XBT_INFO("no receiver on mb with name : fake");
-  }
-  XBT_INFO("pid of receiver : %d", receiver->getPid());
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
-  delete receiver;
-  rsg::this_actor::quit();
-  return 0;
+    rsg::this_actor::sleep(10);
+    //At this point the receiver should have reset his status
+    receiver = mbox->receiver();
+    if(receiver == NULL) {
+        XBT_INFO("mbox receiver reseted to nullptr");
+    }
+
+    rsg::this_actor::quit();
+    return 0;
 }

@@ -45,7 +45,7 @@ namespace simgrid {
             //HACK If we passe an actor, the destructor of the copy will be detroy by the call.
             // Thus, the destructor will destruct the remote reference of the actor. Wich lead to an unstable state.
             // This is a hack because we should find a better way in order to handle the life cycle of rsg objects.
-            void setReceiver(const rsg::Actor &process);
+            void setReceiver(const rsg::Actor *process);
             /** Return the process declared as permanent receiver, or nullptr if none **/
             rsg::Actor* receiver();
             bool empty();

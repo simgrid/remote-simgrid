@@ -19,9 +19,10 @@ int main(int argc, char **argv) {
   char *received = rsg::this_actor::recv(*mbox);
 
   rsg::this_actor::sleep(1);
-  mbox->setReceiver(*rsg::Actor::forPid(rsg::this_actor::getPid()));
+  mbox->setReceiver(rsg::Actor::forPid(rsg::this_actor::getPid()));
   rsg::this_actor::sleep(1);
 
+  mbox->setReceiver(nullptr);
   XBT_INFO("Received from client : %s with size of %d", received, strlen(received) );
   rsg::this_actor::quit();
   return 0;

@@ -22,8 +22,12 @@ int64_t rsg::RsgMailboxHandler::mb_create(const std::string& name) {
 
 void rsg::RsgMailboxHandler::setReceiver(const int64_t remoteAddrMailbox, const int64_t remoteAddrActor) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(remoteAddrMailbox);
-    s4u::ActorPtr actor = RsgActorHandler::pActors.at(remoteAddrActor);
-    mbox->setReceiver(actor.get());
+    try {
+        s4u::ActorPtr actor = RsgActorHandler::pActors.at(remoteAddrActor);
+        mbox->setReceiver(actor);
+    } catch(std::out_of_range const& exc) {
+        mbox->setReceiver(nullptr);
+    }
 }
 
 int64_t rsg::RsgMailboxHandler::getReceiver(const int64_t remoteAddrMailbox) {
