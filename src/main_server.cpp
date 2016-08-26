@@ -46,7 +46,6 @@ static int rsg_representative(int argc, char **argv) {
     
     SocketServer &socketServer = SocketServer::getSocketServer();
     RsgThriftServerFramework *server = socketServer.acceptClient();
-    server->listen();
     server->serve();
     delete server;
     return 0;

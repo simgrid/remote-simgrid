@@ -52,6 +52,7 @@ void Client::init() {
         recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
     }
     connectToRpc(rpcPort);
+    ::close(this->pSock);
 }
 
 void Client::connectToRpc(int rpcPort) {

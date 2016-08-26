@@ -1,6 +1,8 @@
 #include "Server.hpp"
 #include "Socket.hpp"
 
+#include "RsgThriftServerFramework.hpp"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/socket.h>
@@ -15,7 +17,6 @@
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/processor/TMultiplexedProcessor.h>
 
-#include "RsgThriftServerFramework.hpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -87,12 +88,26 @@ RsgThriftServerFramework* SocketServer::acceptClient() {
     }
   }
 
-  int rpcPort = getFreePort(1024);
-  RsgThriftServerFramework *server = createRpcServer(rpcPort);
-
+  RsgThriftServerFramework *server = NULL;
+  bool serverBinded = false;
+  int rpcPort;
+  // Sometimes getFreePort return an already used port.
+  // To fix this error, we surround a the listen with a try catch and if it fails, we retry until it works 
+  // It could be a good idea to set a retry limit.
+  do {
+      rpcPort = getFreePort(1024);
+      try {
+            server = createRpcServer(rpcPort);
+            server->listen(); 
+            serverBinded = true;
+            } catch (apache::thrift::transport::TTransportException e) {
+            delete server;
+          }
+  } while(!serverBinded);
   // we send the new port to the clients
 
   send(new_sd, &rpcPort, sizeof(int), 0);
+  close(new_sd);
   // We could wait for client ack before registering a pointer to the server.
   return server;
 }
@@ -149,6 +164,7 @@ RsgThriftServerFramework* SocketServer::createRpcServer(int port, TProcessor* pt
   // thriftServerSocket->setSendTimeout(5);
   // thriftServerSocket->setRecvTimeout(5);
   // thriftServerSocket->setAcceptTimeout(5);
+  thriftServerSocket->setRetryLimit(10);
   shared_ptr<TServerTransport> serverTransport(thriftServerSocket);
   shared_ptr<TTransportFactory> transportFactory(new TBufferedTransportFactory());
   shared_ptr<TProtocolFactory> protocolFactory(new TBinaryProtocolFactory());

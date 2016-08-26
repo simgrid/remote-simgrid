@@ -104,13 +104,9 @@ int isFreePort(int port) {
     rcp_server.sin_addr.s_addr = INADDR_ANY;
     rcp_server.sin_port = port;
     
-    // Then we try bind it on port 0, as the funciton will return a free port.
+    // Then we try bind it on port 0, as the function will return a free port.
     if(bind(rpcSocket ,(struct sockaddr *)&rcp_server , sizeof(rcp_server)) < 0)  {
-        if(errno == EADDRINUSE) {
-            printf("the port is not available. already to other process %d\n", port);
-        } else {
-            printf("could not bind to process (%d) %s\n", errno, strerror(errno));
-        }
+        printf("Error in bind : %s\n", strerror(errno));
         return -1;
     }
     close(rpcSocket);

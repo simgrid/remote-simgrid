@@ -1,10 +1,9 @@
 #include <boost/bind.hpp>
 #include <stdexcept>
 #include <stdint.h>
-
+#include <iostream>
 #include "RsgThriftServerFramework.hpp"
 #include "RsgMsg.hpp"
-
 namespace apache {
 namespace thrift {
 namespace server {
@@ -91,8 +90,11 @@ static void releaseOneDescriptor(const string& name, T& pTransport) {
 
 void RsgThriftServerFramework::listen() {
   // Start the server listening
-  serverTransport_->listen();
-  
+  try {
+    serverTransport_->listen();
+    } catch (apache::thrift::transport::TTransportException e) {
+        throw e;   
+  }
   // Run the preServe event to indicate server is now listening
   // and that it is safe to connect.
   if (eventHandler_) {
