@@ -71,7 +71,6 @@ add_subdirectory(src)
 add_subdirectory(java)
 
 # Enable Testing
-add_subdirectory(tools/tesh)
 include(${CMAKE_HOME_DIRECTORY}/tools/cmake/Tests.cmake)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 
