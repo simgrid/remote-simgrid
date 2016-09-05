@@ -15,9 +15,11 @@
 #include <sys/wait.h> 
 #include <string>
 #include <iostream>
+#include <unordered_set>
 
 using namespace ::simgrid;
 
+std::unordered_set<size_t> deconnected_threads;
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
@@ -49,12 +51,17 @@ void rsg::Actor::join(void) {
 }
 
 void rsg::this_actor::quit(void) {
-    
-    MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
-    Client& engine = factory.getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
-    factory.clearClient(std::this_thread::get_id());
-    
+    std::hash<std::thread::id> hasher;
+    size_t hashed_thread_id = hasher(std::this_thread::get_id());
+    const bool is_in = deconnected_threads.find(hashed_thread_id) != deconnected_threads.end();
+    if(!is_in) {
+        //in case if the user call quit a second time on an actor we won't try to deconnect a second time otherwise RSG will block
+        MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
+        Client& engine = factory.getClient(std::this_thread::get_id());
+        engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
+        factory.clearClient(std::this_thread::get_id());
+        deconnected_threads.insert(hashed_thread_id);
+    }
 }
 
 void rsg::this_actor::sleep(const double duration) {
@@ -160,16 +167,15 @@ void actorRunner(std::function<int(void *)> code, int port, void *data ) {
 }
 
 rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data) {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    
+    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());    
     rsgServerRemoteAddrAndPort params;
     engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
-    
-    std::thread *nActor = new std::thread(actorRunner, code, params.port, data);     
+        
+    std::thread *nActor = new std::thread(actorRunner, code, params.port, data);         
     MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
-    unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host->p_remoteAddr, 10);
+    unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host->p_remoteAddr, 10);    
     int newPid = engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(addr);
-    rsg::Actor *act = new Actor(addr, newPid);
+    rsg::Actor *act = new Actor(addr, newPid);    
     return act;
 }
 
@@ -191,8 +197,7 @@ void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr,
 }
 
 int rsg::this_actor::fork() {
-    Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    
+    Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());    
     rsgServerRemoteAddrAndPort params;
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
     
@@ -208,11 +213,11 @@ int rsg::this_actor::fork() {
     
     std::promise<int> child_pid;
     std::future<int> future = child_pid.get_future();
-
+    
     std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, Host::current()->p_remoteAddr);
-    nActor.join();
+    nActor.join();    
     future.wait();
-    int res = future.get(); 
+    int res = future.get();     
     return res;
 }
 
