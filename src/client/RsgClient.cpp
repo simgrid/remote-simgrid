@@ -2,11 +2,9 @@
 #include "RsgClient.hpp"
 
 #include "../rsg/Socket.hpp"
-#include "RsgMsg.hpp"
+#include "../common.hpp"
 
-#include <thrift/transport/TSocket.h>
-#include <thrift/transport/TBufferTransports.h>
-#include <thrift/protocol/TBinaryProtocol.h>
+
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,10 +12,35 @@
 #include <iostream>
 #include <cstdlib>
 
+#include <thrift/transport/TSocket.h>
+#include <thrift/transport/TBufferTransports.h>
+
 using namespace ::simgrid;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+
+
+class WrapTBinaryProtocol : public TBinaryProtocol {
+public:
+    WrapTBinaryProtocol(boost::shared_ptr<apache::thrift::transport::TBufferedTransport>&a):TBinaryProtocol(a){
+    }
+        
+    uint32_t writeMessageBegin(const std::string& name,
+                                    const TMessageType messageType,
+                                    const int32_t seqid) {
+        debug_client_print("%s", name.c_str());
+        return TBinaryProtocol::writeMessageBegin(name, messageType, seqid);
+    }
+    
+    uint32_t readMessageBegin(std::string& name, TMessageType& messageType, int32_t& seqid) {
+        debug_client_print("WAITING");
+        
+        uint32_t ret = TBinaryProtocol::readMessageBegin(name, messageType, seqid);
+        debug_client_print("%s", name.c_str());
+        return ret;
+    }
+};
 
 
 Client::Client(std::string hostname, int port) : pSock(-1),
@@ -55,10 +78,14 @@ void Client::init() {
     ::close(this->pSock);
 }
 
+
+
+
+
 void Client::connectToRpc(int rpcPort) {
     boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
     pTransport.reset(new TBufferedTransport(socket));
-    pProtocol.reset(new TBinaryProtocol(pTransport));
+    pProtocol.reset(new WrapTBinaryProtocol(pTransport));
     bool connected = true;
     do {
         try {

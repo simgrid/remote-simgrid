@@ -2,7 +2,7 @@
 #include "../rsg/services.hpp"
 #include "multiThreadedSingletonFactory.hpp"
 
-#include "RsgMsg.hpp"
+#include "../common.hpp"
 
 #include <iostream>
 using namespace ::simgrid;

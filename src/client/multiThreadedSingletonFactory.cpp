@@ -1,5 +1,5 @@
 #include "multiThreadedSingletonFactory.hpp"
-#include "RsgMsg.hpp"
+#include "../common.hpp"
 #include <iostream>
 #include <stack>
 #include <algorithm>    // std::copy

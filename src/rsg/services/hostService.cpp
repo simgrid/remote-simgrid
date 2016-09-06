@@ -2,7 +2,7 @@
 
 #include "xbt.h"
 #include "simgrid/s4u.hpp"
-#include "RsgMsg.hpp"
+#include "../../common.hpp"
 #include <iostream>
 
 using namespace ::apache::thrift::server;

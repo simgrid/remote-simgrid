@@ -4,7 +4,7 @@
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
 
-#include "RsgMsg.hpp"
+#include "../common.hpp"
 #include "../rsg/services.hpp"
 
 #include "rsg/actor.hpp"

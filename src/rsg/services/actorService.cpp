@@ -4,7 +4,7 @@
 
 #include "xbt.h"
 #include "simgrid/s4u.hpp"
-#include "RsgMsg.hpp"
+#include "../../common.hpp"
 #include <xbt/string.hpp>
 #include <iostream>
 #include <stdexcept>

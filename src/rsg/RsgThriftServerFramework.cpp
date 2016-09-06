@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <iostream>
 #include "RsgThriftServerFramework.hpp"
-#include "RsgMsg.hpp"
+#include "../common.hpp"
 namespace apache {
 namespace thrift {
 namespace server {
@@ -109,7 +109,6 @@ void RsgThriftServerFramework::serve() {
   shared_ptr<TTransport> outputTransport;
   shared_ptr<TProtocol> inputProtocol;
   shared_ptr<TProtocol> outputProtocol;
-
 
 
   // Fetch client from server

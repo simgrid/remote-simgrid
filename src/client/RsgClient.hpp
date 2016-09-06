@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-#include <thrift/protocol/TBinaryProtocol.h>
+#include "TBinaryProtocol.h"
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TMultiplexedProtocol.h>
 
@@ -35,6 +35,10 @@ template<class Obj> class ObjDeleter : public  IDel {
 		delete obj;
 	}
 };
+
+
+
+
 
 /**
 * The engine will create the connection to the rpcServer. First of all engine try to connect to the localhost.

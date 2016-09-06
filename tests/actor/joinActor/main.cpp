@@ -6,7 +6,7 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
-#include "RsgMsg.hpp"
+#include "../../../src/common.hpp"
 
 #include "xbt.h"
 #include "simgrid/s4u.hpp"
