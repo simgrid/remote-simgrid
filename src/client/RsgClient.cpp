@@ -25,7 +25,8 @@ class WrapTBinaryProtocol : public TBinaryProtocol {
 public:
     WrapTBinaryProtocol(boost::shared_ptr<apache::thrift::transport::TBufferedTransport>&a):TBinaryProtocol(a){
     }
-        
+
+    //called when sending a message
     uint32_t writeMessageBegin(const std::string& name,
                                     const TMessageType messageType,
                                     const int32_t seqid) {
@@ -33,6 +34,7 @@ public:
         return TBinaryProtocol::writeMessageBegin(name, messageType, seqid);
     }
     
+    //called when recving a message
     uint32_t readMessageBegin(std::string& name, TMessageType& messageType, int32_t& seqid) {
         debug_client_print("WAITING");
         

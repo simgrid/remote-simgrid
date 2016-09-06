@@ -22,8 +22,6 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Nothing yet , just wait !
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Nothing yet , just wait !
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Nothing yet , just wait !
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Nothing yet , just wait !
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [SENDER]Nothing yet , just wait !
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Halo ?! with size of 7 
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [SENDER]Nothing yet , just wait !
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [SENDER]Nothing yet , just wait !

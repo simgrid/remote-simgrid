@@ -1,10 +1,10 @@
 ! ignore ^Thrift:.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hostname ->  host1 with speed 8095000000.000000
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hostname ->  host0 with speed 8095000000.000000
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] hello from server
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hostname ->  host1 with speed 8095000000.000000
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Hostname current Peak : 8095000000.000000
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] hostname : host1
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] core count : 4
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] state count 1
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hostname ->  host0 with speed 8095000000.000000
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] state -> 0

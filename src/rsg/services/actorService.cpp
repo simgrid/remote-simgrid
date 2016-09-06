@@ -184,8 +184,7 @@ public:
         return 1;
     }
     ~RsgActor() {
-        debug_client_print("");
-        
+        debug_server_print("");
     }
 };
 
