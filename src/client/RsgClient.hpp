@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 
-#include "TBinaryProtocol.h"
+#include "RsgBinaryProtocol.h"
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/protocol/TMultiplexedProtocol.h>
 
