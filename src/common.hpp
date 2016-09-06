@@ -28,11 +28,11 @@
  */
 #define debug_client_print(fmt, ...) \
         do { if (DEBUG_CLIENT) fprintf(stderr, ANSI_COLOR_BLUE "<:> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", __FILE__, \
-                                __LINE__, __func__,  ##__VA_ARGS__); } while (0)
+                                __LINE__, __func__,  ##__VA_ARGS__);fflush(stdout);fflush(stderr); } while (0)
 
 #define debug_process(fmt, ...) \
         do { if (DEBUG_CLIENT) fprintf(stderr, ANSI_COLOR_MAGENTA "<;> %s:%d:%s():\t" fmt ANSI_COLOR_RESET "\n", __FILE__, \
-                                __LINE__, __func__,  ##__VA_ARGS__); } while (0)
+                                __LINE__, __func__,  ##__VA_ARGS__);fflush(stdout);fflush(stderr); } while (0)
 
 
 /*!
@@ -40,7 +40,7 @@
  */
 #define debug_server_print(fmt, ...) \
         do { if (DEBUG_SERVER) fprintf(stderr, ANSI_COLOR_GREEN "<%f:%i> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", SIMIX_get_clock(), s4u::this_actor::getPid(), __FILE__, \
-                                __LINE__, __func__,  ##__VA_ARGS__); } while (0)
+                                __LINE__, __func__,  ##__VA_ARGS__);fflush(stdout);fflush(stderr); } while (0)
 
 
 #endif // __COMMON_HPP__

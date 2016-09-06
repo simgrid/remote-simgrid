@@ -171,15 +171,21 @@ void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _retur
 
 class RsgActor {
 public:
-    RsgActor(RsgThriftServerFramework *server, int port) : pServer(server), pPort(port) {}
+    RsgActor(RsgThriftServerFramework *server, int port) : pServer(server), pPort(port) {
+        debug_server_print("port: %i",port);
+    }
     RsgThriftServerFramework *pServer;
     int pPort;
     int operator()() {
-        
+        debug_server_print("RETURN TO APP port: %i",pPort);
         pServer->serve();
         delete pServer;
         
         return 1;
+    }
+    ~RsgActor() {
+        debug_client_print("");
+        
     }
 };
 

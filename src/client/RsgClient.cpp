@@ -37,7 +37,7 @@ public:
         debug_client_print("WAITING");
         
         uint32_t ret = TBinaryProtocol::readMessageBegin(name, messageType, seqid);
-        debug_client_print("%s", name.c_str());
+        debug_client_print("RETURN TO APP after %s", name.c_str());
         return ret;
     }
 };
@@ -52,7 +52,8 @@ pServices(new boost::unordered_map<std::string, void*> ()),
 pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
 }
 
-Client::~Client() { 
+Client::~Client() {
+    debug_client_print("");
     delete pServices;
     delete pDestructors;
 }
