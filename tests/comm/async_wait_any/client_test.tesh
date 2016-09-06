@@ -1,7 +1,6 @@
 ! ignore ^Thrift:.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
->results 0 at pos 1
->90
+>results 0 at pos 0
 >0
 >10
 >20
@@ -11,3 +10,4 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >60
 >70
 >80
+>90

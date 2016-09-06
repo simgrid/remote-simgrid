@@ -5,7 +5,7 @@
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(COMMON_SOURCES rsg/Socket.cpp ../include/RsgMsg.hpp)
+set(COMMON_SOURCES rsg/Socket.cpp)
 
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
@@ -22,7 +22,7 @@ set(CLIENT_SOURCES_THRIFT
 
 set(SERVER_SOURCES
     ${COMMON_SOURCES}
-    main_server.cpp 
+    main_server.cpp
     rsg/Server.cpp                                ../src/rsg/services.hpp
     rsg/services/actorService.cpp                 ../src/rsg/services/actorService.hpp
     rsg/services/commService.cpp                  ../src/rsg/services/commService.hpp

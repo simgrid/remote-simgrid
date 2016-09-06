@@ -38,7 +38,7 @@ class PidComp {
     rsg::MailboxPtr mbox = rsg::Mailbox::byName(this->pName.c_str());
     int *pid = (int*) rsg::this_actor::recv(*mbox);
     int id = rsg::this_actor::getPid();
-    XBT_INFO("PidComp ->  %" PRIu64 "", id - *pid);
+    XBT_INFO("PidComp -> [%d:%d] %d",id, *pid ,id - *pid);
     free(pid);
     rsg::this_actor::quit();
     return 1;
@@ -50,7 +50,7 @@ int Spwaner(void * ) {
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 100; i++) {
-    std::string name = "PidComp" + std::to_string(i);
+    std::string name = "PidComp" + std::to_string(i) + "__" + std::to_string(rsg::this_actor::getPid());
     rsg::MailboxPtr mbox = rsg::Mailbox::byName(name.c_str());
 
     rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(name), NULL);
@@ -71,9 +71,9 @@ int main(int argc, char **argv) {
     UNUSED(actor);
     delete actor;
   }
-  
+
   rsg::this_actor::sleep(1000);
   rsg::this_actor::quit();
-  
-  return 0; 
+
+  return 0;
 }
