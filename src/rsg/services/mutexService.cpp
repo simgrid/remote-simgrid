@@ -27,7 +27,15 @@ void rsg::RsgMutexHandler::lock(const int64_t rmtAddr) {
 
 void rsg::RsgMutexHandler::unlock(const int64_t rmtAddr) {
     s4u::MutexPtr mutex = rsg::RsgMutexHandler::pMutexes.at(rmtAddr);
-    mutex->unlock();
+
+    if(!mutex->try_lock()) {
+        mutex->unlock();
+    }
+
+    if(mutex->try_lock()) {
+        mutex->unlock();
+    }
+
 }
 
 bool rsg::RsgMutexHandler::try_lock(const int64_t rmtAddr) {
