@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 #include <cstdlib>
+#include <mutex>
 
 #include <thrift/transport/TSocket.h>
 #include <thrift/transport/TBufferTransports.h>
@@ -30,16 +31,14 @@ public:
     uint32_t writeMessageBegin(const std::string& name,
                                     const TMessageType messageType,
                                     const int32_t seqid) {
-        debug_client_print("%s", name.c_str());
+        debug_client_print("[%p]%s",this, name.c_str());
         return TBinaryProtocol::writeMessageBegin(name, messageType, seqid);
     }
-    
+
     //called when recving a message
     uint32_t readMessageBegin(std::string& name, TMessageType& messageType, int32_t& seqid) {
-        debug_client_print("WAITING");
-        
         uint32_t ret = TBinaryProtocol::readMessageBegin(name, messageType, seqid);
-        debug_client_print("RETURN TO APP after %s", name.c_str());
+        debug_client_print("[%p]RETURN TO APP after %s",this , name.c_str());
         return ret;
     }
 };
@@ -121,6 +120,10 @@ void Client::close() {
 void Client::connect() {
     pTransport->open();
 };
+
+void Client::flush() {
+    pTransport->flush();
+}
 
 //FIXME Put this code into the engine destructor.
 void Client::reset() {

@@ -76,13 +76,14 @@ public:
 	void init();	
 	void connectToRpc(int rpcPort);	
 	void connect();
+    void flush();
 	int getRpcPort() { return pRpcPort; }
 	Client(std::string hostname, int port);
 	Client(std::string hostname);
     ~Client();
 	
 private: 
-	
+	  
 	int pSock;
 	std::string pHostname;
 	int pPort;

@@ -1,5 +1,6 @@
 #include "multiThreadedSingletonFactory.hpp"
 #include "../common.hpp"
+#include "../rsg/services.hpp"
 #include <iostream>
 #include <stack>
 #include <algorithm>    // std::copy
@@ -31,7 +32,7 @@ Client &MultiThreadedSingletonFactory::getClient(std::thread::id id) {
         res = new Client("localhost", 9090);
         res->init();
         pClients->insert({std::this_thread::get_id(), res});
-        *pMainThreadID = hasher(std::this_thread::get_id());
+        *pMainThreadID = hasher(std::this_thread::get_id());        
     }
     MultiThreadedSingletonFactory::mtx.unlock();
     return *res;
@@ -43,7 +44,7 @@ void MultiThreadedSingletonFactory::registerClient(Client *client) {
     pClients->insert({std::this_thread::get_id(), client});
     if(pClients->size() == 1) {
         *pMainThreadID = hasher(std::this_thread::get_id());
-    }
+    }    
     MultiThreadedSingletonFactory::mtx.unlock();
 }
 
@@ -93,6 +94,12 @@ void MultiThreadedSingletonFactory::registerNewThread(std::thread *thread) {
     MultiThreadedSingletonFactory::threadMutex.lock();
     pThreads->push_back(thread);
     MultiThreadedSingletonFactory::threadMutex.unlock();
+}
+
+void MultiThreadedSingletonFactory::flushAll() {
+    for(auto it = pClients->begin(); it != pClients->end(); ++it) {
+        it->second->flush();
+    }
 }
 
 void MultiThreadedSingletonFactory::waitAll() {
@@ -155,8 +162,5 @@ void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
     }
     pClients->clear();
 }
-
-
-
 
 

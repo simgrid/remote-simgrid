@@ -7,6 +7,7 @@
 #include "../common.hpp"
 #include "../rsg/services.hpp"
 
+#include "rsg/engine.hpp"
 #include "rsg/actor.hpp"
 #include "RsgClient.hpp"
 #include "multiThreadedSingletonFactory.hpp"
@@ -199,22 +200,24 @@ void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr,
 int rsg::this_actor::fork() {
     Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());    
     rsgServerRemoteAddrAndPort params;
+    long int hostAddr = Host::current()->p_remoteAddr;
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
+    MultiThreadedSingletonFactory::getInstance().flushAll();
     
     pid_t pid = ::fork();
     if(0 == pid) { // Child
         //FIXME There is a memory leak in fork because we cannot clear call "reset" on all client before clear them. 
         // It willl lead to a leak of all created client. But if we clear all client the programme will block (with fork_from_spwaned_actor test for example).
         // This happends becaus when we delete a client, it closes its connection. 
+        // rsg::setKeepAliveOnNextClientDisconnect(true);
         MultiThreadedSingletonFactory::getInstance().clearAll(true);
         MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), params.port);
         return 0;
     }
-    
     std::promise<int> child_pid;
     std::future<int> future = child_pid.get_future();
     
-    std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, Host::current()->p_remoteAddr);
+    std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, hostAddr);
     nActor.join();    
     future.wait();
     int res = future.get();     
