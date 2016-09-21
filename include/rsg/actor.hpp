@@ -78,7 +78,7 @@ namespace simgrid  {
 
             XBT_PUBLIC(int) getPPid();
             
-            XBT_PUBLIC(int) fork();
+            XBT_PUBLIC(int) fork(std::string childName);
             
         };
         

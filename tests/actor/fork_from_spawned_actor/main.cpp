@@ -26,9 +26,9 @@ public:
     std::string pName;
     int operator()(void * ) {
         XBT_INFO("[PARENT]My pid is  : %d",rsg::this_actor::getPid());
-        pid_t pid = rsg::this_actor::fork();
+        pid_t pid = rsg::this_actor::fork("child1");
         if(0 == pid) { // child
-            pid_t pid_2 = rsg::this_actor::fork();
+            pid_t pid_2 = rsg::this_actor::fork("child2");
             XBT_INFO("[child]My pid is  : %d",rsg::this_actor::getPid());
             XBT_INFO("[child]Fork returned : %d", pid);           
             XBT_INFO("[child]Fork returned : %d", pid_2);           

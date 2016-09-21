@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
   // XBT_INFO("[parent]My id is  : %d",rsg::this_actor::getPid());
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
-  pid_t pid = rsg::this_actor::fork();
+  pid_t pid = rsg::this_actor::fork("MyChild");
   if(0 == pid) { // child
     XBT_INFO("[child]My pid is  : %d",rsg::this_actor::getPid());
     rsg::Actor* me = rsg::Actor::self();

@@ -196,15 +196,15 @@ int rsg::this_actor::getPPid() {
     return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPPid();
 }
 
-void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr, int port, int64_t hostAddr) {
+void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr, int port, int64_t hostAddr, std::string childName) {
     Client *engine = (Client*)client;
-    unsigned long long newActorAddr = engine->serviceClientFactory<RsgActorClient>("RsgActor").createActor(addr, port ,"forked", hostAddr, 10);
+    unsigned long long newActorAddr = engine->serviceClientFactory<RsgActorClient>("RsgActor").createActor(addr, port, childName, hostAddr, 10);
     int newPid = engine->serviceClientFactory<RsgActorClient>("RsgActor").getPid(newActorAddr);
     child_pid.set_value(newPid);
 }
 
-int rsg::this_actor::fork() {
-    Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());    
+int rsg::this_actor::fork(std::string childName) {
+    Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
     rsgServerRemoteAddrAndPort params;
     long int hostAddr = Host::current()->p_remoteAddr;
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
@@ -223,10 +223,10 @@ int rsg::this_actor::fork() {
     std::promise<int> child_pid;
     std::future<int> future = child_pid.get_future();
     
-    std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, hostAddr);
-    nActor.join();    
+    std::thread nActor(actorForkRunner, std::ref(child_pid), (int64_t) engine, params.addr, params.port, hostAddr, childName);
+    nActor.join();
     future.wait();
-    int res = future.get();     
+    int res = future.get();
     return res;
 }
 
