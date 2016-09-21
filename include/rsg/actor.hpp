@@ -24,9 +24,10 @@ namespace simgrid  {
             friend rsg::Comm;
             friend rsg::Mailbox;
         private: 
-            Actor(unsigned long int remoteAddr, int);  //FIXME Pid seems not used
+            Actor(unsigned long int remoteAddr);
         public:
             static void killAll();
+            static Actor *self();
             static Actor *createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data);
             static Actor *forPid(int pid);
             static void kill(int pid);
@@ -45,8 +46,6 @@ namespace simgrid  {
         private:
             unsigned long int p_remoteAddr = 0;
             rsg::Host *pHost;
-        public:
-            int pThreadId;
         };
         
         namespace this_actor {

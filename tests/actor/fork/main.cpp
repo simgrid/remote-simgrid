@@ -28,6 +28,10 @@ int main(int argc, char **argv) {
   pid_t pid = rsg::this_actor::fork();
   if(0 == pid) { // child
     XBT_INFO("[child]My pid is  : %d",rsg::this_actor::getPid());
+    rsg::Actor* me = rsg::Actor::self();
+    if( rsg::this_actor::getPid() != me->getPid())
+        XBT_INFO("[child] ERROR in self()");
+    delete me;
     XBT_INFO("[child]Fork returned : %d", pid);
     
     XBT_INFO("[child]Message from Daddy : %s", rsg::this_actor::recv(*mbox));
@@ -38,6 +42,10 @@ int main(int argc, char **argv) {
   rsg::this_actor::send(*mbox, msg, strlen(msg) + 1);
   
   XBT_INFO("[parent]My pid is : %d",rsg::this_actor::getPid());
+  rsg::Actor* me = rsg::Actor::self();
+  if( rsg::this_actor::getPid() != me->getPid())
+    XBT_INFO("[parent] ERROR in self()");
+  delete me;
   XBT_INFO("[parent]The pid of my child is : %d", pid);
   rsg::this_actor::quit();
   return 0;

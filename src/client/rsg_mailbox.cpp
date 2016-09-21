@@ -59,7 +59,7 @@ rsg::Actor* rsg::Mailbox::receiver() {
 	if(res == 0) {
 		return NULL;
 	}
-	return new Actor(res,-1);
+	return new Actor(res);
 }
 
 bool rsg::Mailbox::empty() {

@@ -6,4 +6,4 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is  : 1
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is  : 2
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] getName  : receiver
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main end at : 100.000110
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main end at : 100.000100

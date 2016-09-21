@@ -188,6 +188,14 @@ public:
     }
 };
 
+
+int64_t rsg::RsgActorHandler::selfAddr() {
+    simgrid::s4u::ActorPtr actor = s4u::Actor::self();
+    unsigned long long newId = pActorMapId++;
+    pActors.insert({newId, actor});
+    return newId;
+}
+
 int64_t rsg::RsgActorHandler::createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t hostaddr, const int32_t killTime) {
     s4u::Host *host = (s4u::Host*) hostaddr;
     RsgThriftServerFramework* server = (RsgThriftServerFramework*) remoteServerAddr;

@@ -69,10 +69,15 @@ if (THRIFT_COMPILER)
             if(NOT EXISTS ${CMAKE_BINARY_DIR}/${_target_dir})
                 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/${_target_dir})
             endif()
+            message("Executing ${THRIFT_COMPILER} -r -o ${CMAKE_BINARY_DIR}/${_target_dir} --gen cpp ${CMAKE_SOURCE_DIR}/${thrift_file}")
             exec_program(${THRIFT_COMPILER}
                 ARGS -r -o "${CMAKE_BINARY_DIR}/${_target_dir}" --gen cpp "${CMAKE_SOURCE_DIR}/${thrift_file}"
                 OUTPUT_VARIABLE __thrift_OUT
                 RETURN_VALUE THRIFT_RETURN)
+            if(NOT "${THRIFT_RETURN}" EQUAL "0")
+                message(FATAL_ERROR "Thrift exited with a value of ${THRIFT_RETURN}: ${__thrift_OUT}")
+            endif()
+            
             file(GLOB_RECURSE __result_src "${CMAKE_BINARY_DIR}/${_target_dir}/*.cpp")
 
             file(GLOB_RECURSE __skeletons "${CMAKE_BINARY_DIR}/${_target_dir}/*.skeleton.cpp")
