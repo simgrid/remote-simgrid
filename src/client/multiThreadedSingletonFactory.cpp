@@ -148,7 +148,8 @@ void MultiThreadedSingletonFactory::waitAll() {
 void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
 
     for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
-        (*it)->detach();
+        if(((*it)->joinable()))
+            (*it)->detach();
         delete *it;
     }
     pThreads->clear();

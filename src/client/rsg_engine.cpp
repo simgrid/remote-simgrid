@@ -33,5 +33,6 @@ int rsg::getRpcPort() {
 
 void rsg::setKeepAliveOnNextClientDisconnect(bool newValue) {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+    printf("RSG  CURRRRRENT PORT IS : %d\n", engine.getRpcPort());
     engine.serviceClientFactory<RsgEngineClient>("RsgEngine").setKeepAliveOnNextClientDisconnect(newValue);
 }

@@ -155,6 +155,9 @@ rsg::Actor* rsg::Actor::forPid(int pid) {
 
 void actorRunner(std::function<int(void *)> code, int port, void *data ) {
     MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), port);
+    int pid = rsg::this_actor::getPid();
+
+    debug_spawn_client("Actor [%d] running", pid);
     try {
         code(data);
     } catch(apache::thrift::TApplicationException &ex) {
@@ -165,17 +168,26 @@ void actorRunner(std::function<int(void *)> code, int port, void *data ) {
         MultiThreadedSingletonFactory &factory = MultiThreadedSingletonFactory::getInstance();
         factory.clearClient(std::this_thread::get_id());
     }
+
+    rsg::this_actor::quit();
+    debug_spawn_client("Actor [%d] quit", pid);
+    
 }
 
 rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data) {
     Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());    
     rsgServerRemoteAddrAndPort params;
     engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
-        
+    
+    rsg::Actor *self = rsg::Actor::self();
+    char *cstr_name = self->getName();
+    delete self;
+
     std::thread *nActor = new std::thread(actorRunner, code, params.port, data);         
     MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
     unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host->p_remoteAddr, 10);
     rsg::Actor *act = new Actor(addr);
+    debug_spawn_client("Actor [%d]%s creates thread [%d]", this_actor::getPid(), cstr_name, act->getPid());
     return act;
 }
 
@@ -206,7 +218,13 @@ void actorForkRunner(std::promise<int> &child_pid, int64_t client, int64_t addr,
 int rsg::this_actor::fork(std::string childName) {
     Client  *engine = &MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
     rsgServerRemoteAddrAndPort params;
+    
     long int hostAddr = Host::current()->p_remoteAddr;
+
+    rsg::Actor *self = rsg::Actor::self();
+    std::string name(self->getName());
+    delete self;
+
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
     MultiThreadedSingletonFactory::getInstance().flushAll();
     
@@ -227,6 +245,7 @@ int rsg::this_actor::fork(std::string childName) {
     nActor.join();
     future.wait();
     int res = future.get();
+    debug_spawn_client(" Actor [%d]%s  creates fork [%d]%s", this_actor::getPid(), name.c_str(), res, childName.c_str());
     return res;
 }
 

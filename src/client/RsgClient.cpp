@@ -66,6 +66,7 @@ void Client::init() {
     if(rpcEnvPort != NULL) {
         //We first try to get env variable.
         rpcPort = std::stoi(rpcEnvPort, NULL);
+        unsetenv("RsgRpcPort"); //NOTE In order to clean the process, maybe it is better to not let this variable in the env.
     } else {
         //If no environments variables is setted, we need to ask the server the new port.
         int connectSock = socket_connect(pHostname.c_str() , pPort);
@@ -89,16 +90,19 @@ void Client::connectToRpc(int rpcPort) {
     pTransport.reset(new TBufferedTransport(socket));
     pProtocol.reset(new WrapTBinaryProtocol(pTransport));
     bool connected = true;
+    int max_attempt = 1000, attempt = 0;
     do {
         try {
             pTransport->open();
             pRpcPort = rpcPort;
             connected = true;
         } catch(apache::thrift::transport::TTransportException &ex) {
+            attempt++;
             connected = false;
             sleep(0.1);
         }
-    } while(!connected);
+    } while(!connected && attempt < max_attempt);
+
 }
 
 boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
