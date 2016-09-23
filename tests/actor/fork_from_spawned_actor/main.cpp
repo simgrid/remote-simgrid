@@ -48,8 +48,8 @@ int main(int argc, char **argv) {
     // XBT_INFO("[parent]My id is  : %d",rsg::this_actor::getPid());
 
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
-    rsg::Actor::createActor("hello" , host1 , ForkActor(), NULL);
-    // actor->detach();
+    rsg::Actor *act = rsg::Actor::createActor("hello" , host1 , ForkActor(), NULL);
+    act->join();
     // sleep(100);
     rsg::this_actor::quit();
     return 0;

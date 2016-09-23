@@ -26,8 +26,8 @@ int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
-  rsg::Actor::createActor("receiver" ,host1 , actor,(void*) msg);
-
+  rsg::Actor *act = rsg::Actor::createActor("receiver" ,host1 , actor,(void*) msg);
+  act->join();
   rsg::this_actor::quit();
   return 0;
 }

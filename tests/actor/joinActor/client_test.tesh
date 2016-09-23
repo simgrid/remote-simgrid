@@ -16,4 +16,3 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] hello
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Spawner quit
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] joined spawner n°3 
->error creating mailbox hello in rsg::Mailbox::byName : No more data to read. 

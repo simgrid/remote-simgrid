@@ -157,7 +157,7 @@ void actorRunner(std::function<int(void *)> code, int port, void *data ) {
     MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), port);
     int pid = rsg::this_actor::getPid();
 
-    debug_spawn_client("Actor [%d] running", pid);
+    // debug_spawn_client("Actor [%d] running", pid);
     try {
         code(data);
     } catch(apache::thrift::TApplicationException &ex) {

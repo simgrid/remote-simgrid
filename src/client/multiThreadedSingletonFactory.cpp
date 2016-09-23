@@ -82,10 +82,15 @@ void MultiThreadedSingletonFactory::clearClient(std::thread::id id) {
     std::hash<std::thread::id> hasher;
     size_t hash = hasher(id);
     if(hash == *pMainThreadID) {
-        waitAll();
-        if(pThreads->size() > 0) {
-            std::cerr << "ERROR : rsg process is leaving whereas some actors may still be alives." << std::endl;
-        }
+        //FIXME We need to discuss of how to manage the actors life span.
+        // When I first design the waitAll, I thought we might want to spawn a main actor which spawn other actors.
+        // and while the child are still alived, the main leave. But It leads to many sync problème with all the thread.
+        // This design will force any actor to wait for their childs.
+
+        // waitAll();
+        // if(pThreads->size() > 0) {
+        //     std::cerr << "ERROR : rsg process is leaving whereas some actors may still be alives." << std::endl;
+        // }
         delete pInstance;
     }
 }
@@ -149,7 +154,7 @@ void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
 
     for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
         // if(((*it)->joinable()))
-        //     (*it)->detach();
+        (*it)->detach();
         // delete *it;
         //FIXME In some cases, this thread clean up leads to a segmentation fault. (In sames to appears with fork) 
     }

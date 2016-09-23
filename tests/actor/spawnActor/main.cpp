@@ -56,7 +56,9 @@ int Spwaner(void * ) {
     rsg::Actor* actor = rsg::Actor::createActor("hello" , host1 , PidComp(name), NULL);
     int pid = actor->getPid();
     rsg::this_actor::send(*mbox, (char*) &(pid), sizeof(int));
+    actor->join();
     delete actor;
+
   }
 
   rsg::this_actor::quit();
@@ -69,6 +71,7 @@ int main(int argc, char **argv) {
   for(int i = 0; i < 4; i++) {
     rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
     UNUSED(actor);
+    actor->join();
     delete actor;
   }
 
