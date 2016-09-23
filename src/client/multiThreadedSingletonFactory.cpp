@@ -154,7 +154,7 @@ void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
 
     for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
         // if(((*it)->joinable()))
-        (*it)->detach();
+        // (*it)->detach();
         // delete *it;
         //FIXME In some cases, this thread clean up leads to a segmentation fault. (In sames to appears with fork) 
     }
