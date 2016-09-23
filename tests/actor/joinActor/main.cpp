@@ -38,8 +38,8 @@ class hello {
 
    rsg::MailboxPtr mbox = rsg::Mailbox::byName(this->pName.c_str());
    uint64_t *pid = (uint64_t*) rsg::this_actor::recv(*mbox);
-   UNUSED(pid);
    rsg::this_actor::quit();
+   UNUSED(pid);
    return 1;
  }
 };
