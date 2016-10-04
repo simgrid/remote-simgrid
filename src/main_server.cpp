@@ -7,6 +7,7 @@
 #include "xbt.h"
 #include "simgrid/s4u.hpp"
 
+#include "rsg/Socket.hpp"
 #include "rsg/services.hpp"
 #include "rsg/Server.hpp"
 #include "common.hpp"
@@ -25,10 +26,47 @@ std::vector<std::thread*> threads;
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_SERVER, RSG_THRIFT , "RSG server (Remote SimGrid)");
 
-/* Fork a remote process, and serve it until it CMD_QUITs */
+/*!
+ *  Fork a remote process, creates an RPC server to handle all the actor communication
+ *  The function first creates an RPC server with an unused TCP port. When the server is succefully setted in listen mode 
+ *  the function forks and set the Rpc port to the environment with execve.  
+*/
 static int rsg_representative(int argc, char **argv) {
     debug_server_print("START");
+    
+    //First we create an RPC server designed to communicate with the futur child
+    int rpcPort = getFreePort(1024);
+    bool connected = false;
+    
+    RsgThriftServerFramework* server = NULL;
+    do {
+        server = SocketServer::getSocketServer().createRpcServer(rpcPort);
+        try {
+            server->listen();
+            connected = true;
+        } catch(apache::thrift::transport::TTransportException &ex) {
+            rpcPort = getFreePort(1024);
+            delete server;
+        } 
+    } while( ! connected);
+    
+    // We fork the actor process
     if (! fork()) {
+        //We create the string formated to environment variables (key=value)
+        std::string envKeyValueStr, envKeyName = "RsgRpcPort";
+        std::string envValue = std::to_string(rpcPort);
+        envKeyValueStr = envKeyName + "=" + envValue;
+        
+        // Initialization of the array desgnied to host the new environment variables
+        int envp_size = 2; 
+        char **newenviron = (char**) malloc(sizeof(char*) * envp_size);
+        newenviron[0] = (char*) malloc(sizeof(char) * (envKeyValueStr.size() + 1));
+        
+        // Copying the new key value string
+        strcpy(newenviron[0], envKeyValueStr.c_str());
+        // Null terminating of the array
+        newenviron[1] = NULL;
+        
         int newargc = argc-1+2+1;
         char **newargv = (char**)calloc(newargc, sizeof(char*));
         newargv[0] = (char*)"/usr/bin/env";
@@ -38,11 +76,9 @@ static int rsg_representative(int argc, char **argv) {
         }
         newargv[newargc-1] = NULL;
         debug_server_print("fork+exec: %s", newargv[2]);
-        execv(newargv[0], newargv);
+        execve(newargv[0], newargv, newenviron);
     }
-    debug_server_print("RUN server");
-    SocketServer &socketServer = SocketServer::getSocketServer();
-    RsgThriftServerFramework *server = socketServer.acceptClient();
+
     server->serve();
     delete server;
     debug_server_print("END");
