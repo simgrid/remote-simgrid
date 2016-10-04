@@ -182,6 +182,7 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::fu
     rsg::Actor *self = rsg::Actor::self();
     char *cstr_name = self->getName();
     delete self;
+    free(cstr_name);
 
     std::thread *nActor = new std::thread(actorRunner, code, params.port, data);         
     MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
@@ -222,7 +223,9 @@ int rsg::this_actor::fork(std::string childName) {
     long int hostAddr = Host::current()->p_remoteAddr;
 
     rsg::Actor *self = rsg::Actor::self();
-    std::string name(self->getName());
+    char *c_name = self->getName();
+    std::string name(c_name);
+    free(c_name);
     delete self;
 
     engine->serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
@@ -231,7 +234,7 @@ int rsg::this_actor::fork(std::string childName) {
     pid_t pid = ::fork();
     if(0 == pid) { // Child
         //FIXME There is a memory leak in fork because we cannot clear call "reset" on all client before clear them. 
-        // It willl lead to a leak of all created client. But if we clear all client the programme will block (with fork_from_spwaned_actor test for example).
+        // It willl lead to a leak of all created client. But if we clear all client the program will block (with fork_from_spwaned_actor test for example).
         // This happends becaus when we delete a client, it closes its connection. 
         // rsg::setKeepAliveOnNextClientDisconnect(true);
         MultiThreadedSingletonFactory::getInstance().clearAll(true);

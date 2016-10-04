@@ -50,6 +50,7 @@ int main(int argc, char **argv) {
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
     rsg::Actor *act = rsg::Actor::createActor("hello" , host1 , ForkActor(), NULL);
     act->join();
+    delete act;
     // sleep(100);
     rsg::this_actor::quit();
     return 0;
