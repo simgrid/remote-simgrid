@@ -44,9 +44,8 @@ public:
 };
 
 
-Client::Client(std::string hostname, int port) : pSock(-1),
+Client::Client(std::string hostname) : pSock(-1),
 pHostname(hostname),
-pPort(port),
 pProtocol(NULL),
 pTransport(NULL),
 pServices(new boost::unordered_map<std::string, void*> ()),
@@ -60,30 +59,16 @@ Client::~Client() {
 }
 
 void Client::init() {
-    
     char *rpcEnvPort = std::getenv("RsgRpcPort");
     int rpcPort;
     if(rpcEnvPort != NULL) {
         //We first try to get env variable.
         rpcPort = std::stoi(rpcEnvPort, NULL);
-        unsetenv("RsgRpcPort"); //NOTE In order to clean the process, maybe it is better to not let this variable in the env.
+        connectToRpc(rpcPort);
     } else {
-        //If no environments variables is setted, we need to ask the server the new port.
-        int connectSock = socket_connect(pHostname.c_str() , pPort);
-        if(connectSock <= 0) {
-            fprintf(stderr,"error, cannot connect to server\n");
-        }
-        
-        this->pSock = connectSock;
-        recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
+        std::cerr << "Port not specified (must be in an env variable as RsgRpcPort=xxxx)" << std::endl;
     }
-    connectToRpc(rpcPort);
-    ::close(this->pSock);
 }
-
-
-
-
 
 void Client::connectToRpc(int rpcPort) {
     boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));

@@ -78,7 +78,6 @@ public:
 	void connect();
     void flush();
 	int getRpcPort() { return pRpcPort; }
-	Client(std::string hostname, int port);
 	Client(std::string hostname);
     ~Client();
 	
@@ -86,7 +85,6 @@ private:
 	  
 	int pSock;
 	std::string pHostname;
-	int pPort;
     int pRpcPort;
 	boost::shared_ptr<TBinaryProtocol> pProtocol;
 	boost::shared_ptr<TBufferedTransport> pTransport;

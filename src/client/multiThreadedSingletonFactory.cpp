@@ -29,7 +29,7 @@ Client &MultiThreadedSingletonFactory::getClient(std::thread::id id) {
     try {
         res = pClients->at(id);
     } catch (std::out_of_range& e) {
-        res = new Client("localhost", 9090);
+        res = new Client("localhost");
         res->init();
         pClients->insert({std::this_thread::get_id(), res});
         *pMainThreadID = hasher(std::this_thread::get_id());        
@@ -55,7 +55,7 @@ Client &MultiThreadedSingletonFactory::getClientOrCreate(std::thread::id id, int
     try {
         res = pClients->at(id);
     } catch (std::out_of_range& e) {
-        res = new Client("localhost", 9090);
+        res = new Client("localhost");
         res->connectToRpc(rpcPort);
         pClients->insert({std::this_thread::get_id(), res});
         if(pClients->size() == 1) {
