@@ -78,26 +78,35 @@ void MultiThreadedSingletonFactory::clearClient(std::thread::id id) {
     } catch (std::out_of_range& e) {
         std::cerr << "Engine already cleared or not existing " << std::endl;
     }
+
     MultiThreadedSingletonFactory::mtx.unlock();
     std::hash<std::thread::id> hasher;
     size_t hash = hasher(id);
+    removeCurrentThread();
     if(hash == *pMainThreadID) {
         //FIXME We need to discuss of how to manage the actors life span.
         // When I first design the waitAll, I thought we might want to spawn a main actor which spawn other actors.
-        // and while the child are still alived, the main leave. But It leads to many sync problème with all the thread.
+        // and while the child are still alive, the main leave. But It leads to many sync problems with all the thread.
         // This design will force any actor to wait for their childs.
-
-        // waitAll();
-        // if(pThreads->size() > 0) {
-        //     std::cerr << "ERROR : rsg process is leaving whereas some actors may still be alives." << std::endl;
-        // }
+        MultiThreadedSingletonFactory::threadMutex.lock();
+        if(pThreads->size() > 0) {
+            std::cerr << "ERROR : rsg process is leaving whereas some actors may still be alives." << std::endl;
+        }
+        MultiThreadedSingletonFactory::threadMutex.unlock();
+        
         delete pInstance;
     }
 }
 
 void MultiThreadedSingletonFactory::registerNewThread(std::thread *thread) {
     MultiThreadedSingletonFactory::threadMutex.lock();
-    pThreads->push_back(thread);
+    pThreads->insert({std::this_thread::get_id(), thread});
+    MultiThreadedSingletonFactory::threadMutex.unlock();
+}
+
+void MultiThreadedSingletonFactory::removeCurrentThread() {
+    MultiThreadedSingletonFactory::threadMutex.lock();
+    pThreads->erase(std::this_thread::get_id());
     MultiThreadedSingletonFactory::threadMutex.unlock();
 }
 
@@ -107,57 +116,17 @@ void MultiThreadedSingletonFactory::flushAll() {
     }
 }
 
-void MultiThreadedSingletonFactory::waitAll() {
-    
-    typedef std::vector<std::thread*>::iterator it_type;
-    
-    std::stack<std::thread*> joined;
-    std::vector<std::thread*> copied;
-    MultiThreadedSingletonFactory::threadMutex.lock();
-    bool stop = pThreads->empty();
-    MultiThreadedSingletonFactory::threadMutex.unlock();
-    
-    while(!stop) {
-        MultiThreadedSingletonFactory::threadMutex.lock();
-        std::copy ( pThreads->begin(), pThreads->end(),   std::back_inserter(copied));
-        MultiThreadedSingletonFactory::threadMutex.unlock();
-        
-        for(it_type iterator = copied.begin(); iterator != copied.end(); iterator++) {
-            if((*iterator)->joinable()) {
-                (*iterator)->join();
-                joined.push(*iterator);
-            } else {
-                debug_process("Unjoinable thread remaiming in the vector");
-            }
-        }
-        
-        while(!joined.empty()) {
-            std::thread *t = joined.top();
-            joined.pop();
-            MultiThreadedSingletonFactory::threadMutex.lock();
-            it_type elem = std::find (pThreads->begin(), pThreads->end(), t);        
-            pThreads->erase(elem);
-            MultiThreadedSingletonFactory::threadMutex.unlock();
-            delete t;
-        }
-        
-        sleep(0.01);
-        
-        MultiThreadedSingletonFactory::threadMutex.lock();
-        stop = pThreads->empty();
-        MultiThreadedSingletonFactory::threadMutex.unlock();
-        copied.clear();
-    }  
-}
-
 void MultiThreadedSingletonFactory::clearAll(bool keepConnectionsOpen) {
 
-    for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
-        // if(((*it)->joinable()))
-        // (*it)->detach();
-        // delete *it;
-        //FIXME In some cases, this thread clean up leads to a segmentation fault. (In sames to appears with fork) 
-    }
+    //FIXME The loop below should freeing all threads objects holding by the class however 
+    // since the function is called from the child after a fork, the desctructor of the thread object cannot 
+    // be called. One way to fix this would be to reimplements this class using pthread instead of std::threads.
+
+    // for(auto it = pThreads->begin(); it != pThreads->end(); ++it) {
+    //     if(((*it)->joinable()))
+    //      (*it)->detach();
+    //     delete *it;
+    // }
     pThreads->clear();
     
     for(auto it = pClients->begin(); it != pClients->end(); ++it) {

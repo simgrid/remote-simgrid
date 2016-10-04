@@ -23,7 +23,7 @@ public:
     Client &getClientOrCreate(std::thread::id id, int rpcPort);
     void clearClient(std::thread::id id);
     void registerNewThread(std::thread *thread);
-    void waitAll();
+    void removeCurrentThread();
     void registerClient(Client *client);
     void flushAll();
     void clearAll(bool keepConnectionsOpen);
@@ -31,7 +31,7 @@ public:
     ~MultiThreadedSingletonFactory();
 protected:
     MultiThreadedSingletonFactory() : pClients(new std::map<std::thread::id, Client*>()),                                     
-                                      pThreads(new std::vector<std::thread*>()), 
+                                      pThreads(new std::map<std::thread::id, std::thread*>()), 
                                       pMainThreadID(new size_t) {};
     // delete copy and move constructors and assign operators
     MultiThreadedSingletonFactory(MultiThreadedSingletonFactory const&) = delete;             // Copy construct
@@ -42,11 +42,14 @@ private:
     static MultiThreadedSingletonFactory* pInstance;
     static std::mutex mtx;           // mutex for critical section
     static std::mutex threadMutex;           // mutex for critical section
+
+    //NOTE Maybe we do not need pointers 
+    std::map<std::thread::id, Client*> *pClients;     
+    std::map<std::thread::id, std::thread*> *pThreads; 
+
     //FIXME I had huge problem whith std::thread::id. If for some reason you have 
     //`thread::id of a non-executing thread` when a thread id is printed (with std::cout). Don't hesitate to remplace by hashes.
     // as its the case for pMainThreadID.
-    std::map<std::thread::id, Client*> *pClients;     
-    std::vector<std::thread*> *pThreads; 
     size_t* pMainThreadID;
 };
 
