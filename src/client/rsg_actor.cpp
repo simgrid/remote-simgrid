@@ -182,13 +182,13 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::fu
     rsg::Actor *self = rsg::Actor::self();
     char *cstr_name = self->getName();
     delete self;
-    free(cstr_name);
 
     std::thread *nActor = new std::thread(actorRunner, code, params.port, data);         
     MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
     unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host->p_remoteAddr, 10);
     rsg::Actor *act = new Actor(addr);
     debug_spawn_client("Actor [%d]%s creates thread [%d]", this_actor::getPid(), cstr_name, act->getPid());
+    free(cstr_name);
     return act;
 }
 
