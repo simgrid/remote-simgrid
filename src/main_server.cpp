@@ -21,10 +21,13 @@ using namespace ::apache::thrift::server;
 using boost::shared_ptr;
 using namespace ::simgrid;
 
+
 std::vector<std::thread*> threads;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_SERVER, RSG_THRIFT , "RSG server (Remote SimGrid)");
+
+extern char **environ;
 
 /*!
  *  Fork a remote process, creates an RPC server to handle all the actor communication
@@ -57,16 +60,8 @@ static int rsg_representative(int argc, char **argv) {
         std::string envValue = std::to_string(rpcPort);
         envKeyValueStr = envKeyName + "=" + envValue;
         
-        // Initialization of the array desgnied to host the new environment variables
-        int envp_size = 2; 
-        char **newenviron = (char**) malloc(sizeof(char*) * envp_size);
-        newenviron[0] = (char*) malloc(sizeof(char) * (envKeyValueStr.size() + 1));
-        
-        // Copying the new key value string
-        strcpy(newenviron[0], envKeyValueStr.c_str());
-        // Null terminating of the array
-        newenviron[1] = NULL;
-        
+        putenv((char*)envKeyValueStr.c_str());
+
         int newargc = argc-1+2+1;
         char **newargv = (char**)calloc(newargc, sizeof(char*));
         newargv[0] = (char*)"/usr/bin/env";
@@ -76,7 +71,7 @@ static int rsg_representative(int argc, char **argv) {
         }
         newargv[newargc-1] = NULL;
         debug_server_print("fork+exec: %s", newargv[2]);
-        execve(newargv[0], newargv, newenviron);
+        execve(newargv[0], newargv, environ);
     }
 
     server->serve();
