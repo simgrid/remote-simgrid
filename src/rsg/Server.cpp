@@ -134,9 +134,9 @@ public:
     debug_server_print("RECV %s", fn_name);
     //FIXME: Here we wait 1us to simulate the time taken by the code to execute
     // There is no easy to give an accurate value here, so we choose an arbitrary determinist value.
-    debug_server_print("FAKE EXEC: sleep %f", 1.0/1000.0/1000.0);
+    // debug_server_print("FAKE EXEC: sleep %f", 1.0/1000.0/1000.0);
     s4u::this_actor::sleep_for(1.0/1000.0/1000.0);
-    debug_server_print("FAKE EXEC: continue: RECV %s", fn_name);
+    // debug_server_print("FAKE EXEC: continue: RECV %s", fn_name);
   }
 
   //Called between calling the handler and writing the response.

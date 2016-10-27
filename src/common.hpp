@@ -21,10 +21,10 @@
 #define DEBUG_TRACE          0
 #define DEBUG_SPAWN_CLIENT  (1 && DEBUG_TRACE)
 #define DEBUG_SPAWN_SERVER  (1 && DEBUG_TRACE)
-#define DEBUG_CLIENT        (1 && DEBUG_TRACE)
-#define DEBUG_CLIENT_NET    (1 && DEBUG_CLIENT)
-#define DEBUG_SERVER        (1 && DEBUG_TRACE)
-#define DEBUG_SERVER_NET    (1 && DEBUG_SERVER)
+#define DEBUG_CLIENT        (0 && DEBUG_TRACE)
+#define DEBUG_CLIENT_NET    (0 && DEBUG_CLIENT)
+#define DEBUG_SERVER        (0 && DEBUG_TRACE)
+#define DEBUG_SERVER_NET    (0 && DEBUG_SERVER)
 
 
 /*!

@@ -133,11 +133,34 @@ void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
 }
 
 void rsg::RsgActorHandler::killPid(const int32_t pid) {
+    FILE *f = fopen("debug_kill", "a");
     try {
-        s4u::Actor::kill(pid);
-    } catch( const std::exception & e ) {
-        std::cerr << e.what();
+        int positiv_pid = pid;
+        if(pid < -1)
+            positiv_pid = pid*-1;
+        fprintf(f, "[%d]try to kill %d\n", s4u::this_actor::getPid() , positiv_pid);
+        fflush(f);
+        simgrid::s4u::ActorPtr actor = s4u::Actor::forPid(positiv_pid);
+        if(actor != nullptr) {
+            if(s4u::this_actor::getPid() != positiv_pid)
+                actor->kill();
+            fprintf(f, "[%d]killed %d:%s\n", s4u::this_actor::getPid() , positiv_pid, actor->getName().c_str());
+        }
+        else {
+            fprintf(f, "[%d]no such actor to kill %d\n", s4u::this_actor::getPid() , positiv_pid);
+        }
+        fflush(f);
+    } catch(std::out_of_range& e) {
+        fprintf(f, "rsg::RsgActorHandler::kill no actors for this addr: %d\n", pid);
+        std::cerr << "rsg::RsgActorHandler::kill no actors for this addr" << std::endl;
+    } catch(std::exception &e) {
+        fprintf(f, "rsg::RsgActorHandler::kill no actors for this pid %d\n", pid);
+        fflush(f);
+        std::cerr << "rsg::RsgActorHandler::kill no actors for this pid" << std::endl;
     }
+    fprintf(f, "[%d]end kill %d\n",s4u::this_actor::getPid() , pid);
+    fflush(f);
+    fclose(f);
 }
 
 void rsg::RsgActorHandler::join(const int64_t addr) {
@@ -180,7 +203,9 @@ public:
         debug_server_print("RETURN TO APP port: %i",pPort);
         pServer->serve();
         delete pServer;
-        
+        FILE *f = fopen("end_fork", "a");
+        fprintf(f,"Actor [%d] quit\n", s4u::this_actor::getPid());
+        fclose(f);
         return 1;
     }
     ~RsgActor() {

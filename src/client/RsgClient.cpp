@@ -117,12 +117,13 @@ void Client::flush() {
 //FIXME Put this code into the engine destructor.
 void Client::reset() {
     
-    for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
-        IDel * del = this->pDestructors->at(it->first);
-        (*del)(this->pServices->at(it->first));
-        delete del;
-    }
-    
-    this->pDestructors->clear();
-    this->pServices->clear();
+    // for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
+    //     IDel * del = this->pDestructors->at(it->first);
+    //     (*del)(this->pServices->at(it->first));
+    //     delete del;
+    // }
+    // 
+    // this->pDestructors->clear();
+    // this->pServices->clear();
+
 }
