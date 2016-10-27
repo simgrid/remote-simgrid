@@ -21,23 +21,17 @@ int64_t rsg::RsgMutexHandler::mutexInit() {
 }
 
 void rsg::RsgMutexHandler::lock(const int64_t rmtAddr) {
-    FILE *f = fopen("debug_mtx", "a");
     try {
         s4u::MutexPtr mutex = rsg::RsgMutexHandler::pMutexes.at(rmtAddr);
-        fprintf(f, "(%d)[%p]::before lock\n",s4u::this_actor::getPid(), mutex);
         mutex->lock();
-        fprintf(f, "(%d)[%p]::locked\n",s4u::this_actor::getPid(), mutex);
     } catch(const std::exception &e) {
         std::cerr <<  "No such mutex " << e.what() << std::endl;
     }
-    fclose(f);
 }
 
 void rsg::RsgMutexHandler::unlock(const int64_t rmtAddr) {
     s4u::MutexPtr mutex = rsg::RsgMutexHandler::pMutexes.at(rmtAddr);
-    FILE *f = fopen("debug_mtx", "a");
 
-    fprintf(f, "(%d)[%p]::before unlock\n",s4u::this_actor::getPid(), mutex);
     if(!mutex->try_lock()) {
         mutex->unlock();
     }
@@ -45,8 +39,6 @@ void rsg::RsgMutexHandler::unlock(const int64_t rmtAddr) {
     if(mutex->try_lock()) {
         mutex->unlock();
     }
-    fprintf(f, "(%d)[%p]::unlock\n",s4u::this_actor::getPid(), mutex);
-    fclose(f);
 }
 
 bool rsg::RsgMutexHandler::try_lock(const int64_t rmtAddr) {

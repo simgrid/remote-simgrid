@@ -21,7 +21,7 @@ int64_t rsg::RsgHostHandler::by_name(const std::string& name) {
     s4u::Host *host = s4u::Host::by_name(c_name);
     
     if(host == nullptr) {
-        xbt_die("No such Host (%s)", name);
+        xbt_die("No such Host (%s)", name.c_str());
         return 0;
     }
     return (int64_t)host;
