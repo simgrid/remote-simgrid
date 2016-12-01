@@ -1,6 +1,6 @@
 #include "../services.hpp"
 
-#include "simgrid/s4u.hpp"
+#include <simgrid/s4u.hpp>
 #include <iostream>
 
 using namespace ::apache::thrift::server;

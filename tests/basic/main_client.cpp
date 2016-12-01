@@ -27,8 +27,8 @@ int main(int argc, char **argv) {
     
     rsg::this_actor::execute(8095000000 * 1.999999);
     rsg::this_actor::sleep(1);
-    // rsg::this_actor::quit();
-    rsg::closeConnection();
+    rsg::this_actor::quit();
+//     rsg::closeConnection();
     
     // rsg::this_actor::sleep(1);
     return 0;

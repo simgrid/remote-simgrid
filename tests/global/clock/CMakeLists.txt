@@ -8,6 +8,7 @@ target_link_libraries(getClockMain rsg)
 target_link_libraries(getClockMain "RsgService.thrift")
 target_link_libraries(getClockMain ${THRIFT_LIBRARIES})
 target_link_libraries(getClockMain ${SimGrid_LIBRARY})
+target_link_libraries(getClockMain ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

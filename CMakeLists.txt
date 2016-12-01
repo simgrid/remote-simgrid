@@ -44,6 +44,9 @@ endif()
 find_package(SimGrid REQUIRED)
 include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 
+# Search for SimGrid
+find_package(ZMQ REQUIRED)
+
 #Search for Thrift
 find_package(Thrift REQUIRED)
 

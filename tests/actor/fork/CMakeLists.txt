@@ -8,6 +8,7 @@ target_link_libraries(forkActor rsg)
 target_link_libraries(forkActor "RsgService.thrift")
 target_link_libraries(forkActor ${THRIFT_LIBRARIES})
 target_link_libraries(forkActor ${SimGrid_LIBRARY})
+target_link_libraries(forkActor ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

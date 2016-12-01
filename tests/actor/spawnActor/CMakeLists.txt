@@ -8,6 +8,7 @@ target_link_libraries(spawnActor rsg)
 target_link_libraries(spawnActor "RsgService.thrift")
 target_link_libraries(spawnActor ${THRIFT_LIBRARIES})
 target_link_libraries(spawnActor ${SimGrid_LIBRARY})
+target_link_libraries(spawnActor ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

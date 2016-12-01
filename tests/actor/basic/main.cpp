@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
   rsg::Actor *getByPid = rsg::Actor::forPid(act->getPid());
   getByPid->join();
   XBT_INFO("getName  : %s", getByPid->getName());
-  XBT_INFO("Main end at : %f", rsg::getClock());
+  XBT_INFO("Main end at : %i", (int)rsg::getClock());
 
   rsg::this_actor::quit();
   return 0;

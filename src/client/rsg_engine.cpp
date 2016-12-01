@@ -8,7 +8,6 @@
 
 #include "rsg/engine.hpp"
 #include "RsgClient.hpp"
-#include "multiThreadedSingletonFactory.hpp"
 #include "../rsg/services.hpp"
 
 
@@ -16,22 +15,18 @@
 using namespace ::simgrid;
 
 double rsg::getClock() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    
-    return engine.serviceClientFactory<RsgEngineClient>("RsgEngine").getClock();
+    return client.engine->getClock();
 }
-
+/*
 void rsg::closeConnection() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.close();
+    client.engine->close();
 }
 
 int rsg::getRpcPort() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    return engine.getRpcPort();
+    return client.engine->getRpcPort();
 }
 
 void rsg::setKeepAliveOnNextClientDisconnect(bool newValue) {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgEngineClient>("RsgEngine").setKeepAliveOnNextClientDisconnect(newValue);
+    client.engine->setKeepAliveOnNextClientDisconnect(newValue);
 }
+*/

@@ -2,14 +2,16 @@
 #include <iostream>
 #include <vector>
 
-#include <thrift/processor/TMultiplexedProcessor.h>
+// #include <thrift/processor/TMultiplexedProcessor.h>
 
-#include "xbt.h"
+// #include "xbt.h"
 #include "simgrid/s4u.hpp"
 
-#include "rsg/Socket.hpp"
-#include "rsg/services.hpp"
-#include "rsg/Server.hpp"
+#include "rsg/TZmqServer.hpp"
+#include "rsg/RsgThriftServer.hpp"
+// #include "rsg/Socket.hpp"
+// #include "rsg/services.hpp"
+// #include "rsg/Server.hpp"
 #include "common.hpp"
 
 
@@ -21,7 +23,7 @@ using namespace ::apache::thrift::server;
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-
+std::mutex print;
 std::vector<std::thread*> threads;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
@@ -35,30 +37,17 @@ extern char **environ;
  *  the function forks and set the Rpc port to the environment with execve.  
 */
 static int rsg_representative(int argc, char **argv) {
-    debug_server_print("START");
     
-    //First we create an RPC server designed to communicate with the futur child
-    int rpcPort = getFreePort(1024);
-    bool connected = false;
+    std::string name;
+    TZmqServer::get_new_endpoint(name);
     
-    RsgThriftServerFramework* server = NULL;
-    do {
-        server = SocketServer::getSocketServer().createRpcServer(rpcPort);
-        try {
-            server->listen();
-            connected = true;
-        } catch(apache::thrift::transport::TTransportException &ex) {
-            rpcPort = getFreePort(1024);
-            delete server;
-        } 
-    } while( ! connected);
+    debug_server_print("STARTING %s", name.c_str());
     
     // We fork the actor process
-    if (! fork()) {
+    pid_t pid = fork();
+    if (! pid) {
         //We create the string formated to environment variables (key=value)
-        std::string envKeyValueStr, envKeyName = "RsgRpcPort";
-        std::string envValue = std::to_string(rpcPort);
-        envKeyValueStr = envKeyName + "=" + envValue;
+        std::string envKeyValueStr = "RsgRpcNetworkName=" + name;
         
         putenv((char*)envKeyValueStr.c_str());
 
@@ -73,31 +62,39 @@ static int rsg_representative(int argc, char **argv) {
         debug_server_print("fork+exec: %s", newargv[2]);
         execve(newargv[0], newargv, environ);
     }
+    debug_server_print("Child started at pid %i", pid);
 
-    server->serve();
-    delete server;
+    RsgThriftServer srv(name);
+    srv();
+    
     debug_server_print("END");
     return 0;
 }
 
 int main(int argc, char **argv) {
-    
-    SocketServer &socketServer = SocketServer::createSocketServer(std::string("127.0.0.1"), 9090);
-    socketServer.connect();
+    if (DEBUG_SERVER) {
+        int major, minor, patch;
+        zmq_version (&major, &minor, &patch);
+        printf("0MQ version is %i.%i.%i\n", major, minor, patch);
+    }
     
     s4u::Engine *e = new s4u::Engine(&argc,argv);
     
     if (argc < 3) {
-        fprintf(stderr,"Usage: rsg platform.xml deploy.xml port\n");
+        fprintf(stderr, "Usage: rsg platform.xml deploy.xml port\n");
         exit(1);
     }
     
-    /* Initialize the SimGrid world */
+    pthread_t router;
+    pthread_create(&router, NULL, TZmqServer::router_thread, 0);
+    
+    // Initialize the SimGrid world
     e->loadPlatform(argv[1]);
     e->registerDefault(rsg_representative);
     e->loadDeployment(argv[2]);
     e->run();
     
-    socketServer.closeServer();
+    //wait for the router to clsoe cleanly
+    pthread_join(router, 0);
     return 0;
 }

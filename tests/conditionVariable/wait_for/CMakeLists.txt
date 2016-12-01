@@ -8,6 +8,7 @@ target_link_libraries(wait_for rsg)
 target_link_libraries(wait_for "RsgService.thrift")
 target_link_libraries(wait_for ${THRIFT_LIBRARIES})
 target_link_libraries(wait_for ${SimGrid_LIBRARY})
+target_link_libraries(wait_for ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

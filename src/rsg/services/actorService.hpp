@@ -6,8 +6,6 @@
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
-#include "../RsgThriftSimpleServer.hpp"
-#include "../RsgThriftServerFramework.hpp"
 
 #include <simgrid/s4u.hpp>
 
@@ -27,7 +25,7 @@ namespace simgrid  {
         public:
             RsgActorHandler();
             ~RsgActorHandler() {};
-            void setServer(RsgThriftServerFramework *);
+            bool server_exit;
             
         protected:
             void sleep(const double duration);
@@ -46,19 +44,18 @@ namespace simgrid  {
             void join(const int64_t addr);
             void killPid(const int32_t pid);
             int64_t selfAddr();
-            int64_t createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t host, const int32_t killTime);
-            void createActorPrepare(rsgServerRemoteAddrAndPort& _return);
+            int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
+            void createActorPrepare(std::string& _return);
             void deleteActor(const int64_t addr);
             int32_t this_actorGetPid();
             int32_t this_actorGetPPid();
             int64_t forPid(const int32_t pid);
             bool isValideActor(const int64_t remoteAddr);
-            void createActorForFork(rsgServerRemoteAddrAndPort& _return);
             int32_t getPPid(const int64_t addr);
             private :
-            RsgThriftServerFramework* pServer;
             static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;
             static unsigned long long pActorMapId;
+            std::string lastChildName;
         };
     }
 }

@@ -8,38 +8,32 @@
 #include <iostream>
 #include "rsg/conditionVariable.hpp"
 #include "RsgClient.hpp"
-#include "multiThreadedSingletonFactory.hpp"
 #include "../rsg/services.hpp"
 
 
 using namespace ::simgrid;
 
 void rsg::ConditionVariable::destroy() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").conditionVariableDestroy(this->p_remoteAddr);
+    client.conditionvariable->conditionVariableDestroy(this->p_remoteAddr);
 }
 
 rsg::ConditionVariable::ConditionVariable()  {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    this->p_remoteAddr = engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").conditionVariableInit();
+    this->p_remoteAddr = client.conditionvariable->conditionVariableInit();
 }
 
 rsg::ConditionVariable::~ConditionVariable() {
-    // Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    // engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").conditionVariableDestroy(this->p_remoteAddr);
+    // client.conditionvariable->conditionVariableDestroy(this->p_remoteAddr);
 }
 
 /**
 * Wait functions
 */
 void rsg::ConditionVariable::wait(rsg::Mutex *mutex) {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").wait(this->p_remoteAddr, mutex->p_remoteAddr);
+    client.conditionvariable->wait(this->p_remoteAddr, mutex->p_remoteAddr);
 }
 
 std::cv_status rsg::ConditionVariable::wait_for(rsg::Mutex *mutex, double timeout) {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    rsgConditionVariableStatus::type status = engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").wait_for(this->p_remoteAddr, mutex->p_remoteAddr, timeout);
+    rsgConditionVariableStatus::type status = client.conditionvariable->wait_for(this->p_remoteAddr, mutex->p_remoteAddr, timeout);
     return (status == rsgConditionVariableStatus::type::cv_timeout) ? std::cv_status::timeout : std::cv_status::no_timeout;
 }
 
@@ -47,11 +41,9 @@ std::cv_status rsg::ConditionVariable::wait_for(rsg::Mutex *mutex, double timeou
 * Notify functions
 */
 void rsg::ConditionVariable::notify() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").notify(this->p_remoteAddr);
+    client.conditionvariable->notify(this->p_remoteAddr);
 }
 
 void rsg::ConditionVariable::notify_all() {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgConditionVariableClient>("RsgConditionVariable").notify_all(this->p_remoteAddr);
+    client.conditionvariable->notify_all(this->p_remoteAddr);
 }

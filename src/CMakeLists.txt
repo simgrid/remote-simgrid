@@ -5,34 +5,45 @@
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-set(COMMON_SOURCES rsg/Socket.cpp)
+set(COMMON_SOURCES "")
 
 set(CLIENT_SOURCES_THRIFT
     ${COMMON_SOURCES}
-    client/RsgClient.cpp                         ../src/client/RsgClient.hpp
-    client/multiThreadedSingletonFactory.cpp     ../src/client/multiThreadedSingletonFactory.hpp
-    client/rsg_actor.cpp                         ../include/rsg/actor.hpp
-    client/rsg_mailbox.cpp                       ../include/rsg/mailbox.hpp
-    client/rsg_comm.cpp                          ../include/rsg/comm.hpp
-    client/rsg_host.cpp                          ../include/rsg/host.hpp
-    client/rsg_mutex.cpp                         ../include/rsg/mutex.hpp
-    client/rsg_conditionVariable.cpp             ../include/rsg/conditionVariable.hpp
-    client/rsg_engine.cpp                        ../include/rsg/engine.hpp
+    client/rsg_actor.cpp
+    client/RsgClient.cpp
+    client/RsgClient.hpp
+    client/rsg_comm.cpp
+    client/rsg_conditionVariable.cpp
+    client/rsg_engine.cpp
+    client/rsg_host.cpp
+    client/rsg_mailbox.cpp
+    client/rsg_mutex.cpp
+    client/TZmqClient.cpp
+    client/TZmqClient.hpp
 )
 
 set(SERVER_SOURCES
     ${COMMON_SOURCES}
     main_server.cpp
-    rsg/Server.cpp                                ../src/rsg/services.hpp
-    rsg/services/actorService.cpp                 ../src/rsg/services/actorService.hpp
-    rsg/services/commService.cpp                  ../src/rsg/services/commService.hpp
-    rsg/services/mailboxService.cpp               ../src/rsg/services/mailboxService.hpp
-    rsg/services/hostService.cpp                  ../src/rsg/services/actorService.hpp
-    rsg/services/engineService.cpp                ../src/rsg/services/engineService.hpp
-    rsg/services/conditionVariableService.cpp     ../src/rsg/services/conditionVariableService.hpp
-    rsg/services/mutexService.cpp                 ../src/rsg/services/mutexService.hpp
-    rsg/RsgThriftServerFramework.cpp              ../src/rsg/RsgThriftServerFramework.hpp
-    rsg/RsgThriftSimpleServer.cpp                 ../src/rsg/RsgThriftSimpleServer.hpp
+    rsg/RsgThriftServer.cpp
+    rsg/RsgThriftServer.hpp
+    rsg/services.hpp
+    rsg/TZmqServer.cpp
+    rsg/TZmqServer.hpp
+    rsg/services/actorService.cpp
+    rsg/services/actorService.hpp
+    rsg/services/commService.cpp
+    rsg/services/commService.hpp
+    rsg/services/conditionVariableService.cpp
+    rsg/services/conditionVariableService.hpp
+    rsg/services/engineService.cpp
+    rsg/services/engineService.hpp
+    rsg/services/hostService.cpp
+    rsg/services/hostService.hpp
+    rsg/services/mailboxService.cpp
+    rsg/services/mailboxService.hpp
+    rsg/services/mutexService.cpp
+    rsg/services/mutexService.hpp
 )
 
 
@@ -49,6 +60,7 @@ add_library(rsg SHARED ${CLIENT_SOURCES_THRIFT} ${THRIFT_GEN_FILES})
 
 target_link_libraries(rsg_server "RsgService.thrift")
 target_link_libraries(rsg_server ${SimGrid_LIBRARY})
+target_link_libraries(rsg_server ${ZMQ_LIBRARIES})
 
 install(TARGETS rsg DESTINATION ${RSG_INSTALL_DIR})
 install(TARGETS rsg_server DESTINATION ${RSG_INSTALL_DIR})

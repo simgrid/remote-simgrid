@@ -1,129 +1,64 @@
-#include "multiThreadedSingletonFactory.hpp"
+
+
 #include "RsgClient.hpp"
 
-#include "../rsg/Socket.hpp"
-#include "../common.hpp"
+#include <thrift/protocol/TMultiplexedProtocol.h>
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
+using namespace ::apache::thrift::transport;
+
+thread_local RsgClient client;
 
 
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-#include <iostream>
-#include <cstdlib>
-#include <mutex>
-
-#include <thrift/transport/TSocket.h>
-#include <thrift/transport/TBufferTransports.h>
-
-using namespace ::simgrid;
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
-
-
-class WrapTBinaryProtocol : public TBinaryProtocol {
-public:
-    WrapTBinaryProtocol(boost::shared_ptr<apache::thrift::transport::TBufferedTransport>&a):TBinaryProtocol(a){
-    }
-
-    //called when sending a message
-    uint32_t writeMessageBegin(const std::string& name,
-                                    const TMessageType messageType,
-                                    const int32_t seqid) {
-        debug_client_print("[%p]%s",this, name.c_str());
-        return TBinaryProtocol::writeMessageBegin(name, messageType, seqid);
-    }
-
-    //called when recving a message
-    uint32_t readMessageBegin(std::string& name, TMessageType& messageType, int32_t& seqid) {
-        uint32_t ret = TBinaryProtocol::readMessageBegin(name, messageType, seqid);
-        debug_client_print("[%p]RETURN TO APP after %s",this , name.c_str());
-        return ret;
-    }
-};
-
-
-Client::Client(std::string hostname) : pSock(-1),
-pHostname(hostname),
-pProtocol(NULL),
-pTransport(NULL),
-pServices(new boost::unordered_map<std::string, void*> ()),
-pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
-}
-
-Client::~Client() {
-    debug_client_print("");
-    delete pServices;
-    delete pDestructors;
-}
-
-void Client::init() {
-    char *rpcEnvPort = std::getenv("RsgRpcPort");
-    int rpcPort;
-    if(rpcEnvPort != NULL) {
-        //We first try to get env variable.
-        rpcPort = std::stoi(rpcEnvPort, NULL);
-        connectToRpc(rpcPort);
-    } else {
-        std::cerr << "Port not specified (must be in an env variable as RsgRpcPort=xxxx)" << std::endl;
-    }
-}
-
-void Client::connectToRpc(int rpcPort) {
-    boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
-    pTransport.reset(new TBufferedTransport(socket));
-    pProtocol.reset(new WrapTBinaryProtocol(pTransport));
-    bool connected = true;
-    int max_attempt = 1000, attempt = 0;
-    do {
-        try {
-            pTransport->open();
-            pRpcPort = rpcPort;
-            connected = true;
-        } catch(apache::thrift::transport::TTransportException &ex) {
-            attempt++;
-            connected = false;
-            sleep(0.1);
+RsgClient::RsgClient()
+    : ctx(1)
+    , networkName_("networkName_NOT_SETTED")
+{
+        char *rpcEnvPort = std::getenv("RsgRpcNetworkName");
+        if(rpcEnvPort == NULL) {
+            //we will do the initialisation later
+            debug_client_print("RSG client creating, need future init");
+            return;
         }
-    } while(!connected && attempt < max_attempt);
-
+        networkName_ = std::string(rpcEnvPort);
+        
+        init();
 }
 
-boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
-    return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
-}
-
-boost::shared_ptr<TMultiplexedProtocol>  Client::getMultiplexedProtocol(std::string serviceName) const {
-    return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
-}
-
-boost::shared_ptr<TBufferedTransport>  Client::getTransport() const {
-    return boost::shared_ptr<TBufferedTransport>(this->pTransport);
-}
-
-void Client::close() {
-    pTransport->close();
-};
-
-void Client::connect() {
-    pTransport->open();
-};
-
-void Client::flush() {
-    pTransport->flush();
-}
-
-//FIXME Put this code into the engine destructor.
-void Client::reset() {
+void RsgClient::init() {
+        debug_client_print("RSG client %s starting", networkName_.c_str());
+        
+        shared_ptr<TZmqClient> transport(new TZmqClient(ctx, networkName_));
+        shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(transport));
     
-    // for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
-    //     IDel * del = this->pDestructors->at(it->first);
-    //     (*del)(this->pServices->at(it->first));
-    //     delete del;
-    // }
-    // 
-    // this->pDestructors->clear();
-    // this->pServices->clear();
-
+        
+        engine = new RsgEngineClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgEngine")));
+        actor = new RsgActorClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgActor")));
+        mailbox = new RsgMailboxClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgMailbox")));
+        mutex = new RsgMutexClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgMutex")));
+        conditionvariable = new RsgConditionVariableClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgConditionVariable")));
+        host = new RsgHostClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgHost")));
+        comm = new RsgCommClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgComm")));
+        
+        transport->open();
+        debug_client_print("RSG client %s started", networkName_.c_str());
 }
+
+void RsgClient::forceInitialisation(std::string networkName) {
+    networkName_ = networkName;
+    init();
+}
+
+RsgClient::~RsgClient()
+{
+        delete engine;
+        delete actor;
+        delete mailbox;
+        delete mutex;
+        delete conditionvariable;
+        delete host;
+        delete comm;
+        debug_client_print("RSG client %s ended", networkName_.c_str());
+}
+
+

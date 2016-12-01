@@ -1,15 +1,14 @@
-#include "../services.hpp"
-#include "../Server.hpp"
-#include "../Socket.hpp"
 
-#include "xbt.h"
-#include "simgrid/s4u.hpp"
-#include "../../common.hpp"
+#include <simgrid/s4u.hpp>
 #include <xbt/string.hpp>
 #include <iostream>
 #include <stdexcept>
 #include <boost/shared_ptr.hpp>
 #include <thrift/processor/TMultiplexedProcessor.h>
+
+#include "../services.hpp"
+#include "../RsgThriftServer.hpp"
+#include "../../common.hpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -23,15 +22,13 @@ using namespace  ::simgrid;
 std::unordered_map<int, simgrid::s4u::ActorPtr> rsg::RsgActorHandler::pActors;
 unsigned long long rsg::RsgActorHandler::pActorMapId = 0;
 
-rsg::RsgActorHandler::RsgActorHandler()  : pServer(NULL) {
-}
-
-void rsg::RsgActorHandler::setServer(RsgThriftServerFramework *server) {
-    pServer = server;
+rsg::RsgActorHandler::RsgActorHandler()
+    : server_exit(false)
+{
 }
 
 void rsg::RsgActorHandler::close() {
-    pServer->stop();
+    server_exit = true;
 }
 
 void  rsg::RsgActorHandler::sleep(const double duration) {
@@ -172,47 +169,10 @@ void rsg::RsgActorHandler::join(const int64_t addr) {
     }
 }
 
-void rsg::RsgActorHandler::createActorPrepare(rsgServerRemoteAddrAndPort& _return) {
-    int rpcPort = getFreePort(1024);
-    bool connected = false;
-    
-    RsgThriftServerFramework* server = NULL;
-    do {
-        server = SocketServer::getSocketServer().createRpcServer(rpcPort);
-        try {
-            server->listen();
-            connected = true;
-        } catch(apache::thrift::transport::TTransportException &ex) {
-            rpcPort = getFreePort(1024);
-            delete server;
-        } 
-    } while( ! connected);
-    
-    _return.addr = (unsigned long int) server;
-    _return.port = rpcPort;
+void rsg::RsgActorHandler::createActorPrepare(std::string& _return) {
+    TZmqServer::get_new_endpoint(lastChildName);
+    _return = lastChildName;
 }
-
-class RsgActor {
-public:
-    RsgActor(RsgThriftServerFramework *server, int port) : pServer(server), pPort(port) {
-        debug_server_print("port: %i",port);
-    }
-    RsgThriftServerFramework *pServer;
-    int pPort;
-    int operator()() {
-        debug_server_print("RETURN TO APP port: %i",pPort);
-        pServer->serve();
-        delete pServer;
-        FILE *f = fopen("end_fork", "a");
-        fprintf(f,"Actor [%d] quit\n", s4u::this_actor::getPid());
-        fclose(f);
-        return 1;
-    }
-    ~RsgActor() {
-        debug_server_print("");
-    }
-};
-
 
 int64_t rsg::RsgActorHandler::selfAddr() {
     simgrid::s4u::ActorPtr actor = s4u::Actor::self();
@@ -221,10 +181,11 @@ int64_t rsg::RsgActorHandler::selfAddr() {
     return newId;
 }
 
-int64_t rsg::RsgActorHandler::createActor(const int64_t remoteServerAddr, const int32_t port, const std::string& name, const int64_t hostaddr, const int32_t killTime) {
+int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostaddr, const int32_t killTime) {
+    
     s4u::Host *host = (s4u::Host*) hostaddr;
-    RsgThriftServerFramework* server = (RsgThriftServerFramework*) remoteServerAddr;
-    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, RsgActor(server, port));
+    
+    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, RsgThriftServer(lastChildName));
     unsigned long long newId = pActorMapId++;
     pActors.insert({newId, actor});
     return newId;

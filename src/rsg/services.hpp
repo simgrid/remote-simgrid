@@ -1,6 +1,5 @@
 #ifndef _RSG_SERVICE_
 #define _RSG_SERVICE_
-#include "xbt.h"
 
 #include "services/actorService.hpp"
 #include "services/commService.hpp"

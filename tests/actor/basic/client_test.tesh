@@ -1,4 +1,5 @@
 ! ignore ^Thrift:.*
+! output sort
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] I'll send Do you copy ?  with size : 14
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
@@ -6,4 +7,4 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is  : 2
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is  : 1
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] getName  : receiver
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main end at : 100.000140
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main end at : 100

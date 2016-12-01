@@ -11,16 +11,14 @@ using namespace  ::RsgService;
 using namespace ::simgrid;
 
 
-void rsg::RsgEngineHandler::setServer(RsgThriftServerFramework *server) {
-    pServer = server;
-}
 
 double rsg::RsgEngineHandler::getClock() {
     return SIMIX_get_clock();
 }
 
-
+/*
 void rsg::RsgEngineHandler::setKeepAliveOnNextClientDisconnect(const bool newValue) {
-// Your implementation goes here
-    pServer->setKeepAliveOnNextClientDisconnect(newValue);
+    std::cerr<<"setKeepAliveOnNextClientDisconnect NOT IMPLEMENTED"<<std::endl;
+    assert(false);
 }
+*/

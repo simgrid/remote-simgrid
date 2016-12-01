@@ -28,9 +28,12 @@ int64_t rsg::RsgHostHandler::by_name(const std::string& name) {
 }
 
 void rsg::RsgHostHandler::current(rsgHostCurrentResType& _return) {
+    debug_server_print("LALALALALLALALALA");
     s4u::Host *host = s4u::Host::current();
+    debug_server_print("LALALALALLALALALA %p", host);
     _return.name = host->name();
     _return.addr = (unsigned long int) host;
+    debug_server_print("LALALALALLALALALA ret:%s", _return.name.c_str());
 }
 
 double rsg::RsgHostHandler::speed(const int64_t addr) {

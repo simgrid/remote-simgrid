@@ -8,11 +8,6 @@ struct rsgHostCurrentResType {
     2:string name
 }
 
-struct rsgServerRemoteAddrAndPort {
-    1:i64 addr,
-    2:i32 port
-}
-
 struct rsgCommBoolAndData {
     1:bool cond,
     2:binary data
@@ -30,7 +25,6 @@ enum rsgConditionVariableStatus {
 
 service RsgEngine {
     double getClock()
-    void setKeepAliveOnNextClientDisconnect(1:bool newValue)
 }
 
 service RsgActor    {
@@ -52,9 +46,9 @@ service RsgActor    {
     void setKillTime(1:i64 addr, 2:double time)
     double getKillTime(1:i64 addr)
     void killAll()
-    rsgServerRemoteAddrAndPort createActorPrepare()
+    string createActorPrepare()
     i64 selfAddr()
-    i64 createActor(1:i64 remoteServerAddr, 2:i32 port , 3:string name, 4:i64 host, 5:i32 killTime)
+    i64 createActor(1:string name, 2:i64 host, 3:i32 killTime)
     i64 forPid(1:i32 pid)
     void deleteActor(1:i64 addr)
     bool isValideActor(1:i64 remoteAddr)

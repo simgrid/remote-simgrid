@@ -8,6 +8,7 @@ target_link_libraries(mutexBasic rsg)
 target_link_libraries(mutexBasic "RsgService.thrift")
 target_link_libraries(mutexBasic ${THRIFT_LIBRARIES})
 target_link_libraries(mutexBasic ${SimGrid_LIBRARY})
+target_link_libraries(mutexBasic ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

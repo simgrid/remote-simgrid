@@ -1,8 +1,8 @@
 #include "rsg/host.hpp"
 #include "../rsg/services.hpp"
-#include "multiThreadedSingletonFactory.hpp"
 
 #include "../common.hpp"
+#include "RsgClient.hpp"
 
 #include <iostream>
 using namespace ::simgrid;
@@ -13,33 +13,35 @@ XBT_LOG_EXTERNAL_CATEGORY(RSG);
 using namespace simgrid;
 
 rsg::Host::Host(const char *name, unsigned long int remoteAddr) {
+    debug_client_print("Creating Host1 %s", name);
 	name_ = simgrid::xbt::string(name);
 	p_remoteAddr = remoteAddr;
 };
 
 rsg::Host::Host(const simgrid::xbt::string name, unsigned long int remoteAddr) {
+    debug_client_print("Creating Host2 %s", name.c_str());
 	name_ = simgrid::xbt::string(name);
 	p_remoteAddr = remoteAddr;
 };
 
 rsg::Host::~Host() {
-    
 }
 
 rsg::HostPtr rsg::Host::current() {
+        debug_client_print("COUCOU");
+        
 	rsgHostCurrentResType res;
-	MultiThreadedSingletonFactory &instance = MultiThreadedSingletonFactory::getInstance();
-	Client& engine = instance.getClient(std::this_thread::get_id());
+        debug_client_print("COUCOU %p", client.host);
 	
-	engine.serviceClientFactory<RsgHostClient>("RsgHost").current(res);
+	client.host->current(res);
+        
+        debug_client_print("COUCOU %s // %lu", res.name.c_str(), res.addr);
 	
 	return HostPtr(new Host(res.name, res.addr)); 
 }
 
 rsg::HostPtr rsg::Host::by_name(std::string name) {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	unsigned long int addr = engine.serviceClientFactory<RsgHostClient>("RsgHost").by_name(name);
+	unsigned long int addr = client.host->by_name(name);
 	if(addr == 0) {
 		xbt_die("No such host: %s", name.c_str());
 	}
@@ -47,71 +49,51 @@ rsg::HostPtr rsg::Host::by_name(std::string name) {
 }
 
 double rsg::Host::speed() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").speed(p_remoteAddr);
+	return client.host->speed(p_remoteAddr);
 }
 
 
 void rsg::Host::turnOn() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	engine.serviceClientFactory<RsgHostClient>("RsgHost").turnOn(p_remoteAddr);
+	client.host->turnOn(p_remoteAddr);
 }
 
 void rsg::Host::turnOff() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	engine.serviceClientFactory<RsgHostClient>("RsgHost").turnOff(p_remoteAddr);
+	client.host->turnOff(p_remoteAddr);
 }
 
 bool rsg::Host::isOn() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").isOn(p_remoteAddr);
+	return client.host->isOn(p_remoteAddr);
 }
 
 double rsg::Host::currentPowerPeak() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").currentPowerPeak(p_remoteAddr);
+	return client.host->currentPowerPeak(p_remoteAddr);
 }
 double rsg::Host::powerPeakAt(int pstate_index) {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").powerPeakAt(p_remoteAddr, pstate_index);
+	return client.host->powerPeakAt(p_remoteAddr, pstate_index);
 }
 
 int rsg::Host::pstatesCount() const {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").pstatesCount(p_remoteAddr);
+	return client.host->pstatesCount(p_remoteAddr);
 }
 
 void rsg::Host::setPstate(int pstate_index) {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").setPstate(p_remoteAddr, pstate_index);
+	return client.host->setPstate(p_remoteAddr, pstate_index);
 }
 
 int rsg::Host::pstate() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").pstate(p_remoteAddr);
+	return client.host->pstate(p_remoteAddr);
 }
 
 int rsg::Host::core_count() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	
-	return engine.serviceClientFactory<RsgHostClient>("RsgHost").core_count(p_remoteAddr);
+	return client.host->core_count(p_remoteAddr);
 }
 
 /** Retrieve the property value (or nullptr if not set) */
 char* rsg::Host::property(const char*key) {
 	std::string res; 
 	char *res_cstr = NULL;
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	engine.serviceClientFactory<RsgHostClient>("RsgHost").getProperty(res, p_remoteAddr, std::string(key).c_str());
+	
+	client.host->getProperty(res, p_remoteAddr, std::string(key).c_str());
 	if(res.size() == 0) {
 		return res_cstr;
 	}
@@ -121,6 +103,5 @@ char* rsg::Host::property(const char*key) {
 }
 
 void rsg::Host::setProperty(const char*key, const char *value){
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-	engine.serviceClientFactory<RsgHostClient>("RsgHost").setProperty(p_remoteAddr, std::string(key), std::string(value));
+	client.host->setProperty(p_remoteAddr, std::string(key), std::string(value));
 }
