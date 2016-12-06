@@ -31,9 +31,9 @@ rsg::HostPtr rsg::Host::current() {
         debug_client_print("COUCOU");
         
 	rsgHostCurrentResType res;
-        debug_client_print("COUCOU %p", client.host);
+        debug_client_print("COUCOU %p", client->host);
 	
-	client.host->current(res);
+	client->host->current(res);
         
         debug_client_print("COUCOU %s // %lu", res.name.c_str(), res.addr);
 	
@@ -41,7 +41,7 @@ rsg::HostPtr rsg::Host::current() {
 }
 
 rsg::HostPtr rsg::Host::by_name(std::string name) {
-	unsigned long int addr = client.host->by_name(name);
+	unsigned long int addr = client->host->by_name(name);
 	if(addr == 0) {
 		xbt_die("No such host: %s", name.c_str());
 	}
@@ -49,43 +49,43 @@ rsg::HostPtr rsg::Host::by_name(std::string name) {
 }
 
 double rsg::Host::speed() {
-	return client.host->speed(p_remoteAddr);
+	return client->host->speed(p_remoteAddr);
 }
 
 
 void rsg::Host::turnOn() {
-	client.host->turnOn(p_remoteAddr);
+	client->host->turnOn(p_remoteAddr);
 }
 
 void rsg::Host::turnOff() {
-	client.host->turnOff(p_remoteAddr);
+	client->host->turnOff(p_remoteAddr);
 }
 
 bool rsg::Host::isOn() {
-	return client.host->isOn(p_remoteAddr);
+	return client->host->isOn(p_remoteAddr);
 }
 
 double rsg::Host::currentPowerPeak() {
-	return client.host->currentPowerPeak(p_remoteAddr);
+	return client->host->currentPowerPeak(p_remoteAddr);
 }
 double rsg::Host::powerPeakAt(int pstate_index) {
-	return client.host->powerPeakAt(p_remoteAddr, pstate_index);
+	return client->host->powerPeakAt(p_remoteAddr, pstate_index);
 }
 
 int rsg::Host::pstatesCount() const {
-	return client.host->pstatesCount(p_remoteAddr);
+	return client->host->pstatesCount(p_remoteAddr);
 }
 
 void rsg::Host::setPstate(int pstate_index) {
-	return client.host->setPstate(p_remoteAddr, pstate_index);
+	return client->host->setPstate(p_remoteAddr, pstate_index);
 }
 
 int rsg::Host::pstate() {
-	return client.host->pstate(p_remoteAddr);
+	return client->host->pstate(p_remoteAddr);
 }
 
 int rsg::Host::core_count() {
-	return client.host->core_count(p_remoteAddr);
+	return client->host->core_count(p_remoteAddr);
 }
 
 /** Retrieve the property value (or nullptr if not set) */
@@ -93,7 +93,7 @@ char* rsg::Host::property(const char*key) {
 	std::string res; 
 	char *res_cstr = NULL;
 	
-	client.host->getProperty(res, p_remoteAddr, std::string(key).c_str());
+	client->host->getProperty(res, p_remoteAddr, std::string(key).c_str());
 	if(res.size() == 0) {
 		return res_cstr;
 	}
@@ -103,5 +103,5 @@ char* rsg::Host::property(const char*key) {
 }
 
 void rsg::Host::setProperty(const char*key, const char *value){
-	client.host->setProperty(p_remoteAddr, std::string(key), std::string(value));
+	client->host->setProperty(p_remoteAddr, std::string(key), std::string(value));
 }

@@ -35,14 +35,13 @@ using namespace ::RsgService;
 
 class RsgClient {
 public:
-    RsgClient();
-    void forceInitialisation(std::string networkName);
+    RsgClient(std::string name);
     ~RsgClient();
 private:
-    void init();
     zmq::context_t ctx;
-    std::string networkName_;
 public:
+    std::string networkName_;
+    TZmqClient* zmqclient_;
     RsgEngineClient* engine;
     RsgActorClient* actor;
     RsgMailboxClient* mailbox;
@@ -52,7 +51,12 @@ public:
     RsgCommClient* comm;
 };
 
-extern thread_local RsgClient client;
+
+/* This variable should always hold a valid client.
+We use a __attribute__((constructor)) to initialize it as soon as possible.
+Then, when a new Actor is created, the first thing to do is to create a new client.
+*/
+extern thread_local RsgClient* client;
 
 
 

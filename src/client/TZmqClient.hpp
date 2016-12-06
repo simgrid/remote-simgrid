@@ -39,8 +39,12 @@ class TZmqClient : public TTransport {
     , name_(name)
   {
     endpoint_ = "ipc:///tmp/rsg.frontend.ipc";
-    debug_client_stream<<"[TZmqClient "<<name_<<"] create @"<<endpoint_<<debug_client_stream_end;
+    debug_client_stream<<"[TZmqClient "<<name_<<"] create @"<<endpoint_<<"   "<<this<<debug_client_stream_end;
     sock_.setsockopt(ZMQ_IDENTITY, name_.c_str(), name_.length());
+  }
+  ~TZmqClient()
+  {
+      debug_client_stream<<"[TZmqClient "<<name_<<"] BYBYE"<<debug_client_stream_end;
   }
 
   void open() {

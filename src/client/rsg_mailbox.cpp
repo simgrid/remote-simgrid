@@ -26,7 +26,7 @@ rsg::MailboxPtr rsg::Mailbox::byName(const char*name) {
 	rsg::MailboxPtr res;
 	
 	try {
-		unsigned long int remoteAddr =  client.mailbox->mb_create(name);
+		unsigned long int remoteAddr =  client->mailbox->mb_create(name);
 		res.reset(new Mailbox(name, remoteAddr));
 		return res;
 	} catch(apache::thrift::transport::TTransportException &ex) {
@@ -45,12 +45,12 @@ void rsg::Mailbox::shutdown() {
 * This models the real behavior of TCP and MPI communications, amongst other.
 */
 void rsg::Mailbox::setReceiver(const rsg::Actor *process) {
-	client.mailbox->setReceiver(p_remoteAddr, process == NULL? -1 : process->p_remoteAddr);
+	client->mailbox->setReceiver(p_remoteAddr, process == NULL? -1 : process->p_remoteAddr);
 }
 
 /** Return the process declared as permanent receiver, or nullptr if none **/
 rsg::Actor* rsg::Mailbox::receiver() {
-	int64_t res = client.mailbox->getReceiver(p_remoteAddr);
+	int64_t res = client->mailbox->getReceiver(p_remoteAddr);
 	if(res == 0) {
 		return NULL;
 	}
@@ -58,5 +58,5 @@ rsg::Actor* rsg::Mailbox::receiver() {
 }
 
 bool rsg::Mailbox::empty() {
-	return client.mailbox->empty(p_remoteAddr);
+	return client->mailbox->empty(p_remoteAddr);
 }

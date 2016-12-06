@@ -99,7 +99,7 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
         // (Perhaps it's a bug from ZeroMq, perhaps it's a bug due to Simgrid...)
         
     
-    debug_server_print("Creating RsgThriftServer for %s", name_.c_str());
+    debug_server_print("Creating RsgThriftServer for %s %p", name_.c_str(), this);
     
         //init server
     shared_ptr<TMultiplexedProcessor> processor(new TMultiplexedProcessor());
@@ -131,11 +131,18 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
         
     }
     
+RsgThriftServer::RsgThriftServer(const RsgThriftServer& other) {
+        debug_server_print("COPPPPPPPPPPPPYYYYYYYYYYYYYYYYYYYY %p", this);
+        assert(false);
+}
+    
 int RsgThriftServer::operator()() {
         
         debug_server_print("Run server for %s", name_.c_str());
         server->serve();
+        debug_server_print("Server returned... %s", name_.c_str());
         delete server;
+        server = 0;
         /*
         FILE *f = fopen("end_fork", "a");
         fprintf(f,"Actor [%d] quit\n", s4u::this_actor::getPid());
@@ -145,5 +152,9 @@ int RsgThriftServer::operator()() {
     }
 
 RsgThriftServer::~RsgThriftServer() {
-    debug_server_print("Quitting RsgThriftServer for %s", name_.c_str());
+    debug_server_print("Quitting RsgThriftServer for %s %p", name_.c_str(), this);
+    /*if(server != 0) {
+        delete server;
+        server = 0;
+    }*/
 }

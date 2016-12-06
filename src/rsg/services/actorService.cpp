@@ -185,7 +185,10 @@ int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t
     
     s4u::Host *host = (s4u::Host*) hostaddr;
     
-    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, RsgThriftServer(lastChildName));
+    debug_server_print("createActor for sgname: %s", name.c_str());
+    
+    //we use a lambda because otherwise simgrid make unwanted copy of the class.
+    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, [&]{RsgThriftServer a = RsgThriftServer(lastChildName); a();});
     unsigned long long newId = pActorMapId++;
     pActors.insert({newId, actor});
     return newId;

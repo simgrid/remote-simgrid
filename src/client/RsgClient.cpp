@@ -1,34 +1,24 @@
 
 
 #include "RsgClient.hpp"
+#include <sys/syscall.h>
 
 #include <thrift/protocol/TMultiplexedProtocol.h>
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 
-thread_local RsgClient client;
+thread_local RsgClient* client;
 
 
-RsgClient::RsgClient()
+RsgClient::RsgClient(std::string name)
     : ctx(1)
-    , networkName_("networkName_NOT_SETTED")
+    , networkName_(name)
+    , zmqclient_(new TZmqClient(ctx, networkName_))
 {
-        char *rpcEnvPort = std::getenv("RsgRpcNetworkName");
-        if(rpcEnvPort == NULL) {
-            //we will do the initialisation later
-            debug_client_print("RSG client creating, need future init");
-            return;
-        }
-        networkName_ = std::string(rpcEnvPort);
-        
-        init();
-}
-
-void RsgClient::init() {
-        debug_client_print("RSG client %s starting", networkName_.c_str());
-        
-        shared_ptr<TZmqClient> transport(new TZmqClient(ctx, networkName_));
+    debug_client_print("RsgClient::RsgClient CONSTRUCTOR %p %s", this, networkName_.c_str());
+       
+        shared_ptr<TZmqClient> transport(zmqclient_);
         shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(transport));
     
         
@@ -42,23 +32,34 @@ void RsgClient::init() {
         
         transport->open();
         debug_client_print("RSG client %s started", networkName_.c_str());
+
 }
 
-void RsgClient::forceInitialisation(std::string networkName) {
-    networkName_ = networkName;
-    init();
-}
+
 
 RsgClient::~RsgClient()
 {
-        delete engine;
+        /*delete engine;
         delete actor;
         delete mailbox;
         delete mutex;
         delete conditionvariable;
         delete host;
-        delete comm;
-        debug_client_print("RSG client %s ended", networkName_.c_str());
+        delete comm;*/
+delete zmqclient_;
+    debug_client_print("RSG client %s ended %p", networkName_.c_str(), this);
+}
+
+
+static void initialize_client(void) __attribute__((constructor));
+void initialize_client(void) {
+    char *rpcEnvPort = std::getenv("RsgRpcNetworkName");
+    assert(rpcEnvPort != NULL);
+    client = new RsgClient(std::string(rpcEnvPort));
+}
+
+static void desinitialize_client(void) __attribute__((destructor));
+void desinitialize_client(void) {
 }
 
 

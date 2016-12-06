@@ -15,18 +15,18 @@
 using namespace ::simgrid;
 
 double rsg::getClock() {
-    return client.engine->getClock();
+    return client->engine->getClock();
 }
 /*
 void rsg::closeConnection() {
-    client.engine->close();
+    client->engine->close();
 }
 
 int rsg::getRpcPort() {
-    return client.engine->getRpcPort();
+    return client->engine->getRpcPort();
 }
 
 void rsg::setKeepAliveOnNextClientDisconnect(bool newValue) {
-    client.engine->setKeepAliveOnNextClientDisconnect(newValue);
+    client->engine->setKeepAliveOnNextClientDisconnect(newValue);
 }
 */

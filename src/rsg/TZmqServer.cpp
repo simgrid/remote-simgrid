@@ -116,7 +116,7 @@ void *TZmqServer::router_thread(void *arg)
                 pthread_create(worker, NULL, worker_thread, (void*)name);
                 worker_queue_pthread.emplace(worker);
                 */
-                zmq::socket_t* backend = new zmq::socket_t(TZmqServer::getContext(), ZMQ_REQ);
+                zmq::socket_t* backend = new zmq::socket_t(TZmqServer::getContext(), ZMQ_PAIR);
                 
                 backend->bind(addr);
                 worker_queue[client_addr] = backend;
@@ -241,6 +241,8 @@ bool TZmqServer::serveOne(int recv_flags) {
 TZmqServer::~TZmqServer() {
     //tell the controller to free resources related to the connection
     
+    debug_server_stream <<"EXITING TZmqServer"<<name_ <<debug_server_stream_end;
+    
     zmq::socket_t controller(TZmqServer::getContext(), ZMQ_REQ);
     controller.connect("inproc://router.inproc");
 
@@ -252,6 +254,7 @@ TZmqServer::~TZmqServer() {
     zmq::message_t repl;
     controller.recv(&repl);
     //     debug_server_stream <<"REPONSE DONE =="<< std::string(static_cast<char*>(repl.data()), repl.size())<<debug_server_stream_end;
+    debug_server_stream <<"EXITING TZmqServer DONE "<<name_ <<debug_server_stream_end;
 }
 
 

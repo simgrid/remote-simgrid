@@ -64,7 +64,7 @@ TODO: add a second frontend for tcp connections.
       boost::shared_ptr<TProcessor> processor, const std::string name, bool* server_exit)
     :  TServer(processor)
     , processor_(processor)
-    , zmq_type_(ZMQ_REP)
+    , zmq_type_(ZMQ_PAIR)
     , sock_(TZmqServer::getContext(), zmq_type_)
     , server_exit_(server_exit)
     , name_(name)
