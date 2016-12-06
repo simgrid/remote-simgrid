@@ -13,6 +13,7 @@
 #include <unordered_map>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
+#include "../RsgThriftServer.hpp"
 
 using namespace ::apache::thrift::server;
 
@@ -52,10 +53,10 @@ namespace simgrid  {
             int64_t forPid(const int32_t pid);
             bool isValideActor(const int64_t remoteAddr);
             int32_t getPPid(const int64_t addr);
-            private :
+        private :
             static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;
             static unsigned long long pActorMapId;
-            std::string lastChildName;
+            RsgThriftServer* lastChildServer;
         };
     }
 }

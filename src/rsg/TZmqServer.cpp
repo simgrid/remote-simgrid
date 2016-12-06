@@ -82,6 +82,7 @@ void *TZmqServer::router_thread(void *arg)
     sockets.push_back({ (void*)controller, 0, ZMQ_POLLIN, 0 });
     
     bool exit_now = false;
+    bool ret;
     
     while (!exit_now) {
         //check coherence
@@ -100,11 +101,11 @@ void *TZmqServer::router_thread(void *arg)
             std::string client_addr = s_recv(frontend);
             {
                 zmq::message_t message;
-                frontend.recv(&message);
+                ret = frontend.recv(&message);assert(ret==true);
                 assert(message.size() == 0);
             }
             zmq::message_t request;
-            frontend.recv(&request);
+            ret = frontend.recv(&request);assert(ret==true);
 
             if( worker_queue.count(client_addr) == 0 ) {
                 std::string addr = std::string("inproc://backend.")+client_addr+".inproc";
@@ -127,7 +128,7 @@ void *TZmqServer::router_thread(void *arg)
             debug_server_stream<<"[ROUTER] sending to: backend~"<<client_addr<<debug_server_stream_end;
             //NOTE for developpers: if the next call is blocking it means that a client (TZmqClient) tries to connect while there is no server (TZmqServer) ready to accept it.
             //Before creating a client (ie. an Actor) always create first the server.
-            worker_queue[client_addr]->send(request);
+            ret = worker_queue[client_addr]->send(request);assert(ret==true);
             debug_server_stream<<"[ROUTER] sending to: backend~"<<client_addr<<" DONE"<<debug_server_stream_end;
         }
         
@@ -146,16 +147,16 @@ void *TZmqServer::router_thread(void *arg)
                 
                 debug_server_stream<<"[ROUTER] recv from backend~"<<client_addr<<debug_server_stream_end;
                 zmq::message_t reply;
-                backend->recv(&reply);
+                ret = backend->recv(&reply);assert(ret==true);
                 
                 debug_server_stream<<"[ROUTER] forward to front~"<<client_addr<<debug_server_stream_end;
                 
                 if(reply.size()==0)
                     continue;
                 
-                s_sendmore(frontend, client_addr);
-                s_sendmore(frontend, "");
-                frontend.send (reply);
+                ret = s_sendmore(frontend, client_addr);assert(ret==true);
+                ret = s_sendmore(frontend, "");assert(ret==true);
+                ret = frontend.send(reply);assert(ret==true);
             }
         }
         
@@ -231,7 +232,7 @@ bool TZmqServer::serveOne(int recv_flags) {
     msg.rebuild(size);
     std::memcpy(msg.data(), buf, size);
         debug_server_stream << "[TZmqServer " << name_ << "] sending: " << size << debug_server_stream_end;
-    (void)sock_.send(msg);
+    bool ret = sock_.send(msg);assert(ret==true);
 
   return true;
 }
@@ -249,10 +250,10 @@ TZmqServer::~TZmqServer() {
     std::string sreq = "CLOSE:"+name_;
     zmq::message_t message(sreq.size());
     memcpy (message.data(), sreq.data(), sreq.size());
-    controller.send (message);
+    bool ret = controller.send (message);assert(ret==true);
 
     zmq::message_t repl;
-    controller.recv(&repl);
+    ret = controller.recv(&repl);assert(ret==true);
     //     debug_server_stream <<"REPONSE DONE =="<< std::string(static_cast<char*>(repl.data()), repl.size())<<debug_server_stream_end;
     debug_server_stream <<"EXITING TZmqServer DONE "<<name_ <<debug_server_stream_end;
 }

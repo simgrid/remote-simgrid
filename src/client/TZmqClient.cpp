@@ -25,7 +25,7 @@ namespace apache { namespace thrift { namespace transport {
 uint32_t TZmqClient::read_virt(uint8_t* buf, uint32_t len) {
   if (rbuf_.available_read() == 0) {
     debug_client_stream<<"[TZmqClient "<<name_<<"] recving"<<debug_client_stream_end;
-    (void)sock_.recv(&msg_);
+    bool ret = sock_.recv(&msg_);assert(ret==true);
     rbuf_.resetBuffer((uint8_t*)msg_.data(), msg_.size());
   }
   return rbuf_.read(buf, len);
@@ -42,7 +42,7 @@ uint32_t TZmqClient::writeEnd() {
   zmq::message_t msg(size);
   std::memcpy(msg.data(), buf, size);
   debug_client_stream<<"[TZmqClient "<<name_<<"] sending"<<debug_client_stream_end;
-  (void)sock_.send(msg);
+  bool ret = sock_.send(msg);assert(ret==true);
   wbuf_.resetBuffer(true);
   return size;
 }

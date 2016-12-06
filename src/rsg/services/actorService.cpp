@@ -7,7 +7,6 @@
 #include <thrift/processor/TMultiplexedProcessor.h>
 
 #include "../services.hpp"
-#include "../RsgThriftServer.hpp"
 #include "../../common.hpp"
 
 using namespace ::apache::thrift;
@@ -42,7 +41,7 @@ void rsg::RsgActorHandler::execute(const double flops) {
 void rsg::RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
     std::string *internalPtr = new std::string(content.data(), content.length());
-    s4u::this_actor::send(mbox, (void*) internalPtr, simulatedSize);   
+    s4u::this_actor::send(mbox, (void*) internalPtr, simulatedSize);
 }
 
 void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
@@ -170,8 +169,8 @@ void rsg::RsgActorHandler::join(const int64_t addr) {
 }
 
 void rsg::RsgActorHandler::createActorPrepare(std::string& _return) {
-    TZmqServer::get_new_endpoint(lastChildName);
-    _return = lastChildName;
+    TZmqServer::get_new_endpoint(_return);
+    lastChildServer = new RsgThriftServer(_return);
 }
 
 int64_t rsg::RsgActorHandler::selfAddr() {
@@ -188,7 +187,7 @@ int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t
     debug_server_print("createActor for sgname: %s", name.c_str());
     
     //we use a lambda because otherwise simgrid make unwanted copy of the class.
-    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, [&]{RsgThriftServer a = RsgThriftServer(lastChildName); a();});
+    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, [&]{ (*lastChildServer)();});
     unsigned long long newId = pActorMapId++;
     pActors.insert({newId, actor});
     return newId;

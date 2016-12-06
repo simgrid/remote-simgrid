@@ -78,9 +78,10 @@ TODO: add a second frontend for tcp connections.
   bool serveOne(int recv_flags = 0);
   void serve() {
     bool ret = true;
-    while(!(*server_exit_) && ret)
+    while(!(*server_exit_) && ret) {
         ret = serveOne();
-    //TODO: raise exception if ret!=true?
+        assert(ret==true);
+    }
   }
 
   zmq::socket_t& getSocket() {
