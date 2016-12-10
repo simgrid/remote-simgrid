@@ -1,11 +1,21 @@
-# Try to find the SimGrid library. 
+# Cmake macro to search for the SimGrid library. 
+
+# Copyright (c) 2016. The SimGrid Team (version 20161210).
 #
+# This file is free software; you can redistribute it and/or modify it
+# under the terms of the license (GNU LGPL) which comes with this package.
+
 # The user can hint a path using the SimGrid_PATH option.
 #
 # Once done, the following will be defined:
 #  
-#  SimGrid_INCLUDE_DIRS - the SimGrid include directories
-#  SimGrid_LIBRARIES - link these to use SimGrid
+#  SimGrid_INCLUDE_DIR - the SimGrid include directories
+#  SimGrid_LIBRARY - link your simulator against it to use SimGrid
+#
+# Afterward, you should probably do the following:
+#
+#  include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
+#  target_link_libraries(your-simulator ${SimGrid_LIBRARY})
 #
 # This could be improved in many ways (patches welcome):
 #  - Not finding SimGrid is fatal. But who would want to 
@@ -46,3 +56,5 @@ endif ("${_SimGrid_CONFIG_H_CONTENTS}" MATCHES "${_SimGrid_VERSION_REGEX}")
   
 
 message("-- SimGrid found in ${SimGrid_PATH} (version ${SimGrid_VERSION})")
+
+
