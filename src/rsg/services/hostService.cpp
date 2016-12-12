@@ -85,7 +85,7 @@ int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
 //FIXME Change the name core_count -> pstatesCount 
 int32_t rsg::RsgHostHandler::core_count(const int64_t addr) {
     s4u::Host *host = (s4u::Host*) addr;
-    return host->pstatesCount();
+    return host->coreCount();
 }
 
 void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {
