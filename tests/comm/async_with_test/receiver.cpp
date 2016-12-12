@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   char *message = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Async Received : %s with size of %d ", message, (int) strlen(message));
+  XBT_INFO("Async Received : %s with size of %lu", message, strlen(message));
   
   
   rsg::Comm &comm2 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
   
 
   comm2.wait();
-  XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
+  XBT_INFO("Async Received : %s with size of %lu", buffer, strlen(buffer));
   
   free(buffer);
   buffer = NULL;
@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
     XBT_INFO("Nothing yet , just wait !");
   }
   
-  XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
+  XBT_INFO("Async Received : %s with size of %lu", buffer, strlen(buffer));
   
   free(buffer);
   buffer = NULL;
@@ -52,7 +52,7 @@ int main(int argc, char **argv) {
   rsg::this_actor::execute(8095000000 * 2);
 
   comm4.wait();
-  XBT_INFO("Async Received : %s with size of %d ", buffer, strlen(buffer));
+  XBT_INFO("Async Received : %s with size of %lu", buffer, strlen(buffer));
   
   rsg::this_actor::quit();
   return 0;

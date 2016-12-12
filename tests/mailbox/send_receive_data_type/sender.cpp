@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
   // char*
   const char *msg = "Do you copy ? ";
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
   
   //int 
   int intMsg = -808080;

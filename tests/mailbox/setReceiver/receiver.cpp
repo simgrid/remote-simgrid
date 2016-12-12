@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
   rsg::this_actor::sleep(1);
 
   mbox->setReceiver(nullptr);
-  XBT_INFO("Received from client : %s with size of %d", received, strlen(received) );
+  XBT_INFO("Received from client : %s with size of %lu", received, strlen(received) );
   rsg::this_actor::quit();
   return 0;
 }

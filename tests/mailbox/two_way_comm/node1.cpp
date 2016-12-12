@@ -16,22 +16,22 @@ using namespace ::simgrid;
 using boost::shared_ptr;
 
 int main(int argc, char **argv) {
-  const char *msg = "Do you copy ? ";
+  const char *msg = "Do you copy ?";
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
   
   char *rec;
   rec = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received -> %s ", rec);
+  XBT_INFO("Received -> %s", rec);
 
   rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
   rsg::this_actor::send(*fooMb, msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
 
   char *fooRec;
   fooRec = rsg::this_actor::recv(*fooMb);
-  XBT_INFO("Received -> %s ", fooRec);
+  XBT_INFO("Received -> %s", fooRec);
 
   rsg::this_actor::quit();
   return 0;

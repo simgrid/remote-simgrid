@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
         XBT_INFO("no receiver on mb with name : fake");
     }
     XBT_INFO("pid of receiver : %d", receiver->getPid());
-    XBT_INFO("send %s with size : %d", msg, strlen(msg));
+    XBT_INFO("send %s with size : %lu", msg, strlen(msg));
     delete receiver;
 
     rsg::this_actor::sleep(10);
