@@ -91,7 +91,7 @@ service RsgHost   {
     i32 pstatesCount(1:i64 addr)
     void setPstate(1:i64 addr, 2:i32 pstate_index)
     i32 pstate(1:i64 addr)
-    i32 core_count(1:i64 addr)
+    i32 coresCount(1:i64 addr)
     string getProperty(1:i64 remoteAddr, 2:string key)
     void setProperty(1:i64 remoteAddr, 2:string key, 3:binary data)
 }
