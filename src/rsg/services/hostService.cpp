@@ -82,9 +82,9 @@ int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
 }
 
 
-int32_t rsg::RsgHostHandler::coresCount(const int64_t addr) {
+int32_t rsg::RsgHostHandler::coreCount(const int64_t addr) {
     s4u::Host *host = (s4u::Host*) addr;
-    return host->coresCount();
+    return host->coreCount();
 }
 
 void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {

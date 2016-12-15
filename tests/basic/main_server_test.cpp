@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
 
   XBT_INFO("hostname : %s", rsg::Host::current()->name().c_str());
 
-  XBT_INFO("core count : %d", host->coresCount());
+  XBT_INFO("core count : %d", host->coreCount());
   XBT_INFO("state count %d", host->pstatesCount());
   XBT_INFO("state -> %d", host->pstate());
 

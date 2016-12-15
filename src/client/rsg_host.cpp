@@ -84,8 +84,8 @@ int rsg::Host::pstate() {
 	return client->host->pstate(p_remoteAddr);
 }
 
-int rsg::Host::coresCount() {
-	return client->host->coresCount(p_remoteAddr);
+int rsg::Host::coreCount() {
+	return client->host->coreCount(p_remoteAddr);
 }
 
 /** Retrieve the property value (or nullptr if not set) */

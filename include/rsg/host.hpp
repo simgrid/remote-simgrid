@@ -33,7 +33,7 @@ namespace simgrid {
             simgrid::xbt::string const& name() const { return name_; }
             static Ptr by_name(std::string name);
             static Ptr current();
-            int coresCount();
+            int coreCount();
             void turnOn();
             void turnOff();
             bool isOn();
