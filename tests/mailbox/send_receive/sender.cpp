@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
   const char *msg = "Do you copy ? ";
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
   rsg::this_actor::quit();
   return 0;
 }

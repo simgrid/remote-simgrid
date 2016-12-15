@@ -18,7 +18,7 @@ using boost::shared_ptr;
 int main(int argc, char **argv) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+  XBT_INFO("Received from client : %s with size of %lu", received, strlen(received) );
   
   const char * sendMessage = "Ok";
   rsg::this_actor::send(*mbox, sendMessage, strlen(sendMessage) + 1);

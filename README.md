@@ -53,6 +53,16 @@ make
 [sudo] make install
 ```
 
+- Install [zeromq](http://zeromq.org/intro:get-the-software) 
+```bash
+wget https://github.com/zeromq/libzmq/releases/download/v4.2.0/zeromq-4.2.0.tar.gz
+tar xvf zeromq-4.2.0.tar.gz
+(cd zeromq-4.2.0.tar && ./configure && make install) #You may need to be logged with root privileges.
+# Once zeromq is installed, you need to get the c++ binding.
+git clone https://github.com/zeromq/cppzmq
+(cd cppzmq && mv cp *.hpp /usr/local/include/)
+```
+
 
 - Install the S4U branch of [SimGrid](http://simgrid.org/) (which in
   turn depends on Boost). S4U is a preview of the future SimGrid v4.

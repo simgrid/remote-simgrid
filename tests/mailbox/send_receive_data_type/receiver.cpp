@@ -20,14 +20,14 @@ using namespace ::simgrid;
 int main(int argc, char **argv) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received : %s with size of %d ", received, strlen(received) );
+  XBT_INFO("Received : %s with size of %lu", received, strlen(received) );
   
   int *recInt = (int*) rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received : %d ", *recInt);
+  XBT_INFO("Received : %d", *recInt);
   free(recInt);
   
   recInt = (int*) rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received : %d ", *recInt);
+  XBT_INFO("Received : %d", *recInt);
   
   int *recTabInt;
   recTabInt = (int*) rsg::this_actor::recv(*mbox);

@@ -24,7 +24,7 @@ using namespace ::simgrid;
 int actor(void *) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+  XBT_INFO("Received from client : %s with size of %lu ", received, strlen(received) );
   XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
   rsg::this_actor::sleep(99.999999);
   rsg::this_actor::quit();
@@ -37,10 +37,10 @@ int main(int argc, char **argv) {
 
   rsg::Actor *act = rsg::Actor::createActor("receiver" , host1 , actor, NULL);
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
-  XBT_INFO("I'll send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("I'll send %s with size : %lu", msg, strlen(msg));
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %d", msg, strlen(msg));
+  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
   
   XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
   

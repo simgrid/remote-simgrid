@@ -24,7 +24,7 @@ using namespace ::simgrid;
 int actor(void *) {
   XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
   XBT_INFO("My ppid is  : %d",rsg::this_actor::getPPid());
-
+  rsg::this_actor::sleep(1);
   rsg::this_actor::quit();
   return 1;
 }
@@ -38,8 +38,14 @@ int main(int argc, char **argv) {
   XBT_INFO("My ppid is  : %d",rsg::this_actor::getPPid());
   
   rsg::Actor *getByPid = rsg::Actor::forPid(act->getPid());
-  getByPid->join();
-  XBT_INFO("getName  : %s", getByPid->getName());
+  if(getByPid) {
+    XBT_INFO("getName  : %s", getByPid->getName());
+    getByPid->join();
+  } else {
+    act->join();
+    XBT_INFO("No actor with pid :%d could be found", act->getPid());
+  }
+
   XBT_INFO("Main end at : %f", rsg::getClock());
 
   rsg::this_actor::quit();

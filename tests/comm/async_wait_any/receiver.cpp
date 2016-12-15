@@ -18,7 +18,8 @@ using namespace ::simgrid;
 
 int Worker(void* arg) {
   int *msg = (int*) malloc(sizeof(int));
-  *msg = *(int*) arg * 10;
+  int arg_int = (*(int*) arg);
+  *msg = (arg_int + 1) * 10;
   rsg::this_actor::sleep(1);
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("test");
   rsg::this_actor::send(*mbox, (char*) msg, sizeof(int));
@@ -27,17 +28,23 @@ int Worker(void* arg) {
   return 0;
 }
 
+/*
+ * This test test the wait_any function.
+ * It creates a pool of actors and a new comm for each one. Each actor will send a sync on the 
+ */
 int main(int argc, char **argv) {
   int *mboxbuff[10];
   std::vector<rsg::Comm*> comms;
   rsg::MailboxPtr mb = rsg::Mailbox::byName("test");
-
+  
+  //We create a pool of actor, and we associate to each a new Comm.
   for(int i = 0 ; i <  nbWorker; i++) {    
+
     rsg::Comm *comm = &rsg::Comm::recv_init(*mb);
     comm->setDstData((void**)&(mboxbuff[i]), sizeof(void*));
     comms.push_back(comm);
     comm->start();
-    
+
     rsg::Actor::createActor("worker", rsg::Host::by_name("host1"), Worker, (void*) &i);
   }
   
@@ -53,6 +60,7 @@ int main(int argc, char **argv) {
   
   for(int i = 0 ; i <  nbWorker; i++) {    
     printf("%d\n", *mboxbuff[i]);
+    free(mboxbuff[i]);
   }
   
   rsg::this_actor::quit();

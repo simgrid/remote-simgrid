@@ -8,7 +8,7 @@ project (RemoteSimGrid C CXX)
 
 #To enable pthread
 # I found a similar issue here : https://github.com/potree/PotreeConverter/issues/136
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -lstdc++ -lm -DDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -DDEBUG")
 set (RSG_INSTALL_DIR "/opt/remote-simgrid")
 
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
@@ -63,8 +63,9 @@ endif()
 include_directories(${THRIFT_INCLUDE_DIRS})
 include_directories(${THRIFT_GEN_INCLUDE_DIR})
 
-set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
+# set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")
+# set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
+
 include_directories(include)
 
 enable_testing()

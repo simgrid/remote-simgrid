@@ -1,9 +1,10 @@
 ! ignore ^Thrift:.*
+! output sort 19
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : Do you copy ?  with size of 14 
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : -808080 
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : 12 
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : Do you copy ?  with size of 14
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : -808080
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received : 12
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO]  tab[0] = 0
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO]  tab[1] = 1
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO]  tab[2] = 4

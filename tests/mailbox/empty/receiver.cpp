@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
   XBT_INFO("receiver : is the mb empty : %s", mbox->empty()?"true":"false");
   char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("receiver : is the mb empty after recv : %s", mbox->empty()?"true":"false");
-  XBT_INFO("Received from client : %s with size of %d ", received, strlen(received) );
+  XBT_INFO("Received from client : %s with size of %lu", received, strlen(received) );
   rsg::this_actor::quit();
   return 0;
 }
