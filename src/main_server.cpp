@@ -43,6 +43,8 @@ static int rsg_representative(int argc, char **argv) {
     
     debug_server_print("STARTING %s", name.c_str());
     
+    RsgThriftServer srv(name);
+    
     // We fork the actor process
     pid_t pid = fork();
     if (! pid) {
@@ -64,7 +66,6 @@ static int rsg_representative(int argc, char **argv) {
     }
     debug_server_print("Child started at pid %i", pid);
 
-    RsgThriftServer srv(name);
     srv();
     
     debug_server_print("END");
@@ -94,7 +95,7 @@ int main(int argc, char **argv) {
     e->loadDeployment(argv[2]);
     e->run();
     
-    //wait for the router to clsoe cleanly
+    //wait for the router to close cleanly
     pthread_join(router, 0);
     return 0;
 }

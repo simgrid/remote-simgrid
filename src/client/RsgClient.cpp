@@ -60,6 +60,7 @@ void initialize_client(void) {
 
 static void desinitialize_client(void) __attribute__((destructor));
 void desinitialize_client(void) {
+        debug_client_print("A RSG client process exited");
 }
 
 

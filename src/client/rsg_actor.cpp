@@ -15,16 +15,21 @@
 #include <sys/wait.h> 
 #include <string>
 #include <iostream>
-#include <unordered_set>
+#include <unordered_map>
+#include <sys/syscall.h>
+#include <stack>
+#include <mutex>
 
 using namespace ::simgrid;
 
 //For Developpers: if you add a global variable, check the fork methods and add the appropriate code.
 
 //TODO: David: is this struct realy useful ?
-std::unordered_set<size_t> deconnected_threads;
+// std::unordered_set<size_t> deconnected_threads;
 
-std::unordered_set<std::thread*> child_threads;
+//TODO: This set can become quite big because we never remove ended threads.
+std::unordered_map<std::thread::id, std::thread*> child_threads;
+std::mutex child_threads_mutex;
 
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
@@ -57,6 +62,28 @@ void rsg::this_actor::quit(void) {
     delete client;
     client = 0;
    debug_spawn_client("quitted !! %p", client);
+   
+   //if we are the root thread
+   if(syscall(SYS_gettid) == getpid()) {
+       debug_spawn_client("ROOT THREAD: wait for all children");
+       
+       std::unordered_map<std::thread::id, std::thread*>::size_type s;
+       do {
+        child_threads_mutex.lock();
+        s = child_threads.size();
+        if(s == 0) {
+            child_threads_mutex.unlock();
+            break;
+        }
+        std::thread* th = child_threads.begin()->second;
+        std::thread::id id = child_threads.begin()->first;
+        child_threads_mutex.unlock();
+        //each thread is responsible for removing itslef from child_threads
+        debug_client_stream << "JOINING " << th <<"  "<< id<<debug_client_stream_end;
+        th->join();
+        s--;
+       } while(s!=0);
+   }
   /* }*/
 }
 
@@ -137,9 +164,47 @@ rsg::Actor* rsg::Actor::forPid(int pid) {
         return new Actor(addr);
 }
 
+
+//from http://stackoverflow.com/questions/20112221/invoking-a-function-automatically-on-stdthread-exit-in-c11
+void on_thread_exit(std::function<void()> func)
+{
+  class ThreadExiter
+  {
+    std::stack<std::function<void()>> exit_funcs;
+  public:
+    ThreadExiter() = default;
+    ThreadExiter(ThreadExiter const&) = delete;
+    void operator=(ThreadExiter const&) = delete;
+    ~ThreadExiter()
+    {
+      while(!exit_funcs.empty())
+      {
+        exit_funcs.top()();
+        exit_funcs.pop();
+      }
+    }
+    void add(std::function<void()> func)
+    {
+      exit_funcs.push(std::move(func));
+    }   
+  };
+
+  thread_local ThreadExiter exiter;
+  exiter.add(std::move(func));
+}
+
+void remove_from_child_threads() {
+    child_threads_mutex.lock();
+    child_threads.erase(std::this_thread::get_id());
+    child_threads_mutex.unlock();
+}
+
 void actorRunner(std::function<int(void *)> code, std::string networkName, void *data ) {
     //as client is thread_local, it is a fresh client here. So, we init it:
     client = new RsgClient(networkName);
+    
+    //wwhen the *REAL* thread exit we want to remove it from child_threads
+    on_thread_exit(remove_from_child_threads);
     
     int pid = rsg::this_actor::getPid();
 
@@ -163,7 +228,9 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::fu
     client->actor->createActorPrepare(networkName);
     
     std::thread *nActor = new std::thread(actorRunner, code, networkName, data);
-    child_threads.insert(nActor);
+    child_threads_mutex.lock();
+    child_threads.insert({nActor->get_id() , nActor});
+    child_threads_mutex.unlock();
     unsigned long int addr = client->actor->createActor(name, host->p_remoteAddr, 10);//TODO:David: why 10?
     rsg::Actor *act = new Actor(addr);
     
@@ -209,9 +276,10 @@ int rsg::this_actor::fork(std::string childName) {
         client = new RsgClient(networkName);
         
         debug_spawn_client("[child] FORK go");
-        deconnected_threads.clear();
-        debug_spawn_client("[child] FORK go");
+//         deconnected_threads.clear();
+//         debug_spawn_client("[child] FORK go");
         child_threads.clear();
+        //TODO: do we have to do something to child_threads_mutex ?
         debug_spawn_client("[child] FORK go");
         
         return 0;
