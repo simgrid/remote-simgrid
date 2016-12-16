@@ -8,5 +8,6 @@
 #include "services/mailboxService.hpp"
 #include "services/conditionVariableService.hpp"
 #include "services/mutexService.hpp"
+#include "services/KVSService.hpp"
 
 #endif /* _RSG_SERVICE_ */ 
