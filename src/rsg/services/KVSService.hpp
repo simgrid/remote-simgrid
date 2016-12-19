@@ -17,29 +17,42 @@ using namespace ::simgrid;
 #include "RsgKVS.h"
 
 #include <iostream>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 
 using boost::shared_ptr;
 
 using namespace  ::RsgService;
+
 namespace simgrid  {
-    namespace rsg {
+  namespace rsg {
+    /**
+     * This class is a singleton, so It is easier to load data from a file once without haveing dynamics checks.
+     * NOTE: I am willing to discuss to find a better solution than a singleton.
+     */
+    class RsgKVSHandler : virtual public RsgKVSIf {
+    public:
+      static shared_ptr<RsgKVSHandler> getInstance();
 
-class RsgKVSHandler : virtual public RsgKVSIf {
- public:
-    RsgKVSHandler() {
-      // Your initialization goes here
-    }
+      void get(std::string& _return, const std::string& key);
+      void remove(const std::string& key);
+      void replace(const std::string& key, const std::string& data);
+      void insert(const std::string& key, const std::string& data);
 
-    void get(std::string& _return, const std::string& key);
-    void remove(const std::string& key);
-    void replace(const std::string& key, const std::string& data);
-    void insert(const std::string& key, const std::string& data);
+      void take_lock();
+      void release_lock();
 
-  private:
-    static std::unordered_map<std::string, std::string> store;
-};
+      ~RsgKVSHandler();
 
-  }
-}
+    private:
+      static shared_ptr<RsgKVSHandler> instance;
+      std::mutex sync;
+
+      std::unordered_map<std::string, std::string> store;
+      RsgKVSHandler();
+  };
+
+
+  } /* namespace rsg */ 
+} /* namespace simgrid */ 

@@ -117,4 +117,7 @@ service RsgKVS   {
     void replace(1:string key, 2:binary data)
     void remove(1:string key)
     binary get(1:string key)
+
+    void take_lock()
+    void release_lock()
 }
