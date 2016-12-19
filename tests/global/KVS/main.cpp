@@ -23,6 +23,17 @@ int actor(void *) {
   rsg::kvs::get(value, key);
   XBT_INFO("Retrieved value from KVS : %s", value.c_str());
 
+  //We also try to get pre loaded values
+  std::string preloaded_key("key_example");
+  std::string preloaded_value;
+  rsg::kvs::get(preloaded_value, preloaded_key);
+  XBT_INFO("Retrieved preloaded value from KVS : %s", preloaded_value.c_str());
+
+  //We also try another to get pre loaded values
+  preloaded_key = "k";
+  rsg::kvs::get(preloaded_value, preloaded_key);
+  XBT_INFO("Retrieved preloaded value from KVS : %s", preloaded_value.c_str());
+
   //We update the key
   std::string new_value("univers");
   rsg::kvs::replace(key, new_value);
@@ -56,6 +67,7 @@ int main(int argc, char **argv) {
 
   //Remove it again ?
   rsg::kvs::remove(key);
+
 
   rsg::this_actor::quit();
   return 0;

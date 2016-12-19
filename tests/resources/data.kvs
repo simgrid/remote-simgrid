@@ -1,0 +1,10 @@
+#This is an example file for the built-in KVS store.
+#The key value are presented as a series of string separated by a space.
+#NOTE That the values will not been removed of its trailing spaces.
+
+#TODO: Neither the key nor the value can be composed of a space, unless we implement an escape system. 
+
+#Any line begining with `#` will be ignored (Hence your key cannot begin with #)
+ip/10.0.01 host0
+key_example value_example
+k v

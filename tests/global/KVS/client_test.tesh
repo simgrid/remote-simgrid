@@ -1,5 +1,7 @@
 ! ignore ^Thrift:.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Retrieved value from KVS : WORLD!
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Retrieved preloaded value from KVS : value_example
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Retrieved preloaded value from KVS : v
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Retrieved updated value from KVS : univers
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Retrieved deleted value from KVS : 
