@@ -25,7 +25,7 @@ using boost::shared_ptr;
 using namespace  ::RsgService;
 namespace simgrid  {
     namespace rsg {
-        
+
 class RsgKVSHandler : virtual public RsgKVSIf {
  public:
     RsgKVSHandler() {

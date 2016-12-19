@@ -27,13 +27,18 @@ void rsg::RsgKVSHandler::get(std::string& _return, const std::string& key) {
 }
 
 void rsg::RsgKVSHandler::remove(const std::string& key) {
-  // Your implementation goes here
-  printf("remove\n");
+  rsg::RsgKVSHandler::store.erase(key);
 }
 
 void rsg::RsgKVSHandler::replace(const std::string& key, const std::string& data) {
-  // Your implementation goes here
-  printf("replace\n");
+  //Please note that insert wont insert your value if the key already exists in the map, (use replace instead).
+  auto it = RsgKVSHandler::store.find(key);
+  if(it != RsgKVSHandler::store.end()) {
+      it->second = std::string(data);
+  } else {
+    std::pair<std::string, std::string> pair(key, data);
+    rsg::RsgKVSHandler::store.insert(pair);
+  }
 }
 
 void rsg::RsgKVSHandler::insert(const std::string& key, const std::string& data) {
