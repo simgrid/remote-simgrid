@@ -43,7 +43,7 @@ namespace simgrid  {
             void killAll();
             void kill(const int64_t mbAddr);
             void join(const int64_t addr);
-            void killPid(const int32_t pid);
+            int32_t killPid(const int32_t pid);
             int64_t selfAddr();
             int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
             void createActorPrepare(std::string& _return);

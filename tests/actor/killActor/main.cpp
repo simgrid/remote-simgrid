@@ -71,6 +71,5 @@ int main(int argc, char **argv) {
   
   rsg::Actor::kill(-1);
   rsg::this_actor::quit();
-  printf("YOU CAN'T SEE ME!\n");
   return 0; 
 }

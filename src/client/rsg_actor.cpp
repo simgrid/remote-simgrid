@@ -43,7 +43,11 @@ void rsg::Actor::kill() {
 }
 
 void rsg::Actor::kill(int pid) {
-    client->actor->killPid(pid);
+    int ret = client->actor->killPid(pid);
+    if(ret != 0) {
+        std::cerr << "kill: ("<< pid <<") - No such process" << std::endl;
+        //throw std::runtime_error(oss.str());
+    }
 }
 
 void rsg::Actor::join(void) {

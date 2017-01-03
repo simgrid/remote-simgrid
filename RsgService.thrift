@@ -34,7 +34,7 @@ service RsgActor    {
     string recv(1:i64 mbAddr)
     void close()
     void kill(1:i64 mbAddr)
-    void killPid(1:i32 pid)
+    i32 killPid(1:i32 pid)
     void join(1:i64 addr)
     string getName(1:i64 addr)
     rsgHostCurrentResType getHost(1:i64 addr)
