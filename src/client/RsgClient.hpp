@@ -26,6 +26,7 @@
 #include "RsgConditionVariable.h"
 #include "RsgHost.h"
 #include "RsgComm.h"
+#include "RsgKVS.h"
 
 using namespace ::apache::thrift::protocol;
 using apache::thrift::transport::TZmqClient;
@@ -49,6 +50,7 @@ public:
     RsgConditionVariableClient* conditionvariable;
     RsgHostClient* host;
     RsgCommClient* comm;
+    RsgKVSClient* kvs;
 };
 
 
@@ -57,8 +59,5 @@ We use a __attribute__((constructor)) to initialize it as soon as possible.
 Then, when a new Actor is created, the first thing to do is to create a new client.
 */
 extern thread_local RsgClient* client;
-
-
-
 
 #endif /* SRC_RSGCLIENT_HPP_ */
