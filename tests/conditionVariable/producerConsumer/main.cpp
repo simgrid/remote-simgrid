@@ -44,7 +44,7 @@ static int Worker(void *params)
   XBT_INFO("worker begin...");
   
   // Generate a random number to compute
-  int gen = (1 + rand() % 10);
+  int gen = 1;
   int waitFor = gen * 2500000;
   
   // Compute it
@@ -97,8 +97,10 @@ static int Main(void *)
   {
     while(params->allComplete != NB_WORKER) { 
       std::unique_lock<simgrid::rsg::Mutex> lock(g_lock);
-      params->g_signal->wait(&g_lock);
-      rsg::this_actor::sleep(0.1);  
+      if(params->allComplete != NB_WORKER) {
+        params->g_signal->wait(&g_lock);
+        rsg::this_actor::sleep(0.1);
+      }
     }
   }
   

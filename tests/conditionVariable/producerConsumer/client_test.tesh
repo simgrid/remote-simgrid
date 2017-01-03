@@ -1,4 +1,5 @@
 ! ignore ^Thrift:.*
+! output sort
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] main running...
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker begin...
@@ -16,21 +17,21 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 3] 7500000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 3] 7500000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 4] 10000000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 6] 15000000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 6] 15000000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 7] 17500000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 8] 20000000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 9] 22500000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 1] 2500000
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] main finished...
 
