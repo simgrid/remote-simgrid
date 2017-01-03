@@ -62,7 +62,7 @@ static int Worker(void *params)
 
   // Then notify a waitng thread
   cons.g_lock->unlock();
-  cons.g_signal->notify();
+  cons.g_signal->notify_one();
   // cons.g_lock->unlock();
   rsg::this_actor::quit();  
   return 0;

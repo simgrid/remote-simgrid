@@ -23,7 +23,7 @@ namespace simgrid  {
             void conditionVariableDestroy(const int64_t remoteAddr);
             void wait(const int64_t remoteAddr, const int64_t mutex);
             rsgConditionVariableStatus::type wait_for(const int64_t remoteAddr, const int64_t mutex, const double timeout);
-            void notify(const int64_t remoteAddr);
+            void notify_one(const int64_t remoteAddr);
             void notify_all(const int64_t remoteAddr);
             
         private:

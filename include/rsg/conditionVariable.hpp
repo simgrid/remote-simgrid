@@ -29,7 +29,7 @@ namespace simgrid {
             /**
             * Notify functions
             */
-            void notify();
+            void notify_one();
             void notify_all();
             
             void destroy();

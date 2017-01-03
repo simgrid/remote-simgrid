@@ -74,7 +74,7 @@ service RsgConditionVariable {
     void conditionVariableDestroy(1:i64 remoteAddr)
     void wait(1:i64 remoteAddr, 2:i64 mutexAddr)
     rsgConditionVariableStatus wait_for(1:i64 remoteAddr, 2:i64 mutexAddr, 3:double timeout)
-    void notify(1:i64 remoteAddr)
+    void notify_one(1:i64 remoteAddr)
     void notify_all(1:i64 remoteAddr)
 }
 

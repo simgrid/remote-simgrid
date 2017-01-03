@@ -40,8 +40,8 @@ std::cv_status rsg::ConditionVariable::wait_for(rsg::Mutex *mutex, double timeou
 /**
 * Notify functions
 */
-void rsg::ConditionVariable::notify() {
-    client->conditionvariable->notify(this->p_remoteAddr);
+void rsg::ConditionVariable::notify_one() {
+    client->conditionvariable->notify_one(this->p_remoteAddr);
 }
 
 void rsg::ConditionVariable::notify_all() {

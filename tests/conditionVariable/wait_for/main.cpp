@@ -58,7 +58,7 @@ static int Worker(void *params)
     // Then notify a waitng thread
     XBT_INFO("before notify");
     
-    cons.g_signal->notify();
+    cons.g_signal->notify_one();
     XBT_INFO("after notify");
   }
   rsg::this_actor::quit();  

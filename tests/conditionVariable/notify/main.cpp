@@ -93,7 +93,7 @@ int main(int argc, char **argv) {
     rsg::this_actor::sleep(1);  
     std::unique_lock<simgrid::rsg::Mutex> lock(*(params->g_lock));
     // Then notify a waitng thread
-    params->g_signal->notify();
+    params->g_signal->notify_one();
   }
 
   XBT_INFO("main finished [%d]", rsg::this_actor::getPid());
