@@ -25,23 +25,31 @@ int main(int argc, char **argv) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   char *buffer = NULL;
+  {
   rsg::Comm &comm = rsg::Comm::recv_init(*mbox);
   comm.setDstData((void**)&buffer);
   comm.start();
   comm.wait();
+  }
   XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
-  
+
   free(buffer);
   buffer = NULL;
-  
+
   int *nbElement = NULL;
-  comm = rsg::Comm::recv_async(*mbox, (void**)&nbElement);
+
+  {
+  rsg::Comm &comm = rsg::Comm::recv_async(*mbox, (void**)&nbElement);
   comm.wait();
+  }
+
   XBT_INFO("I will receive an array of %d elem ", *nbElement);
   
   int *array = NULL;
-  comm = rsg::Comm::recv_async(*mbox, (void**)&array);
+  {
+  rsg::Comm &comm = rsg::Comm::recv_async(*mbox, (void**)&array);
   comm.wait();
+  }
   for(int i = 0 ; i < *nbElement; i++) {
     XBT_INFO("array[%d] = %d ", i, array[i]);
   }
@@ -50,9 +58,10 @@ int main(int argc, char **argv) {
   free(array);
   
   structMsg *recStruct = NULL;
-  comm = rsg::Comm::recv_async(*mbox, (void**)&recStruct);
+  {
+  rsg::Comm &comm = rsg::Comm::recv_async(*mbox, (void**)&recStruct);
   comm.wait();
-  
+  }
   XBT_INFO(" recStruct->intMsg = %d", recStruct->intMsg);
   XBT_INFO(" recStruct->msg = %s", recStruct->msg);
 

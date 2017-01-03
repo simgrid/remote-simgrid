@@ -24,21 +24,28 @@ int main(int argc, char **argv) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   const char *msg = "Do you copy ? ";
+  {
   rsg::Comm &comm = rsg::Comm::send_init(*mbox);
   comm.setSrcData((void*)msg, strlen(msg) + 1);
   comm.start();
   comm.wait();
-  
+  }
   int nbElem = 18;
-  comm = rsg::Comm::send_async(*mbox, (void*) &nbElem, sizeof(int));
+  {
+  rsg::Comm &comm = rsg::Comm::send_async(*mbox, (void*) &nbElem, sizeof(int));
   comm.wait();
+  }
+  
   
   int array[18];
   for(int i = 0; i < 18; i++) {
     array[i] = i * i;
   }
-  comm = rsg::Comm::send_async(*mbox, (void*) &array, sizeof(int) * 18);
+
+  {
+  rsg::Comm &comm = rsg::Comm::send_async(*mbox, (void*) &array, sizeof(int) * 18);
   comm.wait();
+  }
   
   structMsg strctMsg;
   strctMsg.intMsg = 123456789;
@@ -49,8 +56,10 @@ int main(int argc, char **argv) {
   strctMsg.msg[4] = 'o';
   strctMsg.msg[5] = 'g';
   strctMsg.msg[6] = '\0';
-  comm = rsg::Comm::send_async(*mbox, (void*) &strctMsg, sizeof(structMsg));
+  {
+  rsg::Comm &comm = rsg::Comm::send_async(*mbox, (void*) &strctMsg, sizeof(structMsg));
   comm.wait();
+  }
 
   rsg::this_actor::quit();  
   return 0;
