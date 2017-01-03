@@ -143,6 +143,7 @@ int RsgThriftServer::operator()() {
         debug_server_print("Server returned... %s", name_.c_str());
         delete server;
         server = 0;
+        debug_server_print("End of the operator () for %s", name_.c_str());
         /*
         FILE *f = fopen("end_fork", "a");
         fprintf(f,"Actor [%d] quit\n", s4u::this_actor::getPid());
@@ -152,9 +153,9 @@ int RsgThriftServer::operator()() {
     }
 
 RsgThriftServer::~RsgThriftServer() {
-    debug_server_print("Quitting RsgThriftServer for %s %p", name_.c_str(), this);
-    /*if(server != 0) {
+    debug_server_print("Quitting RsgThriftServer for %s %p %p", name_.c_str(), this, server);
+    if(server != 0) {
         delete server;
         server = 0;
-    }*/
+    }
 }

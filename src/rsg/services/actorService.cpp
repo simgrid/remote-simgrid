@@ -6,6 +6,8 @@
 #include <boost/shared_ptr.hpp>
 #include <thrift/processor/TMultiplexedProcessor.h>
 
+#include <simgrid/msg.h>
+
 #include "../services.hpp"
 #include "../../common.hpp"
 
@@ -180,6 +182,16 @@ int64_t rsg::RsgActorHandler::selfAddr() {
     return newId;
 }
 
+int deleteServerWhenActorIsKilled(void *arg, void *arg2) {
+    debug_server_print("");
+    RsgThriftServer* srv = (RsgThriftServer*)arg2;
+    delete srv;
+    debug_server_print("");
+    return 0;
+}
+
+
+
 int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostaddr, const int32_t killTime) {
     
     s4u::Host *host = (s4u::Host*) hostaddr;
@@ -187,7 +199,15 @@ int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t
     debug_server_print("createActor for sgname: %s", name.c_str());
     
     //we use a lambda because otherwise simgrid make unwanted copy of the class.
-    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(name.c_str(), host, [&]{ (*lastChildServer)();});
+    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(
+                                                            name.c_str(),
+                                                            host,
+                                                            [&]{
+                                                                RsgThriftServer* srv = lastChildServer;
+                                                                MSG_process_on_exit(deleteServerWhenActorIsKilled, (void*)srv);
+                                                                (*srv)();
+                                                            }
+                                                                   );
     unsigned long long newId = pActorMapId++;
     pActors.insert({newId, actor});
     return newId;

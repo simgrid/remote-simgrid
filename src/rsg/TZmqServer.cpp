@@ -19,6 +19,7 @@
 
 #include "TZmqServer.hpp"
 #include <thrift/transport/TBufferTransports.h>
+#include <thrift/processor/TMultiplexedProcessor.h>
 #include <boost/scoped_ptr.hpp>
 #include <unordered_map>
 #include <zmq.hpp>
@@ -194,19 +195,29 @@ void *TZmqServer::router_thread(void *arg)
 }
 
 
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+class TSignalServerProtocol : public TProtocolDecorator {
+public:
+  TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
+    : TProtocolDecorator(_protocol) {}
+  virtual ~TSignalServerProtocol() {}
+uint32_t writeMessageBegin_virt(const std::string& _name,
+                                                      const TMessageType _type,
+                                                      const int32_t _seqid) {
+  if (_type == T_REPLY) {
+     writeI32_virt(0);
+    return TProtocolDecorator::writeMessageBegin_virt(_name,
+                                                      _type,
+                                                      _seqid);
+  } else {
+    return TProtocolDecorator::writeMessageBegin_virt(_name, _type, _seqid);
+  }
+}
+};
+
+
 bool TZmqServer::serveOne(int recv_flags) {
     
     debug_server_stream << "[TZmqServer " << name_ << "] recving..." << debug_server_stream_end;
@@ -224,7 +235,11 @@ bool TZmqServer::serveOne(int recv_flags) {
         outputProtocolFactory_->getProtocol(outputTransport));
     shared_ptr<TMemoryBuffer> transport(new TMemoryBuffer);
 
-    processor_->process(inputProtocol, outputProtocol, NULL);
+
+    shared_ptr<TSignalServerProtocol> outout = shared_ptr<TSignalServerProtocol>(new TSignalServerProtocol(outputProtocol));
+    processor_->process(inputProtocol, outout, NULL);
+
+//     processor_->process(inputProtocol, outputProtocol, NULL);
     debug_server_stream << "[TZmqServer " << name_ << "] processed, now sending back! " << debug_server_stream_end;
     uint8_t* buf;
     uint32_t size;
@@ -242,7 +257,19 @@ bool TZmqServer::serveOne(int recv_flags) {
 TZmqServer::~TZmqServer() {
     //tell the controller to free resources related to the connection
     
-    debug_server_stream <<"EXITING TZmqServer"<<name_ <<debug_server_stream_end;
+    debug_server_stream <<"EXITING TZmqServer"<<name_ << *server_exit_ <<debug_server_stream_end;
+    
+    //if the process has been killed
+    // then send a message back
+    if( *server_exit_ == 0 ) {
+         debug_server_stream <<"EXITING TZmqServer "<<name_ << ". A kill is emitted."<< *server_exit_ <<debug_server_stream_end;
+        zmq::message_t msg(4);
+        
+          int32_t net = (int32_t)TNetworkBigEndian::toWire32((int32_t)SIGKILL );
+          std::memcpy(msg.data(), &net, 4);
+        
+        bool ret = sock_.send(msg);assert(ret==true);
+    }
     
     zmq::socket_t controller(TZmqServer::getContext(), ZMQ_REQ);
     controller.connect("inproc://router.inproc");

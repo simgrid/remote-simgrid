@@ -17,16 +17,30 @@
  * under the License.
  */
 
+#include <thrift/protocol/TProtocol.h>
+#include <thrift/protocol/TVirtualProtocol.h>
 #include "TZmqClient.hpp"
 #include <cstring>
+
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
 
 namespace apache { namespace thrift { namespace transport {
 
 uint32_t TZmqClient::read_virt(uint8_t* buf, uint32_t len) {
+//     debug_client_stream<<"[TZmqClient "<<name_<<"] recving?? "<<rbuf_.available_read()<<debug_client_stream_end;
   if (rbuf_.available_read() == 0) {
-    debug_client_stream<<"[TZmqClient "<<name_<<"] recving"<<debug_client_stream_end;
+    debug_client_stream<<"[TZmqClient "<<name_<<"] recving "<<len<<debug_client_stream_end;
     bool ret = sock_.recv(&msg_);assert(ret==true);
-    rbuf_.resetBuffer((uint8_t*)msg_.data(), msg_.size());
+    debug_client_stream<<"[TZmqClient "<<name_<<"] recvd something "<<msg_.size()<<debug_client_stream_end;
+    int32_t asyncmsg = (int32_t)TNetworkBigEndian::fromWire32(*(uint32_t*)msg_.data());
+    debug_client_print("[TZmqClient %s]EXTRA MESSAGE: %u ", name_.c_str(), asyncmsg);
+    if(asyncmsg == SIGKILL) {
+        //we do not do "exit()" as a simgrid process is in reality a thread.
+        pthread_exit(0);
+    }
+    rbuf_.resetBuffer((uint8_t*)msg_.data()+4, msg_.size()-4);
+//     rbuf_.resetBuffer((uint8_t*)msg_.data(), msg_.size());
   }
   return rbuf_.read(buf, len);
 }
