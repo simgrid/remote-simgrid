@@ -1,5 +1,11 @@
 #ifndef _RSG_ACTOR_SERVICE_IMPL_
 #define _RSG_ACTOR_SERVICE_IMPL_
+#include <simgrid/s4u.hpp>
+
+#include <vector>
+#include <unordered_map>
+#include <thrift/server/TSimpleServer.h>
+#include <thrift/transport/TServerSocket.h>
 
 #include "RsgActor.h"
 #include "RsgMailbox.h"
@@ -7,12 +13,6 @@
 #include "RsgComm.h"
 #include "RsgService_types.h"
 
-#include <simgrid/s4u.hpp>
-
-#include <vector>
-#include <unordered_map>
-#include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
 #include "../RsgThriftServer.hpp"
 
 using namespace ::apache::thrift::server;

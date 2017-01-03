@@ -1,11 +1,12 @@
 #ifndef _RSG_CONDITION_VARIABLE_SERVICE_IMPL_
 #define _RSG_CONDITION_VARIABLE_SERVICE_IMPL_
 
+#include <simgrid/s4u.hpp>
+
 #include "RsgConditionVariable.h"
 #include "RsgService_types.h"
 #include "mutexService.hpp"
 
-#include "simgrid/s4u.hpp"
 
 using namespace ::apache::thrift::server;
 

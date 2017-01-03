@@ -1,7 +1,3 @@
-#include "xbt.h"
-#include "simgrid/s4u.hpp"
-#include "../services.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <thrift/protocol/TBinaryProtocol.h>
@@ -9,12 +5,13 @@
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 
+#include "../services.hpp"
+
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 using namespace ::RsgService;
-using namespace ::simgrid;
 
 shared_ptr<rsg::RsgKVSHandler> rsg::RsgKVSHandler::instance(nullptr);
 

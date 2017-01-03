@@ -1,18 +1,16 @@
 #ifndef _RSG_MAILBOX_SERVICE_IMPL_
 #define _RSG_MAILBOX_SERVICE_IMPL_
+#include <simgrid/s4u.hpp>
+#include <thrift/server/TSimpleServer.h>
+#include <thrift/transport/TServerSocket.h>
 
 #include "RsgActor.h"
 #include "RsgMailbox.h"
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
-
 #include "actorService.hpp"
 
-#include "simgrid/s4u.hpp"
-
-#include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
 
 using namespace ::apache::thrift::server;
 

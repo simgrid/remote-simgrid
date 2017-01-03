@@ -8,8 +8,7 @@
 
 #include <rsg/conditionVariable.hpp>
 
-namespace simgrid {
-    namespace rsg {
+namespace simgrid {namespace rsg {
         
         class ConditionVariable;
         class Mutex {
@@ -27,6 +26,6 @@ namespace simgrid {
         private:
             unsigned long int p_remoteAddr = 0;
         };
-    }} // namespace simgrid::rsg
-    
-    #endif /* SIMGRID_RSG_MUTEX_HPP */
+}} // namespace simgrid::rsg
+
+#endif /* SIMGRID_RSG_MUTEX_HPP */

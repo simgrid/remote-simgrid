@@ -1,14 +1,7 @@
-/* Copyright (c) 2006-2016. The SimGrid Team.
-* All rights reserved.                                                     */
-
-/* This program is free software; you can redistribute it and/or modify it
-* under the terms of the license (GNU LGPL) which comes with this package. */
-
-#include <xbt/log.h>
 #include <iostream>
+
 #include "rsg/conditionVariable.hpp"
 #include "RsgClient.hpp"
-#include "../rsg/services.hpp"
 
 
 using namespace ::simgrid;

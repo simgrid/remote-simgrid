@@ -1,26 +1,19 @@
-#include "../services.hpp"
-
-#include "xbt.h"
-#include "simgrid/s4u.hpp"
+#include <simgrid/s4u.hpp>
 #include <iostream>
 #include <string>
-
-using namespace ::apache::thrift::server;
-using namespace  ::RsgService;
-
-using namespace ::simgrid;
-
-#include "RsgService_types.h"
-#include "RsgKVS.h"
-
-#include <iostream>
 #include <mutex>
-#include <string>
 #include <unordered_map>
 
-using boost::shared_ptr;
+#include "RsgKVS.h"
+#include "../services.hpp"
+#include "RsgService_types.h"
 
-using namespace  ::RsgService;
+
+using boost::shared_ptr;
+using namespace ::apache::thrift::server;
+using namespace ::RsgService;
+using namespace ::simgrid;
+
 
 namespace simgrid  {
   namespace rsg {

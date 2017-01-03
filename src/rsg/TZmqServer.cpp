@@ -1,37 +1,19 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
-#include "TZmqServer.hpp"
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/processor/TMultiplexedProcessor.h>
 #include <boost/scoped_ptr.hpp>
 #include <unordered_map>
 #include <zmq.hpp>
 
+#include "TZmqServer.hpp"
+
 using boost::shared_ptr;
 using apache::thrift::transport::TMemoryBuffer;
 using apache::thrift::protocol::TProtocol;
 
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
+
 namespace apache { namespace thrift { namespace server {
-
-    
-
 
 //  Receive 0MQ string from socket and convert into string
 static std::string
@@ -71,12 +53,11 @@ void *TZmqServer::router_thread(void *arg)
     zmq::socket_t frontend(TZmqServer::getContext(), ZMQ_ROUTER);
     frontend.setsockopt(ZMQ_ROUTER_MANDATORY, 1);
     frontend.bind("ipc:///tmp/rsg.frontend.ipc");
-    
+
     zmq::socket_t controller(TZmqServer::getContext(), ZMQ_REP);
     controller.bind("inproc://router.inproc");
 
     std::unordered_map<std::string, zmq::socket_t*> worker_queue;
-    //std::unordered_set<pthread_t*> worker_queue_pthread;
 
     std::vector<zmq::pollitem_t> sockets;
     sockets.push_back({ (void*)frontend, 0, ZMQ_POLLIN, 0 });
@@ -88,13 +69,11 @@ void *TZmqServer::router_thread(void *arg)
     while (!exit_now) {
         //check coherence
         assert(sockets.size() == worker_queue.size()+2);
-        //assert(worker_queue_pthread.size() == worker_queue.size());
         
-        debug_server_stream<<"[ROUTER]qqqqqqqqqqqqqqqQQQQ NUM CLIENT "<< sockets.size()<<debug_server_stream_end;
+        debug_server_stream<<"[ROUTER] NUM CLIENT "<< sockets.size()<<debug_server_stream_end;
         
         zmq::poll(sockets.data(), sockets.size(), -1);
 
-        
         //frontend
         if (sockets[0].revents & ZMQ_POLLIN) {
             //  Now get next client request, route to corresponding worker
@@ -110,14 +89,7 @@ void *TZmqServer::router_thread(void *arg)
 
             if( worker_queue.count(client_addr) == 0 ) {
                 std::string addr = std::string("inproc://backend.")+client_addr+".inproc";
-                
                 debug_server_stream<<"[ROUTER] worker create ++++++BIND+++++ @"<<addr<<debug_server_stream_end;
-                /*
-                pthread_t* worker = new pthread_t();
-                std::string* name = new std::string(client_addr);
-                pthread_create(worker, NULL, worker_thread, (void*)name);
-                worker_queue_pthread.emplace(worker);
-                */
                 zmq::socket_t* backend = new zmq::socket_t(TZmqServer::getContext(), ZMQ_PAIR);
                 
                 backend->bind(addr);
@@ -136,7 +108,7 @@ void *TZmqServer::router_thread(void *arg)
         //  Handle worker activity on backends
         for(unsigned i=2; i-2 < worker_queue.size(); i++) {
             if (sockets[i].revents & ZMQ_POLLIN) {
-                 debug_server_stream<<"[ROUTER] back act "<<i<<debug_server_stream_end;
+                debug_server_stream<<"[ROUTER] back act "<<i<<debug_server_stream_end;
                 zmq::socket_t* backend = (zmq::socket_t*)&(sockets[i].socket);
                 
                 //get client name
@@ -188,38 +160,37 @@ void *TZmqServer::router_thread(void *arg)
             }
         }
     }
-    
+
     debug_server_stream<<"[ROUTER] BYE BYE"<<debug_server_stream_end;
-    
     return 0;
 }
 
-
-using namespace ::apache::thrift;
-using namespace ::apache::thrift::protocol;
-
+//We add an integer on every response.
+// This integer is used to send asynchonous signals (like kill).
+// You can add more signals, don't forget to respect the standard UNIX signals.
 class TSignalServerProtocol : public TProtocolDecorator {
-public:
-  TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
-    : TProtocolDecorator(_protocol) {}
-  virtual ~TSignalServerProtocol() {}
-uint32_t writeMessageBegin_virt(const std::string& _name,
+    public:
+        TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
+            : TProtocolDecorator(_protocol) {}
+
+        virtual ~TSignalServerProtocol() {}
+
+        uint32_t writeMessageBegin_virt(const std::string& _name,
                                                       const TMessageType _type,
                                                       const int32_t _seqid) {
-  if (_type == T_REPLY) {
-     writeI32_virt(0);
-    return TProtocolDecorator::writeMessageBegin_virt(_name,
+            if (_type == T_REPLY) {
+                writeI32_virt(0);
+                return TProtocolDecorator::writeMessageBegin_virt(_name,
                                                       _type,
                                                       _seqid);
-  } else {
-    return TProtocolDecorator::writeMessageBegin_virt(_name, _type, _seqid);
-  }
-}
+            } else {
+                return TProtocolDecorator::writeMessageBegin_virt(_name, _type, _seqid);
+            }
+        }
 };
 
 
 bool TZmqServer::serveOne(int recv_flags) {
-    
     debug_server_stream << "[TZmqServer " << name_ << "] recving..." << debug_server_stream_end;
     zmq::message_t msg;
     bool received = sock_.recv(&msg, recv_flags);
@@ -235,11 +206,9 @@ bool TZmqServer::serveOne(int recv_flags) {
         outputProtocolFactory_->getProtocol(outputTransport));
     shared_ptr<TMemoryBuffer> transport(new TMemoryBuffer);
 
-
     shared_ptr<TSignalServerProtocol> outout = shared_ptr<TSignalServerProtocol>(new TSignalServerProtocol(outputProtocol));
     processor_->process(inputProtocol, outout, NULL);
 
-//     processor_->process(inputProtocol, outputProtocol, NULL);
     debug_server_stream << "[TZmqServer " << name_ << "] processed, now sending back! " << debug_server_stream_end;
     uint8_t* buf;
     uint32_t size;
@@ -256,21 +225,20 @@ bool TZmqServer::serveOne(int recv_flags) {
 
 TZmqServer::~TZmqServer() {
     //tell the controller to free resources related to the connection
-    
     debug_server_stream <<"EXITING TZmqServer"<<name_ << *server_exit_ <<debug_server_stream_end;
-    
+
     //if the process has been killed
     // then send a message back
     if( *server_exit_ == 0 ) {
          debug_server_stream <<"EXITING TZmqServer "<<name_ << ". A kill is emitted."<< *server_exit_ <<debug_server_stream_end;
         zmq::message_t msg(4);
-        
-          int32_t net = (int32_t)TNetworkBigEndian::toWire32((int32_t)SIGKILL );
-          std::memcpy(msg.data(), &net, 4);
-        
+
+        int32_t net = (int32_t)TNetworkBigEndian::toWire32((int32_t)SIGKILL );
+        std::memcpy(msg.data(), &net, 4);
+
         bool ret = sock_.send(msg);assert(ret==true);
     }
-    
+
     zmq::socket_t controller(TZmqServer::getContext(), ZMQ_REQ);
     controller.connect("inproc://router.inproc");
 

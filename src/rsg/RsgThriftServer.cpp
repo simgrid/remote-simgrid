@@ -1,20 +1,17 @@
-
-
 #include <string>
 
-#include "RsgThriftServer.hpp"
+#include <simgrid/s4u.hpp>
 
-#include "TZmqServer.hpp"
-#include "services.hpp"
-#include "../common.hpp"
 #include <thrift/protocol/TBinaryProtocol.h>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/processor/TMultiplexedProcessor.h>
 
-#include <simgrid/s4u.hpp>
-
+#include "RsgThriftServer.hpp"
+#include "TZmqServer.hpp"
+#include "services.hpp"
+#include "../common.hpp"
 
 using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
@@ -80,28 +77,21 @@ public:
 
 
 
-
-
-
-
 void registerProcessor(shared_ptr<TMultiplexedProcessor> processor, std::string name, shared_ptr<TProcessor> fp) {
-
   fp.get()->setEventHandler(shared_ptr<RsgProcessorEventHandler>(new RsgProcessorEventHandler));
-
   processor->registerProcessor(name, fp);
 }
 
 
 
 RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
-        //We have to create the server before starting the new Actor
-        // Otherwise, the router may block on the first message send
-        // (Perhaps it's a bug from ZeroMq, perhaps it's a bug due to Simgrid...)
-        
-    
+    //We have to create the server before starting the new Actor
+    // Otherwise, the router may block on the first message send
+    // (Perhaps it's a bug from ZeroMq, perhaps it's a bug due to Simgrid...)
+
     debug_server_print("Creating RsgThriftServer for %s %p", name_.c_str(), this);
-    
-        //init server
+
+    //init server
     shared_ptr<TMultiplexedProcessor> processor(new TMultiplexedProcessor());
 
     shared_ptr<rsg::RsgActorHandler> actHandler(new rsg::RsgActorHandler());
@@ -127,32 +117,24 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
     shared_ptr<rsg::RsgConditionVariableHandler> conditionVariableServiceHandler(new rsg::RsgConditionVariableHandler());
     registerProcessor(processor, "RsgConditionVariable", shared_ptr<RsgConditionVariableProcessor>(new RsgConditionVariableProcessor(conditionVariableServiceHandler)));
 
-        
-        server = new TZmqServer(processor, name_, &(actHandler->server_exit));
-        
-        
-    }
-    
-RsgThriftServer::RsgThriftServer(const RsgThriftServer& other) {
-        debug_server_print("COPPPPPPPPPPPPYYYYYYYYYYYYYYYYYYYY %p", this);
-        assert(false);
+    server = new TZmqServer(processor, name_, &(actHandler->server_exit));
 }
-    
+
+//copying a RsgThriftServer is always a bad idea.
+RsgThriftServer::RsgThriftServer(const RsgThriftServer& other) {
+    debug_server_print("COPPPPPPPPPPPPYYYYYYYYYYYYYYYYYYYY %p", this);
+    assert(false);
+}
+
 int RsgThriftServer::operator()() {
-        
-        debug_server_print("Run server for %s", name_.c_str());
-        server->serve();
-        debug_server_print("Server returned... %s", name_.c_str());
-        delete server;
-        server = 0;
-        debug_server_print("End of the operator () for %s", name_.c_str());
-        /*
-        FILE *f = fopen("end_fork", "a");
-        fprintf(f,"Actor [%d] quit\n", s4u::this_actor::getPid());
-        fclose(f);
-        */
-        return 0;
-    }
+    debug_server_print("Run server for %s", name_.c_str());
+    server->serve();
+    debug_server_print("Server returned... %s", name_.c_str());
+    delete server;
+    server = 0;
+    debug_server_print("End of the operator () for %s", name_.c_str());
+    return 0;
+}
 
 RsgThriftServer::~RsgThriftServer() {
     debug_server_print("Quitting RsgThriftServer for %s %p %p", name_.c_str(), this, server);

@@ -1,33 +1,26 @@
-/* Copyright (c) 2015. The SimGrid Team. All rights reserved.              */
-
-/* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero Licence (see in file LICENCE).        */
-
-
-#include "../common.hpp"
-#include "../rsg/services.hpp"
-
-#include "rsg/engine.hpp"
-#include "rsg/actor.hpp"
-#include "RsgClient.hpp"
-
-
-#include <sys/wait.h> 
+#include <sys/wait.h>
 #include <string>
+#include <thread>
 #include <iostream>
 #include <unordered_map>
 #include <sys/syscall.h>
 #include <stack>
 #include <mutex>
 
+#include "../common.hpp"
+
+#include "rsg/actor.hpp"
+#include "RsgClient.hpp"
+
+
+
 using namespace ::simgrid;
 
-//For Developpers: if you add a global variable, check the fork methods and add the appropriate code.
+//WARNING: For Developpers: if you add a global variable, check the fork methods and add the appropriate code.
 
 //TODO: David: is this struct realy useful ?
 // std::unordered_set<size_t> deconnected_threads;
 
-//TODO: This set can become quite big because we never remove ended threads.
 std::unordered_map<std::thread::id, std::thread*> child_threads;
 std::mutex child_threads_mutex;
 

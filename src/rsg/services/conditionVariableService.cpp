@@ -1,7 +1,7 @@
-#include "../services.hpp"
-
 #include <simgrid/s4u.hpp>
 #include <iostream>
+
+#include "../services.hpp"
 
 using namespace ::apache::thrift::server;
 using namespace  ::RsgService;

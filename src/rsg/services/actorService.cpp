@@ -1,4 +1,3 @@
-
 #include <simgrid/s4u.hpp>
 #include <xbt/string.hpp>
 #include <iostream>

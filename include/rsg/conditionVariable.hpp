@@ -6,6 +6,8 @@
 #ifndef RSG_COND_VARIABLE_HPP
 #define RSG_COND_VARIABLE_HPP
 
+#include <xbt.h>
+
 #include <condition_variable>
 #include <rsg/mutex.hpp>
 

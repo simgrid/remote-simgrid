@@ -1,16 +1,16 @@
 #ifndef _RSG_COMM_SERVICE_IMPL_
 #define _RSG_COMM_SERVICE_IMPL_
 
+#include <thrift/server/TSimpleServer.h>
+#include <thrift/transport/TServerSocket.h>
+#include <simgrid/s4u.hpp>
+
 #include "RsgActor.h"
 #include "RsgMailbox.h"
 #include "RsgHost.h"
 #include "RsgComm.h"
 #include "RsgService_types.h"
 
-#include "simgrid/s4u.hpp"
-
-#include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
 
 using namespace ::apache::thrift::server;
 

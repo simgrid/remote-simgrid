@@ -1,15 +1,14 @@
 #ifndef _RSG_MUTEX_SERVICE_IMPL_
 #define _RSG_MUTEX_SERVICE_IMPL_
 
-#include "simgrid/s4u.hpp"
-#include "RsgMutex.h"
-
+#include <simgrid/s4u.hpp>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 
-using namespace ::apache::thrift::server;
+#include "RsgMutex.h"
 
-using namespace  ::RsgService;
+using namespace ::apache::thrift::server;
+using namespace ::RsgService;
 
 namespace simgrid  {
     namespace rsg {

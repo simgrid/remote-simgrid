@@ -1,10 +1,4 @@
-/* Copyright (c) 2015. The SimGrid Team. All rights reserved.              */
-
-/* This program is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Affero Licence (see in file LICENCE).        */
-
-#ifndef SRC_RSGCLIENT_HPP_
-#define SRC_RSGCLIENT_HPP_
+#pragma once
 
 #include <xbt.h>
 #include <vector>
@@ -60,4 +54,3 @@ Then, when a new Actor is created, the first thing to do is to create a new clie
 */
 extern thread_local RsgClient* client;
 
-#endif /* SRC_RSGCLIENT_HPP_ */

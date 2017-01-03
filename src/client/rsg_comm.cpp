@@ -1,11 +1,9 @@
+#include <bitset>
+#include <iostream>
+
 #include "rsg/comm.hpp"
 #include "RsgClient.hpp"
 
-#include "../rsg/services.hpp"
-
-
-#include <bitset>
-#include <iostream>
 
 using namespace ::simgrid;
 
