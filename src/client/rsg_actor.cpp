@@ -269,16 +269,15 @@ int rsg::this_actor::fork(std::string childName) {
         //when a fork happens, all other threads do not exist
         //but local data is still here
         debug_spawn_client("[child] FORK go");
-        
+
         client = new RsgClient(networkName);
-        
-        debug_spawn_client("[child] FORK go");
 //         deconnected_threads.clear();
 //         debug_spawn_client("[child] FORK go");
         child_threads.clear();
         //TODO: do we have to do something to child_threads_mutex ?
         debug_spawn_client("[child] FORK go");
-        
+        //The third parameter is to overide the previous value (if exist)
+        setenv("RsgRpcNetworkName", networkName.c_str(), 1);
         return 0;
     }
     debug_spawn_client("[PARENT] FORK AFTER %d", realSystemPid);
