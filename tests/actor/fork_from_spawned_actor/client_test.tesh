@@ -1,0 +1,12 @@
+! ignore ^Thrift:.*
+! output sort
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [PARENT]My pid is  : 2
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]My pid is  : 2
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 3
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]My pid is  : 4
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 0
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 0
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]My pid is  : 3
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 0
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 4

@@ -1,10 +1,9 @@
-SET(TESH_COMMAND ${PERL_EXECUTABLE} ${CMAKE_BINARY_DIR}/bin/tesh)
 
-file(COPY        ${CMAKE_HOME_DIRECTORY}/tools/cmake/scripts/Diff.pm
-     DESTINATION ${CMAKE_BINARY_DIR}/bin
-     FILE_PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_EXECUTE GROUP_READ)
-file(COPY        ${CMAKE_HOME_DIRECTORY}/tools/cmake/scripts/IPC
-     DESTINATION ${CMAKE_BINARY_DIR}/bin)
+find_program(TESH_COMMAND tesh PATHS /opt/simgrid/bin ENV PATH)
+
+if(NOT TESH_COMMAND)
+    message(FATAL_ERROR "Tesh not found! Please reinstall Simgrid with Tesh activated.")
+endif()
 
 MACRO(ADD_TESH NAME)
   SET(ARGT ${ARGV})

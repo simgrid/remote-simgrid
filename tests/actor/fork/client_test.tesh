@@ -1,0 +1,7 @@
+! ignore ^Thrift:.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]My pid is  : 2
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Fork returned : 0
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [child]Message from Daddy : GaBuZoMeu
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [parent]My pid is : 1
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [parent]The pid of my child is : 2

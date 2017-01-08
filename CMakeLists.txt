@@ -8,7 +8,7 @@ project (RemoteSimGrid C CXX)
 
 #To enable pthread
 # I found a similar issue here : https://github.com/potree/PotreeConverter/issues/136
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -lstdc++ -lm -DDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}  -pthread -DDEBUG")
 set (RSG_INSTALL_DIR "/opt/remote-simgrid")
 
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
@@ -44,6 +44,9 @@ endif()
 find_package(SimGrid REQUIRED)
 include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 
+# Search for SimGrid
+find_package(ZMQ REQUIRED)
+
 #Search for Thrift
 find_package(Thrift REQUIRED)
 
@@ -53,7 +56,6 @@ endif()
 
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
-thrift_gen_java(RsgService.thrift THRIFT_JAVA_FILES_LIST THRIFT_GEN_JAVA_INCLUDE_DIR)
 if(NOT ${THRIFT_VERSION_STRING} VERSION_EQUAL "0.9.3" )
     message(FATAL_ERROR "Remote-Simgrid require Thrift 0.9.3" )
 endif()
@@ -61,17 +63,16 @@ endif()
 include_directories(${THRIFT_INCLUDE_DIRS})
 include_directories(${THRIFT_GEN_INCLUDE_DIR})
 
-set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")
-set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
+# set(CMAKE_C_FLAGS   "-g3 -Wall -Werror ${CMAKE_C_FLAGS}")
+# set(CMAKE_CXX_FLAGS "-g3 -Wall -Werror ${CMAKE_CXX_FLAGS}")
+
 include_directories(include)
 
 enable_testing()
 
 add_subdirectory(src)
-add_subdirectory(java)
 
 # Enable Testing
-add_subdirectory(tools/tesh)
 include(${CMAKE_HOME_DIRECTORY}/tools/cmake/Tests.cmake)
 add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 

@@ -1,90 +1,65 @@
-#include "client/multiThreadedSingletonFactory.hpp"
-#include "client/RsgClient.hpp"
-#include "rsg/Socket.hpp"
-#include "RsgMsg.hpp"
+#include <sys/syscall.h>
 
-#include <thrift/transport/TSocket.h>
-#include <thrift/transport/TBufferTransports.h>
-#include <thrift/protocol/TBinaryProtocol.h>
+#include <thrift/protocol/TMultiplexedProtocol.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string>
-#include <iostream>
+#include "RsgClient.hpp"
 
-using namespace ::simgrid;
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_CLIENT_ENGINE, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+using namespace ::apache::thrift;
+using namespace ::apache::thrift::protocol;
+using namespace ::apache::thrift::transport;
 
 
-Client::Client(std::string hostname, int port) : pSock(-1),
-                                                 pHostname(hostname),
-                                                 pPort(port),
-                                                 pProtocol(NULL),
-                                                 pTransport(NULL),
-                                                 pServices(new boost::unordered_map<std::string, void*> ()),
-                                                 pDestructors(new boost::unordered_map<std::string, IDel*>()) {  
+thread_local RsgClient* client;
+
+RsgClient::RsgClient(std::string name)
+    : ctx(1)
+    , networkName_(name)
+    , zmqclient_(new TZmqClient(ctx, networkName_))
+{
+    debug_client_print("RsgClient::RsgClient CONSTRUCTOR %p %s", this, networkName_.c_str());
+
+    shared_ptr<TZmqClient> transport(zmqclient_);
+    shared_ptr<TBinaryProtocol> protocol(new TBinaryProtocol(transport));
+
+    engine = new RsgEngineClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgEngine")));
+    actor = new RsgActorClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgActor")));
+    mailbox = new RsgMailboxClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgMailbox")));
+    mutex = new RsgMutexClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgMutex")));
+    conditionvariable = new RsgConditionVariableClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgConditionVariable")));
+    host = new RsgHostClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgHost")));
+    comm = new RsgCommClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgComm")));
+    kvs = new RsgKVSClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgKVS")));
+    
+    transport->open();
+    debug_client_print("RSG client %s started", networkName_.c_str());
 }
 
-void Client::init() {
-  int connectSock = socket_connect(pHostname.c_str() , pPort);
-  if(connectSock <= 0) {
-      fprintf(stderr,"error, cannot connect to server\n");
-  }
 
-  this->pSock = connectSock;
 
-  int rpcPort;
-  recv(this->pSock, &rpcPort, sizeof(rpcPort), 0); // Server will send us the rpc port
-  connectToRpc(rpcPort);
+RsgClient::~RsgClient()
+{
+    /*delete engine;
+    delete actor;
+    delete mailbox;
+    delete mutex;
+    delete conditionvariable;
+    delete host;
+    delete comm;*/
+    delete zmqclient_;
+    debug_client_print("RSG client %s ended %p", networkName_.c_str(), this);
 }
 
-void Client::connectToRpc(int rpcPort) {
-  boost::shared_ptr<TSocket> socket(new TSocket(pHostname.c_str(), rpcPort));
-  pTransport.reset(new TBufferedTransport(socket));
-  pProtocol.reset(new TBinaryProtocol(pTransport));
-  bool connected = true;
-  do {
-    try {
-      pTransport->open();
-      connected = true;
-    } catch(apache::thrift::transport::TTransportException &ex) {
-      connected = false;
-      sleep(0.1);
-    }
-  } while(!connected);
+
+static void initialize_client(void) __attribute__((constructor));
+void initialize_client(void) {
+    char *rpcEnvPort = std::getenv("RsgRpcNetworkName");
+    assert(rpcEnvPort != NULL);
+    client = new RsgClient(std::string(rpcEnvPort));
 }
 
-boost::shared_ptr<TBinaryProtocol>  Client::getProtocol() const {
-  return boost::shared_ptr<TBinaryProtocol>(this->pProtocol);
+static void desinitialize_client(void) __attribute__((destructor));
+void desinitialize_client(void) {
+    debug_client_print("A RSG client process exited");
 }
 
-boost::shared_ptr<TMultiplexedProtocol>  Client::getMultiplexedProtocol(std::string serviceName) const {
-  return boost::shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(getProtocol(), serviceName));
-}
 
-boost::shared_ptr<TBufferedTransport>  Client::getTransport() const {
-  return boost::shared_ptr<TBufferedTransport>(this->pTransport);
-}
-
-void Client::close() {
-  pTransport->close();
-};
-
-void Client::connect() {
-  pTransport->open();
-};
-
-//FIXME Put this code into the engine destructor.
-void Client::reset() {
-
-  for ( auto it = this->pServices->begin(); it != this->pServices->end(); ++it ) {
-   IDel * del = this->pDestructors->at(it->first);
-   (*del)(this->pServices->at(it->first));
-   delete del;
-  }
-  
-  this->pDestructors->clear();
-  this->pServices->clear();
-}

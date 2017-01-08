@@ -5,6 +5,7 @@ target_link_libraries(node1 rsg)
 target_link_libraries(node1 "RsgService.thrift")
 target_link_libraries(node1 ${THRIFT_LIBRARIES})
 target_link_libraries(node1 ${SimGrid_LIBRARY})
+target_link_libraries(node1 ${ZMQ_LIBRARIES})
 
 
 add_executable(node2 node2.cpp)
@@ -12,12 +13,14 @@ target_link_libraries(node2 rsg)
 target_link_libraries(node2 "RsgService.thrift")
 target_link_libraries(node2 ${THRIFT_LIBRARIES})
 target_link_libraries(node2 ${SimGrid_LIBRARY})
+target_link_libraries(node2 ${ZMQ_LIBRARIES})
 
 add_executable(node3 node3.cpp)
 target_link_libraries(node3 rsg)
 target_link_libraries(node3 "RsgService.thrift")
 target_link_libraries(node3 ${THRIFT_LIBRARIES})
 target_link_libraries(node3 ${SimGrid_LIBRARY})
+target_link_libraries(node3 ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

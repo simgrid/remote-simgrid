@@ -1,8 +1,9 @@
+! ignore ^Thrift:.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/three_multicore_hosts.xml ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_NODE_1/INFO] send Do you copy ?  with size : 14
->[0.000000] [RSG_THRIFT_NODE_2/INFO] Received from client : Do you copy ?  with size of 14 
->[0.000000] [RSG_THRIFT_NODE_1/INFO] Received -> Ok 
+>[0.000000] [RSG_THRIFT_NODE_2/INFO] Received from client : Do you copy ? with size of 13
+>[0.000000] [RSG_THRIFT_NODE_1/INFO] send Do you copy ? with size : 13
+>[0.000000] [RSG_THRIFT_NODE_1/INFO] Received -> Ok
 >[0.000000] [RSG_THRIFT_NODE_2/INFO] Received -> Ok 
->[0.000000] [RSG_THRIFT_NODE_3/INFO] Received -> Do you copy ?  
->[0.000000] [RSG_THRIFT_NODE_1/INFO] send Do you copy ?  with size : 14
->[0.000000] [RSG_THRIFT_NODE_1/INFO] Received -> Ok 
+>[0.000000] [RSG_THRIFT_NODE_3/INFO] Received -> Do you copy ?
+>[0.000000] [RSG_THRIFT_NODE_1/INFO] send Do you copy ? with size : 13
+>[0.000000] [RSG_THRIFT_NODE_1/INFO] Received -> Ok

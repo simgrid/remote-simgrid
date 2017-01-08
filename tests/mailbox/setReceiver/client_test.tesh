@@ -1,5 +1,7 @@
+! ignore ^Thrift:.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] no receiver on mb with name : fake
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] pid of receiver : 2
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received from client : Do you copy ?  with size of 14
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] mbox receiver reseted to nullptr

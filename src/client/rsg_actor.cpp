@@ -1,178 +1,308 @@
-/* Copyright (c) 2015. The SimGrid Team. All rights reserved.              */
+#include <sys/wait.h>
+#include <string>
+#include <thread>
+#include <iostream>
+#include <unordered_map>
+#include <sys/syscall.h>
+#include <stack>
+#include <mutex>
 
-/* This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Affero Licence (see in file LICENCE).        */
-
+#include "../common.hpp"
 
 #include "rsg/actor.hpp"
-#include "RsgMsg.hpp"
-#include "client/RsgClient.hpp"
-#include "client/multiThreadedSingletonFactory.hpp"
+#include "RsgClient.hpp"
 
-#include <sys/wait.h> 
-#include <string>
-#include <iostream>
+
 
 using namespace ::simgrid;
+
+//WARNING: For Developpers: if you add a global variable, check the fork methods and add the appropriate code.
+
+//TODO: David: is this struct realy useful ?
+// std::unordered_set<size_t> deconnected_threads;
+
+std::unordered_map<std::thread::id, std::thread*> child_threads;
+std::mutex child_threads_mutex;
 
 
 XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
 
-rsg::Actor::Actor(unsigned long int remoteAddr, int pid) : p_remoteAddr(remoteAddr), pHost(NULL), pThreadId(pid) {
+rsg::Actor::Actor(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr), pHost(NULL) {
 }
 
-
-void rsg::Actor::kill() { 
-
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").kill(this->p_remoteAddr);
-  
+void rsg::Actor::kill() {
+    client->actor->kill(this->p_remoteAddr);
 }
 
 void rsg::Actor::kill(int pid) {
-  
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgActorClient>("RsgActor").killPid(pid);
-    
+    int ret = client->actor->killPid(pid);
+    if(ret != 0) {
+        std::cerr << "kill: ("<< pid <<") - No such process" << std::endl;
+        //throw std::runtime_error(oss.str());
+    }
 }
 
 void rsg::Actor::join(void) {
-
-  MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  Client& engine = factory.getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").join(this->p_remoteAddr);
-
+    client->actor->join(this->p_remoteAddr);
 }
 
 void rsg::this_actor::quit(void) {
-
-  MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-  Client& engine = factory.getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").close();
-  factory.clearClient(std::this_thread::get_id());
-
+   /* std::hash<std::thread::id> hasher;
+    size_t hashed_thread_id = hasher(std::this_thread::get_id());
+    const bool is_in = deconnected_threads.find(hashed_thread_id) != deconnected_threads.end();
+    if(!is_in) {
+        //in case if the user call quit a second time on an actor we won't try to deconnect a second time otherwise RSG will block*/
+   debug_spawn_client("quitting %s %p", client->networkName_.c_str(), client);
+        client->actor->close();
+//         deconnected_threads.insert(hashed_thread_id);
+    delete client;
+    client = 0;
+   debug_spawn_client("quitted !! %p", client);
+   
+   //if we are the root thread
+   if(syscall(SYS_gettid) == getpid()) {
+       debug_spawn_client("ROOT THREAD: wait for all children");
+       
+       std::unordered_map<std::thread::id, std::thread*>::size_type s;
+       do {
+        child_threads_mutex.lock();
+        s = child_threads.size();
+        if(s == 0) {
+            child_threads_mutex.unlock();
+            break;
+        }
+        std::thread* th = child_threads.begin()->second;
+        std::thread::id id = child_threads.begin()->first;
+        child_threads_mutex.unlock();
+        //each thread is responsible for removing itslef from child_threads
+        debug_client_stream << "JOINING " << th <<"  "<< id<<debug_client_stream_end;
+        th->join();
+        s--;
+       } while(s!=0);
+   }
+  /* }*/
 }
 
 void rsg::this_actor::sleep(const double duration) {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").sleep(duration);
+    client->actor->sleep(duration);
 }
 
 void rsg::this_actor::execute(const double flops) {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").execute(flops);
+    client->actor->execute(flops);
 }
 
 void rsg::this_actor::send(rsg::Mailbox &mailbox, const char*content, size_t dataSize) {
-	rsg::this_actor::send(mailbox, content, dataSize, dataSize);
+    rsg::this_actor::send(mailbox, content, dataSize, dataSize);
 }
 
 void rsg::this_actor::send(rsg::Mailbox &mailbox, const char*content,size_t dataSize, size_t simulatedSize) {
-	std::string strContent(content, dataSize);
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").send(mailbox.getRemote(), strContent, simulatedSize);
+    std::string strContent(content, dataSize);
+    client->actor->send(mailbox.getRemote(), strContent, simulatedSize);
 }
 
 char *rsg::this_actor::recv(Mailbox &mailbox) {
-	std::string res;
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").recv(res, mailbox.getRemote());
-	char *content = (char*) malloc(sizeof(char*) * res.length());
-  memcpy(content, res.data(), res.length());
-	return content;
+    std::string res;
+    client->actor->recv(res, mailbox.getRemote());
+    char *content = (char*) malloc(sizeof(char*) * res.length());
+    memcpy(content, res.data(), res.length());
+    return content;
 }
 
 char* rsg::Actor::getName() {
-  std::string res;
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").getName(res, this->p_remoteAddr);
-  char* res_cstr = (char*) malloc( (sizeof(char*) * res.length()) + 1);
-
-  strcpy(res_cstr, res.c_str());
-  return res_cstr;
+    std::string res;
+    
+    client->actor->getName(res, this->p_remoteAddr);
+    char* res_cstr = (char*) malloc( (sizeof(char*) * res.length()) + 1);
+    
+    strcpy(res_cstr, res.c_str());
+    return res_cstr;
 }
 
 rsg::Host* rsg::Actor::getHost() {
-  rsgHostCurrentResType res;
-  if(pHost == NULL) {
-    Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-    engine.serviceClientFactory<RsgActorClient>("RsgActor").getHost(res, this->p_remoteAddr);
-    pHost = new Host(res.name, res.addr);
-  }
-  return pHost;
+    rsgHostCurrentResType res;
+    if(pHost == NULL) {
+        
+        client->actor->getHost(res, this->p_remoteAddr);
+        pHost = new Host(res.name, res.addr);
+    }
+    return pHost;
 }
 
 int rsg::Actor::getPid() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  return  engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(this->p_remoteAddr);
+    return  client->actor->getPid(this->p_remoteAddr);
+}
+
+int rsg::Actor::getPPid() {
+    return  client->actor->getPPid(this->p_remoteAddr);
 }
 
 void rsg::Actor::setAutoRestart(bool autorestart) {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").setAutoRestart(this->p_remoteAddr, autorestart);
+    client->actor->setAutoRestart(this->p_remoteAddr, autorestart);
 }
 
 void rsg::Actor::setKillTime(double time){
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").setKillTime(this->p_remoteAddr, time);
+    client->actor->setKillTime(this->p_remoteAddr, time);
 }
 
 double rsg::Actor::getKillTime() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  return engine.serviceClientFactory<RsgActorClient>("RsgActor").getKillTime(this->p_remoteAddr);
+    return client->actor->getKillTime(this->p_remoteAddr);
 }
 
 void rsg::Actor::killAll() {
-	Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").killAll();
+    client->actor->killAll();
 }
 
 rsg::Actor* rsg::Actor::forPid(int pid) {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").forPid(pid);
-  return new Actor(addr, pid);
+    int64_t addr = client->actor->forPid(pid);
+    if(addr == -1)
+        return 0;
+    else
+        return new Actor(addr);
 }
 
-void actorRunner(std::function<int(void *)> code, int port, void *data ) {
-  MultiThreadedSingletonFactory::getInstance().getClientOrCreate(std::this_thread::get_id(), port);
-  try {
-    code(data);
-  } catch(apache::thrift::TApplicationException &ex) {
-    std::cerr<< "apache::thrift::TApplicationException in thread : " << ex.what() << std::endl;
-  } catch(apache::thrift::transport::TTransportException &ex) {
-    //std::cerr<< "apache::thrift::transport::TTransportException in thread : " << ex.what() << std::endl;
-    // this exeption occure when the process have been killed on the server by another process.
-    MultiThreadedSingletonFactory factory = MultiThreadedSingletonFactory::getInstance();
-    factory.clearClient(std::this_thread::get_id());
-  }
+
+//from http://stackoverflow.com/questions/20112221/invoking-a-function-automatically-on-stdthread-exit-in-c11
+void on_thread_exit(std::function<void()> func)
+{
+  class ThreadExiter
+  {
+    std::stack<std::function<void()>> exit_funcs;
+  public:
+    ThreadExiter() = default;
+    ThreadExiter(ThreadExiter const&) = delete;
+    void operator=(ThreadExiter const&) = delete;
+    ~ThreadExiter()
+    {
+      while(!exit_funcs.empty())
+      {
+        exit_funcs.top()();
+        exit_funcs.pop();
+      }
+    }
+    void add(std::function<void()> func)
+    {
+      exit_funcs.push(std::move(func));
+    }   
+  };
+
+  thread_local ThreadExiter exiter;
+  exiter.add(std::move(func));
 }
 
-rsg::Actor *rsg::Actor::createActor(std::string name, rsg::Host host, std::function<int(void *)> code, void *data) {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
+void remove_from_child_threads() {
+    child_threads_mutex.lock();
+    child_threads.erase(std::this_thread::get_id());
+    child_threads_mutex.unlock();
+}
 
-  rsgServerRemoteAddrAndPort params;
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").createActorPrepare(params);
+void actorRunner(std::function<int(void *)> code, std::string networkName, void *data ) {
+    //as client is thread_local, it is a fresh client here. So, we init it:
+    client = new RsgClient(networkName);
+    
+    //wwhen the *REAL* thread exit we want to remove it from child_threads
+    on_thread_exit(remove_from_child_threads);
+    
+    int pid = rsg::this_actor::getPid();
 
-  std::thread *nActor = new std::thread(actorRunner, code, params.port, data);     
-  MultiThreadedSingletonFactory::getInstance().registerNewThread(nActor);
-  unsigned long int addr = engine.serviceClientFactory<RsgActorClient>("RsgActor").createActor(params.addr, params.port ,name, host.p_remoteAddr, 10);
-  int newPid = engine.serviceClientFactory<RsgActorClient>("RsgActor").getPid(addr);
-  rsg::Actor *act = new Actor(addr, newPid);
-  return act;
+    debug_spawn_client("Actor [%d] running", pid);
+    try {
+        code(data);
+    } catch(apache::thrift::TApplicationException &ex) {
+        std::cerr<< "apache::thrift::TApplicationException in thread : " << ex.what() << std::endl;
+    } catch(apache::thrift::transport::TTransportException &ex) {
+        //std::cerr<< "apache::thrift::transport::TTransportException in thread : " << ex.what() << std::endl;
+        // this exeption occure when the process have been killed on the server by another process.
+    }
+    //if the program forget to quit at the end of the thread, we do it for him.
+    if( client != 0)
+        rsg::this_actor::quit();
+    debug_spawn_client("Actor [%d] quit", pid);
+}
+
+rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data) {
+    std::string networkName;
+    client->actor->createActorPrepare(networkName);
+    
+    std::thread *nActor = new std::thread(actorRunner, code, networkName, data);
+    child_threads_mutex.lock();
+    child_threads.insert({nActor->get_id() , nActor});
+    child_threads_mutex.unlock();
+    unsigned long int addr = client->actor->createActor(name, host->p_remoteAddr, 10);//TODO:David: why 10?
+    rsg::Actor *act = new Actor(addr);
+    
+    rsg::Actor *self = rsg::Actor::self();
+    char *cstr_name = self->getName();
+    delete self;
+    debug_spawn_client("Actor [%d]%s creates thread [%d]", this_actor::getPid(), cstr_name, act->getPid());
+    free(cstr_name);
+    
+    return act;
+}
+
+rsg::Actor *rsg::Actor::self() {
+    unsigned long int addr = client->actor->selfAddr();
+    rsg::Actor *act = new Actor(addr);
+    return act;
 }
 
 int rsg::this_actor::getPid() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  return engine.serviceClientFactory<RsgActorClient>("RsgActor").this_actorGetPid();
+    return client->actor->this_actorGetPid();
+}
+
+int rsg::this_actor::getPPid() {
+    return client->actor->this_actorGetPPid();
+}
+
+
+int rsg::this_actor::fork(std::string childName) {
+    long int hostAddr = Host::current()->p_remoteAddr;
+
+    std::string networkName;
+    client->actor->createActorPrepare(networkName);
+    
+    debug_spawn_client("FORK prepared: %s", networkName.c_str());
+    
+    debug_spawn_client("FORK go");
+    pid_t realSystemPid = ::fork();
+    if(0 == realSystemPid) { // Child
+        //when a fork happens, all other threads do not exist
+        //but local data is still here
+        debug_spawn_client("[child] FORK go");
+
+        client = new RsgClient(networkName);
+//         deconnected_threads.clear();
+//         debug_spawn_client("[child] FORK go");
+        child_threads.clear();
+        //TODO: do we have to do something to child_threads_mutex ?
+        debug_spawn_client("[child] FORK go");
+        //The third parameter is to overide the previous value (if exist)
+        setenv("RsgRpcNetworkName", networkName.c_str(), 1);
+        return 0;
+    }
+    debug_spawn_client("[PARENT] FORK AFTER %d", realSystemPid);
+    
+    unsigned long long newActorAddr = client->actor->createActor(childName, hostAddr, 10);//TODO:David: why 10?
+   
+    debug_spawn_client("[PARENT] FORK AFTER create actor");
+    
+    int newPid = client->actor->getPid(newActorAddr);
+   
+    debug_spawn_client("[PARENT] FORK AFTER child pid: %d", newPid);
+    
+    rsg::Actor *self = rsg::Actor::self();
+    char *c_name = self->getName();
+    std::string name(c_name);
+    free(c_name);
+    delete self;
+    debug_spawn_client(" Actor [%d]%s  created fork [%d]%s", this_actor::getPid(), name.c_str(), newPid, childName.c_str());
+    return newPid;
 }
 
 bool rsg::Actor::valid() const { 
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  return engine.serviceClientFactory<RsgActorClient>("RsgActor").isValideActor(this->p_remoteAddr);
+    return client->actor->isValideActor(this->p_remoteAddr);
 }
 
 rsg::Actor::~Actor() {
-  Client& engine = MultiThreadedSingletonFactory::getInstance().getClient(std::this_thread::get_id());
-  engine.serviceClientFactory<RsgActorClient>("RsgActor").deleteActor(this->p_remoteAddr);
+    client->actor->deleteActor(this->p_remoteAddr);
 }

@@ -8,6 +8,7 @@ target_link_libraries(killActor rsg)
 target_link_libraries(killActor "RsgService.thrift")
 target_link_libraries(killActor ${THRIFT_LIBRARIES})
 target_link_libraries(killActor ${SimGrid_LIBRARY})
+target_link_libraries(killActor ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

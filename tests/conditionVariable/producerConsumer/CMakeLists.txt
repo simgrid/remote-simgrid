@@ -8,6 +8,7 @@ target_link_libraries(producerConsumer rsg)
 target_link_libraries(producerConsumer "RsgService.thrift")
 target_link_libraries(producerConsumer ${THRIFT_LIBRARIES})
 target_link_libraries(producerConsumer ${SimGrid_LIBRARY})
+target_link_libraries(producerConsumer ${ZMQ_LIBRARIES})
 
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

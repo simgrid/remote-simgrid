@@ -6,15 +6,12 @@
 #ifndef SRC_RSG_GLOBAL_HPP_
 #define SRC_RSG_GLOBAL_HPP_
 
-#include <boost/unordered_map.hpp>
-#include <xbt/string.hpp>
-
 namespace simgrid {
-namespace rsg {
+    namespace rsg {
+        
+        double getClock();
 
-double getClock();
-
-} // namespace simgrid::rsg
+    } // namespace simgrid::rsg
 } // namespace simgrid
 
 #endif /* SRC_RSG_GLOBAL_HPP_ */
