@@ -17,8 +17,10 @@ distributed application or infrastructure !
 
 SimGrid is a strong and mature framework to study distributed
 algorithms or applications. Remote SimGrid is usable but still lacking
-some features. It is expected to be usable in production by the end of
-the year (2015).
+some features. The thing is that we are currently rewriting SimGrid
+(since 2015) to make the S4U interface happen. Once this is done, we
+will come back to the Remote SimGrid project. It may still work for
+you in the meanwhile, who knows.
 
 ## Contact and Licence
 
