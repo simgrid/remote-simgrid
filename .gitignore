@@ -7,6 +7,7 @@ test/dumb_server
 CMakeFiles
 Makefile
 CMakeCache.txt
+CMakeLists.txt.user
 cmake_install.cmake
 
 src/rsg_server
