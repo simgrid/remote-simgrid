@@ -1,10 +1,16 @@
 #pragma once
 
-#include <zmq.hpp>
-#include <thrift/server/TServer.h>
 #include <iostream>
 #include <mutex>
+
 #include <simgrid/s4u.hpp>
+
+#include <thrift/TProcessor.h>
+#include <thrift/server/TServer.h>
+
+#include <boost/shared_ptr.hpp>
+
+#include <zmq.hpp>
 
 #include "../common.hpp"
 
