@@ -7,8 +7,10 @@ test/dumb_server
 CMakeFiles
 Makefile
 CMakeCache.txt
-CMakeLists.txt.user
 cmake_install.cmake
+
+CMakeLists.txt.user
+*.autosave
 
 src/rsg_server
 src/librsg.so
