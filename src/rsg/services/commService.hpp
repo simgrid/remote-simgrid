@@ -4,6 +4,7 @@
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
 #include <simgrid/s4u.hpp>
+#include <boost/unordered_map.hpp>
 
 #include "RsgActor.h"
 #include "RsgMailbox.h"
