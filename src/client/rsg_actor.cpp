@@ -153,8 +153,8 @@ void rsg::Actor::killAll() {
     client->actor->killAll();
 }
 
-rsg::Actor* rsg::Actor::forPid(int pid) {
-    int64_t addr = client->actor->forPid(pid);
+rsg::Actor* rsg::Actor::byPid(int pid) {
+    int64_t addr = client->actor->byPid(pid);
     if(addr == -1)
         return 0;
     else

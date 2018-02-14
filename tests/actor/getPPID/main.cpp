@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
   XBT_INFO("My ppid is  : %d",rsg::this_actor::getPPid());
   
-  rsg::Actor *getByPid = rsg::Actor::forPid(act->getPid());
+  rsg::Actor *getByPid = rsg::Actor::byPid(act->getPid());
   if(getByPid) {
     XBT_INFO("getName  : %s", getByPid->getName());
     getByPid->join();

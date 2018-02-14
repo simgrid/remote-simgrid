@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
   char *received = rsg::this_actor::recv(*mbox);
 
   rsg::this_actor::sleep(1);
-  mbox->setReceiver(rsg::Actor::forPid(rsg::this_actor::getPid()));
+  mbox->setReceiver(rsg::Actor::byPid(rsg::this_actor::getPid()));
   rsg::this_actor::sleep(1);
 
   mbox->setReceiver(nullptr);

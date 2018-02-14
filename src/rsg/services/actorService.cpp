@@ -219,8 +219,8 @@ int32_t rsg::RsgActorHandler::getPPid(const int64_t addr) {
     return actor->getPpid();
 }
 
-int64_t rsg::RsgActorHandler::forPid(const int32_t pid) {
-    simgrid::s4u::ActorPtr actor = s4u::Actor::forPid(pid);
+int64_t rsg::RsgActorHandler::byPid(const int32_t pid) {
+    simgrid::s4u::ActorPtr actor = s4u::Actor::byPid(pid);
     if(actor != nullptr) {
         unsigned long long newId = pActorMapId++;
         pActors.insert({newId, actor});

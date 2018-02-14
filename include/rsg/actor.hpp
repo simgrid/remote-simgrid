@@ -31,7 +31,7 @@ namespace simgrid  {
             static void killAll();
             static Actor *self();
             static Actor *createActor(std::string name, rsg::HostPtr host, std::function<int(void *)> code, void *data);
-            static Actor *forPid(int pid);
+            static Actor *byPid(int pid);
             static void kill(int pid);
             void kill();
             void join();
