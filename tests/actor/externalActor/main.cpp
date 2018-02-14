@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
     char *actorname = actor->getName();
     XBT_INFO("actor name -> %s", actorname);
     XBT_INFO("actor pid -> %d", actor->getPid());
-    XBT_INFO("host name accessing by actor -> %s", actor->getHost()->name().c_str());
+    XBT_INFO("host name accessing by actor -> %s", actor->getHost()->getName().c_str());
     
     delete actorname;
     rsg::this_actor::quit();

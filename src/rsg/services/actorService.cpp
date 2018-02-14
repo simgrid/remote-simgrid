@@ -67,7 +67,7 @@ void rsg::RsgActorHandler::getHost(rsgHostCurrentResType& _return, const int64_t
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
         s4u::Host *host = actor->getHost();
-        _return.name = host->name();
+        _return.name = host->getName();
         _return.addr = (unsigned long int) host;
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::getHost no actors for this addr" << std::endl; 

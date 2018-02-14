@@ -30,7 +30,7 @@ namespace simgrid {
             double speed();
             ~Host();
             
-            simgrid::xbt::string const& name() const { return name_; }
+            simgrid::xbt::string const& getName() const { return name_; }
             static Ptr by_name(std::string name);
             static Ptr current();
             int coreCount();

@@ -21,8 +21,8 @@ using namespace ::simgrid;
 int main(int argc, char **argv) {
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
     
-    XBT_INFO("hostname ->  %s with speed %f", host1->name().c_str(), host1->speed());
-    XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current()->name().c_str(),rsg::Host::current()->speed());
+    XBT_INFO("hostname ->  %s with speed %f", host1->getName().c_str(), host1->speed());
+    XBT_INFO("hostname ->  %s with speed %f", rsg::Host::current()->getName().c_str(),rsg::Host::current()->speed());
     // XBT_INFO("actor name -> %s", self.getName());/
     
     rsg::this_actor::execute(8095000000 * 1.999999);

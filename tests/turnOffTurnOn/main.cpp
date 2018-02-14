@@ -23,9 +23,9 @@ int main(int argc, char **argv) {
   host1->turnOff();
   host1->turnOn();
   host1->turnOff();
-  XBT_INFO("isOn %s -> %s",  host1->name().c_str(), host1->isOn() ? "YES" : "NO");
+  XBT_INFO("isOn %s -> %s",  host1->getName().c_str(), host1->isOn() ? "YES" : "NO");
   host1->turnOn();
-  XBT_INFO("isOn %s -> %s",  host1->name().c_str(), host1->isOn() ? "YES" : "NO");
+  XBT_INFO("isOn %s -> %s",  host1->getName().c_str(), host1->isOn() ? "YES" : "NO");
   
   rsg::this_actor::quit();
   return 0;

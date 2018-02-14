@@ -31,7 +31,7 @@ void rsg::RsgHostHandler::current(rsgHostCurrentResType& _return) {
     debug_server_print("LALALALALLALALALA");
     s4u::Host *host = s4u::Host::current();
     debug_server_print("LALALALALLALALALA %p", host);
-    _return.name = host->name();
+    _return.name = host->getName();
     _return.addr = (unsigned long int) host;
     debug_server_print("LALALALALLALALALA ret:%s", _return.name.c_str());
 }
