@@ -65,7 +65,8 @@ endif()
 ###############
 # Options
 option(enable_warnings "Enable compilation warnings" ON)
-option(treat_warnings_as_errors "Treat compilation warnings as compilation errors" OFF)
+option(treat_warnings_as_errors
+       "Treat compilation warnings as compilation errors" OFF)
 
 # Enable pthread (https://github.com/potree/PotreeConverter/issues/136)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
@@ -113,4 +114,5 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/tests)
 ###########
 FILE(GLOB THRIFT_GEN_INCLUDE_FILES ${THRIFT_GEN_INCLUDE_DIR}/*.h*)
 install(DIRECTORY include DESTINATION ${RSG_INSTALL_DIR})
-install(FILES ${THRIFT_GEN_INCLUDE_FILES} DESTINATION ${RSG_INSTALL_DIR}/include)
+install(FILES ${THRIFT_GEN_INCLUDE_FILES}
+        DESTINATION ${RSG_INSTALL_DIR}/include)
