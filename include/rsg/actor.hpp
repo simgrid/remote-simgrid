@@ -6,6 +6,8 @@
 #ifndef SIMGRID_RSG_ACTOR_HPP
 #define SIMGRID_RSG_ACTOR_HPP
 
+#include <functional>
+
 #include <xbt.h>
 
 #include <rsg/mailbox.hpp>
