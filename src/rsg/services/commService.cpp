@@ -17,16 +17,16 @@ rsg::RsgCommHandler::RsgCommHandler() {
 
 int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
-    
-    return (int64_t) &s4u::Comm::send_init(mbox);
+
+    auto comm = s4u::Comm::send_init(mbox);
+    return reinterpret_cast<int64_t>(&comm);
 }
 
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
-    s4u::Comm &res = s4u::Comm::recv_init(mbox);
-    
-    return (int64_t) &res; 
+    auto comm = s4u::Comm::recv_init(mbox);
+    return reinterpret_cast<int64_t>(&comm);
 }
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
@@ -35,16 +35,19 @@ int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t fr
     unsigned long int bufferAddr;
     unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
     bufferAddr = ptr;
-    s4u::Comm &comm = s4u::Comm::recv_init(mbox);
-    comm.setDstData((void**) bufferAddr, sizeof(std::string*));
+    auto comm = s4u::Comm::recv_init(mbox);
+    comm->setDstData((void**) bufferAddr, sizeof(std::string*));
     buffers->insert({(int64_t) &comm, (unsigned long int) bufferAddr});
-    return (int64_t) &comm;
+
+    return reinterpret_cast<int64_t>(&comm);
 }
 
 int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
     std::string *strData = new std::string(data.data(), data.length());
-    return (int64_t) &s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
+
+    auto comm = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
+    return reinterpret_cast<int64_t>(&comm);
 }
 
 void rsg::RsgCommHandler::start(const int64_t addr) {
