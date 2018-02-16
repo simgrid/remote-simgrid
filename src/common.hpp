@@ -1,7 +1,4 @@
-
-#ifndef __COMMON_HPP__
-#define __COMMON_HPP__
-
+#pragma once
 
 #include <execinfo.h>
 #include <stdio.h>
@@ -87,6 +84,3 @@ extern std::mutex print;
 
 #define debug_server_stream_end \
             ANSI_COLOR_RESET << std::endl;std::cerr<<std::flush;print.unlock();}
-
-
-#endif // __COMMON_HPP__

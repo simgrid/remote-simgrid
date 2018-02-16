@@ -1,5 +1,4 @@
-#ifndef _RSG_SERVICE_
-#define _RSG_SERVICE_
+#pragma once
 
 #include "services/actorService.hpp"
 #include "services/commService.hpp"
@@ -9,5 +8,3 @@
 #include "services/conditionVariableService.hpp"
 #include "services/mutexService.hpp"
 #include "services/KVSService.hpp"
-
-#endif /* _RSG_SERVICE_ */ 
