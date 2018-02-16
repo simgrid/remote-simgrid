@@ -14,8 +14,9 @@
 #define ANSI_HL_ON         "\E[7m"
 #define ANSI_HL_OFF        "\E[27m"
 
-
-#define DEBUG_TRACE          0
+#ifndef DEBUG_TRACE
+    #define DEBUG_TRACE          0
+#endif
 #define DEBUG_SPAWN_CLIENT  (1 && DEBUG_TRACE)
 #define DEBUG_SPAWN_SERVER  (1 && DEBUG_TRACE)
 #define DEBUG_CLIENT        (1 && DEBUG_TRACE)

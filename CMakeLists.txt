@@ -64,6 +64,7 @@ endif()
 # Build setup #
 ###############
 # Options
+option(enable_debug_logs "Enable debugging logs" OFF)
 option(enable_warnings "Enable compilation warnings" ON)
 option(treat_warnings_as_errors
        "Treat compilation warnings as compilation errors" OFF)
@@ -95,6 +96,14 @@ if (enable_warnings)
     set(CMAKE_C_FLAGS "${warning_flags} ${CMAKE_C_FLAGS}")
     set(CMAKE_CXX_FLAGS "${warning_flags} ${CMAKE_CXX_FLAGS}")
   endif()
+endif()
+
+# Print debugging logs if needed
+if (enable_debug_logs)
+  set(dbglog_flags " -DDEBUG_TRACE")
+
+  set(CMAKE_C_FLAGS "${dbglog_flags} ${CMAKE_C_FLAGS}")
+  set(CMAKE_CXX_FLAGS "${dbglog_flags} ${CMAKE_CXX_FLAGS}")
 endif()
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
