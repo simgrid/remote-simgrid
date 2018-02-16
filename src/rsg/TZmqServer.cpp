@@ -45,8 +45,6 @@ s_send (zmq::socket_t & socket, const std::string & string) {
     return (rc);
 }
 
-
-
 void *TZmqServer::router_thread(void *arg)
 {
     (void)arg;
@@ -69,8 +67,7 @@ void *TZmqServer::router_thread(void *arg)
     while (!exit_now) {
         //check coherence
         assert(sockets.size() == worker_queue.size()+2);
-        
-        debug_server_stream<<"[ROUTER] NUM CLIENT "<< sockets.size()<<debug_server_stream_end;
+        debug_server_print("[ROUTER] NUM CLIENT %zu", sockets.size());
         
         zmq::poll(sockets.data(), sockets.size(), -1);
 
@@ -89,7 +86,7 @@ void *TZmqServer::router_thread(void *arg)
 
             if( worker_queue.count(client_addr) == 0 ) {
                 std::string addr = std::string("inproc://backend.")+client_addr+".inproc";
-                debug_server_stream<<"[ROUTER] worker create ++++++BIND+++++ @"<<addr<<debug_server_stream_end;
+                debug_server_print("[ROUTER] worker create ++++++BIND+++++ @%s", addr.c_str());
                 zmq::socket_t* backend = new zmq::socket_t(TZmqServer::getContext(), ZMQ_PAIR);
                 
                 backend->bind(addr);
@@ -98,17 +95,17 @@ void *TZmqServer::router_thread(void *arg)
                 sockets.push_back({ (void*)*backend, 0, ZMQ_POLLIN, 0 });
             }
             
-            debug_server_stream<<"[ROUTER] sending to: backend~"<<client_addr<<debug_server_stream_end;
+            debug_server_print("[ROUTER] sending to: backend~%s", client_addr.c_str());
             //NOTE for developpers: if the next call is blocking it means that a client (TZmqClient) tries to connect while there is no server (TZmqServer) ready to accept it.
             //Before creating a client (ie. an Actor) always create first the server.
             ret = worker_queue[client_addr]->send(request);assert(ret==true);
-            debug_server_stream<<"[ROUTER] sending to: backend~"<<client_addr<<" DONE"<<debug_server_stream_end;
+            debug_server_print("[ROUTER] sending to: backend~%s", client_addr.c_str());
         }
         
         //  Handle worker activity on backends
         for(unsigned i=2; i-2 < worker_queue.size(); i++) {
             if (sockets[i].revents & ZMQ_POLLIN) {
-                debug_server_stream<<"[ROUTER] back act "<<i<<debug_server_stream_end;
+                debug_server_print("[ROUTER] back act %d", i);
                 zmq::socket_t* backend = (zmq::socket_t*)&(sockets[i].socket);
                 
                 //get client name
@@ -118,11 +115,11 @@ void *TZmqServer::router_thread(void *arg)
                 url[size - sizeof(".inproc")] = '\0';
                 char* client_addr = url+sizeof("inproc://backend.")-1;
                 
-                debug_server_stream<<"[ROUTER] recv from backend~"<<client_addr<<debug_server_stream_end;
+                debug_server_print("[ROUTER] recv from backend~%s", client_addr);
                 zmq::message_t reply;
                 ret = backend->recv(&reply);assert(ret==true);
                 
-                debug_server_stream<<"[ROUTER] forward to front~"<<client_addr<<debug_server_stream_end;
+                debug_server_print("[ROUTER] forward to front~%s", client_addr);
                 
                 if(reply.size()==0)
                     continue;
@@ -161,7 +158,7 @@ void *TZmqServer::router_thread(void *arg)
         }
     }
 
-    debug_server_stream<<"[ROUTER] BYE BYE"<<debug_server_stream_end;
+    debug_server_print("[ROUTER] BYE BYE");
     return 0;
 }
 
@@ -189,15 +186,16 @@ class TSignalServerProtocol : public TProtocolDecorator {
         }
 };
 
-
 bool TZmqServer::serveOne(int recv_flags) {
-    debug_server_stream << "[TZmqServer " << name_ << "] recving..." << debug_server_stream_end;
+    debug_server_print("[TZmqServer %s] recving...", name_.c_str());
     zmq::message_t msg;
     bool received = sock_.recv(&msg, recv_flags);
-    debug_server_stream << "[TZmqServer " << name_ << "] RECVD! " << msg.size() << debug_server_stream_end;
+    debug_server_print("[TZmqServer %s] recv %zu bytes", name_.c_str(), msg.size());
+
     if (!received) {
         return false;
     }
+
     shared_ptr<TMemoryBuffer> inputTransport(new TMemoryBuffer((uint8_t*)msg.data(), msg.size()));
     shared_ptr<TMemoryBuffer> outputTransport(new TMemoryBuffer());
     shared_ptr<TProtocol> inputProtocol(
@@ -209,28 +207,28 @@ bool TZmqServer::serveOne(int recv_flags) {
     shared_ptr<TSignalServerProtocol> outout = shared_ptr<TSignalServerProtocol>(new TSignalServerProtocol(outputProtocol));
     processor_->process(inputProtocol, outout, NULL);
 
-    debug_server_stream << "[TZmqServer " << name_ << "] processed, now sending back! " << debug_server_stream_end;
+    debug_server_print("[TZmqServer %s] processed, now sending back!", name_.c_str());
     uint8_t* buf;
     uint32_t size;
     outputTransport->getBuffer(&buf, &size);
     msg.rebuild(size);
     std::memcpy(msg.data(), buf, size);
-        debug_server_stream << "[TZmqServer " << name_ << "] sending: " << size << debug_server_stream_end;
-    bool ret = sock_.send(msg);assert(ret==true);
+
+    debug_server_print("[TZmqServer %s] sending %d", name_.c_str(), size);
+    bool ret = sock_.send(msg);
+    assert(ret==true);
 
   return true;
 }
 
-
-
 TZmqServer::~TZmqServer() {
     //tell the controller to free resources related to the connection
-    debug_server_stream <<"EXITING TZmqServer"<<name_ << *server_exit_ <<debug_server_stream_end;
+    debug_server_stream <<"[TZmqServer "<<name_ << "] exiting " << *server_exit_ <<debug_server_stream_end;
 
     //if the process has been killed
     // then send a message back
     if( *server_exit_ == 0 ) {
-         debug_server_stream <<"EXITING TZmqServer "<<name_ << ". A kill is emitted."<< *server_exit_ <<debug_server_stream_end;
+         debug_server_stream <<"[TZmqServer "<<name_ << "] exiting. A kill is emitted."<< *server_exit_ <<debug_server_stream_end;
         zmq::message_t msg(4);
 
         int32_t net = (int32_t)TNetworkBigEndian::toWire32((int32_t)SIGKILL );
@@ -249,16 +247,7 @@ TZmqServer::~TZmqServer() {
 
     zmq::message_t repl;
     ret = controller.recv(&repl);assert(ret==true);
-    //     debug_server_stream <<"REPONSE DONE =="<< std::string(static_cast<char*>(repl.data()), repl.size())<<debug_server_stream_end;
-    debug_server_stream <<"EXITING TZmqServer DONE "<<name_ <<debug_server_stream_end;
+    debug_server_print("[TZmqServer %s] exiting done", name_.c_str());
 }
-
-
-
-
-
-
-
-
 
 }}} // apache::thrift::server

@@ -54,8 +54,10 @@ TODO: add a second frontend for tcp connections.
         , server_exit_(server_exit)
         , name_(name)
     {
-        debug_server_stream<<"[TZmqServer "<<name_<<"] ++++++CONNECT+++++ @"<<std::string("inproc://backend.")+name+".inproc"<<debug_server_stream_end;
-        sock_.connect(std::string("inproc://backend.")+name+".inproc");
+        std::string endpoint = "inproc://backend." + name + ".inproc";
+        debug_server_print("[TZmqServer %s] ++++++CONNECT+++++ @%s",
+                           name.c_str(), endpoint.c_str());
+        sock_.connect(endpoint);
     }
     ~TZmqServer();
 
