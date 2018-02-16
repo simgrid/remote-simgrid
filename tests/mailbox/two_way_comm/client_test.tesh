@@ -1,4 +1,4 @@
-! ignore ^Thrift:.*
+! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/three_multicore_hosts.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_NODE_2/INFO] Received from client : Do you copy ? with size of 13
 >[0.000000] [RSG_THRIFT_NODE_1/INFO] send Do you copy ? with size : 13

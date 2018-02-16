@@ -1,4 +1,4 @@
-! ignore ^Thrift:.*
+! ignore ^Thrift:.*|DBG—.*
 ! output sort 19
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
