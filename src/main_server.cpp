@@ -76,7 +76,8 @@ int main(int argc, char **argv) {
     if (DEBUG_SERVER) {
         int major, minor, patch;
         zmq_version (&major, &minor, &patch);
-        printf("0MQ version is %i.%i.%i\n", major, minor, patch);
+        fprintf(stderr, DEBUG_PREFIX_STR "0MQ version is %i.%i.%i\n",
+                major, minor, patch);
     }
     
     s4u::Engine *e = new s4u::Engine(&argc,argv);

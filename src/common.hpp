@@ -13,6 +13,7 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_HL_ON         "\E[7m"
 #define ANSI_HL_OFF        "\E[27m"
+#define DEBUG_PREFIX_STR   "DBG—"
 
 #ifndef DEBUG_TRACE
     #define DEBUG_TRACE          0
@@ -24,42 +25,41 @@
 #define DEBUG_SERVER        (1 && DEBUG_TRACE)
 #define DEBUG_SERVER_NET    (1 && DEBUG_SERVER)
 
-
 /*!
  * \brief Print a debug message in blue. Useful for debugging!
  */
 #define debug_client_print(fmt, ...) \
         do { if (DEBUG_CLIENT) { \
             fflush(stdout); fflush(stderr); \
-            fprintf(stderr, ANSI_COLOR_BLUE "<:> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
+            fprintf(stderr, DEBUG_PREFIX_STR ANSI_COLOR_BLUE "<:> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); }} while (0)
 
 #define debug_client_stream \
-            if (DEBUG_CLIENT) { std::cerr << ANSI_COLOR_BLUE << "<:> " \
+            if (DEBUG_CLIENT) { std::cerr << DEBUG_PREFIX_STR << ANSI_COLOR_BLUE << "<:> " \
             << __FILE__ << ":" << __LINE__ << ":" << __func__
 
 #define debug_client_stream_end \
-            ANSI_COLOR_RESET << std::endl;std::cerr<<std::flush;}
+            ANSI_COLOR_RESET << std::endl; std::cerr<<std::flush;}
 
 #define debug_process(fmt, ...) \
         do { if (DEBUG_CLIENT) { \
             fflush(stdout); fflush(stderr); \
-            fprintf(stderr, ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
+            fprintf(stderr, DEBUG_PREFIX_STR ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); }} while (0)
 
 #define debug_spawn_client(fmt, ...) \
         do { if (DEBUG_SPAWN_CLIENT) { \
             fflush(stdout); fflush(stderr); \
-            fprintf(stderr, ANSI_HL_ON "" ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt  ANSI_HL_OFF "" ANSI_COLOR_RESET "\n", \
+            fprintf(stderr, DEBUG_PREFIX_STR ANSI_HL_ON "" ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt  ANSI_HL_OFF "" ANSI_COLOR_RESET "\n", \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); }} while (0)
 
 #define debug_spawn_server(fmt, ...) \
         do { if (DEBUG_SPAWN_SERVER) { \
             fflush(stdout); fflush(stderr); \
-            fprintf(stderr, ANSI_HL_ON "" ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt ANSI_HL_OFF "" ANSI_COLOR_RESET "\n", \
+            fprintf(stderr, DEBUG_PREFIX_STR ANSI_HL_ON "" ANSI_COLOR_MAGENTA "<:> %s:%d:%s(): " fmt ANSI_HL_OFF "" ANSI_COLOR_RESET "\n", \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); }} while (0)
 
@@ -73,13 +73,13 @@ extern std::mutex print;
 #define debug_server_print(fmt, ...) \
         do { if (DEBUG_SERVER) { print.lock(); \
             fflush(stdout); fflush(stderr); \
-            fprintf(stderr, ANSI_COLOR_GREEN "<%f:%lu> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
+            fprintf(stderr, DEBUG_PREFIX_STR ANSI_COLOR_GREEN "<%f:%lu> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
             SIMIX_get_clock(), simgrid::s4u::this_actor::getPid(), \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); print.unlock(); }} while (0)
 
 #define debug_server_stream \
-             if (DEBUG_SERVER) {print.lock(); std::cerr << ANSI_COLOR_GREEN << "<" << SIMIX_get_clock() \
+             if (DEBUG_SERVER) {print.lock(); std::cerr << DEBUG_PREFIX_STR << ANSI_COLOR_GREEN << "<" << SIMIX_get_clock() \
             << ":" << simgrid::s4u::this_actor::getPid() << "> " << __FILE__ << \
             ":" << __LINE__ << ":" << __func__
 
