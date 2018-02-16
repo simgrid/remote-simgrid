@@ -1,3 +1,5 @@
+#pragma once
+
 #include <simgrid/s4u.hpp>
 #include <iostream>
 #include <string>

@@ -1,5 +1,4 @@
-#ifndef _RSG_CONDITION_VARIABLE_SERVICE_IMPL_
-#define _RSG_CONDITION_VARIABLE_SERVICE_IMPL_
+#pragma once
 
 #include <simgrid/s4u.hpp>
 
@@ -33,4 +32,3 @@ namespace simgrid  {
         };
         
     }} // namespace simgrid::rsg
-    #endif /* _RSG_CONDITION_VARIABLE_SERVICE_IMPL_ */ 

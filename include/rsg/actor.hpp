@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SIMGRID_RSG_ACTOR_HPP
-#define SIMGRID_RSG_ACTOR_HPP
+#pragma once
 
 #include <functional>
 
@@ -85,5 +84,3 @@ namespace simgrid  {
         };
         
     }} // namespace simgrid::rsg
-    
-    #endif /* SIMGRID_RSG_ACTOR_HPP */

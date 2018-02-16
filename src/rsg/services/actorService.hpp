@@ -1,5 +1,5 @@
-#ifndef _RSG_ACTOR_SERVICE_IMPL_
-#define _RSG_ACTOR_SERVICE_IMPL_
+#pragma once
+
 #include <simgrid/s4u.hpp>
 
 #include <vector>
@@ -60,8 +60,3 @@ namespace simgrid  {
         };
     }
 }
-#endif /* _RSG_ACTOR_SERVICE_IMPL_ */
-
-
-
-

@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the license (GNU LGPL) which comes with this package. */
 
-#ifndef SIMGRID_RSG_MUTEX_HPP
-#define SIMGRID_RSG_MUTEX_HPP
+#pragma once
 
 #include <rsg/conditionVariable.hpp>
 
@@ -27,5 +26,3 @@ namespace simgrid {namespace rsg {
             unsigned long int p_remoteAddr = 0;
         };
 }} // namespace simgrid::rsg
-
-#endif /* SIMGRID_RSG_MUTEX_HPP */

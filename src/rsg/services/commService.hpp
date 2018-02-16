@@ -1,5 +1,4 @@
-#ifndef _RSG_COMM_SERVICE_IMPL_
-#define _RSG_COMM_SERVICE_IMPL_
+#pragma once
 
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
@@ -45,5 +44,3 @@ namespace simgrid  {
         
     }
 }
-
-#endif /* _RSG_COMM_SERVICE_IMPL_ */

@@ -1,5 +1,4 @@
-#ifndef _RSG_HOST_SERVICE_IMPL_
-#define _RSG_HOST_SERVICE_IMPL_
+#pragma once
 #include <simgrid/s4u.hpp>
 #include <thrift/server/TSimpleServer.h>
 #include <thrift/transport/TServerSocket.h>
@@ -40,5 +39,3 @@ namespace simgrid  {
         
     }
 }
-
-#endif /* _RSG_HOST_SERVICE_IMPL_ */

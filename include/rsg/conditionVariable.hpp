@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the license (GNU LGPL) which comes with this package. */
 
-#ifndef RSG_COND_VARIABLE_HPP
-#define RSG_COND_VARIABLE_HPP
+#pragma once
 
 #include <xbt.h>
 
@@ -40,5 +39,3 @@ namespace simgrid {
             
         };
     }} // namespace simgrid::s4u
-    
-    #endif /* RSG_COND_VARIABLE_HPP */

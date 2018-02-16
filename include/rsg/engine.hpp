@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SRC_RSG_GLOBAL_HPP_
-#define SRC_RSG_GLOBAL_HPP_
+#pragma once
 
 namespace simgrid {
     namespace rsg {
@@ -13,5 +12,3 @@ namespace simgrid {
 
     } // namespace simgrid::rsg
 } // namespace simgrid
-
-#endif /* SRC_RSG_GLOBAL_HPP_ */

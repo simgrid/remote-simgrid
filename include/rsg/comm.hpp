@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SRC_RSG_COMM_HPP_
-#define SRC_RSG_COMM_HPP_
+#pragma once
 
 #include <rsg/actor.hpp>
 #include <rsg/mailbox.hpp>
@@ -115,5 +114,3 @@ namespace simgrid {
         
     } // namespace simgrid::rsg
 } // namespace simgrid
-
-#endif /* SRC_RSG_HOST_HPP_ */

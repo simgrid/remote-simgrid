@@ -3,8 +3,7 @@
 /* This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Affero Licence (see in file LICENCE).        */
 
-#ifndef SRC_RSG_HOST_HPP_
-#define SRC_RSG_HOST_HPP_
+#pragma once
 
 #include <xbt/string.hpp>
 #include <memory>
@@ -61,5 +60,3 @@ namespace simgrid {
 
 
 } // namespace simgrid
-
-#endif /* SRC_RSG_HOST_HPP_ */
