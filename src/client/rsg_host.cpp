@@ -16,7 +16,7 @@ rsg::Host::Host(const char *name, unsigned long int remoteAddr) {
     p_remoteAddr = remoteAddr;
 };
 
-rsg::Host::Host(const simgrid::xbt::string name, unsigned long int remoteAddr) {
+rsg::Host::Host(const std::string name, unsigned long int remoteAddr) {
     debug_client_print("Creating Host2 %s", name.c_str());
     name_ = simgrid::xbt::string(name);
     p_remoteAddr = remoteAddr;
