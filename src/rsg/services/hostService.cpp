@@ -37,8 +37,8 @@ void rsg::RsgHostHandler::current(rsgHostCurrentResType& _return) {
 }
 
 double rsg::RsgHostHandler::speed(const int64_t addr) {
-    s4u::Host *host = (s4u::Host*) addr;
-    return (double) host->speed();
+    s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
+    return host->getSpeed();
 }
 
 void rsg::RsgHostHandler::turnOn(const int64_t addr) {
@@ -57,8 +57,8 @@ bool rsg::RsgHostHandler::isOn(const int64_t addr) {
 }
 
 double rsg::RsgHostHandler::currentPowerPeak(const int64_t addr) {
-    s4u::Host *host = (s4u::Host*) addr;
-    return host->getPstateSpeedCurrent(); //FIXME Change the name to fit s4u
+    s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
+    return host->getPstateSpeed(host->getPstate()); //FIXME Change the name to fit s4u
 }
 
 double rsg::RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate_index) {
@@ -67,8 +67,8 @@ double rsg::RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate
 }
 
 int32_t rsg::RsgHostHandler::pstatesCount(const int64_t addr) {
-    s4u::Host *host = (s4u::Host*) addr;
-    return host->pstatesCount();
+    s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
+    return host->getPstatesCount();
 }
 
 void rsg::RsgHostHandler::setPstate(const int64_t addr, const int32_t pstate_index) {
@@ -77,19 +77,19 @@ void rsg::RsgHostHandler::setPstate(const int64_t addr, const int32_t pstate_ind
 }
 
 int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
-    s4u::Host *host = (s4u::Host*) addr;
-    return host->pstate();
+    s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
+    return host->getPstate(); // FIXME change function name
 }
 
 
 int32_t rsg::RsgHostHandler::coreCount(const int64_t addr) {
-    s4u::Host *host = (s4u::Host*) addr;
-    return host->coreCount();
+    s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
+    return host->getCoreCount(); // FIXME change function name
 }
 
 void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {
     s4u::Host *host = (s4u::Host*) remoteAddr;
-    const char *prop = host->property(key.c_str());
+    const char *prop = host->getProperty(key.c_str());
     if(prop != NULL) {
         _return = std::string(prop); 
     } else {

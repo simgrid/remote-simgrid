@@ -31,7 +31,7 @@ void rsg::RsgMailboxHandler::setReceiver(const int64_t remoteAddrMailbox, const 
 int64_t rsg::RsgMailboxHandler::getReceiver(const int64_t remoteAddrMailbox) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(remoteAddrMailbox);
     unsigned long long newId = rsg::RsgActorHandler::pActorMapId++;
-    s4u::ActorPtr actor = mbox->receiver();
+    s4u::ActorPtr actor = mbox->getReceiver();
     if(actor == nullptr) {
         return 0;
     } 
