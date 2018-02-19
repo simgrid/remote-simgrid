@@ -8,8 +8,4 @@
      <argument value="@CMAKE_CURRENT_BINARY_DIR@/killActor"/>
   </actor>
   
-  <actor host="host1" function="client">
-     <argument value="@CMAKE_CURRENT_BINARY_DIR@/killActor"/>
-  </actor>
-  
 </platform>
