@@ -77,11 +77,3 @@ extern std::mutex print;
             SIMIX_get_clock(), simgrid::s4u::this_actor::getPid(), \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); print.unlock(); }} while (0)
-
-#define debug_server_stream \
-             if (DEBUG_SERVER) {print.lock(); std::cerr << DEBUG_PREFIX_STR << ANSI_COLOR_GREEN << "<" << SIMIX_get_clock() \
-            << ":" << simgrid::s4u::this_actor::getPid() << "> " << __FILE__ << \
-            ":" << __LINE__ << ":" << __func__
-
-#define debug_server_stream_end \
-            ANSI_COLOR_RESET << std::endl;std::cerr<<std::flush;print.unlock();}

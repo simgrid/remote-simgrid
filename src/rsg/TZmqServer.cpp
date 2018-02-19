@@ -223,12 +223,12 @@ bool TZmqServer::serveOne(int recv_flags) {
 
 TZmqServer::~TZmqServer() {
     //tell the controller to free resources related to the connection
-    debug_server_stream <<"[TZmqServer "<<name_ << "] exiting " << *server_exit_ <<debug_server_stream_end;
+    debug_server_print("[TZmqServer %s] exiting %d", name_.c_str(), *server_exit_);
 
     //if the process has been killed
     // then send a message back
     if( *server_exit_ == 0 ) {
-         debug_server_stream <<"[TZmqServer "<<name_ << "] exiting. A kill is emitted."<< *server_exit_ <<debug_server_stream_end;
+        debug_server_print("[TZmqServer %s] exiting. A kill is emitted. %d", name_.c_str(), *server_exit_);
         zmq::message_t msg(4);
 
         int32_t net = (int32_t)TNetworkBigEndian::toWire32((int32_t)SIGKILL );
