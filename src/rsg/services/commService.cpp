@@ -3,14 +3,11 @@
 
 #include "../services.hpp"
 
-
 using namespace ::apache::thrift::server;
-using namespace  ::RsgService;
-
+using namespace ::RsgService;
 using namespace ::simgrid;
 
-
-boost::unordered_map<const int64_t ,unsigned long int> *rsg::RsgCommHandler::buffers = new boost::unordered_map<const int64_t ,unsigned long int>();
+std::unordered_map<uintptr_t, rsg::CommData*> *rsg::RsgCommHandler::comms = new std::unordered_map<uintptr_t, rsg::CommData*>();
 
 rsg::RsgCommHandler::RsgCommHandler() {
 }
@@ -18,158 +15,165 @@ rsg::RsgCommHandler::RsgCommHandler() {
 int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
 
-    auto comm = s4u::Comm::send_init(mbox);
-    return reinterpret_cast<int64_t>(&comm);
+    CommData * cd = new CommData;
+    cd->ptr = s4u::Comm::send_init(mbox);
+
+    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+
+    return reinterpret_cast<int64_t>(&(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
-    auto comm = s4u::Comm::recv_init(mbox);
-    return reinterpret_cast<int64_t>(&comm);
+    CommData * cd = new CommData;
+    cd->ptr = s4u::Comm::recv_init(mbox);
+
+    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+
+    return reinterpret_cast<int64_t>(&(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
-    unsigned long int bufferAddr;
-    unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
-    bufferAddr = ptr;
-    auto comm = s4u::Comm::recv_init(mbox);
-    comm->setDstData((void**) bufferAddr, sizeof(std::string*));
-    buffers->insert({(int64_t) &comm, (unsigned long int) bufferAddr});
+    CommData * cd = new CommData;
+    cd->ptr = s4u::Comm::recv_init(mbox);
 
-    return reinterpret_cast<int64_t>(&comm);
+    cd->buffer = (void**) malloc(sizeof(void*));
+    cd->ptr->setDstData(cd->buffer, sizeof(void*));
+
+    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+
+    return reinterpret_cast<int64_t>(&(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
     std::string *strData = new std::string(data.data(), data.length());
 
-    auto comm = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
-    return reinterpret_cast<int64_t>(&comm);
+    CommData * cd = new CommData;
+    cd->ptr = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
+
+    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+
+    return reinterpret_cast<int64_t>(&(cd->ptr));
 }
 
 void rsg::RsgCommHandler::start(const int64_t addr) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    comm->start();
+    CommData * cd = comms->at((uintptr_t) addr);
+    cd->ptr->start();
 }
 
 void rsg::RsgCommHandler::waitComm(std::string& _return, const int64_t addr) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    comm->wait();
-    try {
-        void **buffer = (void**) buffers->at((unsigned long int)addr);
-        if(buffer) {
-            std::string *res = (std::string*) *buffer;
-            _return.assign(res->data(), res->length());
-            delete res;
-            free(buffer);
-            buffers->erase(addr);
-        } else {
-            xbt_die("Empty dst buffer");
-        }
-    } catch (std::out_of_range& e) {
-        
+    CommData * cd = comms->at((uintptr_t) addr);
+    cd->ptr->wait();
+
+    if (cd->buffer != nullptr) {
+        std::string * res = (std::string*) *(cd->buffer);
+        _return.assign(res->data(), res->length());
+
+        delete res;
+        free(cd->buffer);
+        cd->buffer = nullptr;
     }
 }
 
 void rsg::RsgCommHandler::setSrcDataSize(const int64_t addr, const int64_t size) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    comm->setSrcDataSize((size_t)size);
+    CommData * cd = comms->at((uintptr_t) addr);
+    cd->ptr->setSrcDataSize((size_t) size);
 }
 
 int64_t rsg::RsgCommHandler::getDstDataSize(const int64_t addr) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    return comm->getDstDataSize();
+    CommData * cd = comms->at((uintptr_t) addr);
+    return cd->ptr->getDstDataSize();
 }
 
 void rsg::RsgCommHandler::setRate(const int64_t addr, const double rate) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    comm->setRate(rate);
+    CommData * cd = comms->at((uintptr_t) addr);
+    cd->ptr->setRate(rate);
 }
 
 void rsg::RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
+    CommData * cd = comms->at((uintptr_t) addr);
     std::string *payload = new std::string(buff.data(), buff.length());
-    comm->setSrcData((void*)payload, sizeof(void*));
+    cd->ptr->setSrcData((void*)payload, sizeof(void*));
 }
 
 void rsg::RsgCommHandler::setDstData(const int64_t addr) { //FIXME USE THE SIZE
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    unsigned long int bufferAddr;
-    unsigned long int ptr = (unsigned long int) malloc(sizeof(void*));
-    bufferAddr = ptr;
-    comm->setDstData((void**) bufferAddr, sizeof(std::string*));
-    buffers->insert({addr, bufferAddr});
+    CommData * cd = comms->at((uintptr_t) addr);
+    xbt_assert(cd->buffer == nullptr, "Comm already has a destination buffer");
+
+    cd->buffer = (void**) malloc(sizeof(void*));
+    cd->ptr->setDstData(cd->buffer, sizeof(void*));
 }
 
 void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) {
-    s4u::Comm *comm = (s4u::Comm*) addr;
-    if(comm->test()) {
+    CommData * cd = comms->at((uintptr_t) addr);
+    if(cd->ptr->test()) {
         _return.cond = true;
-        if (buffers->find((unsigned long int)addr) != buffers->end()) {
-            void **buffer = (void**) buffers->at((unsigned long int)addr);
-            if(buffer) {
-                std::string *res = (std::string*) *buffer;
-                _return.data.assign(res->data(), res->length());
-                delete res;
-                free(buffer);
-                buffers->erase(addr);
-            }
+
+        if (cd->buffer != nullptr) {
+            std::string * res = (std::string*) *(cd->buffer);
+            _return.data.assign(res->data(), res->length());
+
+            delete res;
+            free(cd->buffer);
+            cd->buffer = nullptr;
         }
-    } else {    
+    } else {
         _return.data.assign("", 0);
         _return.cond = false;
     }
 }
 
 void rsg::RsgCommHandler::wait_any(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms) {
-    std::vector<s4u::Comm*> s4uComms;
-    for(auto it = comms.begin(); it != comms.end(); it++) {
-        s4u::Comm *comm = (s4u::Comm*) *it;
-        s4uComms.push_back(comm);
+    std::vector<s4u::CommPtr> s4uComms;
+    for(auto comm_int : comms) {
+        s4uComms.push_back(this->comms->at((uintptr_t) comm_int)->ptr);
     }
-    auto commResIt = s4u::Comm::wait_any(s4uComms.begin(), s4uComms.end());
-    
-    _return.index = commResIt - s4uComms.begin();
-    
-    if (buffers->find((unsigned long int)*commResIt) != buffers->end()) {
-        void **buffer = (void**) buffers->at((unsigned long int)*commResIt);
-        if(buffer) {
-            std::string *res = (std::string*) *buffer;
-            _return.data.assign(res->data(), res->length());
-            delete res;
-            free(buffer);
-            buffers->erase((int64_t)*commResIt);
-        }
+
+    _return.index = (int64_t) s4u::Comm::wait_any(&s4uComms);
+    debug_server_print("AHOY. Wait any finished, index=%ld (comms.size()=%zu)",
+                       _return.index, comms.size());
+
+    CommData * cd = this->comms->at((uintptr_t) &*(s4uComms.at(_return.index)));
+
+    if (cd->buffer != nullptr) {
+        std::string * res = (std::string*) *(cd->buffer);
+        _return.data.assign(res->data(), res->length());
+
+        delete res;
+        free(cd->buffer);
+        cd->buffer = nullptr;
     }
 }
 
 void rsg::RsgCommHandler::wait_any_for(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms, const double timeout) {
-    std::vector<s4u::Comm*> s4uComms;
-    for(auto it = comms.begin(); it != comms.end(); it++) {
-        s4u::Comm *comm = (s4u::Comm*) *it;
-        s4uComms.push_back(comm);
+    std::vector<s4u::CommPtr> s4uComms;
+    for(auto comm_int : comms) {
+        s4uComms.push_back(this->comms->at((uintptr_t) comm_int)->ptr);
     }
-    auto commResIt = s4u::Comm::wait_any_for(s4uComms.begin(), s4uComms.end(), timeout);
-    if(commResIt == s4uComms.end()) {
-        _return.index = - 1;
+
+    _return.index = (int64_t) s4u::Comm::wait_any_for(&s4uComms, timeout);
+
+    // If timeout reached
+    if (_return.index < 0 || _return.index >= (int64_t) s4uComms.size())
+    {
+        _return.index = -1;
         _return.data.assign("", 0);
         return;
     }
-    
-    _return.index = commResIt - s4uComms.begin();
-    
-    if (buffers->find((unsigned long int)*commResIt) != buffers->end()) {
-        void **buffer = (void**) buffers->at((unsigned long int)*commResIt);
-        if(buffer) {
-            std::string *res = (std::string*) *buffer;
-            _return.data.assign(res->data(), res->length());
-            delete res;
-            free(buffer);
-            buffers->erase((int64_t)*commResIt);
-        }
+
+    CommData * cd = this->comms->at((uintptr_t) &*(s4uComms.at(_return.index)));
+
+    if (cd->buffer != nullptr) {
+        std::string * res = (std::string*) *(cd->buffer);
+        _return.data.assign(res->data(), res->length());
+
+        delete res;
+        free(cd->buffer);
+        cd->buffer = nullptr;
     }
 }
 
