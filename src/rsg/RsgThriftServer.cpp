@@ -120,12 +120,6 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
     server = new TZmqServer(processor, name_, &(actHandler->server_exit));
 }
 
-//copying a RsgThriftServer is always a bad idea.
-RsgThriftServer::RsgThriftServer(const RsgThriftServer& other) {
-    debug_server_print("COPPPPPPPPPPPPYYYYYYYYYYYYYYYYYYYY %p", this);
-    assert(false);
-}
-
 int RsgThriftServer::operator()() {
     debug_server_print("Run server for %s", name_.c_str());
     server->serve();

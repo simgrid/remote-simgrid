@@ -7,7 +7,7 @@
 class RsgThriftServer {
 public:
     RsgThriftServer(std::string& name);
-    RsgThriftServer(const RsgThriftServer& other);//NEVER COPY A RsgThriftServer!
+    RsgThriftServer(const RsgThriftServer& other) = delete; //NEVER COPY A RsgThriftServer!
     int operator()();
     ~RsgThriftServer();
 private:
