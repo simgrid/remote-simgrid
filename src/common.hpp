@@ -35,13 +35,6 @@
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); }} while (0)
 
-#define debug_client_stream \
-            if (DEBUG_CLIENT) { std::cerr << DEBUG_PREFIX_STR << ANSI_COLOR_BLUE << "<:> " \
-            << __FILE__ << ":" << __LINE__ << ":" << __func__
-
-#define debug_client_stream_end \
-            ANSI_COLOR_RESET << std::endl; std::cerr<<std::flush;}
-
 #define debug_process(fmt, ...) \
         do { if (DEBUG_CLIENT) { \
             fflush(stdout); fflush(stderr); \

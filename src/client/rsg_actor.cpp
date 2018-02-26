@@ -2,6 +2,7 @@
 #include <string>
 #include <thread>
 #include <iostream>
+#include <sstream>
 #include <unordered_map>
 #include <sys/syscall.h>
 #include <stack>
@@ -76,7 +77,14 @@ void rsg::this_actor::quit(void) {
         std::thread::id id = child_threads.begin()->first;
         child_threads_mutex.unlock();
         //each thread is responsible for removing itslef from child_threads
-        debug_client_stream << "JOINING " << th <<"  "<< id<<debug_client_stream_end;
+
+#ifdef DEBUG_CLIENT
+        // Slow code, but avoids using streamed output on stdout/stderr
+        // (as it may flush before the end of the line).
+        std::stringstream ss;
+        ss << "JOINING thread=" << th << ", thread_id=" << id;
+        debug_client_print("%s", ss.str().c_str());
+#endif
         th->join();
         s--;
        } while(s!=0);
