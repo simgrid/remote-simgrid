@@ -1,3 +1,4 @@
+! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Do you copy ?  with size of 14 
@@ -20,5 +21,5 @@ $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] array[15] = 225 
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] array[16] = 256 
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] array[17] = 289 
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO]  recStruct->intMsg = 123456789
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO]  recStruct->msg = Balrog
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] recStruct->intMsg = 123456789
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] recStruct->msg = "Balrog"

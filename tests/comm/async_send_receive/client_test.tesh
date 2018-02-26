@@ -1,6 +1,7 @@
+! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Do you copy ?  with size of 14
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Did you copy ?  with size of 15
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Halo ?! with size of 7
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Se ya  with size of 6
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "Hello." with size=6
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "It is 'Arthur', King of the Britons." with size=36
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "To seek the Holy Grail." with size=23
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "What do you mean? An African or European swallow?" with size=49
