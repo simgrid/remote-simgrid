@@ -11,6 +11,8 @@
 #include <RsgService_types.h>
 #include <RsgComm.h>
 
+#include <vector>
+
 namespace simgrid {
     namespace rsg {
         
@@ -42,25 +44,7 @@ namespace simgrid {
             void wait(double timeout);
             bool test();
             
-            /*! tanke a range of s4u::Comm* (last excluded) and return when one of them is finished. The return value is an iterator on the finished Comms. */
-            template<class I> static
-            I wait_any(I first, I last)
-            {
-                std::vector<int64_t> comms;
-                for(auto it = first; it != last; it++) {
-                    comms.push_back((*it)->p_remoteAddr);
-                }
-                RsgService::rsgCommIndexAndData _return;
-                waitAnyWrapper(_return, comms);
-                auto terminatedComm = std::next(first, _return.index);
-                if ((*terminatedComm)->dstBuff_ != NULL) {
-                    char * chars = (char*) malloc(_return.data.size());
-                    memcpy(chars, _return.data.c_str(), _return.data.size());
-                    *(void**) (*terminatedComm)->dstBuff_ = (char *) chars;
-                }
-            
-                return terminatedComm;
-            }
+            static std::vector<rsg::Comm*>::iterator wait_any(std::vector<rsg::Comm*> * comms);
             
             /*! tanke a range of s4u::Comm* (last excluded) and return when one of them is finished. The return value is an iterator on the finished Comms. */
             template<class I> static
@@ -101,9 +85,9 @@ namespace simgrid {
             unsigned long int p_remoteAddr = 0;
             
             private :
-            void *dstBuff_ = NULL;
+            void * dstBuff_ = nullptr;
             size_t dstBuffSize_ = 0;
-            void *srcBuff_ = NULL;
+            void *srcBuff_ = nullptr;
             size_t srcBuffSize_ = 0;
             
             //Those two fonction has been created to avoid unwanted include into this file. 

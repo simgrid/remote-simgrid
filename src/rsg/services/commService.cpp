@@ -18,9 +18,9 @@ int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest)
     CommData * cd = new CommData;
     cd->ptr = s4u::Comm::send_init(mbox);
 
-    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+    comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
-    return reinterpret_cast<int64_t>(&(cd->ptr));
+    return reinterpret_cast<int64_t>(&*(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
@@ -29,9 +29,9 @@ int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t fro
     CommData * cd = new CommData;
     cd->ptr = s4u::Comm::recv_init(mbox);
 
-    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+    comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
-    return reinterpret_cast<int64_t>(&(cd->ptr));
+    return reinterpret_cast<int64_t>(&*(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
@@ -43,9 +43,9 @@ int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t fr
     cd->buffer = (void**) malloc(sizeof(void*));
     cd->ptr->setDstData(cd->buffer, sizeof(void*));
 
-    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+    comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
-    return reinterpret_cast<int64_t>(&(cd->ptr));
+    return reinterpret_cast<int64_t>(&*(cd->ptr));
 }
 
 int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
@@ -55,9 +55,9 @@ int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest
     CommData * cd = new CommData;
     cd->ptr = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
 
-    comms->insert({reinterpret_cast<uintptr_t>(&(cd->ptr)), cd});
+    comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
-    return reinterpret_cast<int64_t>(&(cd->ptr));
+    return reinterpret_cast<int64_t>(&*(cd->ptr));
 }
 
 void rsg::RsgCommHandler::start(const int64_t addr) {
@@ -72,6 +72,7 @@ void rsg::RsgCommHandler::waitComm(std::string& _return, const int64_t addr) {
     if (cd->buffer != nullptr) {
         std::string * res = (std::string*) *(cd->buffer);
         _return.assign(res->data(), res->length());
+        debug_server_print("AHOY. Set comm result from %p (in waitComm)", res);
 
         delete res;
         free(cd->buffer);
@@ -96,7 +97,7 @@ void rsg::RsgCommHandler::setRate(const int64_t addr, const double rate) {
 
 void rsg::RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
     CommData * cd = comms->at((uintptr_t) addr);
-    std::string *payload = new std::string(buff.data(), buff.length());
+    std::string *payload = new std::string(buff.data(), buff.length()); // leak on multiple call
     cd->ptr->setSrcData((void*)payload, sizeof(void*));
 }
 
@@ -116,6 +117,7 @@ void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) 
         if (cd->buffer != nullptr) {
             std::string * res = (std::string*) *(cd->buffer);
             _return.data.assign(res->data(), res->length());
+            debug_server_print("AHOY. Set comm result from %p (in test)", res);
 
             delete res;
             free(cd->buffer);
@@ -124,6 +126,7 @@ void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) 
     } else {
         _return.data.assign("", 0);
         _return.cond = false;
+        debug_server_print("AHOY. Set comm result as null (test failed)");
     }
 }
 
@@ -134,14 +137,22 @@ void rsg::RsgCommHandler::wait_any(rsgCommIndexAndData& _return, const std::vect
     }
 
     _return.index = (int64_t) s4u::Comm::wait_any(&s4uComms);
-    debug_server_print("AHOY. Wait any finished, index=%ld (comms.size()=%zu)",
-                       _return.index, comms.size());
+    debug_server_print("AHOY. Wait any finished, index=%ld (comms.size()=%zu)", _return.index, comms.size());
 
-    CommData * cd = this->comms->at((uintptr_t) &*(s4uComms.at(_return.index)));
+    debug_server_print("AHOY. s4uComms size=%zu", s4uComms.size());
+    s4u::CommPtr finishedCommPtr = s4uComms.at(_return.index);
+    debug_server_print("AHOY. Could retrieve CommPtr at index %zu.", _return.index);
+
+    uintptr_t finishedCommIntptr = reinterpret_cast<uintptr_t>(&*(finishedCommPtr));
+    debug_server_print("AHOY. Could retrieve uintptr_t");
+
+    CommData * cd = this->comms->at(finishedCommIntptr);
+    debug_server_print("AHOY. Could retrieve CommData!");
 
     if (cd->buffer != nullptr) {
         std::string * res = (std::string*) *(cd->buffer);
         _return.data.assign(res->data(), res->length());
+        debug_server_print("AHOY. Set comm result from %p (in wait_any)", res);
 
         delete res;
         free(cd->buffer);
@@ -162,6 +173,7 @@ void rsg::RsgCommHandler::wait_any_for(rsgCommIndexAndData& _return, const std::
     {
         _return.index = -1;
         _return.data.assign("", 0);
+        debug_server_print("AHOY. Set comm result as null (wait_any_for, timeout reached)");
         return;
     }
 
@@ -170,6 +182,7 @@ void rsg::RsgCommHandler::wait_any_for(rsgCommIndexAndData& _return, const std::
     if (cd->buffer != nullptr) {
         std::string * res = (std::string*) *(cd->buffer);
         _return.data.assign(res->data(), res->length());
+        debug_server_print("AHOY. Set comm result from %p (in wait_any_for)", res);
 
         delete res;
         free(cd->buffer);

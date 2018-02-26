@@ -118,6 +118,25 @@ bool rsg::Comm::test() {
     return false;
 }
 
+std::vector<rsg::Comm*>::iterator rsg::Comm::wait_any(std::vector<rsg::Comm *> *comms) {
+    std::vector<int64_t> comms_int;
+    for (const rsg::Comm * comm : *comms) {
+        comms_int.push_back(comm->p_remoteAddr);
+    }
+
+    RsgService::rsgCommIndexAndData _return;
+    client->comm->wait_any(_return, comms_int);
+
+    rsg::Comm * terminatedComm = comms->at(_return.index);
+    if (terminatedComm->dstBuff_ != nullptr) {
+        char * chars = (char*) malloc(_return.data.size());
+        memcpy(chars, _return.data.c_str(), _return.data.size());
+        *(void**) terminatedComm->dstBuff_ = (char *) chars;
+    }
+
+    return comms->begin() + _return.index;
+}
+
 void rsg::Comm::waitAnyWrapper(rsgCommIndexAndData& _return, const std::vector<int64_t> & comms) {
     client->comm->wait_any(_return, comms);
 }
