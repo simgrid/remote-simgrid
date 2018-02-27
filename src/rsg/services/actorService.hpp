@@ -45,7 +45,7 @@ namespace simgrid  {
             void join(const int64_t addr);
             int32_t killPid(const int32_t pid);
             int64_t selfAddr();
-            int64_t createActor(const std::string& name, const int64_t host, const int32_t killTime);
+            int64_t createActor(const std::string& name, const int64_t host);
             void createActorPrepare(std::string& _return);
             void deleteActor(const int64_t addr);
             int32_t this_actorGetPid();

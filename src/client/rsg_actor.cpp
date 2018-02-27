@@ -236,7 +236,7 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::fu
     child_threads_mutex.lock();
     child_threads.insert({nActor->get_id() , nActor});
     child_threads_mutex.unlock();
-    unsigned long int addr = client->actor->createActor(name, host->p_remoteAddr, 10);//TODO:David: why 10?
+    unsigned long int addr = client->actor->createActor(name, host->p_remoteAddr);
     rsg::Actor *act = new Actor(addr);
     
     rsg::Actor *self = rsg::Actor::self();
@@ -290,7 +290,7 @@ int rsg::this_actor::fork(std::string childName) {
     }
     debug_spawn_client("[PARENT] FORK AFTER %d", realSystemPid);
     
-    unsigned long long newActorAddr = client->actor->createActor(childName, hostAddr, 10);//TODO:David: why 10?
+    unsigned long long newActorAddr = client->actor->createActor(childName, hostAddr);
    
     debug_spawn_client("[PARENT] FORK AFTER create actor");
     

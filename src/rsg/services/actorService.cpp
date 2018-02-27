@@ -176,7 +176,7 @@ int deleteServerWhenActorIsKilled(void *arg, void *arg2) {
 
 
 
-int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostaddr, const int32_t killTime) {
+int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostaddr) {
     
     s4u::Host *host = (s4u::Host*) hostaddr;
     
