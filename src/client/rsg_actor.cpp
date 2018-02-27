@@ -242,7 +242,8 @@ rsg::Actor *rsg::Actor::createActor(std::string name, rsg::HostPtr host, std::fu
     rsg::Actor *self = rsg::Actor::self();
     char *cstr_name = self->getName();
     delete self;
-    debug_spawn_client("Actor [%d]%s creates thread [%d]", this_actor::getPid(), cstr_name, act->getPid());
+    // Commented, as calling getPid increases time.
+    //debug_spawn_client("Actor [%d]%s creates thread [%d]", this_actor::getPid(), cstr_name, act->getPid());
     free(cstr_name);
     
     return act;
@@ -303,7 +304,8 @@ int rsg::this_actor::fork(std::string childName) {
     std::string name(c_name);
     free(c_name);
     delete self;
-    debug_spawn_client(" Actor [%d]%s  created fork [%d]%s", this_actor::getPid(), name.c_str(), newPid, childName.c_str());
+    // Commented, as calling getPid increases time.
+    //debug_spawn_client(" Actor [%d]%s  created fork [%d]%s", this_actor::getPid(), name.c_str(), newPid, childName.c_str());
     return newPid;
 }
 
