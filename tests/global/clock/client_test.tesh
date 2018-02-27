@@ -1,9 +1,9 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock before execute : 0.000020
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock after execute : 2.000040
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock before receive : 2.000090
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock before send : 2.000110
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock after send : 3.000130
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] get clock after receive : 3.000130
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 0.000020000 <- clock before execute
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 2.000040000 <- clock after execute
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 2.000090000 <- clock before receive (child)
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 2.000110000 <- clock before send
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 3.000129652 <- clock after send
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] 3.000129652 <- clock after receive (child)
