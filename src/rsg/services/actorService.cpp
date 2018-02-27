@@ -19,6 +19,8 @@ using namespace  ::RsgService;
 
 using namespace  ::simgrid;
 
+#define UNUSED(x) (void)(x)
+
 std::unordered_map<int, simgrid::s4u::ActorPtr> rsg::RsgActorHandler::pActors;
 unsigned long long rsg::RsgActorHandler::pActorMapId = 0;
 
@@ -167,10 +169,11 @@ int64_t rsg::RsgActorHandler::selfAddr() {
 }
 
 int deleteServerWhenActorIsKilled(void *arg, void *arg2) {
-    debug_server_print("");
+    UNUSED(arg);
+    debug_server_print("deleteServerWhenActorIsKilled begin");
     RsgThriftServer* srv = (RsgThriftServer*)arg2;
     delete srv;
-    debug_server_print("");
+    debug_server_print("deleteServerWhenActorIsKilled end");
     return 0;
 }
 
