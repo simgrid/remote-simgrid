@@ -1,5 +1,4 @@
-
-find_program(TESH_COMMAND tesh PATHS /opt/simgrid/bin ENV PATH)
+find_program(TESH_COMMAND tesh PATHS /opt/simgrid/bin ENV PATH ${SimGrid_PATH}/bin)
 
 if(NOT TESH_COMMAND)
     message(FATAL_ERROR "Tesh not found! Please reinstall Simgrid with Tesh activated.")
