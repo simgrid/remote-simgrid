@@ -4,8 +4,9 @@
 #include "rsg/comm.hpp"
 #include "RsgClient.hpp"
 
-
 using namespace ::simgrid;
+
+#define UNUSED(x) (void)(x)
 
 rsg::Comm::Comm(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr) {
     
@@ -22,10 +23,15 @@ rsg::Comm &rsg::Comm::send_init(rsg::Mailbox &dest) {
 
 rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data, int simulatedByteAmount) {
     xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size, int simulatedByteAmount) instead");
+    UNUSED(dest);
+    UNUSED(data);
+    UNUSED(simulatedByteAmount);
 }
 
 rsg::Comm &rsg::Comm::send_async(rsg::Mailbox &dest, void *data) {
     xbt_die("Size is needed in remote-simgrid. Please use send_async(rsg::Actor *sender, rsg::Mailbox &dest, void *data, size_t size) instead");
+    UNUSED(dest);
+    UNUSED(data);
 }
 
 //TODO Use the simulated amount
@@ -67,10 +73,12 @@ void rsg::Comm::setSrcData(void *data, size_t size) {
 
 void rsg::Comm::setSrcDataSize(size_t size) {
     xbt_die("unsupported : use setSrcData(void *data, size_t size) to set both the data and the size");
+    UNUSED(size);
 }
 
 void rsg::Comm::setSrcData(void *data) {
     xbt_die("unsupported : use setSrcData(void *data, size_t size) to set both the data and the size");
+    UNUSED(data);
 }
 
 
