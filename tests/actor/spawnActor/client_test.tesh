@@ -1,3 +1,4 @@
+! timeout 20
 ! ignore ^Thrift:.*|DBG—.*
 ! output sort
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml

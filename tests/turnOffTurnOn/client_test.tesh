@@ -1,3 +1,4 @@
+! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml 8080
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Client booting
