@@ -7,7 +7,7 @@
 #include "rsg/engine.hpp"
 #include "../../../src/common.hpp"
 
-#include "xbt.h"
+#include <xbt.h>
 
 #include <iostream>
 #include <sys/types.h>

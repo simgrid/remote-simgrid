@@ -4,8 +4,8 @@
 #include "rsg/host.hpp"
 #include "rsg/mutex.hpp"
 
-#include "xbt.h"
-#include "simgrid/s4u.hpp"
+#include <xbt.h>
+#include <simgrid/s4u.hpp>
 
 #include <iostream>
 #include <iostream>
