@@ -7,12 +7,15 @@ using namespace ::apache::thrift::server;
 using namespace ::RsgService;
 using namespace ::simgrid;
 
+#define UNUSED(x) (void)(x)
+
 std::unordered_map<uintptr_t, rsg::CommData*> *rsg::RsgCommHandler::comms = new std::unordered_map<uintptr_t, rsg::CommData*>();
 
 rsg::RsgCommHandler::RsgCommHandler() {
 }
 
 int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest) {
+    UNUSED(sender);
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
 
     CommData * cd = new CommData;
@@ -24,6 +27,7 @@ int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest)
 }
 
 int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t from_) {
+    UNUSED(receiver);
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
     CommData * cd = new CommData;
@@ -35,6 +39,7 @@ int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t fro
 }
 
 int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t from_) {
+    UNUSED(receiver);
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
     CommData * cd = new CommData;
@@ -49,6 +54,7 @@ int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t fr
 }
 
 int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
+    UNUSED(sender);
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
 
     if ((size_t)size > data.length())
