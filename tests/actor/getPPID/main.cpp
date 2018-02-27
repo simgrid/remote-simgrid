@@ -29,7 +29,7 @@ int actor(void *) {
   return 1;
 }
 
-int main(int argc, char **argv) {
+int main() {
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   rsg::Actor *act = rsg::Actor::createActor("receiver" , host1 , actor, NULL);

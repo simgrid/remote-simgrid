@@ -28,7 +28,7 @@ int simpleReceiver(void * ) {
     return 1;
 }
 
-int main(int argc, char **argv) {
+int main() {
     const char *msg = "Do you copy ? ";
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
     

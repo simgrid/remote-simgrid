@@ -15,7 +15,7 @@ using namespace ::simgrid;
 
 using boost::shared_ptr;
 
-int main(int argc, char **argv) {
+int main() {
 
   XBT_INFO("hello from Server");
   rsg::HostPtr host1 = rsg::Host::by_name("host0");

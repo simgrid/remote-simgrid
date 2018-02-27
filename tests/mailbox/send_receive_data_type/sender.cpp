@@ -16,7 +16,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "R
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-int main(int argc, char **argv) {
+int main() {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   
   // char*

@@ -15,7 +15,7 @@ using namespace ::simgrid;
 
 using boost::shared_ptr;
 
-int main(int argc, char **argv) {
+int main() {
   XBT_INFO("Client booting");
   XBT_INFO("Client shutting down");
   rsg::this_actor::quit();

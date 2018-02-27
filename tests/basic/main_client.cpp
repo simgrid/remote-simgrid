@@ -18,7 +18,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "R
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-int main(int argc, char **argv) {
+int main() {
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
     
     XBT_INFO("hostname ->  %s with speed %f", host1->getName().c_str(), host1->speed());

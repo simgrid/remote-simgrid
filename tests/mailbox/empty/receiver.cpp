@@ -14,7 +14,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "R
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-int main(int argc, char **argv) {
+int main() {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::sleep(1);
   XBT_INFO("receiver : is the mb empty : %s", mbox->empty()?"true":"false");

@@ -65,7 +65,7 @@ int Spwaner(void * ) {
   return 1;
 }
 
-int main(int argc, char **argv) {
+int main() {
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
   for(int i = 0; i < 4; i++) {

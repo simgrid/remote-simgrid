@@ -17,7 +17,7 @@ using boost::shared_ptr;
 
 using namespace ::simgrid;
 
-int main(int argc, char **argv) {
+int main() {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
   XBT_INFO("Received : %s with size of %lu", received, strlen(received) );

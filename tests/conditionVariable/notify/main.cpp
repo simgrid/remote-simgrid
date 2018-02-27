@@ -68,7 +68,7 @@ static int Worker(void *params)
   return 0;
 }
 
-int main(int argc, char **argv) {
+int main() {
   
   struct s_consistency *params = new  struct s_consistency(); 
   std::vector<rsg::Actor*> workers;

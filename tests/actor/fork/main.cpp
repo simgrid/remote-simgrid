@@ -21,7 +21,7 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 
-int main(int argc, char **argv) {
+int main() {
   // XBT_INFO("[parent]My id is  : %d",rsg::this_actor::getPid());
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   

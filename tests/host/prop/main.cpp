@@ -11,7 +11,7 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "R
 using boost::shared_ptr;
 using namespace ::simgrid;
 
-int main(int argc, char **argv) {
+int main() {
   const char *prop_msg = rsg::Host::current()->property("message");
   const char *prop_msg_null = rsg::Host::current()->property("nothing");
   XBT_INFO("Host message : %s", prop_msg);
