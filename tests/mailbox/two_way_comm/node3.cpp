@@ -2,8 +2,8 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 
-#include "xbt.h"
-#include "simgrid/s4u.hpp"
+#include <xbt.h>
+#include <simgrid/s4u.hpp>
 
 #include <stdio.h>
 #include <iostream>
@@ -15,14 +15,15 @@ using namespace ::simgrid;
 
 using boost::shared_ptr;
 
-int main(int argc, char **argv) {
-  rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
-  char *received = rsg::this_actor::recv(*fooMb);
-  XBT_INFO("Received -> %s", received);
-  
-  const char * sendMessage = "Ok";
-  rsg::this_actor::send(*fooMb, sendMessage, strlen(sendMessage) + 1);
-  
-  rsg::this_actor::quit();
-  return 0;
+int main()
+{
+    rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
+    char *received = rsg::this_actor::recv(*fooMb);
+    XBT_INFO("Received: \"%s\"", received);
+
+    const char * sendMessage = "Ok";
+    rsg::this_actor::send(*fooMb, sendMessage, strlen(sendMessage) + 1);
+
+    rsg::this_actor::quit();
+    return 0;
 }
