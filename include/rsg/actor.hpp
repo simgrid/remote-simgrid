@@ -41,7 +41,6 @@ namespace simgrid  {
             Host *getHost();
             int getPid();
             int getPPid();
-            bool valid() const;
             ~Actor();
             
         private:

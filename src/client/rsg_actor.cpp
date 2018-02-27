@@ -307,10 +307,6 @@ int rsg::this_actor::fork(std::string childName) {
     return newPid;
 }
 
-bool rsg::Actor::valid() const { 
-    return client->actor->isValideActor(this->p_remoteAddr);
-}
-
 rsg::Actor::~Actor() {
     client->actor->deleteActor(this->p_remoteAddr);
 }

@@ -51,7 +51,6 @@ service RsgActor    {
     i64 createActor(1:string name, 2:i64 host)
     i64 byPid(1:i32 pid)
     void deleteActor(1:i64 addr)
-    bool isValideActor(1:i64 remoteAddr)
 }
 
 service RsgMailbox   {

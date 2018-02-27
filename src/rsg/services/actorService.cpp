@@ -229,8 +229,3 @@ int64_t rsg::RsgActorHandler::byPid(const int32_t pid) {
         return -1;
     }
 }
-
-bool rsg::RsgActorHandler::isValideActor(const int64_t remoteAddr) {
-    std::cerr << "This function is not supported anymore" << std::endl;
-    return false;
-}

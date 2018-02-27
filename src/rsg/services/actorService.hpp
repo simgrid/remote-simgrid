@@ -51,7 +51,6 @@ namespace simgrid  {
             int32_t this_actorGetPid();
             int32_t this_actorGetPPid();
             int64_t byPid(const int32_t pid);
-            bool isValideActor(const int64_t remoteAddr);
             int32_t getPPid(const int64_t addr);
         private :
             static std::unordered_map<int, simgrid::s4u::ActorPtr> pActors;
