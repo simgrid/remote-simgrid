@@ -50,7 +50,15 @@ int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t fr
 
 int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest, const std::string& data, const int64_t size, const int64_t simulatedByteAmount) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
-    std::string *strData = new std::string(data.data(), data.length());
+
+    if ((size_t)size > data.length())
+    {
+        fprintf(stderr, "Invalid call to rsg::send_async. Given size (%ld) is invalid (data size is %zu).",
+                size, data.length());
+        _exit(1);
+    }
+
+    std::string *strData = new std::string(data.data(), size);
 
     CommData * cd = new CommData;
     cd->ptr = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
