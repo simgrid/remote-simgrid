@@ -31,9 +31,6 @@ install:
   - cd ${RSG_BASE_DIR}
   - git clone https://github.com/simgrid/simgrid.git --depth=1 --branch master  --single-branch simgrid
   - cd simgrid
-  #- git checkout 55da8092d # 2018-02-28
-  #- mkdir build
-  #- cd build
   - cmake . -Denable_compile_warnings=OFF -Denable_compile_optimizations=OFF -Denable_model-checking=OFF -Denable_smpi=OFF -Denable_documentation=OFF
   - make -j $(nproc)
   - sudo make install
@@ -63,7 +60,7 @@ script:
   - cd ${RSG_BASE_DIR}
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=ON
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
   - make -j $(nproc)
 
   #########
