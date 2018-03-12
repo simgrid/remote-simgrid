@@ -22,7 +22,7 @@ install:
   # Install packages from apt
   - sudo apt-get -qq update
   - sudo apt install -y cmake # cmake
-  - sudo apt install -y libboost-all-dev/xenial # boost
+  - sudo apt install -y libboost-all-dev # boost
   - sudo apt install -y libzmq3-dev # zeromq
   - sudo apt install -y libunwind-dev libdw-dev libelf-dev libevent-dev # SG MC
 
