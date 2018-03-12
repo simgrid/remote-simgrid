@@ -24,6 +24,7 @@ install:
   - sudo apt install -y cmake # cmake
   - sudo apt install -y libboost-all-dev/xenial # boost
   - sudo apt install -y libzmq3-dev # zeromq
+  - sudo apt install -y libunwind-dev libdw-dev libelf-dev libevent-dev # SG MC
 
   # Install SimGrid
   - cd ${RSG_BASE_DIR}
