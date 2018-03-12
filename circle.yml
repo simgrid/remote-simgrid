@@ -1,0 +1,34 @@
+# This is the configuration file for the https://circleci.com/ continuous integration server
+#
+# Copyright (C) 2017. The SimGrid team. All rights reserved.
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the license (GNU LGPL) which comes with this package.
+
+machine:
+  python:
+      version: 3.6.0
+
+dependencies:
+  pre:
+    - sudo apt-get update; sudo apt-get install cmake libboost-dev libboost-all-dev
+    - git clone https://github.com/simgrid/simgrid.git --depth=1 --branch master  --single-branch simgrid
+    - cd simgrid
+    - cmake . -Denable_compile_warnings=OFF -Denable_compile_optimizations=OFF -Denable_model-checking=OFF -Denable_smpi=OFF -Denable_documentation=OFF
+    - make
+    - sudo make install
+    - cd ..
+    - wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
+    - tar -xvf thrift-0.9.3.tar.gz
+    - cd thrift-0.9.3
+    - ./configure  --without-qt4 --without-qt5 --without-c_glib --without-csharp --without-java  --without-erlang --without-nodejs --without-lua --without-python --without-pe$
+    - make -j $(nproc)
+    - sudo make install
+    - cd ..
+
+test:
+  pre:
+    - mkdir _build
+    - pushd _build ; cmake .. -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF && make -j4
+  override:
+    - pushd _build ; make -j4 && ctest -j4 --output-on-failure
