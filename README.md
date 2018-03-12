@@ -10,7 +10,7 @@ Then, the RSG server can start your (real) application on top of a
 (simulated) platform, enabling you to use the full power of SimGrid as
 a perfect testbench for your application.
 
-Enjoy reproducibility, clairevoyance and simplicity while testing your
+Enjoy reproducibility, clairvoyance and simplicity while testing your
 distributed application or infrastructure !
 
 ## Current State
@@ -22,16 +22,16 @@ some features. The thing is that we are currently rewriting SimGrid
 will come back to the Remote SimGrid project. It may still work for
 you in the meanwhile, who knows.
 
-## Contact and Licence
+## Contact and License
 
 If you are interested, please drop us a line on the
 simgrid-user@lists.gforge.inria.fr mailing list.
 
-SimGrid is released under LGPL while RemoteSimGrid is released under
-the GNU Affero Licence. Please see the source packages for more
+SimGrid is released under LGPL while Remote SimGrid is released under
+the GNU Affero License. Please see the source packages for more
 information.
 
-## Installing Remote-Simgrid
+## Installing Remote SimGrid
 
 - Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.9.3/thrift-0.9.3.tar.gz) (version 0.9.3)
 
@@ -83,7 +83,7 @@ cmake -Denable_documentation=OFF -Denable_smpi=off -DCMAKE_INSTALL_PREFIX=/opt/s
 make install
 ```
 
-- And then compile remote-simgrid:
+- And then compile Remote SimGrid:
 ```bash
 cmake -DSimGrid_PATH=/opt/simgrid -DCMAKE_INSTALL_PREFIX=/opt/rsg .
 make
