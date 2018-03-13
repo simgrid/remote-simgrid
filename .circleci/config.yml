@@ -13,7 +13,15 @@ jobs:
     steps:
       - run: mkdir -p ${CIRCLE_WORKING_DIRECTORY}/build
       - run: echo $(pwd)
-      - run: nix-shell /datamovepkgs -A remote_simgrid --command "echo $(pwd)"
+      - run:
+          command: >
+            nix-shell /datamovepkgs -A remote_simgrid \
+                      --command "echo $(pwd)"
+      - run:
+          command: >
+            cd ${CIRCLE_WORKING_DIRECTORY}/build && \
+            nix-shell /datamovepkgs -A remote_simgrid \
+                      --command "echo $(pwd)"
       - run:
           name: Run CMake
           command: >
