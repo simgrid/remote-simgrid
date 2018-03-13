@@ -16,15 +16,15 @@ jobs:
       - run:
           name: Run CMake
           command: >
-            nix-shell /datamovepkgs -A remote_simgrid
-                      --command "cmake ..
-                                       -DCMAKE_BUILD_TYPE=Debug
-                                       -Denable_warnings=ON
+            nix-shell /datamovepkgs -A remote_simgrid \
+                      --command "cmake .. \
+                                       -DCMAKE_BUILD_TYPE=Debug \
+                                       -Denable_warnings=ON \
                                        -Dtreat_warnings_as_errors=OFF"
       - run:
           name: Run Make
           command: >
-            nix-shell /datamovepkgs -A remote_simgrid
+            nix-shell /datamovepkgs -A remote_simgrid \
                       --command "make -j 4"
 
   test:
