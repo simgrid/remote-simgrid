@@ -1,0 +1,37 @@
+# This is the configuration file for the https://circleci.com/ continuous integration server
+#
+# Copyright (C) 2017. The SimGrid team. All rights reserved.
+# 
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the license (GNU LGPL) which comes with this package.
+
+version: 2.0
+jobs:
+  build:
+    docker:
+      - image: simgrid/rsg_ci
+    steps:
+      - run: mkdir -p ${CIRCLE_WORKING_DIRECTORY}/build
+      - run: cd ${CIRCLE_WORKING_DIRECTORY}/build
+      - run:
+        name: Run CMake
+        command: nix-shell /datamovepkgs -A remote_simgrid \
+                           --command "cmake .. \
+                                             -DCMAKE_BUILD_TYPE=Debug \
+                                             -Denable_warnings=ON \
+                                             -Dtreat_warnings_as_errors=OFF"
+      - run:
+        name: Run Make
+        command: nix-shell /datamovepkgs -A remote_simgrid \
+                           --command "make -j 4"
+
+  test:
+    docker:
+      - image: simgrid/rsg_ci
+    steps:
+      - run:
+        name: Run tests (via ctest)
+        command: nix-shell /datamovepkgs -A remote_simgrid \
+                           --command "export LC_ALL='en_US.UTF-8' && \
+                                     ctest --output-on-failure \
+                                           -E 'actor_kill_pid|turnon_turnoff'"
