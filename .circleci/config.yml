@@ -5,14 +5,20 @@
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of the license (GNU LGPL) which comes with this package.
 
+defaults: &defaults
+  working_directory: /tmp
+  docker:
+    - image: simgrid/rsg_ci
+
 version: 2.0
 jobs:
   build:
-    docker:
-      - image: simgrid/rsg_ci
+    <<: *defaults
     steps:
       - checkout
-      - run: mkdir build
+      - run:
+          name: Create build directory
+          command: mkdir build
       - run:
           name: Run CMake
           command: >
@@ -28,12 +34,16 @@ jobs:
             cd build &&
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "make -j $(nproc)"
+      - persist_to_workspace:
+          root: build
+          paths:
+            - .
 
   test:
-    docker:
-      - image: simgrid/rsg_ci
+    <<: *defaults
     steps:
-      - checkout
+      - attach_workspace:
+          at: build
       - run:
           name: Run tests (via ctest)
           command: >
