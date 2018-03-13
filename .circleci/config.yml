@@ -12,12 +12,12 @@ jobs:
       - image: simgrid/rsg_ci
     steps:
       - run: mkdir -p ${CIRCLE_WORKING_DIRECTORY}/build
-      - run: cd ${CIRCLE_WORKING_DIRECTORY}/build
       - run: echo $(pwd)
       - run: nix-shell /datamovepkgs -A remote_simgrid --command "echo $(pwd)"
       - run:
           name: Run CMake
           command: >
+            cd ${CIRCLE_WORKING_DIRECTORY}/build && \
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "cmake .. \
                                        -DCMAKE_BUILD_TYPE=Debug \
@@ -26,6 +26,7 @@ jobs:
       - run:
           name: Run Make
           command: >
+            cd ${CIRCLE_WORKING_DIRECTORY}/build && \
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "make -j 4"
 
@@ -36,6 +37,7 @@ jobs:
       - run:
           name: Run tests (via ctest)
           command: >
+            cd ${CIRCLE_WORKING_DIRECTORY}/build && \
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "export LC_ALL='en_US.UTF-8' && \
                                 ctest --output-on-failure \
