@@ -23,7 +23,7 @@ int main()
     comm.start();
     rsg::this_actor::execute(8095000000 * 1.999999);
     comm.wait();
-    XBT_INFO("Async received: \"%s\" with size=%lu", buffer, strlen(buffer));
+    XBT_INFO("Async received: \"%s\" with size=%zu", buffer, strlen(buffer));
 
     free(buffer);
     buffer = NULL;
@@ -31,7 +31,7 @@ int main()
     rsg::Comm &comm2 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
     rsg::this_actor::execute(8095000000);
     comm2.wait();
-    XBT_INFO("Async received: \"%s\" with size=%lu", buffer, strlen(buffer));
+    XBT_INFO("Async received: \"%s\" with size=%zu", buffer, strlen(buffer));
 
     free(buffer);
     buffer = NULL;
@@ -41,7 +41,7 @@ int main()
     comm3.start();
     rsg::this_actor::execute(8095000000 * 2);
     comm3.wait();
-    XBT_INFO("Async received: \"%s\" with size=%lu", buffer, strlen(buffer));
+    XBT_INFO("Async received: \"%s\" with size=%zu", buffer, strlen(buffer));
 
     free(buffer);
     buffer = NULL;
@@ -49,7 +49,7 @@ int main()
     rsg::Comm &comm4 = rsg::Comm::recv_async(*mbox, (void**)&buffer);
     rsg::this_actor::execute(8095000000);
     comm4.wait();
-    XBT_INFO("Async received: \"%s\" with size=%lu", buffer, strlen(buffer));
+    XBT_INFO("Async received: \"%s\" with size=%zu", buffer, strlen(buffer));
 
     rsg::this_actor::quit();
     return 0;
