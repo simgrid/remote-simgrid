@@ -13,21 +13,6 @@ jobs:
     steps:
       - checkout
       - run: mkdir build
-      - run: echo $(pwd)
-      - run: cd build && echo $(pwd)
-      - run: cd build && echo $(pwd)
-      - run: ls -l /root/project
-      - run: find / -name '*.cmake' || true
-      - run: find / -name 'main_server.cpp' || true
-      - run:
-          command: >
-            nix-shell /datamovepkgs -A remote_simgrid \
-                      --command "echo $(pwd)"
-      - run:
-          command: >
-            cd build &&
-            nix-shell /datamovepkgs -A remote_simgrid \
-                      --command "echo $(pwd)"
       - run:
           name: Run CMake
           command: >
@@ -42,7 +27,7 @@ jobs:
           command: >
             cd build &&
             nix-shell /datamovepkgs -A remote_simgrid \
-                      --command "make -j 4"
+                      --command "make -j $(nproc)"
 
   test:
     docker:
@@ -57,3 +42,10 @@ jobs:
                       --command "export LC_ALL='en_US.UTF-8' && \
                                 ctest --output-on-failure \
                                       -E 'actor_kill_pid|turnon_turnoff'"
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
