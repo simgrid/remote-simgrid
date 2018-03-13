@@ -15,7 +15,7 @@ jobs:
       - run: mkdir build
       - run: echo $(pwd)
       - run: cd build && echo $(pwd)
-      - run: ls -l ${CIRCLE_WORKING_DIRECTORY}
+      - run: cd build && echo $(pwd)
       - run: ls -l /root/project
       - run: find / -name '*.cmake' || true
       - run: find / -name 'main_server.cpp' || true
