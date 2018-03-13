@@ -12,4 +12,4 @@ RUN nix-shell /datamovepkgs -A remote_simgrid \
               --command "echo Preinstalling dependencies done"
 
 # Annex programs
-RUN nix-env -i findutils
+RUN nix-env -i findutils coreutils
