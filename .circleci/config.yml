@@ -16,6 +16,8 @@ jobs:
       - run: cd ${CIRCLE_WORKING_DIRECTORY}/build && echo $(pwd)
       - run: ls -l ${CIRCLE_WORKING_DIRECTORY}
       - run: ls -l /root/project
+      - run: find / -name '*.cmake'
+      - run: find / -name 'main_server.cpp'
       - run:
           command: >
             nix-shell /datamovepkgs -A remote_simgrid \
