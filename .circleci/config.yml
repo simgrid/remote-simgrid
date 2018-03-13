@@ -13,6 +13,7 @@ jobs:
     steps:
       - run: mkdir -p ${CIRCLE_WORKING_DIRECTORY}/build
       - run: echo $(pwd)
+      - run: cd ${CIRCLE_WORKING_DIRECTORY}/build && echo $(pwd)
       - run:
           command: >
             nix-shell /datamovepkgs -A remote_simgrid \
