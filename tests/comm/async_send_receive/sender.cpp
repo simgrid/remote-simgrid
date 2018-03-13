@@ -33,7 +33,7 @@ int main()
 
     const char *msg4 = "What do you mean? An African or European swallow?";
     rsg::Comm &comm4 = rsg::Comm::send_init(*mbox);
-    comm4.setSrcData((void*)msg4, strlen(msg4));
+    comm4.setSrcData((void*)msg4, strlen(msg4) + 1);
     comm4.start();
     comm4.wait();
 
