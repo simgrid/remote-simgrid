@@ -19,7 +19,7 @@ jobs:
                       --command "echo $(pwd)"
       - run:
           command: >
-            cd ${CIRCLE_WORKING_DIRECTORY}/build && \
+            cd ${CIRCLE_WORKING_DIRECTORY}/build &&
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "echo $(pwd)"
       - run:
