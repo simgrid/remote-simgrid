@@ -11,6 +11,7 @@ jobs:
     docker:
       - image: simgrid/rsg_ci
     steps:
+      - checkout
       - run: mkdir -p ${CIRCLE_WORKING_DIRECTORY}/build
       - run: echo $(pwd)
       - run: cd ${CIRCLE_WORKING_DIRECTORY}/build && echo $(pwd)
@@ -47,6 +48,7 @@ jobs:
     docker:
       - image: simgrid/rsg_ci
     steps:
+      - checkout
       - run:
           name: Run tests (via ctest)
           command: >
