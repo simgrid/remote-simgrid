@@ -61,7 +61,7 @@ script:
   - mkdir build
   - cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-  - make -j $(nproc)
+  - make -j $(nproc) || VERBOSE=1 make
 
   #########
   # Tests #
