@@ -72,7 +72,7 @@ option(treat_warnings_as_errors
 # Enable pthread (https://github.com/potree/PotreeConverter/issues/136)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-set(RSG_INSTALL_DIR "/opt/remote-simgrid")
+set(RSG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${RSG_BINARY_DIR})
 

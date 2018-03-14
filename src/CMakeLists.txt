@@ -65,5 +65,5 @@ target_link_libraries(rsg_server "RsgService.thrift")
 target_link_libraries(rsg_server ${SimGrid_LIBRARY})
 target_link_libraries(rsg_server ${ZMQ_LIBRARIES})
 
-install(TARGETS rsg DESTINATION ${RSG_INSTALL_DIR})
-install(TARGETS rsg_server DESTINATION ${RSG_INSTALL_DIR})
+install(TARGETS rsg DESTINATION ${RSG_INSTALL_DIR}/lib)
+install(TARGETS rsg_server DESTINATION ${RSG_INSTALL_DIR}/bin)
