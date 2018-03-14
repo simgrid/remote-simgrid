@@ -51,5 +51,5 @@ script:
   - cd ${RSG_BASE_DIR}
   - mkdir build
   - cd build
-  - SimGrid_PATH=${RSG_BASE_DIR}/install cmake .. -DTHRIFT_HOME=${RSG_BASE_DIR}/install -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
+  - cmake .. -DSimGrid_PATH=${RSG_BASE_DIR}/install -DTHRIFT_HOME=${RSG_BASE_DIR}/install -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
   - (make -j $(nproc) || VERBOSE=1 make) && cd build && ctest --output-on-failure
