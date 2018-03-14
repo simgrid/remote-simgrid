@@ -54,17 +54,11 @@ compiler:
 
 # Build steps
 script:
-  ################
-  # Build RSG #
-  ################
+  ######################
+  # Build and test RSG #
+  ######################
   - cd ${RSG_BASE_DIR}
   - mkdir build
   - cd build
   - cmake .. -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-  - make -j $(nproc) || VERBOSE=1 make
-
-  #########
-  # Tests #
-  #########
-  - cd ${RSG_BASE_DIR}/build
-  - ctest --output-on-failure -E 'turnon_turnoff|actor_kill_pid'
+  - (make -j $(nproc) || VERBOSE=1 make) && cd build && ctest --output-on-failure
