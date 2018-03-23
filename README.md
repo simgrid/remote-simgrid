@@ -22,6 +22,8 @@ some features. The thing is that we are currently rewriting SimGrid
 will come back to the Remote SimGrid project. It may still work for
 you in the meanwhile, who knows.
 
+CI status: [![CircleCI](https://circleci.com/gh/simgrid/remote-simgrid/tree/master.svg?style=svg)](https://circleci.com/gh/simgrid/remote-simgrid/tree/master)
+
 ## Contact and License
 
 If you are interested, please drop us a line on the
