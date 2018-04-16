@@ -58,7 +58,9 @@ FOREACH(item ${THRIFT_GEN_FILES})
 ENDFOREACH(item)
 
 
-add_executable(rsg_server ${SERVER_SOURCES} )
+add_executable(rsg_server ${SERVER_SOURCES})
+target_link_libraries(rsg_server boost_program_options)
+
 add_library(rsg SHARED ${CLIENT_SOURCES_THRIFT} ${THRIFT_GEN_FILES})
 
 target_link_libraries(rsg_server "RsgService.thrift")

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <vector>
 
+#include <boost/program_options.hpp>
+#include <boost/program_options/parsers.hpp>
+
 // #include <thrift/processor/TMultiplexedProcessor.h>
 
 // #include "xbt.h"
@@ -72,7 +75,80 @@ static int rsg_representative(int argc, char **argv) {
     return 0;
 }
 
+/** The same as rsg_representative, without fork+exec'ing remote processes
+ *  but only displaying RsgRpcNetworkName
+ */
+static int rsg_representative_no_forkexec(int argc, char ** argv)
+{
+    std::string name;
+    TZmqServer::get_new_endpoint(name);
+
+    printf("RsgRpcNetworkName=%s\n", name.c_str());
+    fflush(stdout);
+
+    debug_server_print("STARTING %s", name.c_str());
+    RsgThriftServer srv(name);
+    srv();
+    debug_server_print("END");
+    return 0;
+}
+
 int main(int argc, char **argv) {
+    std::string platform_file;
+    std::string deployment_file;
+    bool start_clients = true;
+
+    namespace po = boost::program_options;
+    po::options_description desc("Options description");
+    desc.add_options()
+            ("help,h", "print usage message")
+            ("do-not-start-clients",
+             "disables RSG server's fork+exec into clients")
+            ("platform-file", po::value(&platform_file)->required(),
+             "the SimGrid platform to simulate")
+            ("deployment-file", po::value(&deployment_file)->required(),
+             "the SimGrid initial deployment")
+            ;
+
+    po::positional_options_description positional_options;
+    positional_options.add("platform-file", 1);
+    positional_options.add("deployment-file", 1);
+
+    po::variables_map vm;
+
+    try
+    {
+        po::store(po::command_line_parser(argc, argv).options(desc)
+                  .positional(positional_options).run(),
+                  vm); // throws on error
+
+        if (vm.count("help") > 0)
+        {
+            printf("Usage : %s platform_file deployment_file [options]\n",
+                   argv[0]);
+            std::cout << desc << "\n";
+            return 0;
+        }
+
+        if (vm.count("do-not-start-clients"))
+        {
+            start_clients = false;
+        }
+
+        po::notify(vm);
+    }
+    catch(boost::program_options::required_option& e)
+    {
+        std::cerr << "ERROR: " << e.what() << "\n";
+        return 1;
+    }
+    catch(boost::program_options::error& e)
+    {
+        std::cerr << "ERROR: " << e.what() << "\n";
+        return 1;
+    }
+
+
     if (DEBUG_SERVER) {
         int major, minor, patch;
         zmq_version (&major, &minor, &patch);
@@ -82,18 +158,22 @@ int main(int argc, char **argv) {
     
     s4u::Engine *e = new s4u::Engine(&argc,argv);
     
-    if (argc < 3) {
-        fprintf(stderr, "Usage: rsg platform.xml deploy.xml port\n");
-        exit(1);
-    }
-    
     pthread_t router;
     pthread_create(&router, NULL, TZmqServer::router_thread, 0);
     
     // Initialize the SimGrid world
-    e->loadPlatform(argv[1]);
-    e->registerDefault(rsg_representative);
-    e->loadDeployment(argv[2]);
+    e->loadPlatform(platform_file.c_str());
+
+    if (start_clients)
+    {
+        e->registerDefault(rsg_representative);
+    }
+    else
+    {
+        e->registerDefault(rsg_representative_no_forkexec);
+    }
+
+    e->loadDeployment(deployment_file.c_str());
     e->run();
     
     //wait for the router to close cleanly
