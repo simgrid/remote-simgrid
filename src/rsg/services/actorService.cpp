@@ -158,6 +158,7 @@ void rsg::RsgActorHandler::join(const int64_t addr) {
 
 void rsg::RsgActorHandler::createActorPrepare(std::string& _return) {
     TZmqServer::get_new_endpoint(_return);
+    debug_server_print("Allocating a new RsgThriftServer instance");
     lastChildServer = new RsgThriftServer(_return);
 }
 
