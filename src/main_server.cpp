@@ -28,6 +28,7 @@ using namespace ::simgrid;
 
 std::mutex print;
 std::vector<std::thread*> threads;
+bool start_clients;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_SERVER, RSG_THRIFT , "RSG server (Remote SimGrid)");
@@ -45,50 +46,60 @@ static int rsg_representative(int argc, char **argv) {
     TZmqServer::get_new_endpoint(name);
     
     debug_server_print("STARTING %s", name.c_str());
-    
-    RsgThriftServer srv(name);
-    
-    // We fork the actor process
-    pid_t pid = fork();
-    if (! pid) {
-        //We create the string formated to environment variables (key=value)
-        std::string envKeyValueStr = "RsgRpcNetworkName=" + name;
-        
-        putenv((char*)envKeyValueStr.c_str());
-
-        int newargc = argc-1+2+1;
-        char **newargv = (char**)calloc(newargc, sizeof(char*));
-        newargv[0] = (char*)"/usr/bin/env";
-        newargv[1] = (char*)"--";
-        for(int i=1; i < argc; i++) {
-            newargv[1+i] = argv[i];
-        }
-        newargv[newargc-1] = NULL;
-        debug_server_print("fork+exec: %s", newargv[2]);
-        execve(newargv[0], newargv, environ);
+    if (!start_clients)
+    {
+        printf("RsgRpcNetworkName=%s\n", name.c_str());
+        fflush(stdout);
     }
-    debug_server_print("Child started at pid %i", pid);
-
-    srv();
     
-    debug_server_print("END");
-    return 0;
-}
-
-/** The same as rsg_representative, without fork+exec'ing remote processes
- *  but only displaying RsgRpcNetworkName
- */
-static int rsg_representative_no_forkexec(int argc, char ** argv)
-{
-    std::string name;
-    TZmqServer::get_new_endpoint(name);
-
-    printf("RsgRpcNetworkName=%s\n", name.c_str());
-    fflush(stdout);
-
-    debug_server_print("STARTING %s", name.c_str());
     RsgThriftServer srv(name);
+
+    //We create the string formated to environment variables (key=value)
+    std::string envKeyValueStr = "RsgRpcNetworkName=" + name;
+
+    if (start_clients)
+    {
+        // We fork the actor process
+        pid_t pid = fork();
+        if (! pid) {
+            putenv((char*)envKeyValueStr.c_str());
+
+            int newargc = argc-1+2+1;
+            char **newargv = (char**)calloc(newargc, sizeof(char*));
+            newargv[0] = (char*)"/usr/bin/env";
+            newargv[1] = (char*)"--";
+            for(int i=1; i < argc; i++) {
+                newargv[1+i] = argv[i];
+            }
+            newargv[newargc-1] = NULL;
+
+            debug_server_print("fork+exec: %s with ENV(%s)",
+                               newargv[2], envKeyValueStr.c_str());
+            execve(newargv[0], newargv, environ);
+        }
+        debug_server_print("Child started at pid %i", pid);
+    }
+    else
+    {
+        printf("NOT DOING fork+exec: %s with ENV(%s)\n",
+               argv[1], envKeyValueStr.c_str());
+
+        std::string command_str;
+        for (int i = 1; i < argc-1; ++i)
+        {
+            command_str += (std::string)(argv[i]) + " ";
+        }
+        command_str += argv[argc-1];
+
+        printf("Waiting for client external launch. "
+               "Environment: %s. "
+               "Command: %s\n",
+               envKeyValueStr.c_str(),
+               command_str.c_str());
+    }
+
     srv();
+
     debug_server_print("END");
     return 0;
 }
@@ -96,14 +107,14 @@ static int rsg_representative_no_forkexec(int argc, char ** argv)
 int main(int argc, char **argv) {
     std::string platform_file;
     std::string deployment_file;
-    bool start_clients = true;
+    start_clients = true;
 
     namespace po = boost::program_options;
     po::options_description desc("Options description");
     desc.add_options()
             ("help,h", "print usage message")
-            ("do-not-start-clients",
-             "disables RSG server's fork+exec into clients")
+            ("server-only",
+             "prevents the server to fork+exec into clients to deploy")
             ("platform-file", po::value(&platform_file)->required(),
              "the SimGrid platform to simulate")
             ("deployment-file", po::value(&deployment_file)->required(),
@@ -130,7 +141,7 @@ int main(int argc, char **argv) {
             return 0;
         }
 
-        if (vm.count("do-not-start-clients"))
+        if (vm.count("server-only"))
         {
             start_clients = false;
         }
@@ -163,16 +174,7 @@ int main(int argc, char **argv) {
     
     // Initialize the SimGrid world
     e->loadPlatform(platform_file.c_str());
-
-    if (start_clients)
-    {
-        e->registerDefault(rsg_representative);
-    }
-    else
-    {
-        e->registerDefault(rsg_representative_no_forkexec);
-    }
-
+    e->registerDefault(rsg_representative);
     e->loadDeployment(deployment_file.c_str());
     e->run();
     
