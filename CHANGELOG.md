@@ -8,6 +8,9 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 
 [//]: =========================================================================
 ## [Unreleased]
+### Added
+- Servers are now launched in parallel.  
+  Previously, clients needed to connect in a sequential fashion to rsg_server.
 
 [//]: =========================================================================
 ## 0.1.0 - 2018-03-12

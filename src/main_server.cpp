@@ -98,6 +98,9 @@ static int rsg_representative(int argc, char **argv) {
                command_str.c_str());
     }
 
+    // Yielding before srv() allows launch parallelization
+    simgrid::s4u::this_actor::yield();
+
     srv();
 
     debug_server_print("END");
