@@ -1,0 +1,11 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] No receiver on mailbox "fake"
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Setting receiver to pid=2...
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Setting receiver to pid=2... done
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Send "Do you copy?" to pid=2 with size=12
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Setting receiver to nullptr...
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Setting receiver to nullptr... done
+>[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received from client: "Do you copy?" with size of 12
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Mailbox receiver has been reseted to nullptr

@@ -1,0 +1,4 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] data -> Do you copy ?  

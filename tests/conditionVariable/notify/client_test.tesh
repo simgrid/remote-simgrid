@@ -1,0 +1,9 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] main running...
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker begin...
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Execute for [gen => 3] 7500000
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] [THREAD]WAitings
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] main finished [1]
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] worker finished

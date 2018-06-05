@@ -1,0 +1,11 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main: Creating actor
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] sleeper: Sleeping for 10 s...
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main: Creating actor done
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main: Sleeping for 3 s...
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main: Sleeping for 3 s... done
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main: Joining actor
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] sleeper: Sleeping for 10 s... done
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] sleeper: Quitting

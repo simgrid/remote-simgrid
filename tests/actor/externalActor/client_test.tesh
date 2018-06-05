@@ -1,0 +1,6 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] actor name -> receiver
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] actor pid -> 2
+>[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] host name accessing by actor -> host1
