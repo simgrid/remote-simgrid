@@ -4,11 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][changelog]
 and this project adheres to [Semantic Versioning][semver].
 
-As the project is currently unstable, Remote Simgrid's API is not defined yet. 
+As the project is currently unstable, Remote Simgrid's API is not defined yet.
 
 [//]: =========================================================================
 ## [Unreleased]
 ### Added
+- *rsg_server* can now be used with the `--server-only` flag, which prevents
+  the automatic execution of the clients.
+- *rsg_server*'s CLI now supports options
+  (parameters no longer need to be positional arguments).
 - Servers are now launched in parallel.  
   Previously, clients needed to connect in a sequential fashion to rsg_server.
 
