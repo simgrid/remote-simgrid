@@ -1,8 +1,12 @@
+#include <unordered_map>
+
+#include <boost/algorithm/string/join.hpp>
+#include <boost/scoped_ptr.hpp>
+
+#include <zmq.hpp>
+
 #include <thrift/transport/TBufferTransports.h>
 #include <thrift/processor/TMultiplexedProcessor.h>
-#include <boost/scoped_ptr.hpp>
-#include <unordered_map>
-#include <zmq.hpp>
 
 #include "TZmqServer.hpp"
 
@@ -14,6 +18,85 @@ using namespace ::apache::thrift;
 using namespace ::apache::thrift::protocol;
 
 namespace apache { namespace thrift { namespace server {
+
+// initialize static attributes
+TZmqServer::SharedConnectionsStatus TZmqServer::s_connection_status;
+
+std::string TZmqServer::ConnectionStatus::as_json() const
+{
+    std::string waiting_init = std::string(R"("waiting_init":)") +
+            (waiting_for_initial_connection? "true" : "false");
+
+    std::vector<std::string> env_vector;
+    for (auto it : expected_env) {
+        env_vector.push_back("\"" + it.first + R"(":")" + it.second + "\"");
+    }
+    std::string env_as_string = boost::join(env_vector, ",");
+    std::string expected_env = R"("expected_env":{)" + env_as_string + "}";
+
+    std::vector<std::string> main_vector = {waiting_init, expected_env};
+
+    return "{" + boost::join(main_vector, ",") + '}';
+}
+
+TZmqServer::SharedConnectionsStatus::SharedConnectionsStatus() {}
+TZmqServer::SharedConnectionsStatus::~SharedConnectionsStatus() {}
+
+void TZmqServer::SharedConnectionsStatus::insert_new_connection(const std::string & name)
+{
+    mutex.lock();
+    ConnectionStatus status;
+    status.waiting_for_initial_connection = true;
+    status.expected_env = {{"RsgRpcNetworkName", name}};
+    statuses[name] = status;
+    mutex.unlock();
+}
+
+void TZmqServer::SharedConnectionsStatus::mark_connection_as_initialized(const std::string &name)
+{
+    mutex.lock();
+    auto it = statuses.find(name);
+    xbt_assert(it != statuses.end(), "Internal inconsistency");
+
+    ConnectionStatus & status = it->second;
+    status.waiting_for_initial_connection = false;
+    mutex.unlock();
+}
+
+std::map<std::string, TZmqServer::ConnectionStatus> TZmqServer::SharedConnectionsStatus::all()
+{
+    mutex.lock();
+    auto copy = statuses;
+    mutex.unlock();
+
+    return copy;
+}
+
+std::map<std::string, TZmqServer::ConnectionStatus> TZmqServer::SharedConnectionsStatus::waiting_init()
+{
+    auto connections = all();
+    std::map<std::string, TZmqServer::ConnectionStatus> res;
+
+    for (auto it : connections) {
+        std::string key = it.first;
+        ConnectionStatus value = it.second;
+
+        if (value.waiting_for_initial_connection) {
+            res[key] = value;
+        }
+    }
+    return res;
+}
+
+std::string TZmqServer::SharedConnectionsStatus::as_json(const std::map<std::string, TZmqServer::ConnectionStatus> &statuses)
+{
+    std::vector<std::string> v;
+    for (auto it : statuses) {
+        v.push_back(it.second.as_json());
+    }
+    return "[" + boost::join(v, ",") + "]";
+}
+
 
 //  Receive 0MQ string from socket and convert into string
 static std::string
@@ -93,6 +176,11 @@ void *TZmqServer::router_thread(void *arg)
                 worker_queue[client_addr] = backend;
                 
                 sockets.push_back({ (void*)*backend, 0, ZMQ_POLLIN, 0 });
+
+                s_connection_status.mark_connection_as_initialized(client_addr);
+
+                debug_server_print("Connections waiting for initialization: %s",
+                    SharedConnectionsStatus::as_json(s_connection_status.waiting_init()).c_str());;
             }
             
             debug_server_print("[ROUTER] sending to: backend~%s", client_addr.c_str());
@@ -162,13 +250,28 @@ void *TZmqServer::router_thread(void *arg)
     return 0;
 }
 
+zmq::context_t &TZmqServer::getContext() {
+    static zmq::context_t instance;
+    return instance;
+}
+
+void TZmqServer::get_new_endpoint(std::string &new_name) {
+    static std::mutex next_name_id_mutex;
+    static unsigned next_name_id = 0;
+
+    next_name_id_mutex.lock();
+    unsigned id = next_name_id++;
+    next_name_id_mutex.unlock();
+    new_name = std::string("Proc")+std::to_string(id);
+}
+
 //We add an integer on every response.
 // This integer is used to send asynchonous signals (like kill).
 // You can add more signals, don't forget to respect the standard UNIX signals.
 class TSignalServerProtocol : public TProtocolDecorator {
-    public:
-        TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
-            : TProtocolDecorator(_protocol) {}
+public:
+    TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
+        : TProtocolDecorator(_protocol) {}
 
         virtual ~TSignalServerProtocol() {}
 
@@ -218,7 +321,44 @@ bool TZmqServer::serveOne(int recv_flags) {
     bool ret = sock_.send(msg);
     assert(ret==true);
 
-  return true;
+    return true;
+}
+
+void TZmqServer::serve() {
+    bool ret = true;
+
+    if (!(*server_exit_)) {
+        ret = serveOne();
+        if (ret) {
+
+        }
+    }
+
+    while(!(*server_exit_) && ret) {
+        ret = serveOne();
+        assert(ret==true);
+    }
+}
+
+zmq::socket_t &TZmqServer::getSocket() {
+    return sock_;
+}
+
+TZmqServer::TZmqServer(boost::shared_ptr<TProcessor> processor, const std::string name, bool *server_exit)
+    :  TServer(processor)
+    , processor_(processor)
+    , zmq_type_(ZMQ_PAIR)
+    , sock_(TZmqServer::getContext(), zmq_type_)
+    , server_exit_(server_exit)
+    , name_(name)
+{
+    // Store that the connection is not done yet.
+    s_connection_status.insert_new_connection(name);
+
+    std::string endpoint = "inproc://backend." + name + ".inproc";
+    debug_server_print("[TZmqServer %s] ++++++CONNECT+++++ @%s",
+                       name.c_str(), endpoint.c_str());
+    sock_.connect(endpoint);
 }
 
 TZmqServer::~TZmqServer() {
