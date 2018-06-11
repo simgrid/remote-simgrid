@@ -15,6 +15,13 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
   (parameters no longer need to be positional arguments).
 - Servers are now launched in parallel.  
   Previously, clients needed to connect in a sequential fashion to rsg_server.
+- *rsg_server* now runs a status service, which notably allows to retrieve
+  information about the current client connections.  
+  Requests are formatted in plain text and follow the common ZeroMQ
+  request-reply pattern.
+  Current supported requests are `status all` and `status waiting_init`.  
+  This service uses TCP, and is bound on port 4242 by default.
+  Port can be changed via *rsg_server*'s command-line option `--status-port`.
 
 [//]: =========================================================================
 ## 0.1.0 - 2018-03-12
