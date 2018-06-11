@@ -1,7 +1,7 @@
 ! timeout 20
 ! ignore ^Thrift:.*|DBG—.*
 ! output sort
-$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] PidComp -> [5:5] 0
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] PidComp -> [6:6] 0
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] PidComp -> [7:7] 0

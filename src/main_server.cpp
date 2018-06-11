@@ -114,24 +114,18 @@ int main(int argc, char **argv) {
             ("help,h", "print usage message")
             ("server-only",
              "prevents the server to fork+exec into clients to deploy")
-            ("platform-file", po::value(&platform_file)->required(),
+            ("platform-file,p", po::value(&platform_file)->required(),
              "the SimGrid platform to simulate")
-            ("deployment-file", po::value(&deployment_file)->required(),
+            ("deployment-file,d", po::value(&deployment_file)->required(),
              "the SimGrid initial deployment")
             ("status-port", po::value(&status_port),
              "the TCP port on which status requests can be done")
             ;
 
-    po::positional_options_description positional_options;
-    positional_options.add("platform-file", 1);
-    positional_options.add("deployment-file", 1);
-
-    po::variables_map vm;
-
     try
     {
-        po::store(po::command_line_parser(argc, argv).options(desc)
-                  .positional(positional_options).run(),
+        po::variables_map vm;
+        po::store(po::command_line_parser(argc, argv).options(desc).run(),
                   vm); // throws on error
 
         if (vm.count("help") > 0)

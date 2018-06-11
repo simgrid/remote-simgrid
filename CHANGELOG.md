@@ -11,8 +11,7 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 ### Added
 - *rsg_server* can now be used with the `--server-only` flag, which prevents
   the automatic execution of the clients.
-- *rsg_server*'s CLI now supports options
-  (parameters no longer need to be positional arguments).
+- *rsg_server*'s CLI now has options (and no longer has positional arguments).
 - Servers are now launched in parallel.  
   Previously, clients needed to connect in a sequential fashion to rsg_server.
 - *rsg_server* now runs a status service, which notably allows to retrieve

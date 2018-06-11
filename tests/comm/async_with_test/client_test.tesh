@@ -1,6 +1,6 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "Do you copy?" with size=12
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async received: "Did you copy?" with size=13
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Nothing yet, just wait!
