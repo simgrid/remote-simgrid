@@ -51,6 +51,9 @@ set(SERVER_SOURCES
     rsg/services/KVSService.cpp
 )
 
+set(RSGSTAT_SOURCES
+    rsgstat/main_rsgstat.cpp
+)
 
 FILE(GLOB_RECURSE THRIFT_GEN_FILES ${THRIFT_GEN_INCLUDE_DIR}/*)
 FOREACH(item ${THRIFT_GEN_FILES})
@@ -62,6 +65,10 @@ ENDFOREACH(item)
 
 add_executable(rsg_server ${SERVER_SOURCES})
 target_link_libraries(rsg_server boost_program_options)
+
+add_executable(rsgstat ${RSGSTAT_SOURCES})
+target_link_libraries(rsgstat boost_program_options)
+target_link_libraries(rsgstat ${ZMQ_LIBRARIES})
 
 add_library(rsg SHARED ${CLIENT_SOURCES_THRIFT} ${THRIFT_GEN_FILES})
 
