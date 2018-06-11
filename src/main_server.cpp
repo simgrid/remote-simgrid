@@ -5,16 +5,11 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
 
-// #include <thrift/processor/TMultiplexedProcessor.h>
-
-// #include "xbt.h"
 #include "simgrid/s4u.hpp"
 
 #include "rsg/TZmqServer.hpp"
 #include "rsg/RsgThriftServer.hpp"
-// #include "rsg/Socket.hpp"
-// #include "rsg/services.hpp"
-// #include "rsg/Server.hpp"
+
 #include "common.hpp"
 
 
@@ -27,7 +22,6 @@ using boost::shared_ptr;
 using namespace ::simgrid;
 
 std::mutex print;
-std::vector<std::thread*> threads;
 bool start_clients;
 
 XBT_LOG_NEW_CATEGORY(RSG_THRIFT, "Remote SimGrid");
@@ -172,16 +166,19 @@ int main(int argc, char **argv) {
     
     s4u::Engine *e = new s4u::Engine(&argc,argv);
     
-    pthread_t router;
-    pthread_create(&router, NULL, TZmqServer::router_thread, 0);
+    pthread_t router_thread;
+    pthread_create(&router_thread, NULL, TZmqServer::router_thread, 0);
     
     // Initialize the SimGrid world
     e->loadPlatform(platform_file.c_str());
     e->registerDefault(rsg_representative);
     e->loadDeployment(deployment_file.c_str());
+
+    // Run the simulation (and wait for it to finish)
     e->run();
     
-    //wait for the router to close cleanly
-    pthread_join(router, 0);
+    // Wait for the router to close cleanly
+    pthread_join(router_thread, 0);
+
     return 0;
 }
