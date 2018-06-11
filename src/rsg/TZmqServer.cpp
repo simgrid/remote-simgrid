@@ -265,6 +265,16 @@ void TZmqServer::get_new_endpoint(std::string &new_name) {
     new_name = std::string("Proc")+std::to_string(id);
 }
 
+std::string TZmqServer::status_string_all()
+{
+    return SharedConnectionsStatus::as_json(s_connection_status.all());
+}
+
+std::string TZmqServer::status_string_waiting_init()
+{
+    return SharedConnectionsStatus::as_json(s_connection_status.waiting_init());
+}
+
 //We add an integer on every response.
 // This integer is used to send asynchonous signals (like kill).
 // You can add more signals, don't forget to respect the standard UNIX signals.

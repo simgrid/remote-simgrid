@@ -83,6 +83,8 @@ public:
     static void* router_thread(void*arg);
     static zmq::context_t& getContext();
     static void get_new_endpoint(std::string& new_name);
+    static std::string status_string_all();
+    static std::string status_string_waiting_init();
 
 // static attributes
 private:

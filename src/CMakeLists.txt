@@ -29,6 +29,8 @@ set(SERVER_SOURCES
     rsg/RsgThriftServer.cpp
     rsg/RsgThriftServer.hpp
     rsg/services.hpp
+    rsg/StatusServer.cpp
+    rsg/StatusServer.hpp
     rsg/TZmqServer.cpp
     rsg/TZmqServer.hpp
     rsg/services/actorService.cpp
