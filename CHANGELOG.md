@@ -9,6 +9,8 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 [//]: =========================================================================
 ## [Unreleased]
 ### Added
+- *rsg_server* can now be used with the `--background` flag, which executes
+  the server in background and terminate immediately.
 - *rsg_server* can now be used with the `--server-only` flag, which prevents
   the automatic execution of the clients.
 - *rsg_server*'s CLI now has options (and no longer has positional arguments).
