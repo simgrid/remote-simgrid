@@ -11,7 +11,7 @@ defaults: &defaults
 
 version: 2.0
 jobs:
-  build:
+  build_and_test:
     <<: *defaults
     steps:
       - checkout
@@ -28,35 +28,24 @@ jobs:
                                        -Denable_warnings=ON \
                                        -Dtreat_warnings_as_errors=OFF"
       - run:
-          name: Run Make
+          name: Do build with make
           command: >
             cd build &&
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "make -j $(nproc) || VERBOSE=1 make"
-      - persist_to_workspace:
-          root: build
-          paths:
-            - .
-
-  test:
-    <<: *defaults
-    steps:
-      - checkout
-      - attach_workspace:
-          at: build
       - run:
-          name: Run tests (via ctest)
+          name: Run the tests with ctest
           command: >
             cd build &&
             nix-shell /datamovepkgs -A remote_simgrid \
                       --command "export LC_ALL='en_US.UTF-8' && \
                                 ctest --output-on-failure"
 
-workflows:
-  version: 2
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+#workflows:
+#  version: 2
+#  build_and_test:
+#    jobs:
+#      - build
+#      - test:
+#          requires:
+#            - build
