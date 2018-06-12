@@ -120,6 +120,8 @@ int main(int argc, char **argv) {
              "the SimGrid initial deployment")
             ("status-port", po::value(&status_port),
              "the TCP port on which status requests can be done")
+            ("background",
+             "run the server in background and return immediately")
             ;
 
     try
@@ -139,6 +141,15 @@ int main(int argc, char **argv) {
         if (vm.count("server-only"))
         {
             start_clients = false;
+        }
+
+        if (vm.count("background"))
+        {
+            if (daemon(1,1))
+            {
+                perror("daemon");
+                return 1;
+            }
         }
 
         po::notify(vm);
