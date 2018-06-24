@@ -55,9 +55,11 @@ find_package(ZMQ REQUIRED)
 # Search for Thrift.
 # Should work with versions 0.9.3 and 0.10.0. Breaks with 0.11.0
 find_package(Thrift REQUIRED)
-if(NOT (${THRIFT_VERSION_STRING} VERSION_GREATER "0.9.2" AND
-        ${THRIFT_VERSION_STRING} VERSION_LESS "0.11.0"))
-  message(FATAL_ERROR "Remote-Simgrid require Thrift 0.9.3 or 0.10.0.")
+if(NOT ${THRIFT_FOUND})
+  message(FATAL_ERROR "Remote-Simgrid requires Thrift (if it's installed, define THRIFT_HOME to specify where it is)")
+endif()
+if("${THRIFT_VERSION_STRING}" VERSION_LESS "0.9.2")
+  message(FATAL_ERROR "Remote-Simgrid requires at least Thrift v0.9.3 but v${THRIFT_VERSION_STRING} found.")
 endif()
 
 ###############
