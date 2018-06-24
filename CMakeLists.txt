@@ -1,4 +1,4 @@
-# Copyright (C) 2015. The SimGrid Team. All rights reserved.
+# Copyright (C) 2015-2018. The SimGrid Team. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
@@ -107,7 +107,7 @@ if (enable_debug_logs)
 endif()
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
-include_directories(${THRIFT_INCLUDE_DIRS})
+include_directories(${THRIFT_INCLUDE_DIR})
 include_directories(${THRIFT_GEN_INCLUDE_DIR})
 
 include_directories(include)
