@@ -25,7 +25,6 @@
 using namespace ::apache::thrift::protocol;
 using apache::thrift::transport::TZmqClient;
 using apache::thrift::protocol::TBinaryProtocol;
-using boost::shared_ptr;
 using namespace ::RsgService;
 
 class RsgClient {

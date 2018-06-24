@@ -13,14 +13,14 @@ using namespace ::apache::thrift::transport;
 using namespace ::apache::thrift::server;
 using namespace ::RsgService;
 
-shared_ptr<rsg::RsgKVSHandler> rsg::RsgKVSHandler::instance(nullptr);
+std::shared_ptr<rsg::RsgKVSHandler> rsg::RsgKVSHandler::instance(nullptr);
 
-shared_ptr<rsg::RsgKVSHandler> rsg::RsgKVSHandler::getInstance() {
+std::shared_ptr<rsg::RsgKVSHandler> rsg::RsgKVSHandler::getInstance() {
   if(rsg::RsgKVSHandler::instance) 
-  return shared_ptr<rsg::RsgKVSHandler>(instance);
+  return std::shared_ptr<rsg::RsgKVSHandler>(instance);
   else {
-    rsg::RsgKVSHandler::instance = shared_ptr<rsg::RsgKVSHandler>(new rsg::RsgKVSHandler());
-    return shared_ptr<rsg::RsgKVSHandler>(instance);
+    rsg::RsgKVSHandler::instance = std::shared_ptr<rsg::RsgKVSHandler>(new rsg::RsgKVSHandler());
+    return std::shared_ptr<rsg::RsgKVSHandler>(instance);
   }
 }
 

@@ -10,7 +10,6 @@
 
 #include "TZmqServer.hpp"
 
-using boost::shared_ptr;
 using apache::thrift::transport::TMemoryBuffer;
 using apache::thrift::protocol::TProtocol;
 
@@ -280,7 +279,7 @@ std::string TZmqServer::status_string_waiting_init()
 // You can add more signals, don't forget to respect the standard UNIX signals.
 class TSignalServerProtocol : public TProtocolDecorator {
 public:
-    TSignalServerProtocol(shared_ptr<TProtocol> _protocol)
+   TSignalServerProtocol(std::shared_ptr<TProtocol> _protocol)
         : TProtocolDecorator(_protocol) {}
 
         virtual ~TSignalServerProtocol() {}
@@ -309,7 +308,7 @@ bool TZmqServer::serveOne(int recv_flags) {
         return false;
     }
 
-    shared_ptr<TMemoryBuffer> inputTransport(new TMemoryBuffer((uint8_t*)msg.data(), msg.size()));
+   shared_ptr<TMemoryBuffer> inputTransport(new TMemoryBuffer((uint8_t*)msg.data(), msg.size()));
     shared_ptr<TMemoryBuffer> outputTransport(new TMemoryBuffer());
     shared_ptr<TProtocol> inputProtocol(
         inputProtocolFactory_->getProtocol(inputTransport));
@@ -354,7 +353,7 @@ zmq::socket_t &TZmqServer::getSocket() {
     return sock_;
 }
 
-TZmqServer::TZmqServer(boost::shared_ptr<TProcessor> processor, const std::string name, bool *server_exit)
+TZmqServer::TZmqServer(shared_ptr<TProcessor> processor, const std::string name, bool *server_exit)
     :  TServer(processor)
     , processor_(processor)
     , zmq_type_(ZMQ_PAIR)

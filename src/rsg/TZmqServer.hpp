@@ -10,8 +10,6 @@
 #include <thrift/TProcessor.h>
 #include <thrift/server/TServer.h>
 
-#include <boost/shared_ptr.hpp>
-
 #include <zmq.hpp>
 
 #include "../common.hpp"
@@ -62,7 +60,7 @@ public:
 
 // methods
 public:
-    TZmqServer(boost::shared_ptr<TProcessor> processor, const std::string name, bool* server_exit);
+    TZmqServer(std::shared_ptr<TProcessor> processor, const std::string name, bool* server_exit);
     ~TZmqServer();
 
     bool serveOne(int recv_flags = 0);
@@ -72,7 +70,7 @@ public:
 
 // attributes
 private:
-    boost::shared_ptr<TProcessor> processor_;
+    std::shared_ptr<TProcessor> processor_;
     int zmq_type_;
     zmq::socket_t sock_;
     bool* server_exit_;

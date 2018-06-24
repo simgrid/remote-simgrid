@@ -13,8 +13,6 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_NODE_3, RSG_THRIFT_CLIENT , "RSG serv
 
 using namespace ::simgrid;
 
-using boost::shared_ptr;
-
 int main()
 {
     rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");

@@ -13,7 +13,6 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "R
 
 #define nbWorker 10
 
-using boost::shared_ptr;
 using namespace ::simgrid;
 
 int Worker(void* arg)
