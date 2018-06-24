@@ -1,6 +1,6 @@
 # - Find Thrift (a cross platform RPC lib/tool)
 # This module defines
-#  THRIFT_VERSION_STRING, version string of ant if found
+#  THRIFT_VERSION_STRING, version string of thrift if found
 #  THRIFT_LIBRARIES, libraries to link
 #  THRIFT_INCLUDE_DIR, where to find THRIFT headers
 #  THRIFT_COMPILER, thrift compiler executable
