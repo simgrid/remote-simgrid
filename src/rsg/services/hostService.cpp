@@ -31,65 +31,65 @@ void rsg::RsgHostHandler::current(rsgHostCurrentResType& _return) {
     debug_server_print("LALALALALLALALALA");
     s4u::Host *host = s4u::Host::current();
     debug_server_print("LALALALALLALALALA %p", host);
-    _return.name = host->getName();
+    _return.name = host->get_name();
     _return.addr = (unsigned long int) host;
     debug_server_print("LALALALALLALALALA ret:%s", _return.name.c_str());
 }
 
 double rsg::RsgHostHandler::speed(const int64_t addr) {
     s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
-    return host->getSpeed();
+    return host->get_speed();
 }
 
 void rsg::RsgHostHandler::turnOn(const int64_t addr) {
     s4u::Host *host = (s4u::Host*) addr;
-    host->turnOn();
+    host->turn_on();
 }
 
 void rsg::RsgHostHandler::turnOff(const int64_t addr) {
     s4u::Host *host = (s4u::Host*) addr;
-    host->turnOff();
+    host->turn_off();
 }
 
 bool rsg::RsgHostHandler::isOn(const int64_t addr) {
     s4u::Host *host = (s4u::Host*) addr;
-    return host->isOn();
+    return host->is_on();
 }
 
 double rsg::RsgHostHandler::currentPowerPeak(const int64_t addr) {
     s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
-    return host->getPstateSpeed(host->getPstate()); //FIXME Change the name to fit s4u
+    return host->get_pstate_speed(host->get_pstate()); //FIXME Change the name to fit s4u
 }
 
 double rsg::RsgHostHandler::powerPeakAt(const int64_t addr, const int32_t pstate_index) {
     s4u::Host *host = (s4u::Host*) addr;
-    return host->getPstateSpeed((int) pstate_index); //FIXME Change the name to fit s4u
+    return host->get_pstate_speed((int) pstate_index); //FIXME Change the name to fit s4u
 }
 
 int32_t rsg::RsgHostHandler::pstatesCount(const int64_t addr) {
     s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
-    return host->getPstatesCount();
+    return host->get_pstate_count();
 }
 
 void rsg::RsgHostHandler::setPstate(const int64_t addr, const int32_t pstate_index) {
     s4u::Host *host = (s4u::Host*) addr;
-    host->setPstate(pstate_index);
+    host->set_pstate(pstate_index);
 }
 
 int32_t rsg::RsgHostHandler::pstate(const int64_t addr) {
     s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
-    return host->getPstate(); // FIXME change function name
+    return host->get_pstate(); // FIXME change function name
 }
 
 
 int32_t rsg::RsgHostHandler::coreCount(const int64_t addr) {
     s4u::Host *host = reinterpret_cast<s4u::Host*>(addr);
-    return host->getCoreCount(); // FIXME change function name
+    return host->get_core_count(); // FIXME change function name
 }
 
 void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remoteAddr, const std::string& key) {
     s4u::Host *host = (s4u::Host*) remoteAddr;
-    const char *prop = host->getProperty(key.c_str());
+    const char *prop = host->get_property(key.c_str());
     if(prop != NULL) {
         _return = std::string(prop); 
     } else {
@@ -100,5 +100,5 @@ void rsg::RsgHostHandler::getProperty(std::string& _return, const int64_t remote
 
 void rsg::RsgHostHandler::setProperty(const int64_t remoteAddr, const std::string& key, const std::string& data) {
     s4u::Host *host = (s4u::Host*) remoteAddr;
-    host->setProperty(key.c_str(), data.c_str());
+    host->set_property(key.c_str(), data.c_str());
 }

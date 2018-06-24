@@ -178,9 +178,9 @@ int main(int argc, char **argv) {
     pthread_create(&router_thread, NULL, TZmqServer::router_thread, 0);
     
     // Initialize the SimGrid world
-    e->loadPlatform(platform_file.c_str());
-    e->registerDefault(rsg_representative);
-    e->loadDeployment(deployment_file.c_str());
+    e->load_platform(platform_file.c_str());
+    e->register_default(rsg_representative);
+    e->load_deployment(deployment_file.c_str());
 
     // Run the status server in another thread
     StatusServer status(status_port);

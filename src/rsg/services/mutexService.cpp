@@ -12,7 +12,7 @@ std::unordered_map<int, simgrid::s4u::MutexPtr> rsg::RsgMutexHandler::pMutexes;
 unsigned long long rsg::RsgMutexHandler::pMutexsMapId = 0;
 
 int64_t rsg::RsgMutexHandler::mutexInit() {
-    s4u::MutexPtr mutex = s4u::Mutex::createMutex();
+    s4u::MutexPtr mutex = s4u::Mutex::create();
     unsigned long long newId = rsg::RsgMutexHandler::pMutexsMapId++;
     rsg::RsgMutexHandler::pMutexes.insert({newId, mutex});
     return newId;

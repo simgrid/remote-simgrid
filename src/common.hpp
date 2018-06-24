@@ -67,6 +67,6 @@ extern std::mutex print;
         do { if (DEBUG_SERVER) { print.lock(); \
             fflush(stdout); fflush(stderr); \
             fprintf(stderr, DEBUG_PREFIX_STR ANSI_COLOR_GREEN "<%f:%lu> %s:%d:%s(): " fmt ANSI_COLOR_RESET "\n", \
-            SIMIX_get_clock(), simgrid::s4u::this_actor::getPid(), \
+            SIMIX_get_clock(), simgrid::s4u::this_actor::get_pid(), \
             __FILE__, __LINE__, __func__,  ##__VA_ARGS__); \
             fflush(stdout); fflush(stderr); print.unlock(); }} while (0)
