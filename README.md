@@ -68,12 +68,11 @@ git clone https://github.com/zeromq/cppzmq
 ```
 
 
-- Install the S4U branch of [SimGrid](http://simgrid.org/) (which in
-  turn depends on Boost). S4U is a preview of the future SimGrid v4.
+- Install a modern version of [SimGrid](http://simgrid.org/) (preferably the git version).
 
 ```bash
 # Fetch the S4U branch
-git clone https://github.com/mquinson/simgrid.git --branch S4U --depth 1
+git clone https://github.com/simgrid/simgrid.git --depth 1
 cd simgrid
 ```
 
