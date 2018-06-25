@@ -35,12 +35,12 @@ information.
 
 ## Installing Remote SimGrid
 
-- Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.9.3/thrift-0.9.3.tar.gz) (version 0.9.3)
+- Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.11.0/thrift-0.11.0.tar.gz) (version 0.11.0)
 
 ```bash
-wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
-tar -xvf thrift-0.9.3.tar.gz
-cd thrift-0.9.3
+wget http://apache.lauf-forum.at/thrift/0.11.0/thrift-0.11.0.tar.gz
+tar -xvf thrift-0.11.0.tar.gz
+cd thrift-0.11.0
 ./configure
 make
 [sudo] make install
@@ -49,9 +49,9 @@ make
 - If you want to run the tests, thrift have to be compiled with extra compilers flags :
 
   ```bash
-wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
-tar -xvf thrift-0.9.3.tar.gz
-cd thrift-0.9.3
+wget http://apache.lauf-forum.at/thrift/0.11.0/thrift-0.11.0.tar.gz
+tar -xvf thrift-0.11.0.tar.gz
+cd thrift-0.11.0
 export CXXFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && export CFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && ./configure
 make
 [sudo] make install

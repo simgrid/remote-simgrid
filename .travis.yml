@@ -29,9 +29,9 @@ install:
 
   # Install thrift
   - cd ${RSG_BASE_DIR}
-  - wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
-  - tar -xvf thrift-0.9.3.tar.gz
-  - cd thrift-0.9.3
+  - wget http://apache.lauf-forum.at/thrift/0.11.0/thrift-0.11.0.tar.gz
+  - tar -xvf thrift-0.11.0.tar.gz
+  - cd thrift-0.11.0
   - ./configure  --prefix=${RSG_BASE_DIR}/install --without-qt4 --without-qt5 --without-c_glib --without-csharp --without-java  --without-erlang --without-nodejs --without-lua --without-python --without-perl --without-php --without-php_extension --without-ruby --without-haskell --without-go --without-haxe --without-d
   - make -j $(nproc) install
 
