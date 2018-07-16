@@ -71,7 +71,7 @@ git clone https://github.com/zeromq/cppzmq
 - Install a modern version of [SimGrid](http://simgrid.org/) (preferably the git version).
 
 ```bash
-# Fetch the S4U branch
+# Clone SimGrid
 git clone https://github.com/simgrid/simgrid.git --depth 1
 cd simgrid
 ```
