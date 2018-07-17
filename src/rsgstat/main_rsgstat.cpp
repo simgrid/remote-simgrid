@@ -15,7 +15,7 @@ int retrieve_status(const std::string & hostname, uint16_t port,
     socket.connect("tcp://" + hostname + ":" + std::to_string(port));
     socket.send(request_str.c_str(), request_str.size());
 
-    std::vector<zmq::pollitem_t> items = { {&socket, 0, ZMQ_POLLIN, 0} };
+    std::vector<zmq::pollitem_t> items = { {socket, 0, ZMQ_POLLIN, 0} };
     if (zmq::poll(items, timeout) > 0) {
         socket.recv(&reply);
         std::string reply_str((char*)reply.data(), reply.size());
