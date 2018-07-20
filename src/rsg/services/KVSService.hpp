@@ -11,7 +11,6 @@
 #include "RsgService_types.h"
 
 
-using boost::shared_ptr;
 using namespace ::apache::thrift::server;
 using namespace ::RsgService;
 using namespace ::simgrid;
@@ -33,7 +32,7 @@ namespace simgrid  {
      */
     class RsgKVSHandler : virtual public RsgKVSIf {
     public:
-      static shared_ptr<RsgKVSHandler> getInstance();
+       static std::shared_ptr<RsgKVSHandler> getInstance();
 
       void get(std::string& _return, const std::string& key);
       void remove(const std::string& key);
@@ -46,7 +45,7 @@ namespace simgrid  {
       ~RsgKVSHandler();
 
     private:
-      static shared_ptr<RsgKVSHandler> instance;
+       static std::shared_ptr<RsgKVSHandler> instance;
       std::mutex sync;
 
       std::unordered_map<std::string, std::string> store;

@@ -12,7 +12,6 @@ XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
 XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::simgrid;
-using boost::shared_ptr;
 
 int main()
 {
@@ -33,7 +32,7 @@ int main()
 
     const char *msg4 = "What do you mean? An African or European swallow?";
     rsg::Comm &comm4 = rsg::Comm::send_init(*mbox);
-    comm4.setSrcData((void*)msg4, strlen(msg4));
+    comm4.setSrcData((void*)msg4, strlen(msg4) + 1);
     comm4.start();
     comm4.wait();
 

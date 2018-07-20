@@ -15,7 +15,7 @@ namespace simgrid {
         
         class Mutex;
         
-        XBT_PUBLIC_CLASS ConditionVariable {
+        class XBT_PUBLIC ConditionVariable {
             
         public:
             ConditionVariable();

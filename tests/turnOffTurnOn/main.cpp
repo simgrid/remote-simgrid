@@ -13,8 +13,6 @@ XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "R
 
 using namespace ::simgrid;
 
-using boost::shared_ptr;
-
 int main() {
 
   XBT_INFO("hello from Server");

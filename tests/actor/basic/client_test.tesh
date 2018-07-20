@@ -1,7 +1,7 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 ! output sort
-$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] I'll send Do you copy ?  with size : 14
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
 >[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Received from client : Do you copy ?  with size of 14 

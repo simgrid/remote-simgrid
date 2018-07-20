@@ -22,6 +22,8 @@ some features. The thing is that we are currently rewriting SimGrid
 will come back to the Remote SimGrid project. It may still work for
 you in the meanwhile, who knows.
 
+CI status: [![CircleCI](https://circleci.com/gh/simgrid/remote-simgrid/tree/master.svg?style=svg)](https://circleci.com/gh/simgrid/remote-simgrid/tree/master)
+
 ## Contact and License
 
 If you are interested, please drop us a line on the
@@ -33,12 +35,12 @@ information.
 
 ## Installing Remote SimGrid
 
-- Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.9.3/thrift-0.9.3.tar.gz) (version 0.9.3)
+- Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.11.0/thrift-0.11.0.tar.gz) (version 0.11.0)
 
 ```bash
-wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
-tar -xvf thrift-0.9.3.tar.gz
-cd thrift-0.9.3
+wget http://apache.lauf-forum.at/thrift/0.11.0/thrift-0.11.0.tar.gz
+tar -xvf thrift-0.11.0.tar.gz
+cd thrift-0.11.0
 ./configure
 make
 [sudo] make install
@@ -47,9 +49,9 @@ make
 - If you want to run the tests, thrift have to be compiled with extra compilers flags :
 
   ```bash
-wget http://apache.lauf-forum.at/thrift/0.9.3/thrift-0.9.3.tar.gz
-tar -xvf thrift-0.9.3.tar.gz
-cd thrift-0.9.3
+wget http://apache.lauf-forum.at/thrift/0.11.0/thrift-0.11.0.tar.gz
+tar -xvf thrift-0.11.0.tar.gz
+cd thrift-0.11.0
 export CXXFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && export CFLAGS="-DTHRIFT_SQUELCH_CONSOLE_OUTPUT" && ./configure
 make
 [sudo] make install
@@ -66,12 +68,11 @@ git clone https://github.com/zeromq/cppzmq
 ```
 
 
-- Install the S4U branch of [SimGrid](http://simgrid.org/) (which in
-  turn depends on Boost). S4U is a preview of the future SimGrid v4.
+- Install a modern version of [SimGrid](http://simgrid.org/) (preferably the git version).
 
 ```bash
-# Fetch the S4U branch
-git clone https://github.com/mquinson/simgrid.git --branch S4U --depth 1
+# Clone SimGrid
+git clone https://github.com/simgrid/simgrid.git --depth 1
 cd simgrid
 ```
 

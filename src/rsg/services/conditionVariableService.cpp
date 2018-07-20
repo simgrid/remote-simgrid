@@ -14,7 +14,7 @@ unsigned long long rsg::RsgConditionVariableHandler::pConditionVariablesMapId = 
 rsg::RsgConditionVariableHandler::RsgConditionVariableHandler() {}
 
 int64_t rsg::RsgConditionVariableHandler::conditionVariableInit() {
-    s4u::ConditionVariablePtr cond = s4u::ConditionVariable::createConditionVariable();
+    s4u::ConditionVariablePtr cond = s4u::ConditionVariable::create();
     unsigned long long newId = rsg::RsgConditionVariableHandler::pConditionVariablesMapId++;
     rsg::RsgConditionVariableHandler::pConditionVariables.insert({newId, cond});
     return newId;

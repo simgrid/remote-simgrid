@@ -29,6 +29,8 @@ set(SERVER_SOURCES
     rsg/RsgThriftServer.cpp
     rsg/RsgThriftServer.hpp
     rsg/services.hpp
+    rsg/StatusServer.cpp
+    rsg/StatusServer.hpp
     rsg/TZmqServer.cpp
     rsg/TZmqServer.hpp
     rsg/services/actorService.cpp
@@ -49,6 +51,9 @@ set(SERVER_SOURCES
     rsg/services/KVSService.cpp
 )
 
+set(RSGSTAT_SOURCES
+    rsgstat/main_rsgstat.cpp
+)
 
 FILE(GLOB_RECURSE THRIFT_GEN_FILES ${THRIFT_GEN_INCLUDE_DIR}/*)
 FOREACH(item ${THRIFT_GEN_FILES})
@@ -58,12 +63,19 @@ FOREACH(item ${THRIFT_GEN_FILES})
 ENDFOREACH(item)
 
 
-add_executable(rsg_server ${SERVER_SOURCES} )
+add_executable(rsg_server ${SERVER_SOURCES})
+target_link_libraries(rsg_server boost_program_options)
+
+add_executable(rsgstat ${RSGSTAT_SOURCES})
+target_link_libraries(rsgstat boost_program_options)
+target_link_libraries(rsgstat ${ZMQ_LIBRARIES})
+
 add_library(rsg SHARED ${CLIENT_SOURCES_THRIFT} ${THRIFT_GEN_FILES})
 
 target_link_libraries(rsg_server "RsgService.thrift")
 target_link_libraries(rsg_server ${SimGrid_LIBRARY})
 target_link_libraries(rsg_server ${ZMQ_LIBRARIES})
 
-install(TARGETS rsg DESTINATION ${RSG_INSTALL_DIR})
-install(TARGETS rsg_server DESTINATION ${RSG_INSTALL_DIR})
+install(TARGETS rsg DESTINATION ${RSG_INSTALL_DIR}/lib)
+install(TARGETS rsg_server DESTINATION ${RSG_INSTALL_DIR}/bin)
+install(TARGETS rsgstat DESTINATION ${RSG_INSTALL_DIR}/bin)

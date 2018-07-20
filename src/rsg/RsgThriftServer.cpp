@@ -77,8 +77,8 @@ public:
 
 
 
-void registerProcessor(shared_ptr<TMultiplexedProcessor> processor, std::string name, shared_ptr<TProcessor> fp) {
-  fp.get()->setEventHandler(shared_ptr<RsgProcessorEventHandler>(new RsgProcessorEventHandler));
+void registerProcessor(std::shared_ptr<TMultiplexedProcessor> processor, std::string name, std::shared_ptr<TProcessor> fp) {
+  fp.get()->setEventHandler(std::shared_ptr<RsgProcessorEventHandler>(new RsgProcessorEventHandler));
   processor->registerProcessor(name, fp);
 }
 
@@ -92,30 +92,30 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
     debug_server_print("Creating RsgThriftServer for %s %p", name_.c_str(), this);
 
     //init server
-    shared_ptr<TMultiplexedProcessor> processor(new TMultiplexedProcessor());
+    std::shared_ptr<TMultiplexedProcessor> processor(new TMultiplexedProcessor());
 
-    shared_ptr<rsg::RsgActorHandler> actHandler(new rsg::RsgActorHandler());
-    registerProcessor(processor, "RsgActor", shared_ptr<RsgActorProcessor>(new RsgActorProcessor(actHandler)));
+    std::shared_ptr<rsg::RsgActorHandler> actHandler(new rsg::RsgActorHandler());
+    registerProcessor(processor, "RsgActor", std::shared_ptr<RsgActorProcessor>(new RsgActorProcessor(actHandler)));
 
-    shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
-    registerProcessor(processor, "RsgMailbox", shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
+    std::shared_ptr<rsg::RsgMailboxHandler> mbHandler(new rsg::RsgMailboxHandler());
+    registerProcessor(processor, "RsgMailbox", std::shared_ptr<RsgMailboxProcessor>(new RsgMailboxProcessor(mbHandler)));
 
-    shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
-    registerProcessor(processor, "RsgHost", shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
+    std::shared_ptr<rsg::RsgHostHandler> hostHandler(new rsg::RsgHostHandler());
+    registerProcessor(processor, "RsgHost", std::shared_ptr<RsgHostProcessor>(new RsgHostProcessor(hostHandler)));
 
-    shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
-    registerProcessor(processor, "RsgComm", shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
+    std::shared_ptr<rsg::RsgCommHandler> commHandler(new rsg::RsgCommHandler());
+    registerProcessor(processor, "RsgComm", std::shared_ptr<RsgCommProcessor>(new RsgCommProcessor(commHandler)));
 
-    shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
-    registerProcessor(processor, "RsgMutex", shared_ptr<RsgMutexProcessor>(new RsgMutexProcessor(mutexServiceHandler)));
+    std::shared_ptr<rsg::RsgMutexHandler> mutexServiceHandler(new rsg::RsgMutexHandler());
+    registerProcessor(processor, "RsgMutex", std::shared_ptr<RsgMutexProcessor>(new RsgMutexProcessor(mutexServiceHandler)));
 
-    shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
-    registerProcessor(processor, "RsgEngine", shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
+    std::shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
+    registerProcessor(processor, "RsgEngine", std::shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
 
-    registerProcessor(processor, "RsgKVS", shared_ptr<RsgKVSProcessor>(new RsgKVSProcessor(rsg::RsgKVSHandler::getInstance())));
+    registerProcessor(processor, "RsgKVS", std::shared_ptr<RsgKVSProcessor>(new RsgKVSProcessor(rsg::RsgKVSHandler::getInstance())));
 
-    shared_ptr<rsg::RsgConditionVariableHandler> conditionVariableServiceHandler(new rsg::RsgConditionVariableHandler());
-    registerProcessor(processor, "RsgConditionVariable", shared_ptr<RsgConditionVariableProcessor>(new RsgConditionVariableProcessor(conditionVariableServiceHandler)));
+    std::shared_ptr<rsg::RsgConditionVariableHandler> conditionVariableServiceHandler(new rsg::RsgConditionVariableHandler());
+    registerProcessor(processor, "RsgConditionVariable", std::shared_ptr<RsgConditionVariableProcessor>(new RsgConditionVariableProcessor(conditionVariableServiceHandler)));
 
     server = new TZmqServer(processor, name_, &(actHandler->server_exit));
 }

@@ -44,12 +44,12 @@ void rsg::RsgActorHandler::execute(const double flops) {
 void rsg::RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
     std::string *internalPtr = new std::string(content.data(), content.length());
-    s4u::this_actor::send(mbox, (void*) internalPtr, simulatedSize);
+    mbox->put((void*) internalPtr, simulatedSize);
 }
 
 void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
-    std::string *content = (std::string*) s4u::this_actor::recv(mbox);  
+    std::string *content = (std::string*) mbox->get();
     _return.assign(content->data(), content->length());
     delete content;
 }
@@ -57,7 +57,7 @@ void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
 void rsg::RsgActorHandler::getName(std::string& _return, const int64_t addr) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        simgrid::xbt::string c_name = actor->getName();
+        simgrid::xbt::string c_name = actor->get_name();
         _return.assign(c_name);
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::getName no actors for this addr" << std::endl; 
@@ -68,8 +68,8 @@ void rsg::RsgActorHandler::getName(std::string& _return, const int64_t addr) {
 void rsg::RsgActorHandler::getHost(rsgHostCurrentResType& _return, const int64_t addr) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        s4u::Host *host = actor->getHost();
-        _return.name = host->getName();
+        s4u::Host *host = actor->get_host();
+        _return.name = host->get_name();
         _return.addr = (unsigned long int) host;
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::getHost no actors for this addr" << std::endl; 
@@ -80,7 +80,7 @@ void rsg::RsgActorHandler::getHost(rsgHostCurrentResType& _return, const int64_t
 int32_t rsg::RsgActorHandler::getPid(const int64_t addr) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        return actor->getPid();
+        return actor->get_pid();
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::getPid no actors for this addr" << std::endl; 
     }
@@ -91,7 +91,7 @@ int32_t rsg::RsgActorHandler::getPid(const int64_t addr) {
 void rsg::RsgActorHandler::setAutoRestart(const int64_t addr, const bool autorestart) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        actor->setAutoRestart(autorestart);
+        actor->set_auto_restart(autorestart);
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::setAutoRestart no actors for this addr" << std::endl; 
     }
@@ -101,7 +101,7 @@ void rsg::RsgActorHandler::setAutoRestart(const int64_t addr, const bool autores
 void rsg::RsgActorHandler::setKillTime(const int64_t addr, const double time) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        actor->setKillTime(time);
+        actor->set_kill_time(time);
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::setKillTime no actors for this addr" << std::endl; 
     }
@@ -111,7 +111,7 @@ void rsg::RsgActorHandler::setKillTime(const int64_t addr, const double time) {
 double rsg::RsgActorHandler::getKillTime(const int64_t addr) {
     try {
         simgrid::s4u::ActorPtr actor = pActors.at(addr);
-        return actor->getKillTime();
+        return actor->get_kill_time();
     } catch(std::out_of_range& e) {
         std::cerr << "rsg::RsgActorHandler::getKillTime no actors for this addr" << std::endl;
     }
@@ -119,7 +119,7 @@ double rsg::RsgActorHandler::getKillTime(const int64_t addr) {
 }
 
 void rsg::RsgActorHandler::killAll() {
-    s4u::Actor::killAll();
+    s4u::Actor::kill_all();
 }
 
 void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
@@ -133,11 +133,6 @@ void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
 
 int32_t rsg::RsgActorHandler::killPid(const int32_t pid) {
     try {
-        /*@Adrien: why this ?
-        int positiv_pid = pid;
-        if(pid < -1)
-            positiv_pid = pid*-1;*/
-        
         simgrid::s4u::Actor::kill(pid);
         return 0;
     } catch(std::out_of_range& e) {
@@ -158,6 +153,7 @@ void rsg::RsgActorHandler::join(const int64_t addr) {
 
 void rsg::RsgActorHandler::createActorPrepare(std::string& _return) {
     TZmqServer::get_new_endpoint(_return);
+    debug_server_print("Allocating a new RsgThriftServer instance");
     lastChildServer = new RsgThriftServer(_return);
 }
 
@@ -186,15 +182,11 @@ int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t
     debug_server_print("createActor for sgname: %s", name.c_str());
     
     //we use a lambda because otherwise simgrid make unwanted copy of the class.
-    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::createActor(
-                                                            name.c_str(),
-                                                            host,
-                                                            [&]{
-                                                                RsgThriftServer* srv = lastChildServer;
-                                                                MSG_process_on_exit(deleteServerWhenActorIsKilled, (void*)srv);
-                                                                (*srv)();
-                                                            }
-                                                                   );
+    simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::create(name.c_str(), host, [&]{
+      RsgThriftServer* srv = lastChildServer;
+      MSG_process_on_exit(deleteServerWhenActorIsKilled, (void*)srv);
+      (*srv)();
+    });
     unsigned long long newId = pActorMapId++;
     pActors.insert({newId, actor});
     return newId;
@@ -209,21 +201,21 @@ void rsg::RsgActorHandler::deleteActor(const int64_t addr)  {
 }
 
 int32_t rsg::RsgActorHandler::this_actorGetPid() {
-    return s4u::this_actor::getPid();
+    return s4u::this_actor::get_pid();
 }
 
 int32_t rsg::RsgActorHandler::this_actorGetPPid() {
-    return s4u::this_actor::getPpid();
+    return s4u::this_actor::get_ppid();
 }
 
 
 int32_t rsg::RsgActorHandler::getPPid(const int64_t addr) {
     simgrid::s4u::ActorPtr actor = pActors.at(addr);
-    return actor->getPpid();
+    return actor->get_ppid();
 }
 
 int64_t rsg::RsgActorHandler::byPid(const int32_t pid) {
-    simgrid::s4u::ActorPtr actor = s4u::Actor::byPid(pid);
+    simgrid::s4u::ActorPtr actor = s4u::Actor::by_pid(pid);
     if(actor != nullptr) {
         unsigned long long newId = pActorMapId++;
         pActors.insert({newId, actor});

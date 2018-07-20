@@ -19,7 +19,7 @@ int64_t rsg::RsgCommHandler::send_init(const int64_t sender, const int64_t dest)
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(dest);
 
     CommData * cd = new CommData;
-    cd->ptr = s4u::Comm::send_init(mbox);
+    cd->ptr = mbox->put_init();
 
     comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
@@ -31,7 +31,7 @@ int64_t rsg::RsgCommHandler::recv_init(const int64_t receiver, const int64_t fro
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
     CommData * cd = new CommData;
-    cd->ptr = s4u::Comm::recv_init(mbox);
+    cd->ptr = mbox->get_init();
 
     comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
@@ -43,10 +43,10 @@ int64_t rsg::RsgCommHandler::recv_async(const int64_t receiver, const int64_t fr
     s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(from_);
     
     CommData * cd = new CommData;
-    cd->ptr = s4u::Comm::recv_init(mbox);
+    cd->ptr = mbox->get_init();
 
     cd->buffer = (void**) malloc(sizeof(void*));
-    cd->ptr->setDstData(cd->buffer, sizeof(void*));
+    cd->ptr->set_dst_data(cd->buffer, sizeof(void*));
 
     comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
@@ -67,7 +67,7 @@ int64_t rsg::RsgCommHandler::send_async(const int64_t sender, const int64_t dest
     std::string *strData = new std::string(data.data(), size);
 
     CommData * cd = new CommData;
-    cd->ptr = s4u::Comm::send_async(mbox, (void*) strData, simulatedByteAmount);
+    cd->ptr = mbox->put_async((void*) strData, simulatedByteAmount);
 
     comms->insert({reinterpret_cast<uintptr_t>(&*(cd->ptr)), cd});
 
@@ -96,23 +96,23 @@ void rsg::RsgCommHandler::waitComm(std::string& _return, const int64_t addr) {
 
 void rsg::RsgCommHandler::setSrcDataSize(const int64_t addr, const int64_t size) {
     CommData * cd = comms->at((uintptr_t) addr);
-    cd->ptr->setSrcDataSize((size_t) size);
+    cd->ptr->set_src_data_size((size_t) size);
 }
 
 int64_t rsg::RsgCommHandler::getDstDataSize(const int64_t addr) {
     CommData * cd = comms->at((uintptr_t) addr);
-    return cd->ptr->getDstDataSize();
+    return cd->ptr->get_dst_data_size();
 }
 
 void rsg::RsgCommHandler::setRate(const int64_t addr, const double rate) {
     CommData * cd = comms->at((uintptr_t) addr);
-    cd->ptr->setRate(rate);
+    cd->ptr->set_rate(rate);
 }
 
 void rsg::RsgCommHandler::setSrcData(const int64_t addr, const std::string& buff) {
     CommData * cd = comms->at((uintptr_t) addr);
     std::string *payload = new std::string(buff.data(), buff.length()); // leak on multiple call
-    cd->ptr->setSrcData((void*)payload, sizeof(void*));
+    cd->ptr->set_src_data((void*)payload, sizeof(void*));
 }
 
 void rsg::RsgCommHandler::setDstData(const int64_t addr) { //FIXME USE THE SIZE
@@ -120,7 +120,7 @@ void rsg::RsgCommHandler::setDstData(const int64_t addr) { //FIXME USE THE SIZE
     xbt_assert(cd->buffer == nullptr, "Comm already has a destination buffer");
 
     cd->buffer = (void**) malloc(sizeof(void*));
-    cd->ptr->setDstData(cd->buffer, sizeof(void*));
+    cd->ptr->set_dst_data(cd->buffer, sizeof(void*));
 }
 
 void rsg::RsgCommHandler::test(rsgCommBoolAndData& _return, const int64_t addr) {

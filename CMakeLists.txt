@@ -1,4 +1,4 @@
-# Copyright (C) 2015. The SimGrid Team. All rights reserved.
+# Copyright (C) 2015-2018. The SimGrid Team. All rights reserved.
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Affero Licence (see in file LICENCE).
@@ -53,11 +53,13 @@ include_directories("${SimGrid_INCLUDE_DIR}" SYSTEM)
 find_package(ZMQ REQUIRED)
 
 # Search for Thrift.
-# Should work with versions 0.9.3 and 0.10.0. Breaks with 0.11.0
+# Should work with 0.11.0 (and possibly above, but that's currently the last released version)
 find_package(Thrift REQUIRED)
-if(NOT (${THRIFT_VERSION_STRING} VERSION_GREATER "0.9.2" AND
-        ${THRIFT_VERSION_STRING} VERSION_LESS "0.11.0"))
-  message(FATAL_ERROR "Remote-Simgrid require Thrift 0.9.3 or 0.10.0.")
+if(NOT ${THRIFT_FOUND})
+  message(FATAL_ERROR "Remote-Simgrid requires Thrift (if it's installed, define THRIFT_HOME to specify where it is)")
+endif()
+if("${THRIFT_VERSION_STRING}" VERSION_LESS "0.11")
+  message(FATAL_ERROR "Remote-Simgrid requires at least Thrift v0.11 but v${THRIFT_VERSION_STRING} found.")
 endif()
 
 ###############
@@ -72,7 +74,7 @@ option(treat_warnings_as_errors
 # Enable pthread (https://github.com/potree/PotreeConverter/issues/136)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 
-set(RSG_INSTALL_DIR "/opt/remote-simgrid")
+set(RSG_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 set(RSG_BINARY_DIR ${CMAKE_BINARY_DIR}/bin)
 set(EXECUTABLE_OUTPUT_PATH ${RSG_BINARY_DIR})
 
@@ -107,7 +109,7 @@ if (enable_debug_logs)
 endif()
 
 thrift_gen_cpp(RsgService.thrift THRIFT_CPP_FILES_LIST THRIFT_GEN_INCLUDE_DIR)
-include_directories(${THRIFT_INCLUDE_DIRS})
+include_directories(${THRIFT_INCLUDE_DIR})
 include_directories(${THRIFT_GEN_INCLUDE_DIR})
 
 include_directories(include)

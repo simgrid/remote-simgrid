@@ -1,6 +1,6 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server ${resources:=.}/two_hosts_platform.xml ${bintestdir:=.}/deploy.xml
+$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Async Received : Do you copy ?  with size of 14 
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] I will receive an array of 18 elem 
 >[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] array[0] = 0 
