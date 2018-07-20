@@ -41,5 +41,5 @@ Initial release.
 [changelog]: http://keepachangelog.com/en/1.0.0/
 [semver]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://gitlab.inria.fr/batsim/batsched/compare/v0.2.0...master
-[0.2.0]: https://gitlab.inria.fr/batsim/batsched/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/simgrid/remote-simgrid/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/simgrid/remote-simgrid/compare/v0.1.0...v0.2.0
