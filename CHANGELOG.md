@@ -8,11 +8,15 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 
 [//]: =========================================================================
 ## [Unreleased]
+
+[//]: =========================================================================
+## [0.2.0] - 2018-07-20
 ### Added
 - *rsg_server* can now be used with the `--background` flag, which executes
-  the server in background and terminate immediately.
+  the server in background and terminates immediately.
 - *rsg_server* can now be used with the `--server-only` flag, which prevents
   the automatic execution of the clients.
+  In this case, the user is expected to execute the clients.
 - *rsg_server*'s CLI now has options (and no longer has positional arguments).
 - Servers are now launched in parallel.  
   Previously, clients needed to connect in a sequential fashion to rsg_server.
@@ -24,6 +28,11 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
   This service uses TCP, and is bound on port 4242 by default.
   Port can be changed via *rsg_server*'s command-line option `--status-port`.
 
+### Changed
+- Dependencies :
+  - Thrift: 0.11.0 is now required (previously, 0.9.3 or 0.10.0 was required).
+  - Boost.Program_options is now required.
+
 [//]: =========================================================================
 ## 0.1.0 - 2018-03-12
 Initial release.
@@ -32,4 +41,5 @@ Initial release.
 [changelog]: http://keepachangelog.com/en/1.0.0/
 [semver]: http://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://gitlab.inria.fr/batsim/batsched/compare/v0.1.0...master
+[Unreleased]: https://gitlab.inria.fr/batsim/batsched/compare/v0.2.0...master
+[0.2.0]: https://gitlab.inria.fr/batsim/batsched/compare/v0.1.0...v0.2.0
