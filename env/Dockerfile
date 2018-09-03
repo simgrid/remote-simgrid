@@ -2,14 +2,12 @@
 FROM lnl7/nix:1.11.16
 
 # Survival kit
-RUN nix-env -i git gnutar gzip
+RUN nix-env -i git gnutar gzip gnused coreutils which findutils
 
-# Retrieve datamove nix packages
-RUN git clone https://gitlab.inria.fr/vreis/datamove-nix.git /datamovepkgs
+# Retrieve kapack packages
+RUN git clone https://github.com/oar-team/kapack.git /kapack
 
 # Pre install Remote SimGrid's dependencies
-RUN nix-shell /datamovepkgs -A remote_simgrid \
+RUN nix-shell /kapack -A remote_simgrid \
               --command "echo Preinstalling dependencies done"
 
-# Annex programs
-RUN nix-env -i findutils coreutils
