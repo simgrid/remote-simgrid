@@ -28,3 +28,6 @@ RUN git clone https://github.com/oar-team/kapack.git /kapack
 RUN nix-shell /kapack -A remote_simgrid \
               --command "echo Preinstalling dependencies done"
 
+# Pre-build some other projects (also using this container for CI)
+RUN git clone https://framagit.org/simgrid/openmpi-rsg-plugins.git /openmpi-rsg-plugins
+RUN nix-build /openmpi-rsg-plugins -A openmpi_rsg
