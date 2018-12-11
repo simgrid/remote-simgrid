@@ -27,7 +27,7 @@ service RsgEngine {
     double getClock()
 }
 
-service RsgActor    {
+service RsgActor {
     void sleep(1:double duration)
     void execute(1:double flops)
     void send(1:i64 mbAddr,2:string content, 3:i64 simulatedSize)
@@ -53,14 +53,14 @@ service RsgActor    {
     void deleteActor(1:i64 addr)
 }
 
-service RsgMailbox   {
+service RsgMailbox {
     i64 mb_create(1:string name)
     void setReceiver(1:i64 remoteAddrMailbox, 2:i64 remoteAddrActor)
     i64 getReceiver(1:i64 remoteAddrMailbox)
     bool empty(1:i64 remoteAddrMailbox)
 }
 
-service RsgMutex   {
+service RsgMutex {
     i64 mutexInit()
     void destroy(1:i64 rmtAddr)
     void lock(1:i64 rmtAddr)
@@ -78,7 +78,7 @@ service RsgConditionVariable {
 }
 
 
-service RsgHost   {
+service RsgHost {
     i64 by_name(1:string name)
     rsgHostCurrentResType current()
     double speed(1:i64 addr)
@@ -95,7 +95,7 @@ service RsgHost   {
     void setProperty(1:i64 remoteAddr, 2:string key, 3:binary data)
 }
 
-service RsgComm   {
+service RsgComm {
     i64 send_init(1:i64 sender, 2:i64 dest)
     i64 recv_init(1:i64 receiver, 2:i64 from_)
     i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size, 5:i64 simulatedByteAmount)
@@ -111,7 +111,7 @@ service RsgComm   {
     rsgCommBoolAndData test(1:i64 addr)
 }
 
-service RsgKVS   {
+service RsgKVS {
     void insert(1:string key, 2:binary data)
     void replace(1:string key, 2:binary data)
     void remove(1:string key)
