@@ -21,7 +21,7 @@ struct rsgCommIndexAndData {
 enum rsgConditionVariableStatus {
     cv_timeout = 1,
     cv_no_timeout = 2
-}    
+}
 
 service RsgEngine {
     double getClock()
@@ -98,7 +98,7 @@ service RsgHost   {
 service RsgComm   {
     i64 send_init(1:i64 sender, 2:i64 dest)
     i64 recv_init(1:i64 receiver, 2:i64 from_)
-    i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size, 5:i64 simulatedByteAmount)    
+    i64 send_async(1:i64 sender, 2:i64 dest,3:binary data , 4:i64 size, 5:i64 simulatedByteAmount)
     string waitComm(1:i64 commAddr)
     void start(1:i64 addr)
     void setRate(1:i64 addr, 2:double rate);
