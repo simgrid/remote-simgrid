@@ -6,7 +6,7 @@ variables:
 stages:
   - one_big_stage
 
-manual_build:
+one_big_job:
   stage: one_big_stage
   script:
     - mkdir -p build
