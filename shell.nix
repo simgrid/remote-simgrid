@@ -5,7 +5,8 @@ let
     ( fetchTarball "https://github.com/oar-team/kapack/archive/master.tar.gz")
     # A local version can also be used:
     #~/kapack
-  { inherit pkgs; };
+    #{ inherit pkgs; };
+    {};
 in
 
 kapack.remote_simgrid_dev
