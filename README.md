@@ -33,7 +33,16 @@ SimGrid is released under LGPL while Remote SimGrid is released under
 the GNU Affero License. Please see the source packages for more
 information.
 
-## Installing Remote SimGrid
+## Installing Remote Simgrid via Nix
+Remote SimGrid is packaged in the
+[Kapack Nix repository](https://github.com/oar-team/kapack/).
+
+- Install Nix (instructions on [Nix's website](https://nixos.org/nix/))
+- Install Remote SimGrid.
+  - Last release: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA remote_simgrid`
+  - Last commit: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA remote_simgrid_dev`
+
+## Installing Remote SimGrid manually
 
 - Install [Thrift](http://www.apache.org/dyn/closer.cgi?path=/thrift/0.11.0/thrift-0.11.0.tar.gz) (version 0.11.0)
 
