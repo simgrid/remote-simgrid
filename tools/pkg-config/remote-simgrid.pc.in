@@ -1,0 +1,12 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: Remote SimGrid
+Description: Framework to use SimGrid between distributed processes, for lightweighted applicative interception
+Requires: simgrid, thrift, libzmq
+Version: 0.2.0
+
+Libs: -L${libdir} -lrsg
+Cflags: -I${includedir}

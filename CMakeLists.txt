@@ -127,3 +127,8 @@ FILE(GLOB THRIFT_GEN_INCLUDE_FILES ${THRIFT_GEN_INCLUDE_DIR}/*.h*)
 install(DIRECTORY include DESTINATION ${RSG_INSTALL_DIR})
 install(FILES ${THRIFT_GEN_INCLUDE_FILES}
         DESTINATION ${RSG_INSTALL_DIR}/include)
+
+# Generate a pkg-config file for librsg users
+configure_file("${CMAKE_HOME_DIRECTORY}/tools/pkg-config/remote-simgrid.pc.in"
+  "${PROJECT_BINARY_DIR}/remote-simgrid.pc" @ONLY)
+install(FILES "${PROJECT_BINARY_DIR}/remote-simgrid.pc" DESTINATION lib/pkgconfig/)
