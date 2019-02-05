@@ -3,24 +3,30 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
 
-#include <zmq.hpp>
+#include <zmq.h>
 
 int retrieve_status(const std::string & hostname, uint16_t port,
                     const std::string & request_str, int timeout) {
-    zmq::context_t context;
-    zmq::socket_t socket(context, ZMQ_REQ);
-    socket.setsockopt(ZMQ_LINGER, 0);
-    zmq::message_t reply;
+    void *context = zmq_ctx_new();
+    void *socket = zmq_socket(context, ZMQ_REQ);
+    int linger = 0;
+    zmq_setsockopt(socket, ZMQ_LINGER, &linger, sizeof(int));
 
-    socket.connect("tcp://" + hostname + ":" + std::to_string(port));
-    socket.send(request_str.c_str(), request_str.size());
+    std::string connect_str = "tcp://" + hostname + ":" + std::to_string(port);
+    zmq_connect(socket, connect_str.c_str());
+    zmq_send(socket, request_str.c_str(), request_str.size(), 0);
 
-    std::vector<zmq::pollitem_t> items = { {socket, 0, ZMQ_POLLIN, 0} };
-    if (zmq::poll(items, timeout) > 0) {
-        socket.recv(&reply);
-        std::string reply_str((char*)reply.data(), reply.size());
-        printf("%s\n", reply_str.c_str());
-        return 0;
+    zmq_pollitem_t items[] = { {socket, 0, ZMQ_POLLIN, 0} };
+    if (zmq_poll(items, 1, timeout) > 0) {
+        zmq_msg_t msg;
+        zmq_msg_init(&msg);
+        if (zmq_msg_recv(&msg, socket, 0) != -1) {
+            std::string reply_str((char *)zmq_msg_data(&msg), zmq_msg_size(&msg));
+            printf("%s\n", reply_str.c_str());
+            return 0;
+        } else {
+            return 1;
+        }
     } else {
         return 1;
     }
