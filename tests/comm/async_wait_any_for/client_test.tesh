@@ -1,0 +1,32 @@
+! timeout 5
+! ignore ^Thrift:.*|DBG—.*
+$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on timeout
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] left wait_any_for on finished comm
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 10
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 20
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 30
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 40
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 50
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 60
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 70
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 80
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 90
+> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 100
