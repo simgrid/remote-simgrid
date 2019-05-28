@@ -6,6 +6,7 @@ variables:
   script:
     - apt-get update
     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+    - apt-get install -y python3 # needed by tesh
     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
     - make -j $(nproc) VERBOSE=1
     - export LC_ALL='en_US.UTF-8' && ctest --output-on-failure -E 'actor_kill_pid|turnon_turnoff'
@@ -18,10 +19,8 @@ test-git-v3.22:
   image: simgrid/stable:v3.22.2
   <<: *build_git
 
-test-git-v3.21:
-  image: simgrid/stable:v3_21
-  <<: *build_git
+# Older versions are broken because of the killed MailboxPtr type
 
-#test-git-v3.20:
-#  image: simgrid/stable:v3.20
+#test-git-v3.21:
+#  image: simgrid/stable:v3_21
 #  <<: *build_git
