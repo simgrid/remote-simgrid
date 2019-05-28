@@ -42,13 +42,13 @@ void rsg::RsgActorHandler::execute(const double flops) {
 }
 
 void rsg::RsgActorHandler::send(const int64_t mbAddr, const std::string& content, const int64_t simulatedSize) {
-    s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
+    s4u::Mailbox* mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
     std::string *internalPtr = new std::string(content.data(), content.length());
     mbox->put((void*) internalPtr, simulatedSize);
 }
 
 void rsg::RsgActorHandler::recv(std::string& _return, const int64_t mbAddr) {
-    s4u::MailboxPtr mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
+    s4u::Mailbox* mbox = rsg::RsgMailboxHandler::pMailboxes.at(mbAddr);
     std::string *content = (std::string*) mbox->get();
     _return.assign(content->data(), content->length());
     delete content;
@@ -164,15 +164,6 @@ int64_t rsg::RsgActorHandler::selfAddr() {
     return newId;
 }
 
-int deleteServerWhenActorIsKilled(void *arg, void *arg2) {
-    UNUSED(arg);
-    debug_server_print("deleteServerWhenActorIsKilled begin");
-    RsgThriftServer* srv = (RsgThriftServer*)arg2;
-    delete srv;
-    debug_server_print("deleteServerWhenActorIsKilled end");
-    return 0;
-}
-
 
 
 int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t hostaddr) {
@@ -184,7 +175,11 @@ int64_t rsg::RsgActorHandler::createActor(const std::string& name, const int64_t
     //we use a lambda because otherwise simgrid make unwanted copy of the class.
     simgrid::s4u::ActorPtr actor = simgrid::s4u::Actor::create(name.c_str(), host, [&]{
       RsgThriftServer* srv = lastChildServer;
-      MSG_process_on_exit(deleteServerWhenActorIsKilled, (void*)srv);
+       simgrid::s4u::this_actor::on_exit([srv](bool /*failed*/) {
+               debug_server_print("deleteServerWhenActorIsKilled begin");
+               delete srv;
+               debug_server_print("deleteServerWhenActorIsKilled end");
+       });
       (*srv)();
     });
     unsigned long long newId = pActorMapId++;

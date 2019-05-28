@@ -31,7 +31,7 @@ namespace simgrid  {
             int64_t getReceiver(const int64_t remoteAddrMailbox);
             bool empty(const int64_t remoteAddrMailbox);
         private:
-            static std::unordered_map<int, simgrid::s4u::MailboxPtr> pMailboxes;
+            static std::unordered_map<int, simgrid::s4u::Mailbox*> pMailboxes;
             static unsigned long long pMailboxesMapId;
         };
         
