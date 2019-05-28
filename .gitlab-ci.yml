@@ -6,13 +6,9 @@ variables:
   script:
     - apt-get update
     - apt-get install -y cmake build-essential libboost-dev
-    - cmake . \
-            -DCMAKE_BUILD_TYPE=Debug \
-	    -Denable_warnings=ON \
-	    -Dtreat_warnings_as_errors=OFF
+    - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
     - make -j $(nproc) VERBOSE=1
-    - export LC_ALL='en_US.UTF-8' && \
-      ctest --output-on-failure -E 'actor_kill_pid|turnon_turnoff'
+    - export LC_ALL='en_US.UTF-8' && ctest --output-on-failure -E 'actor_kill_pid|turnon_turnoff'
 
 test-git-unstable:
   image: simgrid/unstable
