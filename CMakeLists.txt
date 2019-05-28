@@ -62,6 +62,9 @@ if("${THRIFT_VERSION_STRING}" VERSION_LESS "0.11")
   message(FATAL_ERROR "Remote-Simgrid requires at least Thrift v0.11 but v${THRIFT_VERSION_STRING} found.")
 endif()
 
+# Search boost_program_options
+find_package(Boost REQUIRED COMPONENTS program_options)
+
 ###############
 # Build setup #
 ###############
