@@ -53,7 +53,7 @@ int Spawner(void * args)
         int actorPid = actor->getPid();
 
         XBT_INFO("Killing %d (pid=%d)", i, actorPid);
-        s4u::Actor::kill(actorPid);
+        rsg::Actor::kill(actorPid);
 
         delete actor;
     }
