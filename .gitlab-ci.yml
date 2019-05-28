@@ -1,30 +1,31 @@
-image: simgrid/rsg_ci
-
 variables:
   GIT_SUBMODULE_STRATEGY: none
 
-stages:
-  - one_big_stage
-
-one_big_job:
-  stage: one_big_stage
+# Test that the git version of RSG compiles with various versions of SimGrid docker image
+.build_git: &build_git
   script:
-    - mkdir -p build
-    - cd build
-    # configure
-    - nix-shell https://github.com/oar-team/kapack/archive/master.tar.gz
-        -A remote_simgrid
-        --command "cmake ..
-                         -DCMAKE_BUILD_TYPE=Debug
-                         -Denable_warnings=ON
-                         -Dtreat_warnings_as_errors=OFF"
-    # build
-    - nix-shell https://github.com/oar-team/kapack/archive/master.tar.gz
-        -A remote_simgrid
-        --command "make -j $(nproc) || VERBOSE=1 make"
-    # test
-    - nix-shell https://github.com/oar-team/kapack/archive/master.tar.gz
-        -A remote_simgrid
-        --command "export LC_ALL='en_US.UTF-8' &&
-                   ctest --output-on-failure
-                         -E 'actor_kill_pid|turnon_turnoff'"
+    - apt-get update
+    - apt-get install -y cmake build-essential libboost-dev
+    - cmake . \
+            -DCMAKE_BUILD_TYPE=Debug \
+	    -Denable_warnings=ON \
+	    -Dtreat_warnings_as_errors=OFF
+    - make -j $(nproc) VERBOSE=1
+    - export LC_ALL='en_US.UTF-8' && \
+      ctest --output-on-failure -E 'actor_kill_pid|turnon_turnoff'
+
+test-git-unstable:
+  image: simgrid/unstable
+  <<: *build_git
+
+test-git-v3.22:
+  image: simgrid/stable:v3.22.2
+  <<: *build_git
+
+test-git-v3.21:
+  image: simgrid/stable:v3_21
+  <<: *build_git
+
+test-git-v3.20:
+  image: simgrid/stable:v3.20
+  <<: *build_git
