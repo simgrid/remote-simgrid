@@ -132,14 +132,14 @@ void rsg::RsgActorHandler::kill(const int64_t mbAddr) {
 }
 
 int32_t rsg::RsgActorHandler::killPid(const int32_t pid) {
-    try {
-        simgrid::s4u::Actor::kill(pid);
-        return 0;
-    } catch(std::out_of_range& e) {
-        return 1;
-    } catch(std::exception &e) {
-        return 1;
-    }
+  try {
+    simgrid::s4u::Actor::by_pid(pid)->kill();
+    return 0;
+  } catch (std::out_of_range &e) {
+    return 1;
+  } catch (std::exception &e) {
+    return 1;
+  }
 }
 
 void rsg::RsgActorHandler::join(const int64_t addr) {
