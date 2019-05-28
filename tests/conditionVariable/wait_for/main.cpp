@@ -112,6 +112,7 @@ static int Main(void *)
 }
 
 int main() {
+  srand(1991);
   rsg::HostPtr host1 = rsg::Host::by_name("host1");
   
   rsg::Actor* producer =  rsg::Actor::createActor("main" , host1 , Main, NULL);

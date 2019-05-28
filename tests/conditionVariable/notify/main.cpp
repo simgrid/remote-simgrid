@@ -69,6 +69,8 @@ static int Worker(void *params)
 
 int main() {
   
+  srand(SEED);
+   
   struct s_consistency *params = new  struct s_consistency(); 
   std::vector<rsg::Actor*> workers;
   XBT_INFO("main running...");
