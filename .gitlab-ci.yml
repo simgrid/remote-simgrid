@@ -9,7 +9,7 @@ variables:
     - apt-get install -y python3 # needed by tesh
     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
     - make -j $(nproc) VERBOSE=1
-    - export LC_ALL='en_US.UTF-8' && ctest --output-on-failure -E 'actor_kill_pid|turnon_turnoff'
+    - ctest --output-on-failure
 
 test-git-unstable:
   image: simgrid/unstable
