@@ -6,6 +6,8 @@
 
 # You need to set your SONAR_TOKEN as a private variable on your CI
 
+export PLATFORM=x86-64
+
 # Be verbose and fail fast
 set -ex
 
