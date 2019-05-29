@@ -20,7 +20,6 @@ installSonarQubeScanner() {
   curl -sSLo $HOME/.sonar/sonar-scanner.zip http://repo1.maven.org/maven2/org/sonarsource/scanner/cli/sonar-scanner-cli/$SONAR_SCANNER_VERSION/sonar-scanner-cli-$SONAR_SCANNER_VERSION.zip
   unzip $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
   chmod +x $SONAR_SCANNER_HOME/bin/sonar-scanner
-  cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/libinterceptor-haswell.so
   rm $HOME/.sonar/sonar-scanner.zip
   export PATH=$SONAR_SCANNER_HOME/bin:$PATH
   export SONAR_SCANNER_OPTS="-server"
@@ -33,6 +32,10 @@ installBuildWrapper() {
 installSonarQubeScanner
 installBuildWrapper
 
+# Make sure it can find its parts
+ls -l 
+ls -l build-wrapper-linux-x86
+cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/libinterceptor-haswell.so
 # triggers the compilation through the build wrapper to gather compilation database
 ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs "$@"
 
