@@ -10,7 +10,7 @@ test-git-unstable:
     - apt-get install -y curl unzip default-jre-headless # needed by sonar
     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
     - ./sonarqube.sh make -j $(nproc) VERBOSE=1
-    - ctest --output-on-failure
+#    - ctest --output-on-failure # don't do that until the analysis works
 
 # Test that the git version of RSG compiles with various versions of SimGrid docker image
 # The script is very similar to above, without sonar
