@@ -9,7 +9,7 @@ test-git-unstable:
     - apt-get install -y python3 # needed by tesh
     - apt install curl unzip # needed by sonar
     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-    - ./sonarqube.sh make -j $(nproc) VERBOSE=1
+    - export PLATFORM=x86-64 && ./sonarqube.sh make -j $(nproc) VERBOSE=1
     - ctest --output-on-failure
 
 # Test that the git version of RSG compiles with various versions of SimGrid docker image
