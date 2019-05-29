@@ -33,8 +33,6 @@ installSonarQubeScanner
 installBuildWrapper
 
 # Make sure it can find its parts
-ls -l 
-ls -l build-wrapper-linux-x86
 cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/libinterceptor-haswell.so
 # triggers the compilation through the build wrapper to gather compilation database
 ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs "$@"
