@@ -7,7 +7,7 @@ test-git-unstable:
     - apt-get update
     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
     - apt-get install -y python3 # needed by tesh
-    - apt install curl unzip # needed by sonar
+    - apt install curl unzip openjdk-8-jre-headless # needed by sonar
     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
     - ./sonarqube.sh make -j $(nproc) VERBOSE=1
     - ctest --output-on-failure
