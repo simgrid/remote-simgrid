@@ -16,18 +16,18 @@ public:
     ForkActor() {}
     std::string pName;
     int operator()(void * ) {
-        RSG_INFO("[parent] My pid is  : %d",rsg::this_actor::getPid());
+        RSG_INFO("My pid is %d",rsg::this_actor::getPid());
         pid_t pid = rsg::this_actor::fork("child1");
         if(0 == pid) { // child
             pid_t pid_2 = rsg::this_actor::fork("child2");
-            RSG_INFO("[child] My pid is  : %d",rsg::this_actor::getPid());
-            RSG_INFO("[child] Fork returned : %d", pid);
-            RSG_INFO("[child] Fork returned : %d", pid_2);
+            RSG_INFO("My pid is %d",rsg::this_actor::getPid());
+            RSG_INFO("Fork returned %d", pid);
+            RSG_INFO("Fork returned %d", pid_2);
             rsg::this_actor::quit();
             return 0;
         } else {
-            RSG_INFO("[child] My pid is  : %d",rsg::this_actor::getPid());
-            RSG_INFO("[child] Fork returned : %d", pid);
+            RSG_INFO("My pid is %d",rsg::this_actor::getPid());
+            RSG_INFO("Fork returned %d", pid);
             rsg::this_actor::quit();
         }
         return 1;

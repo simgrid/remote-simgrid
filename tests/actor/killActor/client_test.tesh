@@ -1,45 +1,60 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 3
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 3
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 4
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 3
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 4
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Running spawner 5
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 3
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Killing 4
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Joined spawner 5
+> [client] Running spawner 0
+> [client] Joined spawner 0
+> [client] Running spawner 1
+> [spawner] Spawning hello0
+> [hello0] Hello
+> [spawner] Killing hello0
+> [client] Joined spawner 1
+> [client] Running spawner 2
+> [spawner] Spawning hello0
+> [hello0] Hello
+> [spawner] Killing hello0
+> [spawner] Spawning hello1
+> [hello1] Hello
+> [spawner] Killing hello1
+> [client] Joined spawner 2
+> [client] Running spawner 3
+> [spawner] Spawning hello0
+> [hello0] Hello
+> [spawner] Killing hello0
+> [spawner] Spawning hello1
+> [hello1] Hello
+> [spawner] Killing hello1
+> [spawner] Spawning hello2
+> [hello2] Hello
+> [spawner] Killing hello2
+> [client] Joined spawner 3
+> [client] Running spawner 4
+> [spawner] Spawning hello0
+> [hello0] Hello
+> [spawner] Killing hello0
+> [spawner] Spawning hello1
+> [hello1] Hello
+> [spawner] Killing hello1
+> [spawner] Spawning hello2
+> [hello2] Hello
+> [spawner] Killing hello2
+> [spawner] Spawning hello3
+> [hello3] Hello
+> [spawner] Killing hello3
+> [client] Joined spawner 4
+> [client] Running spawner 5
+> [spawner] Spawning hello0
+> [hello0] Hello
+> [spawner] Killing hello0
+> [spawner] Spawning hello1
+> [hello1] Hello
+> [spawner] Killing hello1
+> [spawner] Spawning hello2
+> [hello2] Hello
+> [spawner] Killing hello2
+> [spawner] Spawning hello3
+> [hello3] Hello
+> [spawner] Killing hello3
+> [spawner] Spawning hello4
+> [hello4] Hello
+> [spawner] Killing hello4
+> [client] Joined spawner 5

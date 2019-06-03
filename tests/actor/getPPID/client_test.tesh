@@ -1,7 +1,7 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
-> [0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is 2; my ppid is 1
-> [0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] My id is 1; my ppid is 0
-> [0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] getName: receiver
-> [0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Main end at: 1.000090
+> [receiver] My id is 2; my ppid is 1
+> [client] My id is 1; my ppid is 0
+> [client] getName: receiver
+> [client] Main end at: 1.000130

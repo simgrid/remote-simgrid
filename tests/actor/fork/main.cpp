@@ -13,28 +13,28 @@ using namespace ::simgrid;
 int main() {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
 
-  pid_t pid = rsg::this_actor::fork("MyChild");
+  pid_t pid = rsg::this_actor::fork("child");
   if(0 == pid) { // child
-    RSG_INFO("[child] My pid is  : %d",rsg::this_actor::getPid());
+    RSG_INFO("My pid is %d",rsg::this_actor::getPid());
     rsg::Actor* me = rsg::Actor::self();
     if( rsg::this_actor::getPid() != me->getPid())
-        RSG_INFO("[child] ERROR in self()");
+        RSG_INFO("ERROR in self()");
     delete me;
-    RSG_INFO("[child] Fork returned : %d", pid);
+    RSG_INFO("Fork returned %d", pid);
 
-    RSG_INFO("[child] Message from Daddy : %s", rsg::this_actor::recv(*mbox));
+    RSG_INFO("Message from Daddy: '%s'", rsg::this_actor::recv(*mbox));
     rsg::this_actor::quit();
     return 0;
   }
   const char *msg = "GaBuZoMeu";
   rsg::this_actor::send(*mbox, msg, strlen(msg) + 1);
 
-  RSG_INFO("[parent] My pid is : %d",rsg::this_actor::getPid());
+  RSG_INFO("My pid is %d",rsg::this_actor::getPid());
   rsg::Actor* me = rsg::Actor::self();
   if( rsg::this_actor::getPid() != me->getPid())
-    RSG_INFO("[parent] ERROR in self()");
+    RSG_INFO("ERROR in self()");
   delete me;
-  RSG_INFO("[parent] The pid of my child is : %d", pid);
+  RSG_INFO("The pid of my child is %d", pid);
   rsg::this_actor::quit();
   return 0;
 }
