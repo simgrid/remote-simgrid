@@ -6,7 +6,6 @@
 #pragma once
 
 #include <xbt/base.h>
-#include <xbt.h>
 
 #include <rsg/mailbox.hpp>
 #include <rsg/host.hpp>

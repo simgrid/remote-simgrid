@@ -1,6 +1,5 @@
 #pragma once
 
-#include <xbt.h>
 #include <vector>
 #include <string>
 #include <zmq.hpp>

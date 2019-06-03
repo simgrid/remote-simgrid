@@ -34,7 +34,7 @@ rsg::HostPtr rsg::Host::current() {
 rsg::HostPtr rsg::Host::by_name(std::string name) {
     unsigned long int addr = client->host->by_name(name);
     if(addr == 0) {
-        xbt_die("No such host: %s", name.c_str());
+        rsg_die("No such host: %s", name.c_str());
     }
     return HostPtr(new rsg::Host(name, addr));
 }

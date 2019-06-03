@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <xbt.h>
+#include <xbt/base.h>
 
 #include <condition_variable>
 #include <rsg/mutex.hpp>

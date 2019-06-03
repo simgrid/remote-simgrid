@@ -25,6 +25,14 @@
 #define DEBUG_SERVER        (1 && DEBUG_TRACE)
 #define DEBUG_SERVER_NET    (1 && DEBUG_SERVER)
 
+#define rsg_die(fmt, ...) \
+    do { \
+        fflush(stdout); fflush(stderr); \
+        fprintf(stderr, "Critical error: " fmt "\n", ##__VA_ARGS__); \
+        fflush(stdout); fflush(stderr); \
+        abort(); \
+    } while(0)
+
 /*!
  * \brief Print a debug message in blue. Useful for debugging!
  */

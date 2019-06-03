@@ -25,10 +25,6 @@ using namespace ::simgrid;
 std::unordered_map<std::thread::id, std::thread*> child_threads;
 std::mutex child_threads_mutex;
 
-
-XBT_LOG_NEW_CATEGORY(RSG,"Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_ACTOR, RSG, "RSG::Actor");
-
 rsg::Actor::Actor(unsigned long int remoteAddr) : p_remoteAddr(remoteAddr), pHost(NULL) {
 }
 

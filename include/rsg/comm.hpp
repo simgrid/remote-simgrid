@@ -13,6 +13,8 @@
 
 #include <vector>
 
+#include <string.h> // memcpy
+
 namespace simgrid {
     namespace rsg {
         
