@@ -4,10 +4,8 @@ add_executable(dataMain main.cpp)
 
 # Libraries to link
 target_link_libraries(dataMain rsg)
-
 target_link_libraries(dataMain "RsgService.thrift")
 target_link_libraries(dataMain ${THRIFT_LIBRARIES})
-target_link_libraries(dataMain ${SimGrid_LIBRARY})
 target_link_libraries(dataMain ${ZMQ_LIBRARIES})
 
 

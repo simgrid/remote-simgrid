@@ -4,21 +4,16 @@ add_executable(main_client main_client.cpp)
 
 # Libraries to link
 target_link_libraries(main_client rsg)
-
 target_link_libraries(main_client "RsgService.thrift")
 target_link_libraries(main_client ${THRIFT_LIBRARIES})
-target_link_libraries(main_client ${SimGrid_LIBRARY})
 target_link_libraries(main_client ${ZMQ_LIBRARIES})
-
 
 add_executable(main_server_test main_server_test.cpp)
 
 # Libraries to link
 target_link_libraries(main_server_test rsg)
-
 target_link_libraries(main_server_test "RsgService.thrift")
 target_link_libraries(main_server_test ${THRIFT_LIBRARIES})
-target_link_libraries(main_server_test ${SimGrid_LIBRARY})
 target_link_libraries(main_server_test ${ZMQ_LIBRARIES})
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

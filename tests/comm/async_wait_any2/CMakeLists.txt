@@ -4,10 +4,8 @@ add_executable(async_wait_any2 sender.cpp)
 
 # Libraries to link
 target_link_libraries(async_wait_any2 rsg)
-
 target_link_libraries(async_wait_any2 "RsgService.thrift")
 target_link_libraries(async_wait_any2 ${THRIFT_LIBRARIES})
-target_link_libraries(async_wait_any2 ${SimGrid_LIBRARY})
 target_link_libraries(async_wait_any2 ${ZMQ_LIBRARIES})
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")

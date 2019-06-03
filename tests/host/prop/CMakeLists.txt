@@ -7,7 +7,6 @@ target_link_libraries(get_prop rsg)
 
 target_link_libraries(get_prop "RsgService.thrift")
 target_link_libraries(get_prop ${THRIFT_LIBRARIES})
-target_link_libraries(get_prop ${SimGrid_LIBRARY})
 target_link_libraries(get_prop ${ZMQ_LIBRARIES})
 
 configure_file(deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/deploy.xml")
