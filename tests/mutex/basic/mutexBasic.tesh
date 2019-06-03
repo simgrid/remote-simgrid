@@ -1,14 +1,14 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 0
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 1
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 2
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 3
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 4
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 5
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 6
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 7
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 8
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Hello i will add 9
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] Results is : 45 
+>[0.000000] [receiver] Hello i will add 0
+>[0.000000] [receiver] Hello i will add 1
+>[0.000000] [receiver] Hello i will add 2
+>[0.000000] [receiver] Hello i will add 3
+>[0.000000] [receiver] Hello i will add 4
+>[0.000000] [receiver] Hello i will add 5
+>[0.000000] [receiver] Hello i will add 6
+>[0.000000] [receiver] Hello i will add 7
+>[0.000000] [receiver] Hello i will add 8
+>[0.000000] [receiver] Hello i will add 9
+>[0.000000] [client] Results is : 45 

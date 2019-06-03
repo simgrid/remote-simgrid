@@ -4,4 +4,4 @@ $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintest
 > [receiver] My id is 2; my ppid is 1
 > [client] My id is 1; my ppid is 0
 > [client] getName: receiver
-> [client] Main end at: 1.000130
+> [client] Main end at: 1.000110
