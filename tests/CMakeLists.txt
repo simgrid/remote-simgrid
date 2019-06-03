@@ -1,14 +1,37 @@
 
+# Where to find the platform files and such
+set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+
+# The binaries needed for each test
+set(basic_exec node1 node2)
+
+# Let's build these examples
+add_custom_target(tests COMMENT "Recompiling the tests")
+
+foreach(example basic)
+    foreach(exec ${${example}_exec})
+        add_executable       (${example}_${exec} EXCLUDE_FROM_ALL ${example}/${example}_${exec}.cpp)
+        set_target_properties(${example}_${exec} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${example})
+	add_dependencies     (tests ${example}_${exec})
+	
+	target_link_libraries(${example}_${exec} rsg)
+	target_link_libraries(${example}_${exec} "RsgService.thrift")
+	target_link_libraries(${example}_${exec} ${THRIFT_LIBRARIES})
+	target_link_libraries(${example}_${exec} ${ZMQ_LIBRARIES})
+    endforeach()
+
+    configure_file(${example}/deploy.xml.in "${CMAKE_CURRENT_BINARY_DIR}/${example}/deploy.xml")
+	    
+    ADD_TESH(${example} --setenv resources=${TEST_RESOURCES_DIR} --setenv bindir=${RSG_BINARY_DIR} --setenv bintestdir=${CMAKE_CURRENT_BINARY_DIR}/${example} ${CMAKE_CURRENT_SOURCE_DIR}/${example}/${example}.tesh)
+endforeach()
 
 #cmake don't rebuild executables when you change tests:
 #http://stackoverflow.com/questions/733475/cmake-ctest-make-test-doesnt-build-tests
 #(and yes for cmake devs it's a feature, not a bug!)
 #you have to do make;ctest when developping your tests!
 set(TEST_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(TEST_RESOURCES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 ## Add your new test directories here:
-add_subdirectory(basic)
 add_subdirectory(actor/basic)
 add_subdirectory(actor/externalActor)
 add_subdirectory(actor/fork)
