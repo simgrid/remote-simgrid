@@ -1,7 +1,7 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] receiver : is the mb empty : false
->[0.000000] [RSG_THRIFT_REMOTE_CLIENT/INFO] send Do you copy ?  with size : 14
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] receiver : is the mb empty after recv : true
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received from client : Do you copy ?  with size of 14
+> [server] receiver : is the mb empty : false
+> [client] send Do you copy ?  with size : 14
+> [server] receiver : is the mb empty after recv : true
+> [server] Received from client : Do you copy ?  with size of 14
