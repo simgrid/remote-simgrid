@@ -1,15 +1,9 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
+#include "../../print.hpp"
 
-#include <stdio.h>
-#include <iostream>
 #include <string>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 #define NB_WORKERS 10
 
@@ -20,14 +14,14 @@ int Worker(void* arg)
     int *msg = (int*) malloc(sizeof(int));
     int arg_int = (*(int*) arg);
 
-    XBT_INFO("Sleeping for %d seconds", arg_int);
+    RSG_INFO("Sleeping for %d seconds", arg_int);
     rsg::this_actor::sleep(1);
 
     std::string mailbox_name = std::string("test") + std::to_string(arg_int);
     rsg::MailboxPtr mbox = rsg::Mailbox::byName(mailbox_name.c_str());
 
     int * data = (int*) rsg::this_actor::recv(*mbox);
-    XBT_INFO("Received %d", *data);
+    RSG_INFO("Received %d", *data);
     free(data);
     free(msg);
     return 0;
@@ -63,7 +57,7 @@ int main()
         comms.erase(it);
     }
 
-    XBT_INFO("All comms have finished");
+    RSG_INFO("All comms have finished");
     rsg::this_actor::quit();
     return 0;
 }

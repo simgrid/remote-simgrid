@@ -3,31 +3,25 @@
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <iostream>
+#include "../../print.hpp"
 
 #include "struct.h"
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::simgrid;
 
 int main() {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
-  
+
   // char*
   const char *msg = "Do you copy ? ";
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
-  
-  //int 
+  RSG_INFO("send %s with size : %lu", msg, strlen(msg));
+
+  //int
   int intMsg = -808080;
   rsg::this_actor::send(*mbox,(char*) &intMsg, sizeof(int));
-  
-  //int 
+
+  //int
   intMsg = 12;
   rsg::this_actor::send(*mbox,(char*) &intMsg, sizeof(int));
 
@@ -37,7 +31,7 @@ int main() {
     tabInt[i] = i*i;
   }
   rsg::this_actor::send(*mbox,(char*) &tabInt, intMsg * sizeof(int));
-  
+
   structMsg strctMsg;
   strctMsg.intMsg = 123456789;
   strctMsg.msg[0] = 'B';

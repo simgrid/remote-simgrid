@@ -3,13 +3,7 @@
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <iostream>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_NODE_1, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+#include "../../print.hpp"
 
 using namespace ::simgrid;
 
@@ -18,19 +12,19 @@ int main()
     const char *msg = "Do you copy?";
     rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
     rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-    XBT_INFO("Send \"%s\" with size=%lu", msg, strlen(msg));
+    RSG_INFO("Send \"%s\" with size=%lu", msg, strlen(msg));
 
     char *rec;
     rec = rsg::this_actor::recv(*mbox);
-    XBT_INFO("Received: \"%s\"", rec);
+    RSG_INFO("Received: \"%s\"", rec);
 
     rsg::MailboxPtr fooMb = rsg::Mailbox::byName("foo");
     rsg::this_actor::send(*fooMb, msg, strlen(msg) + 1);
-    XBT_INFO("Send \"%s\" with size=%lu", msg, strlen(msg));
+    RSG_INFO("Send \"%s\" with size=%lu", msg, strlen(msg));
 
     char *fooRec;
     fooRec = rsg::this_actor::recv(*fooMb);
-    XBT_INFO("Received: \"%s\"", fooRec);
+    RSG_INFO("Received: \"%s\"", fooRec);
 
     rsg::this_actor::quit();
     return 0;

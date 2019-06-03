@@ -2,16 +2,9 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <stdio.h>
-#include <iostream>
+#include "../../print.hpp"
 
 #include "struct.h"
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
 
 using namespace ::RsgService;
 using namespace ::simgrid;
@@ -27,7 +20,7 @@ int main()
         comm.start();
         comm.wait();
     }
-    XBT_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
+    RSG_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
 
     free(buffer);
     buffer = NULL;
@@ -38,7 +31,7 @@ int main()
         comm.wait();
     }
 
-    XBT_INFO("I will receive an array of %d elem ", *nbElement);
+    RSG_INFO("I will receive an array of %d elem ", *nbElement);
 
     int *array = NULL;
     {
@@ -47,7 +40,7 @@ int main()
     }
     for(int i = 0 ; i < *nbElement; i++)
     {
-        XBT_INFO("array[%d] = %d ", i, array[i]);
+        RSG_INFO("array[%d] = %d ", i, array[i]);
     }
 
     free(nbElement);
@@ -58,8 +51,8 @@ int main()
         rsg::Comm &comm = rsg::Comm::recv_async(*mbox, (void**)&recStruct);
         comm.wait();
     }
-    XBT_INFO("recStruct->intMsg = %d", recStruct->intMsg);
-    XBT_INFO("recStruct->msg = \"%s\"", recStruct->msg);
+    RSG_INFO("recStruct->intMsg = %d", recStruct->intMsg);
+    RSG_INFO("recStruct->msg = \"%s\"", recStruct->msg);
 
     free(recStruct);
 

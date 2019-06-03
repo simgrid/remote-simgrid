@@ -3,13 +3,7 @@
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <iostream>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+#include "../../print.hpp"
 
 using namespace ::simgrid;
 
@@ -40,7 +34,7 @@ int main()
     while(!comm4.test())
     {
         rsg::this_actor::execute(809500000);
-        XBT_INFO("[SENDER]Nothing yet, just wait!");
+        RSG_INFO("[SENDER]Nothing yet, just wait!");
     }
 
     rsg::this_actor::quit();

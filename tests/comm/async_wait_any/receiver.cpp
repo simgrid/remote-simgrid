@@ -1,15 +1,7 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <stdio.h>
-#include <iostream>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
-
+#include "../../print.hpp"
 
 #define nbWorker 10
 
@@ -56,13 +48,13 @@ int main()
         if(i == 0)
         {
             int pos = it - comms.begin();
-            XBT_INFO("results %d at pos %d", *mboxbuff[pos], pos);
+            RSG_INFO("results %d at pos %d", *mboxbuff[pos], pos);
         }
     }
 
     for(int i = 0; i < nbWorker; i++)
     {
-        XBT_INFO("%d", *mboxbuff[i]);
+        RSG_INFO("%d", *mboxbuff[i]);
         free(mboxbuff[i]);
     }
 

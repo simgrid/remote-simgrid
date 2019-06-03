@@ -3,13 +3,7 @@
 #include "rsg/comm.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <iostream>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+#include "../../print.hpp"
 
 using namespace ::simgrid;
 
@@ -17,7 +11,7 @@ int main() {
   const char *msg = "Do you copy ? ";
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
+  RSG_INFO("send %s with size : %lu", msg, strlen(msg));
   rsg::this_actor::quit();
   return 0;
 }

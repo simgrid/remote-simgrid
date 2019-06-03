@@ -7,8 +7,7 @@
 #include "rsg/host.hpp"
 #include "../../../src/common.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
+#include "../../print.hpp"
 
 #include <iostream>
 #include <sys/types.h>
@@ -21,13 +20,7 @@
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
-
-
 using namespace ::simgrid;
-
-#define UNUSED(x) (void)(x)
 
 class PidComp {
   public:
@@ -37,7 +30,7 @@ class PidComp {
     rsg::MailboxPtr mbox = rsg::Mailbox::byName(this->pName.c_str());
     int *pid = (int*) rsg::this_actor::recv(*mbox);
     int id = rsg::this_actor::getPid();
-    XBT_INFO("PidComp -> [%d:%d] %d",id, *pid ,id - *pid);
+    RSG_INFO("PidComp -> [%d:%d] %d",id, *pid ,id - *pid);
     free(pid);
     rsg::this_actor::quit();
     return 1;
@@ -69,7 +62,6 @@ int main() {
 
   for(int i = 0; i < 4; i++) {
     rsg::Actor* actor =  rsg::Actor::createActor("spawner" , host1 , Spwaner, NULL);
-    UNUSED(actor);
     actor->join();
     delete actor;
   }

@@ -1,15 +1,7 @@
 #include "rsg/mailbox.hpp"
 #include "rsg/host.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <stdio.h>
-#include <iostream>
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_SERVER, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
-
+#include "../../print.hpp"
 
 #define NB_WORKERS 10
 
@@ -54,18 +46,18 @@ int main()
     {
         auto it = rsg::Comm::wait_any_for(comms.begin(), comms.end(), (nb_finished+1)*2);
         if (it == comms.end())
-            XBT_INFO("left wait_any_for on timeout");
+            RSG_INFO("left wait_any_for on timeout");
         else
         {
             nb_finished++;
-            XBT_INFO("left wait_any_for on finished comm");
+            RSG_INFO("left wait_any_for on finished comm");
             comms.erase(it);
         }
     }
 
     for(int i = 0; i < NB_WORKERS; i++)
     {
-        XBT_INFO("%d", *mboxbuff[i]);
+        RSG_INFO("%d", *mboxbuff[i]);
         free(mboxbuff[i]);
     }
 

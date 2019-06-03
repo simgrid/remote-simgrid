@@ -8,23 +8,15 @@
 #include "rsg/host.hpp"
 #include "rsg/engine.hpp"
 
-#include <xbt.h>
-#include <simgrid/s4u.hpp>
-
-#include <iostream>
-#define UNUSED(x) (void)(x)
-
-
-XBT_LOG_NEW_CATEGORY(RSG_THRIFT_CLIENT, "Remote SimGrid");
-XBT_LOG_NEW_DEFAULT_SUBCATEGORY(RSG_THRIFT_REMOTE_CLIENT, RSG_THRIFT_CLIENT , "RSG server (Remote SimGrid)");
+#include "../../print.hpp"
 
 using namespace ::simgrid;
 
 int actor(void *) {
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
   char *received = rsg::this_actor::recv(*mbox);
-  XBT_INFO("Received from client : %s with size of %lu ", received, strlen(received) );
-  XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
+  RSG_INFO("Received from client : %s with size of %lu ", received, strlen(received) );
+  RSG_INFO("My id is  : %d",rsg::this_actor::getPid());
   rsg::this_actor::sleep(99.999999);
   rsg::this_actor::quit();
   return 1;
@@ -36,17 +28,17 @@ int main() {
 
   rsg::Actor *act = rsg::Actor::createActor("receiver" , host1 , actor, NULL);
   rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
-  XBT_INFO("I'll send %s with size : %lu", msg, strlen(msg));
+  RSG_INFO("I'll send %s with size : %lu", msg, strlen(msg));
 
   rsg::this_actor::send(*mbox,msg, strlen(msg) + 1);
-  XBT_INFO("send %s with size : %lu", msg, strlen(msg));
-  
-  XBT_INFO("My id is  : %d",rsg::this_actor::getPid());
-  
+  RSG_INFO("send %s with size : %lu", msg, strlen(msg));
+
+  RSG_INFO("My id is  : %d", rsg::this_actor::getPid());
+
   rsg::Actor *getByPid = rsg::Actor::byPid(act->getPid());
   getByPid->join();
-  XBT_INFO("getName  : %s", getByPid->getName());
-  XBT_INFO("Main end at : %i", (int)rsg::getClock());
+  RSG_INFO("getName  : %s", getByPid->getName());
+  RSG_INFO("Main end at : %i", (int)rsg::getClock());
 
   rsg::this_actor::quit();
   return 0;
