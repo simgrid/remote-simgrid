@@ -14,13 +14,11 @@ int main() {
 
   rsg::HostPtr host = rsg::Host::current();
 
-  RSG_INFO("Hostname current Peak : %f",  host->currentPowerPeak());
-
-  RSG_INFO("hostname : %s", rsg::Host::current()->getName().c_str());
-
-  RSG_INFO("core count : %d", host->coreCount());
-  RSG_INFO("state count %d", host->pstatesCount());
-  RSG_INFO("state -> %d", host->pstate());
+  RSG_INFO("hostname: %s", rsg::Host::current()->getName().c_str());
+  RSG_INFO("host current power peak: %f",  host->currentPowerPeak());
+  RSG_INFO("core count: %d", host->coreCount());
+  RSG_INFO("pstate count: %d", host->pstatesCount());
+  RSG_INFO("pstate: %d", host->pstate());
 
   rsg::this_actor::quit();
   return 0;

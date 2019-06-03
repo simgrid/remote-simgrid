@@ -14,15 +14,12 @@ using namespace ::simgrid;
 int main() {
     rsg::HostPtr host1 = rsg::Host::by_name("host1");
 
-    RSG_INFO("hostname ->  %s with speed %f", host1->getName().c_str(), host1->speed());
-    RSG_INFO("hostname ->  %s with speed %f", rsg::Host::current()->getName().c_str(),rsg::Host::current()->speed());
-    // RSG_INFO("actor name -> %s", self.getName());/
+    RSG_INFO("hostname='%s', speed=%f", host1->getName().c_str(), host1->speed());
+    RSG_INFO("hostname='%s', speed=%f", rsg::Host::current()->getName().c_str(),rsg::Host::current()->speed());
 
     rsg::this_actor::execute(8095000000 * 1.999999);
     rsg::this_actor::sleep(1);
     rsg::this_actor::quit();
-//     rsg::closeConnection();
 
-    // rsg::this_actor::sleep(1);
     return 0;
 }
