@@ -12,7 +12,7 @@ int main()
 {
     rsg::MailboxPtr mbox = rsg::Mailbox::byName("toto");
 
-    const char *msg = "Do you copy ? ";
+    const char *msg = "Do you copy ?";
     {
         rsg::Comm &comm = rsg::Comm::send_init(*mbox);
         comm.setSrcData((void*)msg, strlen(msg) + 1);

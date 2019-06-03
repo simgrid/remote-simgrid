@@ -1,24 +1,24 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 0 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 1 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 2 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 3 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 4 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 5 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 6 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 7 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 8 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Sleeping for 9 seconds
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 0
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 1
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 2
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 3
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 4
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 5
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 6
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 7
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 8
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Received 9
-> [0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] All comms have finished
+> [worker] Sleeping for 0 seconds
+> [worker] Sleeping for 1 seconds
+> [worker] Sleeping for 2 seconds
+> [worker] Sleeping for 3 seconds
+> [worker] Sleeping for 4 seconds
+> [worker] Sleeping for 5 seconds
+> [worker] Sleeping for 6 seconds
+> [worker] Sleeping for 7 seconds
+> [worker] Sleeping for 8 seconds
+> [worker] Sleeping for 9 seconds
+> [worker] Received 0
+> [worker] Received 1
+> [worker] Received 2
+> [worker] Received 3
+> [worker] Received 4
+> [worker] Received 5
+> [worker] Received 6
+> [worker] Received 7
+> [worker] Received 8
+> [worker] Received 9
+> [client] All comms have finished

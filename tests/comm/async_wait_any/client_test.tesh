@@ -1,14 +1,14 @@
 ! timeout 5
 ! ignore ^Thrift:.*|DBG—.*
 $ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] results 10 at pos 0
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 10
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 20
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 30
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 40
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 50
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 60
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 70
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 80
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 90
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] 100
+> [client] results 10 at pos 0
+> [client] 10
+> [client] 20
+> [client] 30
+> [client] 40
+> [client] 50
+> [client] 60
+> [client] 70
+> [client] 80
+> [client] 90
+> [client] 100

@@ -34,7 +34,7 @@ int main()
     while(!comm4.test())
     {
         rsg::this_actor::execute(809500000);
-        RSG_INFO("[SENDER]Nothing yet, just wait!");
+        RSG_INFO("Nothing yet, just wait!");
     }
 
     rsg::this_actor::quit();

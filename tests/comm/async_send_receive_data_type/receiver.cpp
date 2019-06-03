@@ -20,7 +20,7 @@ int main()
         comm.start();
         comm.wait();
     }
-    RSG_INFO("Async Received : %s with size of %d ", buffer, (int) strlen(buffer));
+    RSG_INFO("Asynchronously received message (size=%zu, content='%s')", strlen(buffer), buffer);
 
     free(buffer);
     buffer = NULL;
@@ -31,7 +31,7 @@ int main()
         comm.wait();
     }
 
-    RSG_INFO("I will receive an array of %d elem ", *nbElement);
+    RSG_INFO("I will receive an array of %d elements", *nbElement);
 
     int *array = NULL;
     {
@@ -40,7 +40,7 @@ int main()
     }
     for(int i = 0 ; i < *nbElement; i++)
     {
-        RSG_INFO("array[%d] = %d ", i, array[i]);
+        RSG_INFO("array[%2d] = %d", i, array[i]);
     }
 
     free(nbElement);
@@ -52,7 +52,7 @@ int main()
         comm.wait();
     }
     RSG_INFO("recStruct->intMsg = %d", recStruct->intMsg);
-    RSG_INFO("recStruct->msg = \"%s\"", recStruct->msg);
+    RSG_INFO("recStruct->msg = '%s'", recStruct->msg);
 
     free(recStruct);
 

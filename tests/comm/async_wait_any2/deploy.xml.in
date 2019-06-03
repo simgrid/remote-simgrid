@@ -4,7 +4,7 @@
   <!-- "client" is the name it takes in [the logs of] the SimGrid world
        "./dumb_client" is the command that we have to fork+exec in the real world
    -->
-  <actor host="host1" function="server">
+  <actor host="host1" function="client">
      <argument value="@CMAKE_CURRENT_BINARY_DIR@/async_wait_any2"/>
   </actor>
 </platform>
