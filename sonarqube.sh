@@ -38,7 +38,7 @@ cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/
 ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs "$@"
 
 # generate the gcov files
-#ctest -D ExperimentalCoverage
+ctest -D ExperimentalCoverage --output-on-failure
 
 # and finally execute the actual SonarQube analysis
 # (the SONAR_TOKEN is set from the travis web interface, to not expose it with an ongoing "set -x")
