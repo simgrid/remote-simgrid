@@ -16,7 +16,6 @@ set(CLIENT_SOURCES_THRIFT
     client/rsg_conditionVariable.cpp
     client/rsg_engine.cpp
     client/rsg_host.cpp
-    client/rsg_kvs.cpp
     client/rsg_mailbox.cpp
     client/rsg_mutex.cpp
     client/TZmqClient.cpp
@@ -47,8 +46,6 @@ set(SERVER_SOURCES
     rsg/services/mailboxService.hpp
     rsg/services/mutexService.cpp
     rsg/services/mutexService.hpp
-    rsg/services/KVSService.hpp
-    rsg/services/KVSService.cpp
 )
 
 set(RSGSTAT_SOURCES

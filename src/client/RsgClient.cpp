@@ -28,7 +28,6 @@ RsgClient::RsgClient(std::string name)
     conditionvariable = new RsgConditionVariableClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgConditionVariable")));
     host = new RsgHostClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgHost")));
     comm = new RsgCommClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgComm")));
-    kvs = new RsgKVSClient(shared_ptr<TMultiplexedProtocol>(new TMultiplexedProtocol(protocol, "RsgKVS")));
     
     transport->open();
     debug_client_print("RSG client %s started", networkName_.c_str());

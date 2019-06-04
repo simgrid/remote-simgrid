@@ -112,8 +112,6 @@ RsgThriftServer::RsgThriftServer(std::string& name) :name_(name) {
     std::shared_ptr<rsg::RsgEngineHandler> gblServiceHandler(new rsg::RsgEngineHandler());
     registerProcessor(processor, "RsgEngine", std::shared_ptr<RsgEngineProcessor>(new RsgEngineProcessor(gblServiceHandler)));
 
-    registerProcessor(processor, "RsgKVS", std::shared_ptr<RsgKVSProcessor>(new RsgKVSProcessor(rsg::RsgKVSHandler::getInstance())));
-
     std::shared_ptr<rsg::RsgConditionVariableHandler> conditionVariableServiceHandler(new rsg::RsgConditionVariableHandler());
     registerProcessor(processor, "RsgConditionVariable", std::shared_ptr<RsgConditionVariableProcessor>(new RsgConditionVariableProcessor(conditionVariableServiceHandler)));
 

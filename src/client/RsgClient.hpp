@@ -19,7 +19,6 @@
 #include "RsgConditionVariable.h"
 #include "RsgHost.h"
 #include "RsgComm.h"
-#include "RsgKVS.h"
 
 using namespace ::apache::thrift::protocol;
 using apache::thrift::transport::TZmqClient;
@@ -42,7 +41,6 @@ public:
     RsgConditionVariableClient* conditionvariable;
     RsgHostClient* host;
     RsgCommClient* comm;
-    RsgKVSClient* kvs;
 };
 
 

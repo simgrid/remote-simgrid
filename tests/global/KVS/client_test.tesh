@@ -1,8 +1,0 @@
-! timeout 5
-! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
-> [receiver] Retrieved value from KVS : WORLD!
-> [receiver] Retrieved preloaded value from KVS : value_example
-> [receiver] Retrieved preloaded value from KVS : v
-> [client] Retrieved updated value from KVS : univers
-> [client] Retrieved deleted value from KVS : 
