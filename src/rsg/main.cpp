@@ -5,6 +5,7 @@
 #include <docopt/docopt.h>
 
 #include "serve.hpp"
+#include "status.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -28,9 +29,8 @@ Options:
     auto args = docopt::docopt(usage, { argv + 1, argv + argc }, true);
 
     // Check argument validity
-    std::string platform_file = args["<platform-file>"].asString();
-    // TODO: check that file exists?
-    int port = args["--port"].asLong();
+    std::string server_hostname = args["--hostname"].asString();
+    int server_port = args["--port"].asLong();
     // TODO: check port bounds
 
     // Debug printing, should be removed.
@@ -40,8 +40,15 @@ Options:
     }
 
     // Manage subcommands.
-    if (args["serve"])
-        serve(platform_file, port);
+    if (args["serve"].asBool())
+    {
+        std::string platform_file = args["<platform-file>"].asString();
+        serve(platform_file, server_port);
+    }
+    else if (args["status"].asBool())
+    {
+        status(server_hostname, server_port);
+    }
 
     return 0;
 }
