@@ -4,6 +4,7 @@
 #include <SFML/Network.hpp>
 
 #include <simgrid/s4u.hpp>
+#include <simgrid/actor.h>
 
 #include "interthread_messaging.hpp"
 #include "serve.hpp"
@@ -33,7 +34,7 @@ static void maestro(void * void_args)
     simgrid::s4u::Actor::create("useless", simgrid::s4u::Host::by_name("host0"), useless_actor);
 
     // Run the simulation.
-    printf("Starting the SimGrid simulation.\n");
+    printf("Starting SimGrid simulation.\n");
     e->run();
     printf("SimGrid simulation has finished.\n");
 
@@ -131,6 +132,12 @@ void handle_command(const rsg::Command & command,
             for (int i = 0; i < argc; i++)
                 free(argv[i]);
             e.load_platform(platform_file);
+
+            // Become one of the simulated processes (for a very short time).
+            // This is required for now (tested with SimGrid-3.22.2).
+            sg_actor_attach("temporary", nullptr, simgrid::s4u::Host::by_name("host0"), nullptr);
+            // Become thread0 again!
+            sg_actor_detach();
         } break;
         case rsg::Command::kKill:
             printf("Received a KILL command!\n");
