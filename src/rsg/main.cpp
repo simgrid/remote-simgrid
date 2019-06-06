@@ -4,6 +4,7 @@
 
 #include <docopt/docopt.h>
 
+#include "kill.hpp"
 #include "serve.hpp"
 #include "status.hpp"
 
@@ -48,6 +49,10 @@ Options:
     else if (args["status"].asBool())
     {
         status(server_hostname, server_port);
+    }
+    else if (args["kill"].asBool())
+    {
+        kill(server_hostname, server_port);
     }
 
     return 0;

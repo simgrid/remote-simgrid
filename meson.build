@@ -29,6 +29,8 @@ rsg_src = [
     'src/common/message.hpp',
     'src/common/protobuf/rsg.pb.cc',
     'src/common/protobuf/rsg.pb.h',
+    'src/rsg/kill.cpp',
+    'src/rsg/kill.hpp',
     'src/rsg/main.cpp',
     'src/rsg/serve.cpp',
     'src/rsg/serve.hpp',
