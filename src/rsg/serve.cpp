@@ -12,7 +12,8 @@
 #include "serve.hpp"
 #include "../common/assert.hpp"
 #include "../common/message.hpp"
-#include "../common/protobuf/rsg.pb.h"
+
+#include "rsg.pb.h"
 
 // Open sockets are stored in an (object scope) global variable.
 // This is to enable a clean shutdown/close when a signal (SIGINT, SEGV...) is caught.

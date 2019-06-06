@@ -3,7 +3,8 @@
 #include "simple_commands.hpp"
 #include "../common/assert.hpp"
 #include "../common/message.hpp"
-#include "../common/protobuf/rsg.pb.h"
+
+#include "rsg.pb.h"
 
 static bool initialize_socket_connection(sf::TcpSocket & socket, const std::string & server_hostname, int server_port)
 {
