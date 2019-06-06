@@ -123,11 +123,15 @@ void handle_command(const rsg::Command & command,
             args->to_command = to_command;
             SIMIX_set_maestro(maestro, args);
 
-            int argc = 1 + simgrid_options.size();
+            // Prepare argc/argv for Engine creation.
+            // Changing the maestro thread is only supported for the thread context factory,
+            // this is why this factory is forced here.
+            int argc = 2 + simgrid_options.size();
             char * argv[argc];
             argv[0] = strdup("rsg");
-            for (int i = 1; i < argc; i++)
-                argv[i] = strdup(simgrid_options[i-1].c_str());
+            argv[1] = strdup("--cfg=contexts/factory:thread");
+            for (int i = 2; i < argc; i++)
+                argv[i] = strdup(simgrid_options[i-2].c_str());
             simgrid::s4u::Engine e(&argc, argv);
             for (int i = 0; i < argc; i++)
                 free(argv[i]);
