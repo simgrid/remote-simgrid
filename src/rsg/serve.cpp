@@ -1,16 +1,78 @@
 #include <iostream>
 #include <unordered_map>
 
+#include <signal.h>
+
 #include <SFML/Network.hpp>
 
-#include <simgrid/s4u.hpp>
 #include <simgrid/actor.h>
+#include <simgrid/s4u.hpp>
 
 #include "interthread_messaging.hpp"
 #include "serve.hpp"
 #include "../common/assert.hpp"
 #include "../common/message.hpp"
 #include "../common/protobuf/rsg.pb.h"
+
+// Open sockets are stored in an (object scope) global variable.
+// This is to enable a clean shutdown/close when a signal (SIGINT, SEGV...) is caught.
+
+// Entry point listener socket.
+static sf::TcpListener * listener = nullptr;
+// Sockets that just connected and did not send any message yet.
+static std::unordered_map<sf::TcpSocket*, BarelyConnectedSocketInformation> barely_connected_sockets;
+static std::unordered_map<sf::TcpSocket*, int> actor_sockets;
+
+static void close_open_sockets()
+{
+    printf("Closing open sockets...");
+    fflush(stdout);
+
+    if (listener != nullptr)
+    {
+        listener->close();
+        delete listener;
+        listener = nullptr;
+    }
+
+    for (auto it = barely_connected_sockets.begin(); it != barely_connected_sockets.end(); it++)
+    {
+        sf::TcpSocket * socket = it->first;
+        delete socket;
+    }
+    barely_connected_sockets.clear();
+
+    for (auto it = actor_sockets.begin(); it != actor_sockets.end(); it++)
+    {
+        sf::TcpSocket * socket = it->first;
+        delete socket;
+    }
+    actor_sockets.clear();
+
+    printf(" done\n");
+}
+
+static void signal_handler(int signal)
+{
+    switch (signal)
+    {
+        default:
+            printf("Unknown signal (%d) caught\n", signal);
+            return;
+        case SIGINT:
+            printf("SIGINT signal caught!\n");
+            break;
+        case SIGTERM:
+            printf("SIGTERM signal caught!\n");
+            break;
+        case SIGSEGV:
+            printf("Segmentation fault caught!\n");
+            break;
+    }
+
+    close_open_sockets();
+    exit(1);
+}
 
 struct MaestroArgs
 {
@@ -20,6 +82,8 @@ struct MaestroArgs
 static void useless_actor()
 {
     printf("Hello from useless_actor\n");
+    simgrid::s4u::this_actor::sleep_for(1);
+    raise(SIGSEGV);
 }
 
 static void maestro(void * void_args)
@@ -159,9 +223,14 @@ void handle_command(const rsg::Command & command,
 void serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options)
 {
     // Run a listening TCP server.
-    sf::TcpListener listener;
-    sf::Socket::Status status = listener.listen(server_port);
+    listener = new sf::TcpListener();
+    sf::Socket::Status status = listener->listen(server_port);
     RSG_ENFORCE(status == sf::Socket::Done, "Could not listen on TCP port %d", server_port);
+
+    // Trap signals to close sockets correctly.
+    signal(SIGINT, signal_handler);
+    signal(SIGTERM, signal_handler);
+    signal(SIGSEGV, signal_handler);
 
     // Define inter-thread message queues.
     rsg::message_queue to_command(2);
@@ -170,10 +239,9 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     // Put the listening socket and the just accepted socket in a select pool.
     // This enables managing all these sockets from this unique thread.
     sf::SocketSelector connection_selector;
-    connection_selector.add(listener);
+    connection_selector.add(*listener);
 
-    // Sockets that just connected and did not send any message yet.
-    std::unordered_map<sf::TcpSocket*, BarelyConnectedSocketInformation> barely_connected_sockets;
+    //std::unordered_map<sf::TcpSocket*, BarelyConnectedSocketInformation> barely_connected_sockets;
 
     for (bool should_server_stop = false; !should_server_stop ; )
     {
@@ -181,11 +249,11 @@ void serve(const std::string & platform_file, int server_port, const std::vector
         if (connection_selector.wait(sf::milliseconds(200)))
         {
             // Test whether a new connection can be accepted.
-            if (connection_selector.isReady(listener))
+            if (connection_selector.isReady(*listener))
             {
                 // Listener is ready: there is a pending connection.
                 sf::TcpSocket* client = new sf::TcpSocket;
-                if (listener.accept(*client) == sf::Socket::Done)
+                if (listener->accept(*client) == sf::Socket::Done)
                 {
                     client->setBlocking(false);
                     barely_connected_sockets.insert({client, BarelyConnectedSocketInformation()});
@@ -241,5 +309,5 @@ void serve(const std::string & platform_file, int server_port, const std::vector
         }
     }
 
-    listener.close();
+    close_open_sockets();
 }
