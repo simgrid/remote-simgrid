@@ -4,16 +4,19 @@
 #include <google/protobuf/io/coded_stream.h>
 #include <google/protobuf/io/zero_copy_stream_impl_lite.h>
 
+#include <SFML/Network.hpp>
+
 #include "status.hpp"
-#include "../kissnet.hpp"
-#include "../rsg.pb.h"
+#include "../common/assert.hpp"
+#include "../common/protobuf/rsg.pb.h"
 
 void status(const std::string & server_hostname, int server_port)
 {
     // Connect to the server.
-    namespace kn = kissnet;
-    kn::tcp_socket sock(kn::endpoint("127.0.0.1:35000"));
-    sock.connect();
+    sf::TcpSocket socket;
+    sf::Socket::Status status = socket.connect(server_hostname, server_port);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not connect to rsg server on '%s:%d'",
+        server_hostname.c_str(), server_port);
 
     // Generate message.
     rsg::Command command;
@@ -34,10 +37,8 @@ void status(const std::string & server_hostname, int server_port)
     printf("\n");
 
     printf("Sending message on socket.\n");
-    send(sock.get_underlying_socket(), message_content, message_size, 0);
+    status = socket.send(message_content, message_size);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not send message on socket");
 
     free(message_content);
-
-    printf("Closing socket\n");
-    sock.close();
 }

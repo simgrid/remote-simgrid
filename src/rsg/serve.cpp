@@ -1,39 +1,44 @@
-#include "serve.hpp"
-
 #include <iostream>
 
-#include "../kissnet.hpp"
-#include "../rsg.pb.h"
+#include <SFML/Network.hpp>
+
+#include "serve.hpp"
+#include "../common/assert.hpp"
+#include "../common/protobuf/rsg.pb.h"
 
 void serve(const std::string & platform_file, int server_port)
 {
-    namespace kn = kissnet;
-    kn::socket<kn::protocol::tcp> server(kn::endpoint("0.0.0.0:35000"));
-    server.bind();
-    server.listen();
+    // Run a listening TCP server.
+    sf::TcpListener listener;
+    sf::Socket::Status status = listener.listen(server_port);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not listen on TCP port %d", server_port);
 
     // Accept a new connection.
-    auto client = server.accept();
-    int client_socket = client.get_underlying_socket();
+    sf::TcpSocket client;
+    status = listener.accept(client);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not accept a new client");
 
     // Read a command from the client.
     // Read header.
     uint32_t content_size = 0;
-    ssize_t bytes_read = recv(client_socket, &content_size, 4, 0);
-    // TODO: ensure all bytes have been read
+    size_t bytes_read = 0;
+    status = client.receive(&content_size, 4, bytes_read);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not read message header (4 bytes)");
     // TODO: endianness
     // TODO: check content_size bounds ; last two bytes should be zeros.
     printf("message content is %u-byte long\n", content_size);
 
     // Read content.
     uint8_t * content = (uint8_t *) calloc(content_size, sizeof(uint8_t));
-    bytes_read = recv(client_socket, content, content_size, 0);
-    // TODO: ensure all bytes have been read
+    status = client.receive(content, content_size, bytes_read);
+    RSG_ENFORCE(status == sf::Socket::Done, "Could not read message content (%u bytes)", content_size);
 
     // Parse content.
     rsg::Command command;
     bool succeeded = command.ParseFromArray(content, content_size);
     printf("Parsing success: %d\n", (int) succeeded);
+
+    free(content);
 
     if (succeeded)
     {
