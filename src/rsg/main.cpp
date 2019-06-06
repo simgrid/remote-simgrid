@@ -4,9 +4,8 @@
 
 #include <docopt/docopt.h>
 
-#include "kill.hpp"
 #include "serve.hpp"
-#include "status.hpp"
+#include "simple_commands.hpp"
 
 int main(int argc, char * argv[])
 {
@@ -14,7 +13,7 @@ int main(int argc, char * argv[])
 R"(Remote SimGrid command-line tool.
 
 Usage:
-  rsg serve <platform-file> [--port=<port>]
+  rsg serve <platform-file> [--port=<port>] [-- <simgrid-options>...]
   rsg add-actor <vhost> [options] [--] <command> [<command-args>...]
   rsg start [options]
   rsg status [options]
@@ -44,15 +43,24 @@ Options:
     if (args["serve"].asBool())
     {
         std::string platform_file = args["<platform-file>"].asString();
-        serve(platform_file, server_port);
+        std::vector<std::string> simgrid_options = args["<simgrid-options>"].asStringList();
+        serve(platform_file, server_port, simgrid_options);
+    }
+    else if (args["kill"].asBool())
+    {
+        kill(server_hostname, server_port);
+    }
+    else if (args["start"].asBool())
+    {
+        start(server_hostname, server_port);
     }
     else if (args["status"].asBool())
     {
         status(server_hostname, server_port);
     }
-    else if (args["kill"].asBool())
+    else
     {
-        kill(server_hostname, server_port);
+        printf("Nothing to do.\n");
     }
 
     return 0;

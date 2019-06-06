@@ -6,12 +6,14 @@ project('remote-simgrid', 'cpp',
 )
 
 # Dependencies
+boost_dep = dependency('boost', required: true)
 docopt_dep = dependency('docopt', required: true)
 protobuf_dep = dependency('protobuf', required : true)
 sfml_network_dep = dependency('sfml-network', required: true)
 simgrid_dep = dependency('simgrid', required: true)
 
 rsg_deps = [
+    boost_dep,
     docopt_dep,
     protobuf_dep,
     sfml_network_dep,
@@ -29,13 +31,11 @@ rsg_src = [
     'src/common/message.hpp',
     'src/common/protobuf/rsg.pb.cc',
     'src/common/protobuf/rsg.pb.h',
-    'src/rsg/kill.cpp',
-    'src/rsg/kill.hpp',
     'src/rsg/main.cpp',
     'src/rsg/serve.cpp',
     'src/rsg/serve.hpp',
-    'src/rsg/status.cpp',
-    'src/rsg/status.hpp'
+    'src/rsg/simple_commands.cpp',
+    'src/rsg/simple_commands.hpp'
 ]
 
 rsg_include_dir = include_directories('src/rsg')
