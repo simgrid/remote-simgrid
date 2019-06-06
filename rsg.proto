@@ -1,0 +1,19 @@
+syntax = "proto3";
+package rsg;
+
+// This is the first message sent by any client to the RSG server.
+message Command {
+  // Commands with parameters are messages.
+  // Others commands are mere booleans (whose value contains no information).
+  message AddActorCommand {
+    string actorName = 1;
+    string hostName = 2;
+  }
+
+  oneof type {
+    AddActorCommand addActor = 1;
+    bool start = 2;
+    bool kill = 3;
+    bool status = 4;
+  }
+}

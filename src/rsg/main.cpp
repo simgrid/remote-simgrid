@@ -34,10 +34,10 @@ Options:
     // TODO: check port bounds
 
     // Debug printing, should be removed.
-    std::cout << "Arguments:" << std::endl;
+    /*std::cout << "Arguments:" << std::endl;
     for(auto const & arg : args) {
         std::cout << "  " << arg.first << ": " << arg.second << std::endl;
-    }
+    }*/
 
     // Manage subcommands.
     if (args["serve"].asBool())
