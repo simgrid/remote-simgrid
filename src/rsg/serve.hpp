@@ -15,4 +15,4 @@ struct BarelyConnectedSocketInformation
     ~BarelyConnectedSocketInformation();
 };
 
-void serve(const std::string & platform_file, int server_port, std::vector<std::string> & simgrid_options);
+void serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options);

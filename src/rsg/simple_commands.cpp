@@ -11,7 +11,7 @@ static bool initialize_socket_connection(sf::TcpSocket & socket, const std::stri
     sf::Socket::Status status = socket.connect(server_hostname, server_port);
     if (status != sf::Socket::Done)
     {
-        printf("Could not connect to rsg server on '%s:%d'", server_hostname.c_str(), server_port);
+        printf("Could not connect to rsg server on '%s:%d'\n", server_hostname.c_str(), server_port);
         return false;
     }
 
