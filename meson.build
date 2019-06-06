@@ -26,6 +26,7 @@ rsg_deps = [
 # Source files
 rsg_src = [
     'src/common/assert.hpp',
+    'src/common/message.hpp',
     'src/common/protobuf/rsg.pb.cc',
     'src/common/protobuf/rsg.pb.h',
     'src/rsg/main.cpp',
