@@ -10,14 +10,12 @@ boost_dep = dependency('boost', required: true)
 docopt_dep = dependency('docopt', required: true)
 protobuf_dep = dependency('protobuf', required : true)
 protoc = find_program('protoc', required : true)
-sfml_network_dep = dependency('sfml-network', required: true)
 simgrid_dep = dependency('simgrid', required: true)
 
 rsg_deps = [
     boost_dep,
     docopt_dep,
     protobuf_dep,
-    sfml_network_dep,
     simgrid_dep
 ]
 
@@ -41,6 +39,12 @@ protobuf_generated_src = gen.process('rsg.proto')
 rsg_src = [
     'src/common/assert.hpp',
     'src/common/message.hpp',
+    'src/common/network/selector.hpp',
+    'src/common/network/selector.cpp',
+    'src/common/network/tcp_listener.hpp',
+    'src/common/network/tcp_listener.cpp',
+    'src/common/network/tcp_socket.hpp',
+    'src/common/network/tcp_socket.cpp',
     'src/rsg/main.cpp',
     'src/rsg/serve.cpp',
     'src/rsg/serve.hpp',

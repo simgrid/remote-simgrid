@@ -4,6 +4,7 @@
 
 #include <cstdarg>
 #include <cstdio>
+#include <exception>
 
 namespace rsg
 {
