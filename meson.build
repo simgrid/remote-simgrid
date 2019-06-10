@@ -19,10 +19,9 @@ rsg_deps = [
     simgrid_dep
 ]
 
-# librsg_deps = [
-#     protobuf_dep,
-#     sfml_network_dep
-# ]
+librsg_deps = [
+    protobuf_dep,
+]
 
 # Generate source files from protobuf schema description.
 gen = generator(protoc, \
@@ -51,12 +50,43 @@ rsg_src = [
     'src/rsg/simple_commands.cpp',
     'src/rsg/simple_commands.hpp'
 ]
+
+librsg_src = [
+    'src/common/assert.hpp',
+    'src/common/message.hpp',
+    'src/common/network/tcp_socket.hpp',
+    'src/common/network/tcp_socket.cpp',
+    'src/librsg/client.cpp',
+    'src/librsg/client.hpp'
+]
+
 rsg_src += protobuf_generated_src
+librsg_src += protobuf_generated_src
 
 rsg_include_dir = include_directories('src/rsg')
-
 rsg = executable('rsg', rsg_src,
     include_directories: rsg_include_dir,
     dependencies: rsg_deps,
     install: true
+)
+
+librsg_include_dir = include_directories('src')
+librsg = shared_library('rsg', librsg_src,
+    include_directories: librsg_include_dir,
+    dependencies: librsg_deps,
+    install: true,
+)
+
+# Install librsg.
+install_headers(
+    'src/librsg/client.hpp',
+    subdir: 'librsg'
+)
+
+pkgc = import('pkgconfig')
+pkgc.generate(name: 'librsg',
+    libraries: librsg,
+    version: meson.project_version(),
+    requires: [protobuf_dep],
+    description: 'Remote SimGrid client library.'
 )

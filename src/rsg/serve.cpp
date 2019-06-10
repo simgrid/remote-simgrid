@@ -191,7 +191,7 @@ static void handle_command(const rsg::Command & command,
     rsg::message_queue * to_command,
     bool & should_server_stop)
 {
-    rsg::CommandAcknowledgment command_ack;
+    rsg::CommandAck command_ack;
     command_ack.set_success(true);
 
     switch (command.type_case())
@@ -201,7 +201,6 @@ static void handle_command(const rsg::Command & command,
                 command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
             command_ack.set_success(false);
             // TODO: implement me
-
             break;
         case rsg::Command::kStart:
         {
@@ -247,6 +246,11 @@ static void handle_command(const rsg::Command & command,
             break;
         case rsg::Command::kStatus:
             printf("Received a STATUS command!\n");
+            command_ack.set_success(false);
+            // TODO: implement me
+            break;
+        case rsg::Command::kConnect:
+            printf("Received a CONNECT command! (actor_id=%d)\n", command.connect().id());
             command_ack.set_success(false);
             // TODO: implement me
             break;

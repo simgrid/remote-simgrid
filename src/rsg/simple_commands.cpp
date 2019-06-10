@@ -16,16 +16,16 @@ void add_actor(const std::string & server_hostname, int server_port,
 
         // Generate message.
         rsg::Command command;
-        auto initial_actor_spawn = new(rsg::InitialActorSpawn);
-        initial_actor_spawn->set_actorname(actor_name);
-        initial_actor_spawn->set_hostname(vhost_name);
-        command.set_allocated_addactor(initial_actor_spawn);
+        auto add_actor = new(rsg::Command_AddActor);
+        add_actor->set_actorname(actor_name);
+        add_actor->set_hostname(vhost_name);
+        command.set_allocated_addactor(add_actor);
 
         // Write message on socket.
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAcknowledgment command_ack;
+        rsg::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
@@ -53,7 +53,7 @@ void kill(const std::string & server_hostname, int server_port)
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAcknowledgment command_ack;
+        rsg::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
@@ -81,7 +81,7 @@ void start(const std::string & server_hostname, int server_port)
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAcknowledgment command_ack;
+        rsg::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
@@ -109,7 +109,7 @@ void status(const std::string & server_hostname, int server_port)
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAcknowledgment command_ack;
+        rsg::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
