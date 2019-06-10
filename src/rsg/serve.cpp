@@ -91,6 +91,23 @@ BarelyConnectedSocketInformation::~BarelyConnectedSocketInformation()
     free(content_buffer);
 }
 
+std::string server_state_to_string(ServerState state)
+{
+    switch(state)
+    {
+    case ServerState::ACCEPTING_NEW_ACTORS:
+        return "ACCEPTING_NEW_ACTORS";
+    case ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION:
+        return "WAITING_FOR_ALL_ACTORS_CONNECTION";
+    case ServerState::SIMULATION_RUNNING:
+        return "SIMULATION_RUNNING";
+    case ServerState::SIMULATION_FINISHED:
+        return "SIMULATION_FINISHED";
+    case ServerState::KILLED:
+        return "KILLED";
+    }
+}
+
 static bool handle_barely_connected_socket_read(rsg::TcpSocket * client_socket,
     BarelyConnectedSocketInformation & info, rsg::Command & command)
 {
@@ -153,7 +170,7 @@ static void handle_command(const rsg::Command & command,
     const std::string & platform_file,
     const std::vector<std::string> & simgrid_options,
     rsg::message_queue * to_command,
-    bool & should_server_stop)
+    ServerState & server_state)
 {
     rsg::CommandAck command_ack;
     command_ack.set_success(true);
@@ -176,7 +193,7 @@ static void handle_command(const rsg::Command & command,
             break;
         case rsg::Command::kKill:
             printf("Received a KILL command!\n");
-            should_server_stop = true;
+            server_state = ServerState::KILLED;
             break;
         case rsg::Command::kStatus:
             printf("Received a STATUS command!\n");
@@ -185,6 +202,10 @@ static void handle_command(const rsg::Command & command,
             break;
         case rsg::Command::kConnect:
             printf("Received a CONNECT command! (actor_id=%d)\n", command.connect().id());
+            RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS || server_state == ServerState::KILLED,
+                "Received a CONNECT command while the simulation state is '%s'. "
+                "As this is probably a bug in your experiment setup, the simulation aborts now.",
+                server_state_to_string(server_state).c_str());
             command_ack.set_success(false);
             // TODO: implement me
             break;
@@ -212,6 +233,8 @@ void serve(const std::string & platform_file, int server_port, const std::vector
         return;
     }
 
+    ServerState state = ServerState::ACCEPTING_NEW_ACTORS;
+
     // Trap signals to close sockets correctly.
     signal(SIGINT, signal_handler);
     signal(SIGTERM, signal_handler);
@@ -224,7 +247,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     rsg::Selector selector;
     selector.add(listener->fd());
 
-    for (bool should_server_stop = false; !should_server_stop ; )
+    while (state != ServerState::SIMULATION_FINISHED && state != ServerState::KILLED)
     {
         // The timeout defines the latency to terminate this thread when the simulation is finished.
         if (selector.wait_any_readable(200))
@@ -255,7 +278,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
                         if (handle_barely_connected_socket_read(client_socket, info, command))
                         {
                             handle_command(command, client_socket, platform_file, simgrid_options,
-                                &to_command, should_server_stop);
+                                &to_command, state);
 
                             // Do not close() connection from server first, to limit server-side TIME-WAIT.
                             // Instead, wait for the client to close it.
@@ -304,7 +327,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
             to_command.pop(msg);
 
             if (msg.type == rsg::InterthreadMessageType::SIMULATION_FINISHED)
-                should_server_stop = true;
+                state = ServerState::SIMULATION_FINISHED;
         }
     }
 

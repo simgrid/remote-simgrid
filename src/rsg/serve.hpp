@@ -15,4 +15,15 @@ struct BarelyConnectedSocketInformation
     ~BarelyConnectedSocketInformation();
 };
 
+enum class ServerState
+{
+    ACCEPTING_NEW_ACTORS,
+    WAITING_FOR_ALL_ACTORS_CONNECTION,
+    SIMULATION_RUNNING,
+    SIMULATION_FINISHED,
+    KILLED
+};
+
+std::string server_state_to_string(ServerState state);
+
 void serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options);
