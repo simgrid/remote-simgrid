@@ -189,31 +189,39 @@ static void handle_command(const rsg::Command & command,
     const std::string & platform_file,
     const std::vector<std::string> & simgrid_options,
     rsg::message_queue * to_command,
-    bool & should_keep_connection,
     bool & should_server_stop)
 {
-    should_keep_connection = false;
     rsg::CommandAcknowledgment command_ack;
     command_ack.set_success(true);
 
     switch (command.type_case())
     {
         case rsg::Command::kAddActor:
-            printf("Received an ADD_ACTOR command!\n");
+            printf("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)\n",
+                command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
             command_ack.set_success(false);
+            // TODO: implement me
+
             break;
         case rsg::Command::kStart:
         {
             printf("Received a START command!\n");
+            // TODO: do not run the simulation from here. Instead:
+            // - Mark that the user wants to start the simulation
+            // - -> do not accept new add-actor
+            // - -> wait for all clients to connect then start the simulation.
 
             // Run a meastro thread.
             auto args = new MaestroArgs;
             args->to_command = to_command;
             SIMIX_set_maestro(maestro, args);
 
-            // Prepare argc/argv for Engine creation.
-            // Changing the maestro thread is only supported for the thread context factory,
-            // this is why this factory is forced here.
+            /* Prepare argc/argv for Engine creation.
+               - Changing the maestro thread is only supported for the thread context factory,
+                 this is why this factory is forced here.
+               - Cleaner methods cannot be be used to set SimGrid options,
+                 as the context factory is managed at engine creation time.
+            */
             int argc = 2 + simgrid_options.size();
             char * argv[argc];
             argv[0] = strdup("rsg");
@@ -227,7 +235,9 @@ static void handle_command(const rsg::Command & command,
 
             // Become one of the simulated processes (for a very short time).
             // This is required for now (tested with SimGrid-3.22.2).
-            sg_actor_attach("temporary", nullptr, simgrid::s4u::Host::by_name("host0"), nullptr);
+            RSG_ASSERT(e.get_host_count() > 0,
+                "Error: Provided platform file '%s' contains no host", platform_file.c_str());
+            sg_actor_attach("temporary", nullptr, e.get_all_hosts()[0], nullptr);
             // Become thread0 again!
             sg_actor_detach();
         } break;
@@ -238,6 +248,7 @@ static void handle_command(const rsg::Command & command,
         case rsg::Command::kStatus:
             printf("Received a STATUS command!\n");
             command_ack.set_success(false);
+            // TODO: implement me
             break;
         case rsg::Command::TYPE_NOT_SET:
             command_ack.set_success(false);
@@ -291,7 +302,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
             }
             else
             {
-                bool dropped_a_socket = false;
+                bool client_dropped = false;
                 // Traverse and test all barely connected sockets.
                 for (auto it = barely_connected_sockets.begin(); it != barely_connected_sockets.end(); )
                 {
@@ -305,23 +316,19 @@ void serve(const std::string & platform_file, int server_port, const std::vector
                         rsg::Command command;
                         if (handle_barely_connected_socket_read(client_socket, info, command))
                         {
-                            bool should_keep_connection;
-                            handle_command(command, client_socket, platform_file, simgrid_options, &to_command,
-                                should_keep_connection, should_server_stop);
+                            handle_command(command, client_socket, platform_file, simgrid_options,
+                                &to_command, should_server_stop);
 
-                            if (!should_keep_connection)
-                            {
-                                // Do not close() connection from server first, to avoid server-side TIME-WAIT.
-                                // Instead, wait for the client to close it.
-                                it = barely_connected_sockets.erase(it);
-                                dropped_sockets.push_back(client_socket);
-                                dropped_a_socket = true;
-                            }
+                            // Do not close() connection from server first, to limit server-side TIME-WAIT.
+                            // Instead, wait for the client to close it.
+                            it = barely_connected_sockets.erase(it);
+                            dropped_sockets.push_back(client_socket);
+                            client_dropped = true;
                         }
                     }
                 }
 
-                if (!dropped_a_socket)
+                if (!client_dropped)
                 {
                     // Traverse and test all dropped sockets
                     for (auto it = dropped_sockets.begin(); it != dropped_sockets.end(); )

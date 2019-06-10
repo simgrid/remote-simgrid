@@ -13,8 +13,8 @@ int main(int argc, char * argv[])
 R"(Remote SimGrid command-line tool.
 
 Usage:
-  rsg serve <platform-file> [--port=<port>] [-- <simgrid-options>...]
-  rsg add-actor <vhost> [options] [--] <command> [<command-args>...]
+  rsg serve <platform-file> [--port=<port>] [-- <sg-options>...]
+  rsg add-actor <actor-name> <sg-host> [options] [--] <command> [<command-args>...]
   rsg start [options]
   rsg status [options]
   rsg kill [options]
@@ -31,7 +31,6 @@ Options:
     // Check argument validity
     std::string server_hostname = args["--hostname"].asString();
     int server_port = args["--port"].asLong();
-    // TODO: check port bounds
 
     // Debug printing, should be removed.
     /*std::cout << "Arguments:" << std::endl;
@@ -43,7 +42,7 @@ Options:
     if (args["serve"].asBool())
     {
         std::string platform_file = args["<platform-file>"].asString();
-        std::vector<std::string> simgrid_options = args["<simgrid-options>"].asStringList();
+        std::vector<std::string> simgrid_options = args["<sg-options>"].asStringList();
         serve(platform_file, server_port, simgrid_options);
     }
     else if (args["kill"].asBool())
@@ -58,9 +57,11 @@ Options:
     {
         status(server_hostname, server_port);
     }
-    else
+    else if (args["add-actor"].asBool())
     {
-        printf("Nothing to do.\n");
+        std::string actor_name = args["<actor-name>"].asString();
+        std::string vhost_name = args["<sg-host>"].asString();
+        add_actor(server_hostname, server_port, actor_name, vhost_name);
     }
 
     return 0;

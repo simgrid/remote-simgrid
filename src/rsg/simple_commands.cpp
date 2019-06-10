@@ -5,6 +5,38 @@
 
 #include "rsg.pb.h"
 
+void add_actor(const std::string & server_hostname, int server_port,
+    const std::string & actor_name, const std::string & vhost_name)
+{
+    try
+    {
+        // Connect to the server.
+        rsg::TcpSocket socket;
+        socket.connect(server_hostname, server_port);
+
+        // Generate message.
+        rsg::Command command;
+        auto initial_actor_spawn = new(rsg::InitialActorSpawn);
+        initial_actor_spawn->set_actorname(actor_name);
+        initial_actor_spawn->set_hostname(vhost_name);
+        command.set_allocated_addactor(initial_actor_spawn);
+
+        // Write message on socket.
+        write_message(command, socket);
+
+        // Read acknowledment.
+        rsg::CommandAcknowledgment command_ack;
+        read_message(command_ack, socket);
+
+        if (!command_ack.success())
+            printf("add-actor failed\n");
+    }
+    catch (const rsg::Error & err)
+    {
+        printf("%s\n", err.what());
+    }
+}
+
 void kill(const std::string & server_hostname, int server_port)
 {
     try
