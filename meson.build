@@ -92,3 +92,11 @@ pkgc.generate(name: 'librsg',
     requires: [protobuf_dep],
     description: 'Remote SimGrid client library.'
 )
+
+# Test
+tesh = find_program('tesh', required : true)
+test_env = environment()
+test_env.prepend('PATH', meson.build_root())
+test_env.set('TEST_DIR', meson.source_root() + '/tests')
+
+test('rsg-cli kill-serve', tesh, env: test_env, args: [files('tests/rsg-cli/serve-kill.tesh')])
