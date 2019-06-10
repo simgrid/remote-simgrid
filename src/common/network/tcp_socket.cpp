@@ -13,14 +13,12 @@ rsg::TcpSocket::TcpSocket()
     errno = 0;
     _fd = ::socket(AF_INET, SOCK_STREAM, 0);
     RSG_ENFORCE(_fd != -1, "cannot create socket: %s", strerror(errno));
-
-    set_default_options();
 }
 
 rsg::TcpSocket::TcpSocket(int fd) : _fd(fd), _connected(true)
 {
-    set_default_options();
 }
+
 
 rsg::TcpSocket::~TcpSocket()
 {
@@ -157,13 +155,12 @@ bool rsg::TcpSocket::is_connected() const
     return _connected;
 }
 
-void rsg::TcpSocket::set_default_options()
+void rsg::TcpSocket::disable_nagle_algorithm()
 {
-    RSG_ASSERT(_fd != -1, "Wrong TcpSocket::set_default_options call: Invalid socket");
+    RSG_ASSERT(_fd != -1, "Wrong TcpSocket::disable_nagle_algorithm call: Invalid socket");
 
-    // Disable Nagle algorithm.
     errno = 0;
     int yes = 1;
-    int res = setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(yes));
+    int res = setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(int));
     RSG_ENFORCE(res != -1, "Cannot setsockopt TCP_NODELAY: %s", strerror(errno));
 }

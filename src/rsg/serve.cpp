@@ -253,6 +253,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     listener = new rsg::TcpListener();
     try
     {
+        listener->allow_address_reuse();
         listener->listen(server_port);
         printf("Listening on port %d\n", server_port);
     }

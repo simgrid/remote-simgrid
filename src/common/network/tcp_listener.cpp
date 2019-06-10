@@ -79,3 +79,13 @@ int rsg::TcpListener::fd() const
 {
     return _fd;
 }
+
+void rsg::TcpListener::allow_address_reuse()
+{
+    RSG_ASSERT(_fd != -1, "Wrong TcpSocket::allow_address_reuse call: Invalid socket");
+
+    errno = 0;
+    int yes = 1;
+    int res = setsockopt(_fd, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char*>(&yes), sizeof(int));
+    RSG_ENFORCE(res != -1, "Cannot setsockopt SO_REUSEADDR: %s", strerror(errno));
+}

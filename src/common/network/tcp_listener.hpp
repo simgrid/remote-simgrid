@@ -21,6 +21,8 @@ public:
 
     int fd() const;
 
+    void allow_address_reuse();
+
 private:
     int _fd = -1;
 };

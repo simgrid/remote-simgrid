@@ -30,8 +30,7 @@ public:
     int fd_before_close() const;
     bool is_connected() const;
 
-private:
-    void set_default_options();
+    void disable_nagle_algorithm();
 
 private:
     int _fd = -1;
