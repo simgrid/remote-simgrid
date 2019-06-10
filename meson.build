@@ -47,6 +47,8 @@ rsg_src = [
     'src/rsg/main.cpp',
     'src/rsg/serve.cpp',
     'src/rsg/serve.hpp',
+    'src/rsg/simulation.cpp',
+    'src/rsg/simulation.hpp',
     'src/rsg/simple_commands.cpp',
     'src/rsg/simple_commands.hpp'
 ]
