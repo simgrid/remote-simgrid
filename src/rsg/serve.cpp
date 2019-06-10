@@ -170,47 +170,112 @@ static void handle_command(const rsg::Command & command,
     const std::string & platform_file,
     const std::vector<std::string> & simgrid_options,
     rsg::message_queue * to_command,
-    ServerState & server_state)
+    ServerState & server_state,
+    std::unordered_map<int, ActorConnection*> & actor_connections,
+    uint32_t & nb_connected_actors,
+    bool & drop_client)
 {
+    const char * abort_msg = "As this is probably a bug in your experiment setup, the simulation aborts now.";
     rsg::CommandAck command_ack;
-    command_ack.set_success(true);
+    command_ack.set_success(false);
+    drop_client = true;
 
     switch (command.type_case())
     {
         case rsg::Command::kAddActor:
+        {
             printf("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)\n",
                 command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
-            command_ack.set_success(false);
-            // TODO: implement me
-            break;
+            RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
+                        server_state == ServerState::KILLED,
+                "Received an ADD_ACTOR command while the simulation state is '%s'. %s",
+                server_state_to_string(server_state).c_str(), abort_msg);
+
+            if (server_state != ServerState::KILLED)
+            {
+                // Store the actor so a future client can connect later on.
+                auto actor_connection = new ActorConnection();
+                actor_connection->actor_name = command.addactor().actorname().c_str();
+                actor_connection->host_name = command.addactor().hostname().c_str();
+                actor_connection->actor_id = actor_connections.size() + 1;
+                actor_connections.insert({actor_connection->actor_id, actor_connection});
+
+                // Send the actor identifier back to the client.
+                auto actor = new rsg::Actor();
+                actor->set_id(actor_connection->actor_id);
+                command_ack.set_allocated_actor(actor);
+                command_ack.set_success(true);
+            }
+        } break;
         case rsg::Command::kStart:
             printf("Received a START command!\n");
-            // TODO: do not run the simulation from here. Instead:
-            // - Mark that the user wants to start the simulation
-            // - -> do not accept new add-actor
-            // - -> wait for all clients to connect then start the simulation.
-            start_simulation_in_another_thread(platform_file, simgrid_options, to_command);
+            RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS,
+                "Received an ADD_ACTOR command while the simulation state is '%s'. %s",
+                server_state_to_string(server_state).c_str(), abort_msg);
+
+            if (nb_connected_actors == actor_connections.size())
+            {
+                server_state = ServerState::SIMULATION_RUNNING;
+                start_simulation_in_another_thread(platform_file, simgrid_options, to_command);
+            }
+            else
+            {
+                printf("Simulation will start as soon as all registered actors are connected\n");
+                server_state = ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION;
+            }
+
+            command_ack.set_success(true);
             break;
         case rsg::Command::kKill:
             printf("Received a KILL command!\n");
             server_state = ServerState::KILLED;
+            command_ack.set_success(true);
             break;
         case rsg::Command::kStatus:
             printf("Received a STATUS command!\n");
-            command_ack.set_success(false);
             // TODO: implement me
             break;
         case rsg::Command::kConnect:
+        {
             printf("Received a CONNECT command! (actor_id=%d)\n", command.connect().id());
-            RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS || server_state == ServerState::KILLED,
-                "Received a CONNECT command while the simulation state is '%s'. "
-                "As this is probably a bug in your experiment setup, the simulation aborts now.",
-                server_state_to_string(server_state).c_str());
-            command_ack.set_success(false);
-            // TODO: implement me
-            break;
+            RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
+                        server_state == ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION ||
+                        server_state == ServerState::SIMULATION_RUNNING ||
+                        server_state == ServerState::KILLED,
+                "Received a CONNECT command while the simulation state is '%s'. %s",
+                server_state_to_string(server_state).c_str(), abort_msg);
+
+            if (server_state != ServerState::KILLED)
+            {
+                // Check actor_id.
+                auto it = actor_connections.find(command.connect().id());
+                RSG_ENFORCE(it != actor_connections.end(),
+                    "Received a CONNECT command from an unknown actor id (%d). %s",
+                    command.connect().id(), abort_msg);
+
+                ActorConnection * actor_connection = it->second;
+                RSG_ENFORCE(actor_connection->socket == nullptr,
+                    "Received a CONNECT command from actor id %d, but a client is already connected to this actor. %s",
+                    command.connect().id(), abort_msg);
+
+                // Mark the actor as connected.
+                actor_connection->socket = issuer_socket;
+                nb_connected_actors++;
+
+                if (server_state == ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION &&
+                    nb_connected_actors == actor_connections.size())
+                {
+                    server_state = ServerState::SIMULATION_RUNNING;
+                    start_simulation_in_another_thread(platform_file, simgrid_options, to_command);
+                }
+
+                // Contrary to other command connections, this socket should not be dropped now.
+                drop_client = false;
+                command_ack.set_success(true);
+            }
+        } break;
         case rsg::Command::TYPE_NOT_SET:
-            command_ack.set_success(false);
+            RSG_ENFORCE(false, "Received a command with unset command type. %s", abort_msg);
             break;
     }
 
@@ -247,6 +312,10 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     rsg::Selector selector;
     selector.add(listener->fd());
 
+    // Store expected client connections (resulting from add-actor commands).
+    std::unordered_map<int, ActorConnection*> actor_connections;
+    uint32_t nb_connected_actors = 0;
+
     while (state != ServerState::SIMULATION_FINISHED && state != ServerState::KILLED)
     {
         // The timeout defines the latency to terminate this thread when the simulation is finished.
@@ -277,14 +346,23 @@ void serve(const std::string & platform_file, int server_port, const std::vector
                         rsg::Command command;
                         if (handle_barely_connected_socket_read(client_socket, info, command))
                         {
+                            bool drop_client = true;
                             handle_command(command, client_socket, platform_file, simgrid_options,
-                                &to_command, state);
+                                &to_command, state, actor_connections, nb_connected_actors, drop_client);
 
-                            // Do not close() connection from server first, to limit server-side TIME-WAIT.
-                            // Instead, wait for the client to close it.
                             it = barely_connected_sockets.erase(it);
-                            dropped_sockets.push_back(client_socket);
-                            client_dropped = true;
+                            if (drop_client)
+                            {
+                                // Do not close() connection from server first, to limit server-side TIME-WAIT.
+                                // Instead, wait for the client to close it.
+                                dropped_sockets.push_back(client_socket);
+                                client_dropped = true;
+                            }
+                            else
+                            {
+                                // Connection has a long lifespan, and will not be managed by the main select().
+                                selector.remove(client_socket->fd());
+                            }
                         }
                     }
                 }

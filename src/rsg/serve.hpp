@@ -3,6 +3,11 @@
 #include <string>
 #include <vector>
 
+namespace rsg
+{
+    class TcpSocket;
+}
+
 // Contains information for sockets that just connected.
 // Once a socket has declared it wants to become an actor socket,
 // is is no longer managed by this thread nor uses this data structure.
@@ -22,6 +27,14 @@ enum class ServerState
     SIMULATION_RUNNING,
     SIMULATION_FINISHED,
     KILLED
+};
+
+struct ActorConnection
+{
+    std::string actor_name = "unset";
+    std::string host_name = "unset";
+    int actor_id = -1;
+    rsg::TcpSocket * socket = nullptr;
 };
 
 std::string server_state_to_string(ServerState state);
