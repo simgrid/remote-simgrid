@@ -1,8 +1,0 @@
-! timeout 5
-! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
-> [child] My pid is 2
-> [child] Fork returned 0
-> [child] Message from Daddy: 'GaBuZoMeu'
-> [client] My pid is 1
-> [client] The pid of my child is 2

@@ -1,5 +1,0 @@
-! timeout 5
-! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform_with_props.xml -d ${bintestdir:=.}/deploy.xml
-> [server] Host message : Hello, I'm host1
-> [server] nothing : (null)
