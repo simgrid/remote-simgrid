@@ -100,3 +100,4 @@ test_env.prepend('PATH', meson.build_root())
 test_env.set('TEST_DIR', meson.source_root() + '/tests')
 
 test('rsg-cli kill-serve', tesh, env: test_env, args: [files('tests/rsg-cli/serve-kill.tesh')])
+test('rsg-cli kill-serve-port', tesh, env: test_env, args: [files('tests/rsg-cli/serve-kill-port.tesh')])

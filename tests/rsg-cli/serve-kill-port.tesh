@@ -1,0 +1,11 @@
+! timeout 3
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml --port 35001
+> Listening on port 35001
+> New client accepted
+> Received a KILL command!
+> Closing open sockets... done
+
+$ sleep 0.2
+
+! timeout 3
+$ rsg kill --port 35001
