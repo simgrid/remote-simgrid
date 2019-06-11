@@ -14,15 +14,22 @@ let
       version = "0.3.0-git";
 
       src = ./.;
-      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ];
+      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
+        ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
       buildInputs = [ simgrid kapack.docopt_cpp pkgs.boost pkgs.protobuf ];
 
       mesonFlags = []
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
+      postCheck = pkgs.lib.optionalString doCoverage ''
+        mkdir -p ./cov/report-html
+        gcovr . -o ./cov/report.txt 2>/dev/null
+        gcovr . -o ./cov/report-html/index.html --html-details 2>/dev/null
+      '';
       postInstall = pkgs.lib.optionalString doCoverage ''
         mkdir -p $out/cov/rsg@exe $out/cov/rsg@sha
         cp rsg@exe/*.gc{no,da} $out/cov/rsg@exe/
         cp rsg@sha/*.gc{no,da} $out/cov/rsg@sha/
+        cp -r ./cov/* $out/cov
       '';
 
       preConfigure = "rm -rf build";
