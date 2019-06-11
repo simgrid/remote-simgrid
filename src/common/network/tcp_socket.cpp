@@ -42,7 +42,8 @@ void rsg::TcpSocket::connect(const std::string & server_address, uint16_t port)
 
     errno = 0;
     res = ::connect(_fd, (sockaddr *) &server_addr, sizeof(sockaddr_in));
-    RSG_ENFORCE(res != -1, "Cannot connect: %s", strerror(errno));
+    RSG_ENFORCE(res != -1, "Cannot connect to (hostname='%s', port=%d): %s",
+        server_address.c_str(), port, strerror(errno));
     _connected = true;
 }
 
