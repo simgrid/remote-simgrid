@@ -17,11 +17,14 @@ namespace rsg
 
 enum class InterthreadMessageType
 {
+    UNDEFINED
+
     // From Command to SimGrid
-    START_SIMULATION,
+    ,START_SIMULATION
 
     // From SimGrid to Command
-    SIMULATION_FINISHED
+    ,SIMULATION_FINISHED
+
 };
 
 // Abstract base class for message content.
@@ -32,7 +35,7 @@ struct InterthreadMessageContent
 
 struct InterthreadMessage
 {
-    InterthreadMessageType type;
+    InterthreadMessageType type = InterthreadMessageType::UNDEFINED;
     InterthreadMessageContent * data = nullptr;
 };
 
