@@ -106,6 +106,7 @@ std::string server_state_to_string(ServerState state)
     case ServerState::KILLED:
         return "KILLED";
     }
+    RSG_ENFORCE(0, "Unknown ServerState received");
 }
 
 static bool handle_barely_connected_socket_read(rsg::TcpSocket * client_socket,
