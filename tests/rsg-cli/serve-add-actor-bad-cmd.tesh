@@ -4,7 +4,7 @@
 > New client accepted
 > Received an ADD_ACTOR command! (actor_name=actor, host_name=host)
 > New client accepted
-> Received a KILL command!
+> Received a KILL command! Reason: add-actor (actor_id=1) failed: Could not execvp into '/this/command/does/not/exist'
 > Closing open sockets... done
 
 $ sleep 0.2

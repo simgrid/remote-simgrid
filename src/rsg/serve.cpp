@@ -228,7 +228,7 @@ static void handle_command(const rsg::Command & command,
             command_ack.set_success(true);
             break;
         case rsg::Command::kKill:
-            printf("Received a KILL command!\n");
+            printf("Received a KILL command! Reason: %s\n", command.kill().c_str());
             server_state = ServerState::KILLED;
             command_ack.set_success(true);
             break;

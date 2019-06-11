@@ -1,8 +1,13 @@
 project('remote-simgrid', 'cpp',
     version: '0.2.0',
     license: 'LGPL-3.0',
-    default_options: ['cpp_std=c++11'],
-    meson_version: '>=0.37.1'
+    meson_version: '>=0.37.1',
+    default_options: [
+        'cpp_std=c++11',
+        # Do not use -Wl,--as-needed.
+        # librsg has a constructor and its link should always be kept.
+        'b_asneeded=false'
+    ]
 )
 
 # Dependencies
@@ -91,6 +96,12 @@ pkgc.generate(name: 'librsg',
     version: meson.project_version(),
     requires: [protobuf_dep],
     description: 'Remote SimGrid client library.'
+)
+
+librsg_dep = declare_dependency(
+    include_directories: librsg_include_dir,
+    link_with: librsg,
+    dependencies: librsg_deps,
 )
 
 # Test

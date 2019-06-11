@@ -24,7 +24,7 @@ static void maestro(void * void_args)
 
     // Spawn initial actors.
     simgrid::s4u::Engine * e = simgrid::s4u::Engine::get_instance();
-    simgrid::s4u::Actor::create("useless", simgrid::s4u::Host::by_name("host0"), useless_actor);
+    simgrid::s4u::Actor::create("useless", e->get_all_hosts()[0], useless_actor);
 
     // Run the simulation.
     printf("Starting SimGrid simulation.\n");

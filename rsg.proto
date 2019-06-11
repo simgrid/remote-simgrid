@@ -14,7 +14,7 @@ message Command {
   oneof type {
     AddActor addActor = 1;
     bool start = 2;
-    bool kill = 3;
+    string kill = 3;
     bool status = 4;
     Actor connect = 5;
   }

@@ -19,7 +19,7 @@ Usage:
                 [--] <command> [<command-args>...]
   rsg start [--hostname=<host>] [--port=<port>]
   rsg status [--hostname=<host>] [--port=<port>]
-  rsg kill [--hostname=<host>] [--port=<port>]
+  rsg kill [--hostname=<host>] [--reason=<reason>] [--port=<port>]
   rsg --help
 
 Options:
@@ -50,7 +50,10 @@ Options:
     }
     else if (args["kill"].asBool())
     {
-        return_code = kill(server_hostname, server_port);
+        std::string kill_reason = "";
+        if (args["--reason"].isString())
+            kill_reason = args["--reason"].asString();
+        return_code = kill(server_hostname, server_port, kill_reason);
     }
     else if (args["start"].asBool())
     {

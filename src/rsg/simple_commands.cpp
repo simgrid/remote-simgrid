@@ -70,35 +70,51 @@ int add_actor(const std::string & server_hostname, int server_port,
             RSG_ENFORCE(ret == 0, "Cannot setenv RSG_SERVER_PORT to '%s': %s",
                 port_string, strerror(errno));
 
-            if (autoconnect)
+            try
             {
-                ret = setenv("RSG_AUTOCONNECT", "1", 1);
-                RSG_ENFORCE(ret == 0, "Cannot setenv RSG_AUTOCONNECT to '1': %s", strerror(errno));
+                if (autoconnect)
+                {
+                    ret = setenv("RSG_AUTOCONNECT", "1", 1);
+                    RSG_ENFORCE(ret == 0, "Cannot setenv RSG_AUTOCONNECT to '1': %s", strerror(errno));
+                }
+                else
+                {
+                    ret = unsetenv("RSG_AUTOCONNECT");
+                    RSG_ENFORCE(ret == 0, "Cannot unsetenv RSG_AUTOCONNECT: %s", strerror(errno));
+                }
+
+                char actor_id_string[16];
+                ret = snprintf(actor_id_string, 16, "%d", command_ack.actor().id());
+                RSG_ENFORCE(ret > 0 && ret < 16, "Cannot convert actor_id=%d to a 16-length string", command_ack.actor().id());
+                ret = setenv("RSG_INITIAL_ACTOR_ID", actor_id_string, 1);
+                RSG_ENFORCE(ret == 0, "Cannot setenv RSG_INITIAL_ACTOR_ID to '%s': %s",
+                    actor_id_string, strerror(errno));
+
+                // Mute into the target process.
+                errno = 0;
+                ret = execvp(command_to_run.c_str(), args);
+
+                // This code is only executed if muting into the target process failed.
+                printf("Could not mute into the target process: %s\n", strerror(errno));
+                printf("execvp arguments were:\n");
+                printf("- file: %s\n", command_to_run.c_str());
+                printf("- argv: ['%s'", args[0]);
+                for (size_t i = 1; i < nb_args; i++)
+                    printf(", '%s'", args[i]);
+                printf("]\n");
+                RSG_ENFORCE(0, "Could not execvp into '%s'", command_to_run.c_str());
             }
-            else
+            catch (const rsg::Error & e)
             {
-                ret = unsetenv("RSG_AUTOCONNECT");
-                RSG_ENFORCE(ret == 0, "Cannot unsetenv RSG_AUTOCONNECT: %s", strerror(errno));
+                // Tell the server we could not run the command by killing it.
+                printf("Killing the server, as executing the process failed.\n");
+                char kill_reason[128];
+                snprintf(kill_reason, 128, "add-actor (actor_id=%d) failed: %s",
+                    command_ack.actor().id(), e.what());
+                kill(server_hostname, server_port, std::string(kill_reason));
+
+                return 1;
             }
-
-            // Mute into the target process.
-            errno = 0;
-            ret = execvp(command_to_run.c_str(), args);
-
-            // This code is only executed if muting into the target process failed.
-            printf("Could not mute into the target process: %s\n", strerror(errno));
-            printf("execvp arguments were:\n");
-            printf("- file: %s\n", command_to_run.c_str());
-            printf("- argv: ['%s'", args[0]);
-            for (size_t i = 1; i < nb_args; i++)
-                printf(", '%s'", args[i]);
-            printf("]\n");
-
-            // Tell the server we could not run the command by killing it.
-            printf("Killing the server, as executing the process failed.\n");
-            kill(server_hostname, server_port);
-
-            return 1;
         }
         // Parent
         return 0;
@@ -110,7 +126,7 @@ int add_actor(const std::string & server_hostname, int server_port,
     }
 }
 
-int kill(const std::string & server_hostname, int server_port)
+int kill(const std::string & server_hostname, int server_port, const std::string & reason)
 {
     try
     {
@@ -120,7 +136,7 @@ int kill(const std::string & server_hostname, int server_port)
 
         // Generate message.
         rsg::Command command;
-        command.set_kill(true);
+        command.set_kill(reason);
 
         // Write message on socket.
         write_message(command, socket);
