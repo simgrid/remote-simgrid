@@ -283,7 +283,7 @@ static void handle_command(const rsg::Command & command,
     write_message(command_ack, *issuer_socket);
 }
 
-void serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options)
+int serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options)
 {
     // Run a listening TCP server.
     listener = new rsg::TcpListener();
@@ -296,7 +296,7 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     catch (const rsg::Error & e)
     {
         printf("Cannot start server. Reason: %s\n", e.what());
-        return;
+        return 1;
     }
 
     ServerState state = ServerState::ACCEPTING_NEW_ACTORS;
@@ -411,4 +411,5 @@ void serve(const std::string & platform_file, int server_port, const std::vector
     }
 
     close_open_sockets();
+    return 0;
 }

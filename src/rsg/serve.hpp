@@ -39,4 +39,4 @@ struct ActorConnection
 
 std::string server_state_to_string(ServerState state);
 
-void serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options);
+int serve(const std::string & platform_file, int server_port, const std::vector<std::string> & simgrid_options);

@@ -46,19 +46,19 @@ Options:
     {
         std::string platform_file = args["<platform-file>"].asString();
         std::vector<std::string> simgrid_options = args["<sg-options>"].asStringList();
-        serve(platform_file, server_port, simgrid_options);
+        return_code = serve(platform_file, server_port, simgrid_options);
     }
     else if (args["kill"].asBool())
     {
-        kill(server_hostname, server_port);
+        return_code = kill(server_hostname, server_port);
     }
     else if (args["start"].asBool())
     {
-        start(server_hostname, server_port);
+        return_code = start(server_hostname, server_port);
     }
     else if (args["status"].asBool())
     {
-        status(server_hostname, server_port);
+        return_code = status(server_hostname, server_port);
     }
     else if (args["add-actor"].asBool())
     {

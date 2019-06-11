@@ -110,7 +110,7 @@ int add_actor(const std::string & server_hostname, int server_port,
     }
 }
 
-void kill(const std::string & server_hostname, int server_port)
+int kill(const std::string & server_hostname, int server_port)
 {
     try
     {
@@ -130,15 +130,20 @@ void kill(const std::string & server_hostname, int server_port)
         read_message(command_ack, socket);
 
         if (!command_ack.success())
-            printf("kill failed\n");
+        {
+            printf("kill refused from server\n");
+            return 1;
+        }
+        return 0;
     }
     catch (const rsg::Error & err)
     {
         printf("%s\n", err.what());
+        return 1;
     }
 }
 
-void start(const std::string & server_hostname, int server_port)
+int start(const std::string & server_hostname, int server_port)
 {
     try
     {
@@ -158,15 +163,20 @@ void start(const std::string & server_hostname, int server_port)
         read_message(command_ack, socket);
 
         if (!command_ack.success())
-            printf("start failed\n");
+        {
+            printf("start refused from server\n");
+            return 1;
+        }
+        return 0;
     }
     catch (const rsg::Error & err)
     {
         printf("%s\n", err.what());
+        return 1;
     }
 }
 
-void status(const std::string & server_hostname, int server_port)
+int status(const std::string & server_hostname, int server_port)
 {
     try
     {
@@ -186,10 +196,15 @@ void status(const std::string & server_hostname, int server_port)
         read_message(command_ack, socket);
 
         if (!command_ack.success())
-            printf("status failed\n");
+        {
+            printf("status refused from server\n");
+            return 1;
+        }
+        return 0;
     }
     catch (const rsg::Error & err)
     {
         printf("%s\n", err.what());
+        return 1;
     }
 }
