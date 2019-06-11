@@ -8,6 +8,13 @@ build_test_nix:
     - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
     # Build and test, with coverage.
     - nix-build && cp -rL result ./rsg
+    # Print coverage textual report, so Gitlab can attribute a coverage metrics to this job.
+    - cat ./rsg/cov/report.txt
+  artifacts:
+    when: always
+    paths:
+      - /builds/simgrid/remote-simgrid/rsg/cov/report.txt
+      - /builds/simgrid/remote-simgrid/rsg/cov/report-html
 
 # test-git-unstable:
 #   image: simgrid/unstable
