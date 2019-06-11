@@ -50,7 +50,7 @@ int add_actor(const std::string & server_hostname, int server_port,
 
         if (pid == 0) // Child
         {
-            // Prepare execv "argv".
+            // Prepare execvp "argv".
             const size_t nb_args = command_args.size() + 1;
             char * args[nb_args];
             for (size_t i = 0; i < command_args.size(); i++)
@@ -83,12 +83,12 @@ int add_actor(const std::string & server_hostname, int server_port,
 
             // Mute into the target process.
             errno = 0;
-            ret = execv(command_to_run.c_str(), args);
+            ret = execvp(command_to_run.c_str(), args);
 
             // This code is only executed if muting into the target process failed.
             printf("Could not mute into the target process: %s\n", strerror(errno));
-            printf("execv arguments were:\n");
-            printf("- path: %s\n", command_to_run.c_str());
+            printf("execvp arguments were:\n");
+            printf("- file: %s\n", command_to_run.c_str());
             printf("- argv: ['%s'", args[0]);
             for (size_t i = 1; i < nb_args; i++)
                 printf(", '%s'", args[i]);

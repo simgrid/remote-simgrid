@@ -12,7 +12,7 @@ $ sleep 0.2
 ! timeout 3
 $ rsg add-actor actor host -p 35002 -- /this/command/does/not/exist with some parameters
 > Could not mute into the target process: No such file or directory
-> execv arguments were:
-> - path: /this/command/does/not/exist
+> execvp arguments were:
+> - file: /this/command/does/not/exist
 > - argv: ['with', 'some', 'parameters', '(null)']
 > Killing the server, as executing the process failed.
