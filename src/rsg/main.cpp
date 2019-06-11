@@ -41,6 +41,7 @@ Options:
     }*/
 
     // Manage subcommands.
+    int return_code = 0;
     if (args["serve"].asBool())
     {
         std::string platform_file = args["<platform-file>"].asString();
@@ -64,8 +65,11 @@ Options:
         std::string actor_name = args["<actor-name>"].asString();
         std::string vhost_name = args["<sg-host>"].asString();
         bool autoconnect = !args["--no-autoconnect"].asBool();
-        add_actor(server_hostname, server_port, actor_name, vhost_name, autoconnect);
+        std::string command = args["<command>"].asString();
+        std::vector<std::string> command_args = args["<command-args>"].asStringList();
+        return_code = add_actor(server_hostname, server_port, actor_name, vhost_name,
+            autoconnect, command, command_args);
     }
 
-    return 0;
+    return return_code;
 }
