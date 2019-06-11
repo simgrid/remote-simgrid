@@ -4,6 +4,11 @@
 /result
 *~
 
+.tags
+tags
+.tags_*
+
+
 CMakeLists.txt.user
 *.autosave
 
