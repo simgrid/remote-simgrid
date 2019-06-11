@@ -14,10 +14,11 @@ R"(Remote SimGrid command-line tool.
 
 Usage:
   rsg serve <platform-file> [--port=<port>] [-- <sg-options>...]
-  rsg add-actor <actor-name> <sg-host> [options] [--] <command> [<command-args>...]
-  rsg start [options]
-  rsg status [options]
-  rsg kill [options]
+  rsg add-actor <actor-name> <sg-host> [--hostname=<host>] [--port=<port>]
+                [--] <command> [<command-args>...]
+  rsg start [--hostname=<host>] [--port=<port>]
+  rsg status [--hostname=<host>] [--port=<port>]
+  rsg kill [--hostname=<host>] [--port=<port>]
   rsg --help
 
 Options:
