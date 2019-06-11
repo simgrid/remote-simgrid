@@ -4,10 +4,10 @@ variables:
 build_test_nix:
   image: simgrid/ci-empty-nixos
   script:
-    # Update external cache
+    # Update external cache.
     - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
     # Build and test, with coverage.
-    - nix-build && cp -rL result
+    - nix-build && cp -rL result ./rsg
 
 # test-git-unstable:
 #   image: simgrid/unstable
