@@ -14,7 +14,8 @@ R"(Remote SimGrid command-line tool.
 
 Usage:
   rsg serve <platform-file> [--port=<port>] [-- <sg-options>...]
-  rsg add-actor <actor-name> <sg-host> [--hostname=<host>] [--port=<port>]
+  rsg add-actor <actor-name> <sg-host>
+                [--hostname=<host>] [--port=<port>] [--no-autoconnect]
                 [--] <command> [<command-args>...]
   rsg start [--hostname=<host>] [--port=<port>]
   rsg status [--hostname=<host>] [--port=<port>]
@@ -62,7 +63,8 @@ Options:
     {
         std::string actor_name = args["<actor-name>"].asString();
         std::string vhost_name = args["<sg-host>"].asString();
-        add_actor(server_hostname, server_port, actor_name, vhost_name);
+        bool autoconnect = !args["--no-autoconnect"].asBool();
+        add_actor(server_hostname, server_port, actor_name, vhost_name, autoconnect);
     }
 
     return 0;

@@ -6,7 +6,8 @@
 #include "rsg.pb.h"
 
 void add_actor(const std::string & server_hostname, int server_port,
-    const std::string & actor_name, const std::string & vhost_name)
+    const std::string & actor_name, const std::string & vhost_name,
+    bool autoconnect)
 {
     try
     {
@@ -19,6 +20,7 @@ void add_actor(const std::string & server_hostname, int server_port,
         auto add_actor = new(rsg::Command_AddActor);
         add_actor->set_actorname(actor_name);
         add_actor->set_hostname(vhost_name);
+        add_actor->set_autoconnect(autoconnect);
         command.set_allocated_addactor(add_actor);
 
         // Write message on socket.
