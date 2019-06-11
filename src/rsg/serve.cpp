@@ -185,9 +185,8 @@ static void handle_command(const rsg::Command & command,
     {
         case rsg::Command::kAddActor:
         {
-            printf("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s, autoconnect=%d)\n",
-                command.addactor().actorname().c_str(), command.addactor().hostname().c_str(),
-                command.addactor().autoconnect());
+            printf("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)\n",
+                command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
                         server_state == ServerState::KILLED,
                 "Received an ADD_ACTOR command while the simulation state is '%s'. %s",
