@@ -27,9 +27,7 @@ We are currently (2019-06) reimplementing RSG to improve its maintainability and
 If you are interested, please drop us a line on the
 simgrid-user@lists.gforge.inria.fr mailing list.
 
-SimGrid is released under LGPL while Remote SimGrid is released under
-the GNU Affero License. Please see the source packages for more
-information.
+SimGrid is released under LGPL-2.1 and Remote SimGrid is released under LGPL-3.0.
 
 ## Installing Remote SimGrid manually
 
