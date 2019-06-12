@@ -22,8 +22,8 @@ let
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
       postCheck = pkgs.lib.optionalString doCoverage ''
         mkdir -p ./cov/report-html
-        gcovr . -o ./cov/report.txt 2>/dev/null
-        gcovr . -o ./cov/report-html/index.html --html-details 2>/dev/null
+        gcovr . -e '.*rsg\.pb\..*' -o ./cov/report.txt 2>/dev/null
+        gcovr . -e '.*rsg\.pb\..*' -o ./cov/report-html/index.html --html-details 2>/dev/null
       '';
       postInstall = pkgs.lib.optionalString doCoverage ''
         mkdir -p $out/cov/rsg@exe $out/cov/rsg@sha
