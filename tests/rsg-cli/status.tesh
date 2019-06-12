@@ -1,0 +1,4 @@
+! timeout 3
+! expect return 1
+$ rsg status -h 127.0.0.1 -p 4245
+> Cannot connect to (hostname='127.0.0.1', port=4245): Connection refused

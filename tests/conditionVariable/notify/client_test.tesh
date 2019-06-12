@@ -1,9 +1,0 @@
-! timeout 5
-! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform.xml -d ${bintestdir:=.}/deploy.xml
-> [client] main running...
-> [w1] worker begin...
-> [w1] Execute for [gen => 1] 2500000
-> [w1] [thread] waiting
-> [client] main finished [1]
-> [w1] worker finished

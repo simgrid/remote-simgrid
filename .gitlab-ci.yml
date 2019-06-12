@@ -1,31 +1,46 @@
 variables:
   GIT_SUBMODULE_STRATEGY: none
 
-test-git-unstable:
-  image: simgrid/unstable
+build_test_nix:
+  image: simgrid/ci-empty-nixos
   script:
-    - apt-get update
-    - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
-    - apt-get install -y python3 # needed by tesh
-    - apt-get install -y curl unzip default-jre-headless # needed by sonar
-    - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-    - ./sonarqube.sh make -j $(nproc) VERBOSE=1
+    # Update external cache.
+    - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
+    # Build and test, with coverage.
+    - nix-build && cp -rL result ./rsg
+    # Print coverage textual report, so Gitlab can attribute a coverage metrics to this job.
+    - cat ./rsg/cov/report.txt
+  artifacts:
+    when: always
+    paths:
+      - /builds/simgrid/remote-simgrid/rsg/cov/report.txt
+      - /builds/simgrid/remote-simgrid/rsg/cov/report-html
 
-# Test that the git version of RSG compiles with various versions of SimGrid docker image
-# The script is very similar to above, without sonar
-.build_git: &build_git
-  script:
-    - apt-get update
-    - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
-    - apt-get install -y python3 # needed by tesh
-    - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-    - make -j $(nproc) VERBOSE=1
-    - ctest --output-on-failure
+# test-git-unstable:
+#   image: simgrid/unstable
+#   script:
+#     - apt-get update
+#     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+#     - apt-get install -y python3 # needed by tesh
+#     - apt-get install -y curl unzip default-jre-headless # needed by sonar
+#     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
+#     - ./sonarqube.sh make -j $(nproc) VERBOSE=1
+
+# # Test that the git version of RSG compiles with various versions of SimGrid docker image
+# # The script is very similar to above, without sonar
+# .build_git: &build_git
+#   script:
+#     - apt-get update
+#     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+#     - apt-get install -y python3 # needed by tesh
+#     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
+#     - make -j $(nproc) VERBOSE=1
+#     - ctest --output-on-failure
 
 
-test-git-v3.22:
-  image: simgrid/stable:v3.22.2
-  <<: *build_git
+# test-git-v3.22:
+#   image: simgrid/stable:v3.22.2
+#   <<: *build_git
 
 # Older versions are broken because of the killed MailboxPtr type
 

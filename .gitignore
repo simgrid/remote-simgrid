@@ -1,25 +1,17 @@
 /Debug/
 /build/
+/install/
+/result
 *~
-*.o
-test/dumb_client
-test/dumb_server
-CMakeFiles
-Makefile
-CMakeCache.txt
-cmake_install.cmake
-CTestResults.xml
+
+.tags
+tags
+.tags_*
+
 
 CMakeLists.txt.user
 *.autosave
 
-src/rsg_server
-src/librsg.so
-src/rsg.pb.cc
-src/rsg.pb.h
-
 java/org/simgrid/rsg/Rsg.java
 java/jrsg.jar
 *.class
-
-/bin/

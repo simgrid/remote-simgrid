@@ -1,0 +1,26 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35003
+> Listening on port 35003
+> New client accepted
+> Received an ADD_ACTOR command! (actor_name=actor, host_name=Fafard)
+> New client accepted
+> Received a CONNECT command! (actor_id=2)
+> New client accepted
+> Received a START command!
+> time=0.000000: Starting the simulation.
+> time=0.000000, actor='actor', host='Fafard': Hello.
+> time=1.000000, actor='actor', host='Fafard': Goodbye.
+> time=1.000000: Simulation has finished.
+> Closing open sockets... done
+
+$ sleep 0.2
+
+! timeout 3
+$ rsg add-actor actor Fafard -p 35003 -- client-hello
+> Hello from hello.cpp
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35003
