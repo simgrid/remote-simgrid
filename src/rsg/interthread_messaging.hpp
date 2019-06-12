@@ -24,13 +24,20 @@ enum class InterthreadMessageType
 
     // From SimGrid to Command
     ,SIMULATION_FINISHED
+    ,SIMULATION_ABORTED
 
 };
 
 // Abstract base class for message content.
 struct InterthreadMessageContent
 {
-    virtual ~InterthreadMessageContent() = 0;
+    ~InterthreadMessageContent();
+};
+
+struct SimulationAbortedContent : public InterthreadMessageContent
+{
+    ~SimulationAbortedContent();
+    std::string abort_reason;
 };
 
 struct InterthreadMessage

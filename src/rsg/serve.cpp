@@ -198,7 +198,7 @@ static void handle_command(const rsg::Command & command,
                 auto actor_connection = new ActorConnection();
                 actor_connection->actor_name = command.addactor().actorname().c_str();
                 actor_connection->host_name = command.addactor().hostname().c_str();
-                actor_connection->actor_id = actor_connections.size() + 1;
+                actor_connection->actor_id = actor_connections.size() + 2;
                 actor_connections.insert({actor_connection->actor_id, actor_connection});
 
                 // Send the actor identifier back to the client.
@@ -217,7 +217,7 @@ static void handle_command(const rsg::Command & command,
             if (nb_connected_actors == actor_connections.size())
             {
                 server_state = ServerState::SIMULATION_RUNNING;
-                start_simulation_in_another_thread(platform_file, simgrid_options, to_command);
+                start_simulation_in_another_thread(platform_file, simgrid_options, to_command, actor_connections);
             }
             else
             {
@@ -267,7 +267,7 @@ static void handle_command(const rsg::Command & command,
                     nb_connected_actors == actor_connections.size())
                 {
                     server_state = ServerState::SIMULATION_RUNNING;
-                    start_simulation_in_another_thread(platform_file, simgrid_options, to_command);
+                    start_simulation_in_another_thread(platform_file, simgrid_options, to_command, actor_connections);
                 }
 
                 // Contrary to other command connections, this socket should not be dropped now.
@@ -300,6 +300,7 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
     }
 
     ServerState state = ServerState::ACCEPTING_NEW_ACTORS;
+    int return_code = 0;
 
     // Trap signals to close sockets correctly.
     signal(SIGINT, signal_handler);
@@ -405,11 +406,28 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
             rsg::InterthreadMessage msg;
             to_command.pop(msg);
 
-            if (msg.type == rsg::InterthreadMessageType::SIMULATION_FINISHED)
+            switch (msg.type)
+            {
+            case rsg::InterthreadMessageType::SIMULATION_FINISHED:
                 state = ServerState::SIMULATION_FINISHED;
+                break;
+            case rsg::InterthreadMessageType::SIMULATION_ABORTED:
+            {
+                auto data = (rsg::SimulationAbortedContent *) msg.data;
+                printf("Simulation aborted: %s\n", data->abort_reason.c_str());
+                delete data;
+
+                state = ServerState::SIMULATION_FINISHED;
+                return_code = 1;
+            } break;
+            default:
+                RSG_ENFORCE(0, "Unhandled interthread message type received (%d)",
+                    static_cast<int>(msg.type));
+                break;
+            }
         }
     }
 
     close_open_sockets();
-    return 0;
+    return return_code;
 }

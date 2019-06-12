@@ -49,6 +49,8 @@ rsg_src = [
     'src/common/network/tcp_listener.cpp',
     'src/common/network/tcp_socket.hpp',
     'src/common/network/tcp_socket.cpp',
+    'src/rsg/interthread_messaging.cpp',
+    'src/rsg/interthread_messaging.hpp',
     'src/rsg/main.cpp',
     'src/rsg/serve.cpp',
     'src/rsg/serve.hpp',
