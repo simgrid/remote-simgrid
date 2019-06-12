@@ -1,0 +1,27 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35004
+> Listening on port 35004
+> New client accepted
+> Received an ADD_ACTOR command! (actor_name=actor, host_name=Ginette)
+> New client accepted
+> Received a CONNECT command! (actor_id=2)
+> New client accepted
+> Received a START command!
+> time=0.000000: Starting the simulation.
+> time=0.000000, actor='actor', host='Ginette': Hello.
+> time=1.000000, actor='actor', host='Ginette': Goodbye.
+> time=1.000000: Simulation has finished.
+> Closing open sockets... done
+
+$ sleep 0.2
+
+! timeout 3
+$ rsg add-actor actor Ginette -p 35004 --no-autoconnect -- client-hello-manual-connect
+> Manually connecting to RSG server
+> Hello from hello_manual_connect.cpp
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35004
