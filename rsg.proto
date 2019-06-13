@@ -30,6 +30,9 @@ message CommandAck {
 message Decision {
   oneof type {
     bool quit = 1;
+
+    // static methods in rsg::this_actor
+    double thisActorSleepFor = 2;
   }
 }
 

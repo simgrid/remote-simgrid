@@ -51,8 +51,20 @@ void Actor::operator()()
             switch(decision.type_case())
             {
             case rsg::Decision::kQuit:
+                printf("time=%.6lf, actor='%s', host='%s': Quit decision received. Goodbye.\n",
+                    simgrid::s4u::Engine::get_instance()->get_clock(),
+                    simgrid::s4u::this_actor::get_cname(),
+                    simgrid::s4u::this_actor::get_host()->get_cname());
                 quit_received = true;
                 send_ack = false;
+                break;
+            case rsg::Decision::kThisActorSleepFor:
+                printf("time=%.6lf, actor='%s', host='%s': sleep_for received. duration=%g\n",
+                    simgrid::s4u::Engine::get_instance()->get_clock(),
+                    simgrid::s4u::this_actor::get_cname(),
+                    simgrid::s4u::this_actor::get_host()->get_cname(),
+                    decision.thisactorsleepfor());
+                simgrid::s4u::this_actor::sleep_for(decision.thisactorsleepfor());
                 break;
             case rsg::Decision::TYPE_NOT_SET:
                 RSG_ENFORCE(false, "Received a decision with unset decision type.");
@@ -64,11 +76,6 @@ void Actor::operator()()
                 write_message(decision_ack, *_socket);
             }
         }
-
-        printf("time=%.6lf, actor='%s', host='%s': Quit decision received. Goodbye.\n",
-            simgrid::s4u::Engine::get_instance()->get_clock(),
-            simgrid::s4u::this_actor::get_cname(),
-            simgrid::s4u::this_actor::get_host()->get_cname());
 
         // Tell the command thread to drop the socket associated with this actor.
         rsg::InterthreadMessage msg;

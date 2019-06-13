@@ -10,6 +10,7 @@ test_env.set('TEST_DIR', meson.current_source_dir())
 # Build some client programs.
 executable('client-hello', ['clients/hello.cpp'], dependencies: librsg_dep)
 executable('client-hello-manual-connect', ['clients/hello_manual_connect.cpp'], dependencies: librsg_dep)
+executable('client-sleep-for', ['clients/sleep_for.cpp'], dependencies: librsg_dep)
 
 # Define some tests
 test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.tesh')])
@@ -20,3 +21,4 @@ test('rsg-cli serve-add-actor-bad-cmd', tesh, env: test_env, args: [files('rsg-c
 test('rsg-cli serve-add-actor-start', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start.tesh')])
 test('rsg-cli serve-add-actor-start-manual-connect', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start-manual-connect.tesh')])
 test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill.tesh')])
+test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])

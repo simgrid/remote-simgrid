@@ -1,0 +1,41 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35005
+> Listening on port 35005
+> New client accepted
+> Received an ADD_ACTOR command! (actor_name=actor, host_name=Fafard)
+> New client accepted
+> Received a CONNECT command! (actor_id=2)
+> New client accepted
+> Received a START command!
+> time=0.000000: Starting the simulation.
+> time=0.000000, actor='sleeper1', host='Fafard': Hello.
+> time=0.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
+> time=0.000000, actor='sleeper2', host='Fafard': Hello.
+> time=0.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=1.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=2.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
+> time=2.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=3.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=4.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
+> time=4.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=5.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
+> time=6.000000, actor='sleeper1', host='Fafard': Quit decision received. Goodbye.
+> time=6.000000, actor='sleeper2', host='Fafard': Quit decision received. Goodbye.
+> time=0.000000: Simulation has finished.
+> Closing open sockets... done
+
+$ sleep 0.2
+
+! timeout 3
+$ rsg add-actor sleeper1 Fafard -p 35005 -- client-sleep-for 3 2
+
+$ sleep 0.2
+
+! timeout 3
+$ rsg add-actor sleeper2 Fafard -p 35005 -- client-sleep-for 6 1
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35005

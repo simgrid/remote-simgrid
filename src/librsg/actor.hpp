@@ -5,6 +5,8 @@ namespace rsg
 
 namespace this_actor
 {
+    bool is_maestro();
+    void sleep_for(double duration);
 }
 
 }
