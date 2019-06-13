@@ -27,8 +27,8 @@ pages:
   dependencies:
     - build_test_nix
   script:
-    - mkdir -p public/html
-    - mv rsg/cov/report-html/* public/html/
+    - mkdir -p public/coverage
+    - mv rsg/cov/report-html/* public/coverage/
   artifacts:
     paths:
     - public
