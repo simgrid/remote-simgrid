@@ -16,6 +16,16 @@ build_test_nix:
       - /builds/simgrid/remote-simgrid/rsg/cov/report.txt
       - /builds/simgrid/remote-simgrid/rsg/cov/report-html
 
+pages:
+  script:
+  - mkdir public
+  - mv rsg/cov/report-html/ public/
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+
 # test-git-unstable:
 #   image: simgrid/unstable
 #   script:
