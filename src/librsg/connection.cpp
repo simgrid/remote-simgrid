@@ -55,7 +55,9 @@ rsg::Connection::Connection()
         snprintf(kill_command, 128,
             "rsg kill --reason=\"could not connect: invalid actor_id '%s'\" -h %s -p %s",
             initial_actor_id, server_hostname, server_port);
-        system(kill_command);
+        int ret = system(kill_command);
+        RSG_ENFORCE(ret != -1, "Could not kill server: Could not execute a `rsg` process.");
+        RSG_ENFORCE(ret == 0 || ret == 1, "Could not kill server: `rsg kill` returned %d", ret);
 
         throw;
     }
