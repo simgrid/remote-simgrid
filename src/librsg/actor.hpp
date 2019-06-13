@@ -5,7 +5,6 @@ namespace rsg
 
 namespace this_actor
 {
-    void quit();
 }
 
 }
