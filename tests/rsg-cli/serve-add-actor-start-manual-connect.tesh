@@ -17,7 +17,7 @@
 $ sleep 0.2
 
 ! timeout 3
-$ rsg add-actor actor Ginette -p 35004 --no-autoconnect -- client-hello-manual-connect
+& rsg add-actor actor Ginette -p 35004 --no-autoconnect -- client-hello-manual-connect
 > Manually connecting to RSG server
 > Hello from hello_manual_connect.cpp
 

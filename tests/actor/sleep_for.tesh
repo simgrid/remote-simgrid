@@ -28,12 +28,12 @@
 $ sleep 0.2
 
 ! timeout 3
-$ rsg add-actor sleeper1 Fafard -p 35005 -- client-sleep-for 3 2
+& rsg add-actor sleeper1 Fafard -p 35005 -- client-sleep-for 3 2
 
 $ sleep 0.2
 
 ! timeout 3
-$ rsg add-actor sleeper2 Fafard -p 35005 -- client-sleep-for 6 1
+& rsg add-actor sleeper2 Fafard -p 35005 -- client-sleep-for 6 1
 
 $ sleep 0.4
 

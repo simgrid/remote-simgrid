@@ -17,7 +17,7 @@
 $ sleep 0.2
 
 ! timeout 3
-$ rsg add-actor actor Fafard -p 35003 -- client-hello
+& rsg add-actor actor Fafard -p 35003 -- client-hello
 > Hello from hello.cpp
 
 $ sleep 0.4
