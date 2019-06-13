@@ -24,7 +24,7 @@ Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue 
 {
 }
 
-static void handle_decision(const rsg::Decision & decision, rsg::DecisionAck & decision_ack,
+static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack,
     bool & send_ack, bool & quit_received)
 {
     using namespace simgrid;
@@ -35,13 +35,13 @@ static void handle_decision(const rsg::Decision & decision, rsg::DecisionAck & d
 
     switch(decision.type_case())
     {
-    case rsg::Decision::kQuit:
+    case rsg::pb::Decision::kQuit:
     {
         XBT_INFO("Quit decision received. Goodbye.");
         quit_received = true;
         send_ack = false;
     }   break;
-    case rsg::Decision::kThisActorSleepFor:
+    case rsg::pb::Decision::kThisActorSleepFor:
     {
         XBT_INFO("sleep_for received (duration=%g)", decision.thisactorsleepfor());
         try {
@@ -50,7 +50,7 @@ static void handle_decision(const rsg::Decision & decision, rsg::DecisionAck & d
             decision_ack.set_success(false);
         }
     } break;
-    case rsg::Decision::kThisActorSleepUntil:
+    case rsg::pb::Decision::kThisActorSleepUntil:
     {
         XBT_INFO("sleep_until received (timeout=%g)", decision.thisactorsleepuntil());
         try {
@@ -59,7 +59,7 @@ static void handle_decision(const rsg::Decision & decision, rsg::DecisionAck & d
             decision_ack.set_success(false);
         }
     }   break;
-    case rsg::Decision::TYPE_NOT_SET:
+    case rsg::pb::Decision::TYPE_NOT_SET:
         RSG_ENFORCE(false, "Received a decision with unset decision type.");
         break;
     }
@@ -80,10 +80,10 @@ void Actor::operator()()
         // Actors are simple request-reply loops, as they are controlled remotely.
         for (bool quit_received = false; !quit_received; )
         {
-            rsg::Decision decision;
+            rsg::pb::Decision decision;
             read_message(decision, *_socket);
 
-            rsg::DecisionAck decision_ack;
+            rsg::pb::DecisionAck decision_ack;
             bool send_ack;
             handle_decision(decision, decision_ack, send_ack, quit_received);
 

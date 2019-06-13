@@ -3,8 +3,12 @@
 namespace rsg
 {
 class TcpSocket;
+
+namespace pb
+{
 class Decision;
 class DecisionAck;
+}
 
 //! Manage a connection with the RSG server.
 class Connection
@@ -18,7 +22,7 @@ private:
     ~Connection();
 
 public:
-    void send_decision(const rsg::Decision & decision, rsg::DecisionAck & decision_ack);
+    void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
 
 private:
     TcpSocket * _socket = nullptr;

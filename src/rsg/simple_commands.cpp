@@ -22,8 +22,8 @@ int add_actor(const std::string & server_hostname, int server_port,
         socket.connect(server_hostname, server_port);
 
         // Generate message.
-        rsg::Command command;
-        auto add_actor = new(rsg::Command_AddActor);
+        rsg::pb::Command command;
+        auto add_actor = new(rsg::pb::Command_AddActor);
         add_actor->set_actorname(actor_name);
         add_actor->set_hostname(vhost_name);
         command.set_allocated_addactor(add_actor);
@@ -32,7 +32,7 @@ int add_actor(const std::string & server_hostname, int server_port,
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAck command_ack;
+        rsg::pb::CommandAck command_ack;
         read_message(command_ack, socket);
 
         socket.close();
@@ -136,14 +136,14 @@ int kill(const std::string & server_hostname, int server_port, const std::string
         socket.connect(server_hostname, server_port);
 
         // Generate message.
-        rsg::Command command;
+        rsg::pb::Command command;
         command.set_kill(reason);
 
         // Write message on socket.
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAck command_ack;
+        rsg::pb::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
@@ -169,14 +169,14 @@ int start(const std::string & server_hostname, int server_port)
         socket.connect(server_hostname, server_port);
 
         // Generate message.
-        rsg::Command command;
+        rsg::pb::Command command;
         command.set_start(true);
 
         // Write message on socket.
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAck command_ack;
+        rsg::pb::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())
@@ -202,14 +202,14 @@ int status(const std::string & server_hostname, int server_port)
         socket.connect(server_hostname, server_port);
 
         // Generate message.
-        rsg::Command command;
+        rsg::pb::Command command;
         command.set_status(true);
 
         // Write message on socket.
         write_message(command, socket);
 
         // Read acknowledment.
-        rsg::CommandAck command_ack;
+        rsg::pb::CommandAck command_ack;
         read_message(command_ack, socket);
 
         if (!command_ack.success())

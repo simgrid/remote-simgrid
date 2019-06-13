@@ -68,8 +68,8 @@ rsg::Connection::Connection()
     _socket->disable_nagle_algorithm();
 
     // Generate command.
-    rsg::Command command;
-    auto actor = new rsg::Actor();
+    rsg::pb::Command command;
+    auto actor = new rsg::pb::Actor();
     actor->set_id(actor_id);
     command.set_allocated_connect(actor);
 
@@ -77,7 +77,7 @@ rsg::Connection::Connection()
     write_message(command, *_socket);
 
     // Read acknowledment.
-    rsg::CommandAck command_ack;
+    rsg::pb::CommandAck command_ack;
     read_message(command_ack, *_socket);
 
     if (!command_ack.success())
@@ -88,10 +88,10 @@ rsg::Connection::~Connection()
 {
     try
     {
-        rsg::Decision decision;
+        rsg::pb::Decision decision;
         decision.set_quit(true);
 
-        rsg::DecisionAck ack;
+        rsg::pb::DecisionAck ack;
         write_message(decision, *_socket);
     }
     catch (const rsg::Error & e)
@@ -103,7 +103,7 @@ rsg::Connection::~Connection()
     _socket = nullptr;
 }
 
-void rsg::Connection::send_decision(const rsg::Decision & decision, rsg::DecisionAck & decision_ack)
+void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack)
 {
     write_message(decision, *_socket);
     read_message(decision_ack, *_socket);

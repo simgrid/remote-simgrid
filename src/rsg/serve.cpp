@@ -99,7 +99,7 @@ std::string server_state_to_string(ServerState state)
 }
 
 static bool handle_barely_connected_socket_read(rsg::TcpSocket * client_socket,
-    BarelyConnectedSocketInformation & info, rsg::Command & command)
+    BarelyConnectedSocketInformation & info, rsg::pb::Command & command)
 {
     size_t bytes_read = 0;
     bool header_read = info.bytes_read >= 4;
@@ -155,7 +155,7 @@ static bool handle_barely_connected_socket_read(rsg::TcpSocket * client_socket,
     return false;
 }
 
-static void handle_command(const rsg::Command & command,
+static void handle_command(const rsg::pb::Command & command,
     rsg::TcpSocket * issuer_socket,
     const std::string & platform_file,
     const std::vector<std::string> & simgrid_options,
@@ -166,13 +166,13 @@ static void handle_command(const rsg::Command & command,
     bool & drop_client)
 {
     const char * abort_msg = "As this is probably a bug in your experiment setup, the simulation aborts now.";
-    rsg::CommandAck command_ack;
+    rsg::pb::CommandAck command_ack;
     command_ack.set_success(false);
     drop_client = true;
 
     switch (command.type_case())
     {
-        case rsg::Command::kAddActor:
+        case rsg::pb::Command::kAddActor:
         {
             XBT_INFO("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)",
                 command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
@@ -191,13 +191,13 @@ static void handle_command(const rsg::Command & command,
                 actor_connections.insert({actor_connection->actor_id, actor_connection});
 
                 // Send the actor identifier back to the client.
-                auto actor = new rsg::Actor();
+                auto actor = new rsg::pb::Actor();
                 actor->set_id(actor_connection->actor_id);
                 command_ack.set_allocated_actor(actor);
                 command_ack.set_success(true);
             }
         } break;
-        case rsg::Command::kStart:
+        case rsg::pb::Command::kStart:
             XBT_INFO("Received a START command!");
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS,
                 "Received an ADD_ACTOR command while the simulation state is '%s'. %s",
@@ -216,16 +216,16 @@ static void handle_command(const rsg::Command & command,
 
             command_ack.set_success(true);
             break;
-        case rsg::Command::kKill:
+        case rsg::pb::Command::kKill:
             XBT_INFO("Received a KILL command! Reason: %s", command.kill().c_str());
             server_state = ServerState::KILLED;
             command_ack.set_success(true);
             break;
-        case rsg::Command::kStatus:
+        case rsg::pb::Command::kStatus:
             XBT_INFO("Received a STATUS command!");
             // TODO: implement me
             break;
-        case rsg::Command::kConnect:
+        case rsg::pb::Command::kConnect:
         {
             XBT_INFO("Received a CONNECT command! (actor_id=%d)", command.connect().id());
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
@@ -264,7 +264,7 @@ static void handle_command(const rsg::Command & command,
                 command_ack.set_success(true);
             }
         } break;
-        case rsg::Command::TYPE_NOT_SET:
+        case rsg::pb::Command::TYPE_NOT_SET:
             RSG_ENFORCE(false, "Received a command with unset command type. %s", abort_msg);
             break;
     }
@@ -371,7 +371,7 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
                         ++it;
                     else
                     {
-                        rsg::Command command;
+                        rsg::pb::Command command;
                         if (handle_barely_connected_socket_read(client_socket, info, command))
                         {
                             bool drop_client = true;

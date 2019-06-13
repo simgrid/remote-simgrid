@@ -1,5 +1,5 @@
 syntax = "proto3";
-package rsg;
+package rsg.pb;
 
 message Actor {
   int32 id = 1;
