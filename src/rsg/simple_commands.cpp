@@ -51,11 +51,12 @@ int add_actor(const std::string & server_hostname, int server_port,
         if (pid == 0) // Child
         {
             // Prepare execvp "argv".
-            const size_t nb_args = command_args.size() + 1;
+            const size_t nb_args = command_args.size() + 2;
             char * args[nb_args];
+            args[0] = strdup(command_to_run.c_str());
             for (size_t i = 0; i < command_args.size(); i++)
-                args[i] = strdup(command_args[i].c_str());
-            args[command_args.size()] = nullptr;
+                args[i+1] = strdup(command_args[i].c_str());
+            args[nb_args-1] = nullptr;
 
             // Prepare environment variables.
             errno = 0;
