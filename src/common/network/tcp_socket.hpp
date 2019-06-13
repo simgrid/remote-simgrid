@@ -31,6 +31,7 @@ public:
     bool is_connected() const;
 
     void disable_nagle_algorithm();
+    void set_abortive_termination();
 
 private:
     int _fd = -1;

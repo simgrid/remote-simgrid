@@ -165,3 +165,15 @@ void rsg::TcpSocket::disable_nagle_algorithm()
     int res = setsockopt(_fd, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&yes), sizeof(int));
     RSG_ENFORCE(res != -1, "Cannot setsockopt TCP_NODELAY: %s", strerror(errno));
 }
+
+void rsg::TcpSocket::set_abortive_termination()
+{
+    RSG_ASSERT(_fd != -1, "Wrong TcpSocket::set_abortive_termination call: Invalid socket");
+
+    errno = 0;
+    linger so_linger;
+    so_linger.l_onoff = 1;
+    so_linger.l_linger = 0;
+    int res = setsockopt(_fd, SOL_SOCKET, SO_LINGER, reinterpret_cast<char*>(&so_linger), sizeof(linger));
+    RSG_ENFORCE(res != -1, "Cannot setsockopt SO_LINGER: %s", strerror(errno));
+}

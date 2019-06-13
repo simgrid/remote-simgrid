@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include <signal.h>
+#include <sys/signalfd.h>
 
 #include "interthread_messaging.hpp"
 #include "serve.hpp"
@@ -27,7 +28,7 @@ static std::list<rsg::TcpSocket *> dropped_sockets;
 // Sockets that correspond to simulation actors.
 static std::unordered_map<rsg::TcpSocket*, int> actor_sockets;
 
-static void close_open_sockets()
+static void close_open_sockets(bool abortive_termination)
 {
     printf("Closing open sockets...");
     fflush(stdout);
@@ -41,6 +42,8 @@ static void close_open_sockets()
     for (auto it = barely_connected_sockets.begin(); it != barely_connected_sockets.end(); it++)
     {
         rsg::TcpSocket * socket = it->first;
+        if (abortive_termination)
+            socket->set_abortive_termination();
         socket->shutdown(true, true);
         delete socket;
     }
@@ -48,6 +51,8 @@ static void close_open_sockets()
 
     for (auto socket : dropped_sockets)
     {
+        if (abortive_termination)
+            socket->set_abortive_termination();
         socket->shutdown(true, true);
         delete socket;
     }
@@ -56,34 +61,14 @@ static void close_open_sockets()
     for (auto it = actor_sockets.begin(); it != actor_sockets.end(); it++)
     {
         rsg::TcpSocket * socket = it->first;
+        if (abortive_termination)
+            socket->set_abortive_termination();
         socket->shutdown(true, true);
         delete socket;
     }
     actor_sockets.clear();
 
     printf(" done\n");
-}
-
-static void signal_handler(int signal)
-{
-    switch (signal)
-    {
-        default:
-            printf("Unknown signal (%d) caught\n", signal);
-            return;
-        case SIGINT:
-            printf("SIGINT signal caught!\n");
-            break;
-        case SIGTERM:
-            printf("SIGTERM signal caught!\n");
-            break;
-        case SIGSEGV:
-            printf("Segmentation fault caught!\n");
-            break;
-    }
-
-    close_open_sockets();
-    exit(1);
 }
 
 BarelyConnectedSocketInformation::~BarelyConnectedSocketInformation()
@@ -303,15 +288,25 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
     int return_code = 0;
 
     // Trap signals to close sockets correctly.
-    signal(SIGINT, signal_handler);
-    signal(SIGTERM, signal_handler);
-    signal(SIGSEGV, signal_handler);
+    sigset_t mask;
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT);
+    sigaddset(&mask, SIGTERM);
+    sigaddset(&mask, SIGSEGV);
+
+    int ret = sigprocmask(SIG_BLOCK, &mask, nullptr);
+    RSG_ENFORCE(ret == 0, "Could not block default signal handling");
+
+    errno = 0;
+    int signal_fd = signalfd(-1, &mask, 0);
+    RSG_ENFORCE(signal_fd != -1, "Could not create a file descriptor to handle signals: %s", strerror(errno));
 
     // Define inter-thread message queues.
     rsg::message_queue to_command(2);
     rsg::message_queue to_simgrid(2);
 
     rsg::Selector selector;
+    selector.add(signal_fd);
     selector.add(listener->fd());
 
     // Store expected client connections (resulting from add-actor commands).
@@ -323,8 +318,34 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
         // The timeout defines the latency to terminate this thread when the simulation is finished.
         if (selector.wait_any_readable(200))
         {
-            // Test whether a new connection can be accepted.
-            if (selector.is_readable(listener->fd()))
+            if (selector.is_readable(signal_fd))
+            {
+                // Received a signal to stop to serve.
+                signalfd_siginfo info;
+                ssize_t bytes_read = read(signal_fd, &info, sizeof(signalfd_siginfo));
+                RSG_ENFORCE(bytes_read == sizeof(signalfd_siginfo), "Could not read info of received signal");
+                int signal = info.ssi_signo;
+
+                switch (signal)
+                {
+                    default:
+                        printf("Unhandled signal (%d) caught!\n", signal);
+                        break;
+                    case SIGINT:
+                        printf("SIGINT signal caught!\n");
+                        break;
+                    case SIGTERM:
+                        printf("SIGTERM signal caught!\n");
+                        break;
+                    case SIGSEGV:
+                        printf("Segmentation fault caught!\n");
+                        break;
+                }
+
+                close_open_sockets(true);
+                return 1;
+            }
+            else if (selector.is_readable(listener->fd()))
             {
                 // Listener is ready: there is a pending connection.
                 rsg::TcpSocket* client = listener->accept();
@@ -436,6 +457,6 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
         }
     }
 
-    close_open_sockets();
+    close_open_sockets(false);
     return return_code;
 }
