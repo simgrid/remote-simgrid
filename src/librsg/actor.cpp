@@ -17,3 +17,12 @@ void rsg::this_actor::sleep_for(double duration)
     rsg::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
 }
+
+void rsg::this_actor::sleep_until(double timeout)
+{
+    rsg::Decision decision;
+    decision.set_thisactorsleepuntil(timeout);
+
+    rsg::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+}

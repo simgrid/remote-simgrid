@@ -24,6 +24,47 @@ Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue 
 {
 }
 
+static void handle_decision(const rsg::Decision & decision, rsg::DecisionAck & decision_ack,
+    bool & send_ack, bool & quit_received)
+{
+    using namespace simgrid;
+    using namespace simgrid::s4u;
+
+    decision_ack.set_success(true);
+    send_ack = true;
+
+    switch(decision.type_case())
+    {
+    case rsg::Decision::kQuit:
+    {
+        XBT_INFO("Quit decision received. Goodbye.");
+        quit_received = true;
+        send_ack = false;
+    }   break;
+    case rsg::Decision::kThisActorSleepFor:
+    {
+        XBT_INFO("sleep_for received (duration=%g)", decision.thisactorsleepfor());
+        try {
+            this_actor::sleep_for(decision.thisactorsleepfor());
+        } catch (const HostFailureException & e) {
+            decision_ack.set_success(false);
+        }
+    } break;
+    case rsg::Decision::kThisActorSleepUntil:
+    {
+        XBT_INFO("sleep_until received (timeout=%g)", decision.thisactorsleepuntil());
+        try {
+            this_actor::sleep_until(decision.thisactorsleepuntil());
+        } catch (const HostFailureException & e) {
+            decision_ack.set_success(false);
+        }
+    }   break;
+    case rsg::Decision::TYPE_NOT_SET:
+        RSG_ENFORCE(false, "Received a decision with unset decision type.");
+        break;
+    }
+}
+
 void Actor::operator()()
 {
     // Check that initial state is fine.
@@ -43,23 +84,8 @@ void Actor::operator()()
             read_message(decision, *_socket);
 
             rsg::DecisionAck decision_ack;
-            bool send_ack = true;
-
-            switch(decision.type_case())
-            {
-            case rsg::Decision::kQuit:
-                XBT_INFO("Quit decision received. Goodbye.");
-                quit_received = true;
-                send_ack = false;
-                break;
-            case rsg::Decision::kThisActorSleepFor:
-                XBT_INFO("sleep_for received (duration=%g)", decision.thisactorsleepfor());
-                simgrid::s4u::this_actor::sleep_for(decision.thisactorsleepfor());
-                break;
-            case rsg::Decision::TYPE_NOT_SET:
-                RSG_ENFORCE(false, "Received a decision with unset decision type.");
-                break;
-            }
+            bool send_ack;
+            handle_decision(decision, decision_ack, send_ack, quit_received);
 
             if (send_ack)
             {
