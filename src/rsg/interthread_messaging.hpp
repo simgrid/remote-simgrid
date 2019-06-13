@@ -14,6 +14,7 @@
 
 namespace rsg
 {
+class TcpSocket;
 
 enum class InterthreadMessageType
 {
@@ -25,7 +26,7 @@ enum class InterthreadMessageType
     // From SimGrid to Command
     ,SIMULATION_FINISHED
     ,SIMULATION_ABORTED
-
+    ,ACTOR_QUIT
 };
 
 // Abstract base class for message content.
@@ -38,6 +39,12 @@ struct SimulationAbortedContent : public InterthreadMessageContent
 {
     ~SimulationAbortedContent();
     std::string abort_reason;
+};
+
+struct ActorQuitContent : public InterthreadMessageContent
+{
+    ~ActorQuitContent();
+    rsg::TcpSocket * socket_to_drop;
 };
 
 struct InterthreadMessage

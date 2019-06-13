@@ -328,6 +328,7 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
             {
                 // Listener is ready: there is a pending connection.
                 rsg::TcpSocket* client = listener->accept();
+                client->disable_nagle_algorithm();
                 barely_connected_sockets.insert({client, BarelyConnectedSocketInformation()});
                 selector.add(client->fd());
                 printf("New client accepted\n");
@@ -419,6 +420,13 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
 
                 state = ServerState::SIMULATION_FINISHED;
                 return_code = 1;
+            } break;
+            case rsg::InterthreadMessageType::ACTOR_QUIT:
+            {
+                auto data = (rsg::ActorQuitContent *) msg.data;
+                dropped_sockets.push_back(data->socket_to_drop);
+                selector.add(data->socket_to_drop->fd());
+                delete data;
             } break;
             default:
                 RSG_ENFORCE(0, "Unhandled interthread message type received (%d)",

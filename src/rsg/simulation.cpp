@@ -1,9 +1,14 @@
+#include <stdio.h>
+
 #include <simgrid/actor.h>
 #include <simgrid/s4u.hpp>
 
 #include "serve.hpp"
 #include "simulation.hpp"
 #include "../common/assert.hpp"
+#include "../common/message.hpp"
+
+#include "rsg.pb.h"
 
 XBT_LOG_NEW_DEFAULT_CATEGORY(simulation, "The logging channel used in simulation.cpp");
 
@@ -14,29 +19,78 @@ struct MaestroArgs
     std::vector<ActorConnection*> connection_vector;
 };
 
-Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id) :
-    _socket(socket), _expected_actor_id(expected_actor_id)
+Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command) :
+    _socket(socket), _id(expected_actor_id), _to_command(to_command)
 {
 }
 
 void Actor::operator()()
 {
-    xbt_assert(simgrid::s4u::Actor::self()->get_pid() == _expected_actor_id,
+    // Check that initial state is fine.
+    xbt_assert(simgrid::s4u::Actor::self()->get_pid() == _id,
         "Something went wrong while executing initial actors: "
         "My actor id is %ld while I expected it to be %d",
-        simgrid::s4u::Actor::self()->get_pid(), _expected_actor_id);
+        simgrid::s4u::Actor::self()->get_pid(), _id);
 
     printf("time=%.6lf, actor='%s', host='%s': Hello.\n",
         simgrid::s4u::Engine::get_instance()->get_clock(),
         simgrid::s4u::this_actor::get_cname(),
         simgrid::s4u::this_actor::get_host()->get_cname());
 
-    simgrid::s4u::this_actor::sleep_for(1);
+    try
+    {
+        // Actors are simple request-reply loops, as they are controlled remotely.
+        for (bool quit_received = false; !quit_received; )
+        {
+            rsg::Decision decision;
+            read_message(decision, *_socket);
 
-    printf("time=%.6lf, actor='%s', host='%s': Goodbye.\n",
-        simgrid::s4u::Engine::get_instance()->get_clock(),
-        simgrid::s4u::this_actor::get_cname(),
-        simgrid::s4u::this_actor::get_host()->get_cname());
+            rsg::DecisionAck decision_ack;
+            bool send_ack = true;
+
+            switch(decision.type_case())
+            {
+            case rsg::Decision::kQuit:
+                quit_received = true;
+                send_ack = false;
+                break;
+            case rsg::Decision::TYPE_NOT_SET:
+                RSG_ENFORCE(false, "Received a decision with unset decision type.");
+                break;
+            }
+
+            if (send_ack)
+            {
+                write_message(decision_ack, *_socket);
+            }
+        }
+
+        printf("time=%.6lf, actor='%s', host='%s': Quit decision received. Goodbye.\n",
+            simgrid::s4u::Engine::get_instance()->get_clock(),
+            simgrid::s4u::this_actor::get_cname(),
+            simgrid::s4u::this_actor::get_host()->get_cname());
+
+        // Tell the command thread to drop the socket associated with this actor.
+        rsg::InterthreadMessage msg;
+        msg.type = rsg::InterthreadMessageType::ACTOR_QUIT;
+        auto content = new rsg::ActorQuitContent();
+        content->socket_to_drop = _socket;
+        msg.data = (rsg::InterthreadMessageContent *) content;
+        _to_command->push(msg);
+    }
+    catch (const rsg::Error & e)
+    {
+        // Tell the command thread that an actor failed.
+        rsg::InterthreadMessage msg;
+        msg.type = rsg::InterthreadMessageType::SIMULATION_ABORTED;
+        auto content = new rsg::SimulationAbortedContent();
+
+        char reason[256];
+        snprintf(reason, 256, "Problem detected with remote actor_id=%d: %s", _id, e.what());
+        content->abort_reason = std::string(reason);
+        msg.data = (rsg::InterthreadMessageContent *) content;
+        _to_command->push(msg);
+    }
 }
 
 static void maestro(void * void_args)
@@ -88,7 +142,7 @@ static void maestro(void * void_args)
     {
         auto requested_host = e->host_by_name(connection->host_name);
         simgrid::s4u::Actor::create(connection->actor_name,
-            requested_host, Actor(connection->socket, connection->actor_id));
+            requested_host, Actor(connection->socket, connection->actor_id, to_command));
     }
 
     // Run the simulation.

@@ -10,8 +10,8 @@
 > Received a START command!
 > time=0.000000: Starting the simulation.
 > time=0.000000, actor='actor', host='Fafard': Hello.
-> time=1.000000, actor='actor', host='Fafard': Goodbye.
-> time=1.000000: Simulation has finished.
+> time=0.000000, actor='actor', host='Fafard': Quit decision received. Goodbye.
+> time=0.000000: Simulation has finished.
 > Closing open sockets... done
 
 $ sleep 0.2

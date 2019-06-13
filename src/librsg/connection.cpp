@@ -1,6 +1,6 @@
 #include <cstdlib>
 
-#include "client.hpp"
+#include "connection.hpp"
 #include "../common/assert.hpp"
 #include "../common/message.hpp"
 #include "../common/network/tcp_socket.hpp"
@@ -9,18 +9,18 @@
 
 namespace rsg
 {
-    thread_local Client* client = nullptr;
+    thread_local Connection* connection = nullptr;
 }
 
-rsg::Client::Client()
+rsg::Connection::Connection()
 {
     // Read RSG parameters from environment.
     const char * server_hostname = std::getenv("RSG_SERVER_HOSTNAME");
-    RSG_ENFORCE(server_hostname != nullptr, "Invalid RSG client initialization: RSG_SERVER_HOSTNAME is not set.");
+    RSG_ENFORCE(server_hostname != nullptr, "Invalid RSG connection initialization: RSG_SERVER_HOSTNAME is not set.");
     std::string hostname(server_hostname);
 
     const char * server_port = std::getenv("RSG_SERVER_PORT");
-    RSG_ENFORCE(server_port != nullptr, "Invalid RSG client initialization: RSG_SERVER_PORT is not set.");
+    RSG_ENFORCE(server_port != nullptr, "Invalid RSG connection initialization: RSG_SERVER_PORT is not set.");
     uint16_t port = 0;
     try
     {
@@ -28,7 +28,7 @@ rsg::Client::Client()
     }
     catch (const rsg::Error & e)
     {
-        throw rsg::Error("Invalid RSG client initialization: RSG_SERVER_PORT ('%s') is not a valid port", server_port);
+        throw rsg::Error("Invalid RSG connection initialization: RSG_SERVER_PORT ('%s') is not a valid port", server_port);
     }
 
     const char * initial_actor_id = nullptr;
@@ -36,14 +36,14 @@ rsg::Client::Client()
     try
     {
         initial_actor_id = std::getenv("RSG_INITIAL_ACTOR_ID");
-        RSG_ENFORCE(initial_actor_id != nullptr, "Invalid RSG client initialization: RSG_INITIAL_ACTOR_ID is not set.");
+        RSG_ENFORCE(initial_actor_id != nullptr, "Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID is not set.");
         try
         {
             actor_id = std::stoi(std::string(initial_actor_id));
         }
         catch(const std::exception & e)
         {
-            throw rsg::Error("Invalid RSG client initialization: RSG_INITIAL_ACTOR_ID ('%s') is not a valid actor id", initial_actor_id);
+            throw rsg::Error("Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID ('%s') is not a valid actor id", initial_actor_id);
         }
     }
     catch (const rsg::Error & e)
@@ -63,6 +63,7 @@ rsg::Client::Client()
     // Connect to the server.
     _socket = new TcpSocket();
     _socket->connect(server_hostname, port);
+    _socket->disable_nagle_algorithm();
 
     // Generate command.
     rsg::Command command;
@@ -81,16 +82,36 @@ rsg::Client::Client()
         printf("connect failed\n");
 }
 
-rsg::Client::~Client()
+rsg::Connection::~Connection()
 {
+    try
+    {
+        rsg::Decision decision;
+        decision.set_quit(true);
+
+        rsg::DecisionAck ack;
+        write_message(decision, *_socket);
+    }
+    catch (const rsg::Error & e)
+    {
+        printf("Could not tell server that I want to quit: %s\n", e.what());
+    }
+
     delete _socket;
     _socket = nullptr;
 }
 
+void rsg::Connection::send_decision(const rsg::Decision & decision, rsg::DecisionAck & decision_ack)
+{
+    write_message(decision, *_socket);
+    read_message(decision_ack, *_socket);
+}
+
+
 void rsg::connect()
 {
-    RSG_ENFORCE(client == nullptr, "Invalid rsg::Client::connect() call: Already connected!");
-    client = new Client();
+    RSG_ENFORCE(connection == nullptr, "Invalid rsg::connect() call: Already connected!");
+    connection = new Connection();
 }
 
 static void autoconnect(void) __attribute__((constructor));
@@ -100,9 +121,14 @@ void autoconnect(void)
         rsg::connect();
 }
 
+void rsg::disconnect()
+{
+    delete rsg::connection;
+    rsg::connection = nullptr;
+}
+
 static void autodisconnect(void) __attribute__((destructor));
 void autodisconnect(void)
 {
-    if (rsg::client != nullptr)
-        delete rsg::client;
+    rsg::disconnect();
 }

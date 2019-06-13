@@ -1,11 +1,13 @@
 #include <stdio.h>
 
-#include <librsg/client.hpp>
+#include <librsg/actor.hpp>
+#include <librsg/connection.hpp>
 
 int main()
 {
     printf("Manually connecting to RSG server\n");
     rsg::connect();
     printf("Hello from hello_manual_connect.cpp\n");
+    rsg::this_actor::quit();
     return 0;
 }

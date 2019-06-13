@@ -13,12 +13,13 @@ struct ActorConnection;
 class Actor
 {
 public:
-    Actor(rsg::TcpSocket * socket, int expected_actor_id);
+    Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command);
     void operator()();
 
 private:
     rsg::TcpSocket * _socket;
-    int _expected_actor_id;
+    int _id;
+    rsg::message_queue * _to_command;
 };
 
 void start_simulation_in_another_thread(const std::string & platform_file,

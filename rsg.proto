@@ -25,3 +25,14 @@ message CommandAck {
   bool success = 1; // Defined for all acknowledgments.
   Actor actor = 2; // Only defined as ADD-ACTOR acknowledgment.
 }
+
+// The only message sent by clients to the RSG server during the simulation.
+message Decision {
+  oneof type {
+    bool quit = 1;
+  }
+}
+
+// The only message sent by the RSG to a client during the simulation.
+message DecisionAck {
+}

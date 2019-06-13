@@ -65,8 +65,10 @@ librsg_src = [
     'src/common/message.hpp',
     'src/common/network/tcp_socket.hpp',
     'src/common/network/tcp_socket.cpp',
-    'src/librsg/client.cpp',
-    'src/librsg/client.hpp'
+    'src/librsg/actor.cpp',
+    'src/librsg/actor.hpp',
+    'src/librsg/connection.cpp',
+    'src/librsg/connection.hpp'
 ]
 
 rsg_src += protobuf_generated_src
@@ -88,7 +90,8 @@ librsg = shared_library('rsg', librsg_src,
 
 # Install librsg.
 install_headers(
-    'src/librsg/client.hpp',
+    'src/librsg/actor.hpp',
+    'src/librsg/connection.hpp',
     subdir: 'librsg'
 )
 
