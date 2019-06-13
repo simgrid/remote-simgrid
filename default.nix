@@ -1,7 +1,14 @@
 { kapack ? import
     (fetchTarball "https://github.com/oar-team/kapack/archive/master.tar.gz")
   {}
-, simgrid ? kapack.simgrid322_2
+, simgrid ? kapack.simgrid322_2.overrideAttrs (oldAttrs: rec {
+    version = "3.22.2-tesh-fix";
+    rev = "ad076cb4dfa591616c0384a2ed348ff47a0ba71f";
+    src = kapack.pkgs.fetchurl {
+      url = "https://framagit.org/simgrid/simgrid/-/archive/${rev}/simgrid-${rev}.tar.gz";
+      sha256 = "17b628bpl1ckc1mjqfqmzqh9zjnwmqs9i0dd170aak35xs47g0pm";
+    };
+  })
 , doCoverage ? true
 }:
 
