@@ -1,8 +1,13 @@
 variables:
   GIT_SUBMODULE_STRATEGY: none
 
+stages:
+  - build
+  - deploy
+
 build_test_nix:
   image: simgrid/ci-empty-nixos
+  stage: build
   script:
     # Update external cache.
     - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
@@ -17,9 +22,13 @@ build_test_nix:
       - /builds/simgrid/remote-simgrid/rsg/cov/report-html
 
 pages:
+  image: simgrid/ci-empty-nixos
+  stage: deploy
+  dependencies:
+    - build_test_nix
   script:
-  - mkdir public
-  - mv rsg/cov/report-html/ public/
+    - mkdir public
+    - mv rsg/cov/report-html/ public/
   artifacts:
     paths:
     - public
