@@ -1,9 +1,10 @@
 ! timeout 3
 & rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35001
-> Listening on port 35001
-> New client accepted
-> Received a KILL command! Reason: Sorry, this test is about killing you
-> Closing open sockets... done
+> [0.000000] [serve/INFO] Listening on port 35001
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a KILL command! Reason: Sorry, this test is about killing you
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
 
 $ sleep 0.2
 

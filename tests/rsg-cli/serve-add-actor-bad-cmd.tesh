@@ -1,11 +1,12 @@
 ! timeout 3
 & rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35002
-> Listening on port 35002
-> New client accepted
-> Received an ADD_ACTOR command! (actor_name=actor, host_name=host)
-> New client accepted
-> Received a KILL command! Reason: add-actor (actor_id=2) failed: Could not execvp into '/this/command/does/not/exist'
-> Closing open sockets... done
+> [0.000000] [serve/INFO] Listening on port 35002
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=actor, host_name=host)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a KILL command! Reason: add-actor (actor_id=2) failed: Could not execvp into '/this/command/does/not/exist'
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
 
 $ sleep 0.2
 

@@ -32,10 +32,7 @@ void Actor::operator()()
         "My actor id is %ld while I expected it to be %d",
         simgrid::s4u::Actor::self()->get_pid(), _id);
 
-    printf("time=%.6lf, actor='%s', host='%s': Hello.\n",
-        simgrid::s4u::Engine::get_instance()->get_clock(),
-        simgrid::s4u::this_actor::get_cname(),
-        simgrid::s4u::this_actor::get_host()->get_cname());
+    XBT_DEBUG("Hello.");
 
     try
     {
@@ -51,19 +48,12 @@ void Actor::operator()()
             switch(decision.type_case())
             {
             case rsg::Decision::kQuit:
-                printf("time=%.6lf, actor='%s', host='%s': Quit decision received. Goodbye.\n",
-                    simgrid::s4u::Engine::get_instance()->get_clock(),
-                    simgrid::s4u::this_actor::get_cname(),
-                    simgrid::s4u::this_actor::get_host()->get_cname());
+                XBT_INFO("Quit decision received. Goodbye.");
                 quit_received = true;
                 send_ack = false;
                 break;
             case rsg::Decision::kThisActorSleepFor:
-                printf("time=%.6lf, actor='%s', host='%s': sleep_for received. duration=%g\n",
-                    simgrid::s4u::Engine::get_instance()->get_clock(),
-                    simgrid::s4u::this_actor::get_cname(),
-                    simgrid::s4u::this_actor::get_host()->get_cname(),
-                    decision.thisactorsleepfor());
+                XBT_INFO("sleep_for received (duration=%g)", decision.thisactorsleepfor());
                 simgrid::s4u::this_actor::sleep_for(decision.thisactorsleepfor());
                 break;
             case rsg::Decision::TYPE_NOT_SET:
@@ -153,9 +143,9 @@ static void maestro(void * void_args)
     }
 
     // Run the simulation.
-    printf("time=%.6lf: Starting the simulation.\n", e->get_clock());
+    XBT_INFO("Starting the simulation.");
     e->run();
-    printf("time=%.6lf: Simulation has finished.\n", e->get_clock());
+    XBT_INFO("Simulation has finished.");
 
     // Tell the command thread that the simulation has finished successfully.
     rsg::InterthreadMessage msg;

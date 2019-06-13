@@ -1,33 +1,32 @@
 ! timeout 3
 ! ignore .*Configuration change.*
 & rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35005
-> Listening on port 35005
-> New client accepted
-> Received an ADD_ACTOR command! (actor_name=sleeper1, host_name=Fafard)
-> New client accepted
-> Received a CONNECT command! (actor_id=2)
-> New client accepted
-> Received an ADD_ACTOR command! (actor_name=sleeper2, host_name=Fafard)
-> New client accepted
-> Received a CONNECT command! (actor_id=3)
-> New client accepted
-> Received a START command!
-> time=0.000000: Starting the simulation.
-> time=0.000000, actor='sleeper1', host='Fafard': Hello.
-> time=0.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
-> time=0.000000, actor='sleeper2', host='Fafard': Hello.
-> time=0.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=1.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=2.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
-> time=2.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=3.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=4.000000, actor='sleeper1', host='Fafard': sleep_for received. duration=2
-> time=4.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=5.000000, actor='sleeper2', host='Fafard': sleep_for received. duration=1
-> time=6.000000, actor='sleeper1', host='Fafard': Quit decision received. Goodbye.
-> time=6.000000, actor='sleeper2', host='Fafard': Quit decision received. Goodbye.
-> time=6.000000: Simulation has finished.
-> Closing open sockets... done
+> [0.000000] [serve/INFO] Listening on port 35005
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=sleeper1, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=sleeper2, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 0.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 1.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 2.000000] [simulation/INFO] sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 2.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 3.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 4.000000] [simulation/INFO] sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 4.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 5.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sleeper2:(3) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [6.000000] [simulation/INFO] Simulation has finished.
+> [6.000000] [serve/INFO] Closing open sockets
+> [6.000000] [serve/INFO] All sockets have been closed
 
 $ sleep 0.2
 

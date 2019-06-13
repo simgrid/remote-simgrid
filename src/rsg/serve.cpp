@@ -5,6 +5,8 @@
 #include <signal.h>
 #include <sys/signalfd.h>
 
+#include <xbt/log.h>
+
 #include "interthread_messaging.hpp"
 #include "serve.hpp"
 #include "simulation.hpp"
@@ -15,6 +17,8 @@
 #include "../common/network/tcp_listener.hpp"
 
 #include "rsg.pb.h"
+
+XBT_LOG_NEW_DEFAULT_CATEGORY(serve, "The logging channel used for the network server thread");
 
 // Open sockets are stored in an (object scope) global variable.
 // This is to enable a clean shutdown/close when a signal (SIGINT, SEGV...) is caught.
@@ -30,7 +34,7 @@ static std::unordered_map<rsg::TcpSocket*, int> actor_sockets;
 
 static void close_open_sockets(bool abortive_termination)
 {
-    printf("Closing open sockets...");
+    XBT_INFO("Closing open sockets");
     fflush(stdout);
 
     if (listener != nullptr)
@@ -68,7 +72,7 @@ static void close_open_sockets(bool abortive_termination)
     }
     actor_sockets.clear();
 
-    printf(" done\n");
+    XBT_INFO("All sockets have been closed");
 }
 
 BarelyConnectedSocketInformation::~BarelyConnectedSocketInformation()
@@ -170,7 +174,7 @@ static void handle_command(const rsg::Command & command,
     {
         case rsg::Command::kAddActor:
         {
-            printf("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)\n",
+            XBT_INFO("Received an ADD_ACTOR command! (actor_name=%s, host_name=%s)",
                 command.addactor().actorname().c_str(), command.addactor().hostname().c_str());
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
                         server_state == ServerState::KILLED,
@@ -194,7 +198,7 @@ static void handle_command(const rsg::Command & command,
             }
         } break;
         case rsg::Command::kStart:
-            printf("Received a START command!\n");
+            XBT_INFO("Received a START command!");
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS,
                 "Received an ADD_ACTOR command while the simulation state is '%s'. %s",
                 server_state_to_string(server_state).c_str(), abort_msg);
@@ -206,24 +210,24 @@ static void handle_command(const rsg::Command & command,
             }
             else
             {
-                printf("Simulation will start as soon as all registered actors are connected\n");
+                XBT_INFO("Simulation will start as soon as all registered actors are connected");
                 server_state = ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION;
             }
 
             command_ack.set_success(true);
             break;
         case rsg::Command::kKill:
-            printf("Received a KILL command! Reason: %s\n", command.kill().c_str());
+            XBT_INFO("Received a KILL command! Reason: %s", command.kill().c_str());
             server_state = ServerState::KILLED;
             command_ack.set_success(true);
             break;
         case rsg::Command::kStatus:
-            printf("Received a STATUS command!\n");
+            XBT_INFO("Received a STATUS command!");
             // TODO: implement me
             break;
         case rsg::Command::kConnect:
         {
-            printf("Received a CONNECT command! (actor_id=%d)\n", command.connect().id());
+            XBT_INFO("Received a CONNECT command! (actor_id=%d)", command.connect().id());
             RSG_ENFORCE(server_state == ServerState::ACCEPTING_NEW_ACTORS ||
                         server_state == ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION ||
                         server_state == ServerState::SIMULATION_RUNNING ||
@@ -276,11 +280,11 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
     {
         listener->allow_address_reuse();
         listener->listen(server_port);
-        printf("Listening on port %d\n", server_port);
+        XBT_INFO("Listening on port %d", server_port);
     }
     catch (const rsg::Error & e)
     {
-        printf("Cannot start server. Reason: %s\n", e.what());
+        XBT_INFO("Cannot start server. Reason: %s", e.what());
         return 1;
     }
 
@@ -329,16 +333,16 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
                 switch (signal)
                 {
                     default:
-                        printf("Unhandled signal (%d) caught!\n", signal);
+                        XBT_INFO("Unhandled signal (%d) caught!", signal);
                         break;
                     case SIGINT:
-                        printf("SIGINT signal caught!\n");
+                        XBT_INFO("SIGINT signal caught!");
                         break;
                     case SIGTERM:
-                        printf("SIGTERM signal caught!\n");
+                        XBT_INFO("SIGTERM signal caught!");
                         break;
                     case SIGSEGV:
-                        printf("Segmentation fault caught!\n");
+                        XBT_INFO("Segmentation fault caught!");
                         break;
                 }
 
@@ -352,7 +356,7 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
                 client->disable_nagle_algorithm();
                 barely_connected_sockets.insert({client, BarelyConnectedSocketInformation()});
                 selector.add(client->fd());
-                printf("New client accepted\n");
+                XBT_INFO("New client accepted");
             }
             else
             {
@@ -436,7 +440,7 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
             case rsg::InterthreadMessageType::SIMULATION_ABORTED:
             {
                 auto data = (rsg::SimulationAbortedContent *) msg.data;
-                printf("Simulation aborted: %s\n", data->abort_reason.c_str());
+                XBT_INFO("Simulation aborted: %s", data->abort_reason.c_str());
                 delete data;
 
                 state = ServerState::SIMULATION_FINISHED;
