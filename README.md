@@ -20,7 +20,7 @@ algorithms or applications.
 We are currently (2019-06) reimplementing RSG to improve its maintainability and robustness.
 
 [![pipeline status](https://framagit.org/simgrid/remote-simgrid/badges/master/pipeline.svg)](https://framagit.org/simgrid/remote-simgrid/pipelines)
-[![coverage report](https://framagit.org/simgrid/remote-simgrid/badges/master/coverage.svg)](https://simgrid.frama.io/remote-simgrid/coverage)
+[![coverage report](https://framagit.org/simgrid/remote-simgrid/badges/master/coverage.svg)](https://codecov.io/gh/simgrid/remote-simgrid)
 
 ## Contact and License
 
