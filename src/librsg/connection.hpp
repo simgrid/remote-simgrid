@@ -24,7 +24,10 @@ private:
 public:
     void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
 
+    int actor_id() const;
+
 private:
+    int _actor_id = -1;
     TcpSocket * _socket = nullptr;
 };
 

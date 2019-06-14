@@ -13,6 +13,7 @@ executable('client-hello-manual-connect', ['clients/hello_manual_connect.cpp'], 
 executable('client-segfault', ['clients/segfault.cpp'], dependencies: librsg_dep)
 executable('client-sleep-for', ['clients/sleep_for.cpp'], dependencies: librsg_dep)
 executable('client-sleep-until', ['clients/sleep_until.cpp'], dependencies: librsg_dep)
+executable('client-actor-whoami', ['clients/actor_whoami.cpp'], dependencies: librsg_dep)
 
 # Define some tests
 test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.tesh')])
@@ -26,3 +27,4 @@ test('rsg-cli serve-add-actor-start-segfault', tesh, env: test_env, args: [files
 test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill.tesh')])
 test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])
 test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.tesh')])
+test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])

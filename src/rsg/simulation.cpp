@@ -41,9 +41,21 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         quit_received = true;
         send_ack = false;
     }   break;
+    // rsg::Actor methods
+    case rsg::pb::Decision::kActorGetName:
+    {
+        XBT_INFO("Actor::get_name() received (actor_id=%d)", decision.actorgetname().id());
+        auto actor = s4u::Actor::by_pid(decision.actorgetname().id());
+        if (actor != nullptr) {
+            decision_ack.set_actorgetname(actor->get_name());
+        } else {
+            decision_ack.set_success(false);
+        }
+    } break;
+    // rsg::this_actor methods
     case rsg::pb::Decision::kThisActorSleepFor:
     {
-        XBT_INFO("sleep_for received (duration=%g)", decision.thisactorsleepfor());
+        XBT_INFO("this_actor::sleep_for received (duration=%g)", decision.thisactorsleepfor());
         try {
             this_actor::sleep_for(decision.thisactorsleepfor());
         } catch (const HostFailureException & e) {
@@ -52,7 +64,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     } break;
     case rsg::pb::Decision::kThisActorSleepUntil:
     {
-        XBT_INFO("sleep_until received (timeout=%g)", decision.thisactorsleepuntil());
+        XBT_INFO("this_actor::sleep_until received (timeout=%g)", decision.thisactorsleepuntil());
         try {
             this_actor::sleep_until(decision.thisactorsleepuntil());
         } catch (const HostFailureException & e) {

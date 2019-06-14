@@ -32,14 +32,13 @@ rsg::Connection::Connection()
     }
 
     const char * initial_actor_id = nullptr;
-    int actor_id = 0;
     try
     {
         initial_actor_id = std::getenv("RSG_INITIAL_ACTOR_ID");
         RSG_ENFORCE(initial_actor_id != nullptr, "Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID is not set.");
         try
         {
-            actor_id = std::stoi(std::string(initial_actor_id));
+            _actor_id = std::stoi(std::string(initial_actor_id));
         }
         catch(const std::exception & e)
         {
@@ -70,7 +69,7 @@ rsg::Connection::Connection()
     // Generate command.
     rsg::pb::Command command;
     auto actor = new rsg::pb::Actor();
-    actor->set_id(actor_id);
+    actor->set_id(_actor_id);
     command.set_allocated_connect(actor);
 
     // Write message on socket.
@@ -109,6 +108,10 @@ void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb:
     read_message(decision_ack, *_socket);
 }
 
+int rsg::Connection::actor_id() const
+{
+    return _actor_id;
+}
 
 void rsg::connect()
 {

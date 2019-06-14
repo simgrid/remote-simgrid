@@ -34,10 +34,16 @@ message Decision {
     // static methods in rsg::this_actor
     double thisActorSleepFor = 2;
     double thisActorSleepUntil = 3;
+
+    // methods in rsg::Actor
+    Actor actorGetName = 4;
   }
 }
 
 // The only message sent by the RSG to a client during the simulation.
 message DecisionAck {
   bool success = 1;
+  oneof data {
+    string actorGetName = 2;
+  }
 }

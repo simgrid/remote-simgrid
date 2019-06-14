@@ -13,15 +13,15 @@
 > [0.000000] [serve/INFO] New client accepted
 > [0.000000] [serve/INFO] Received a START command!
 > [0.000000] [simulation/INFO] Starting the simulation.
-> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] sleep_for received (duration=2)
-> [Fafard:sleeper2:(3) 0.000000] [simulation/INFO] sleep_for received (duration=1)
-> [Fafard:sleeper2:(3) 1.000000] [simulation/INFO] sleep_for received (duration=1)
-> [Fafard:sleeper1:(2) 2.000000] [simulation/INFO] sleep_for received (duration=2)
-> [Fafard:sleeper2:(3) 2.000000] [simulation/INFO] sleep_for received (duration=1)
-> [Fafard:sleeper2:(3) 3.000000] [simulation/INFO] sleep_for received (duration=1)
-> [Fafard:sleeper1:(2) 4.000000] [simulation/INFO] sleep_for received (duration=2)
-> [Fafard:sleeper2:(3) 4.000000] [simulation/INFO] sleep_for received (duration=1)
-> [Fafard:sleeper2:(3) 5.000000] [simulation/INFO] sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 1.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 2.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 2.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 3.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 4.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 4.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 5.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
 > [Fafard:sleeper1:(2) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Fafard:sleeper2:(3) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [6.000000] [simulation/INFO] Simulation has finished.

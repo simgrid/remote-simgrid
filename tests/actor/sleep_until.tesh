@@ -17,9 +17,9 @@
 > [0.000000] [serve/INFO] New client accepted
 > [0.000000] [serve/INFO] Received a START command!
 > [0.000000] [simulation/INFO] Starting the simulation.
-> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] sleep_until received (timeout=7)
-> [Ginette:sleeper2:(3) 0.000000] [simulation/INFO] sleep_until received (timeout=2)
-> [Bourassa:sleeper2:(4) 0.000000] [simulation/INFO] sleep_until received (timeout=13)
+> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] this_actor::sleep_until received (timeout=7)
+> [Ginette:sleeper2:(3) 0.000000] [simulation/INFO] this_actor::sleep_until received (timeout=2)
+> [Bourassa:sleeper2:(4) 0.000000] [simulation/INFO] this_actor::sleep_until received (timeout=13)
 > [Ginette:sleeper2:(3) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Fafard:sleeper1:(2) 7.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Bourassa:sleeper2:(4) 13.000000] [simulation/INFO] Quit decision received. Goodbye.
