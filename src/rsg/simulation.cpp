@@ -71,6 +71,13 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         }
     }   break;
+    // rsg::Host methods
+    case rsg::pb::Decision::kHostByNameOrNull:
+    {
+        XBT_INFO("Host::by_name_or_null received (name='%s')", decision.hostbynameornull().c_str());
+        auto host = Host::by_name_or_null(decision.hostbynameornull());
+        decision_ack.set_success(host != nullptr);
+    } break;
     case rsg::pb::Decision::TYPE_NOT_SET:
         RSG_ENFORCE(false, "Received a decision with unset decision type.");
         break;

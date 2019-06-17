@@ -68,7 +68,9 @@ librsg_src = [
     'src/librsg/actor.cpp',
     'src/librsg/actor.hpp',
     'src/librsg/connection.cpp',
-    'src/librsg/connection.hpp'
+    'src/librsg/connection.hpp',
+    'src/librsg/host.cpp',
+    'src/librsg/host.hpp'
 ]
 
 rsg_src += protobuf_generated_src

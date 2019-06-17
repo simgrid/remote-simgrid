@@ -14,6 +14,7 @@ executable('client-segfault', ['clients/segfault.cpp'], dependencies: librsg_dep
 executable('client-sleep-for', ['clients/sleep_for.cpp'], dependencies: librsg_dep)
 executable('client-sleep-until', ['clients/sleep_until.cpp'], dependencies: librsg_dep)
 executable('client-actor-whoami', ['clients/actor_whoami.cpp'], dependencies: librsg_dep)
+executable('client-host-finder', ['clients/host_finder.cpp'], dependencies: librsg_dep)
 
 # Define some tests
 test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.tesh')])
@@ -28,3 +29,4 @@ test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill
 test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])
 test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.tesh')])
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
+test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])

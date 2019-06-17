@@ -5,6 +5,10 @@ message Actor {
   int32 id = 1;
 }
 
+message Host {
+  string name = 1;
+}
+
 // This is the first message sent by any client to the RSG server.
 message Command {
   message AddActor {
@@ -37,6 +41,9 @@ message Decision {
 
     // methods in rsg::Actor
     Actor actorGetName = 4;
+
+    // static methods in rsg::Host
+    string hostByNameOrNull = 6;
   }
 }
 
@@ -45,5 +52,6 @@ message DecisionAck {
   bool success = 1;
   oneof data {
     string actorGetName = 2;
+    Host actorGetHost = 3;
   }
 }
