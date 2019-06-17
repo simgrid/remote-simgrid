@@ -93,7 +93,7 @@ int add_actor(const std::string & server_hostname, int server_port,
 
                 // Mute into the target process.
                 errno = 0;
-                ret = execvp(command_to_run.c_str(), args);
+                execvp(command_to_run.c_str(), args);
 
                 // This code is only executed if muting into the target process failed.
                 printf("Could not mute into the target process: %s\n", strerror(errno));
