@@ -58,3 +58,8 @@ void rsg::this_actor::sleep_until(double timeout)
     rsg::connection->send_decision(decision, ack);
     // TODO: propagate failure as exception
 }
+
+int rsg::this_actor::get_pid()
+{
+    return rsg::connection->actor_id();
+}
