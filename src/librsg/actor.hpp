@@ -4,6 +4,7 @@
 
 namespace rsg
 {
+class Host;
 
 class Actor
 {
@@ -14,8 +15,9 @@ private:
 public:
     static Actor* self();
 
-    int get_pid();
+    Host* get_host();
     std::string get_name();
+    int get_pid();
 
 private:
     int _id;

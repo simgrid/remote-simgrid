@@ -42,6 +42,18 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         send_ack = false;
     }   break;
     // rsg::Actor methods
+    case rsg::pb::Decision::kActorGetHost:
+    {
+        XBT_INFO("Actor::get_host() received (actor_id=%d)", decision.actorgethost().id());
+        auto actor = s4u::Actor::by_pid(decision.actorgethost().id());
+        if (actor != nullptr) {
+            auto host = new rsg::pb::Host();
+            host->set_name(actor->get_host()->get_name());
+            decision_ack.set_allocated_actorgethost(host);
+        } else {
+            decision_ack.set_success(false);
+        }
+    } break;
     case rsg::pb::Decision::kActorGetName:
     {
         XBT_INFO("Actor::get_name() received (actor_id=%d)", decision.actorgetname().id());

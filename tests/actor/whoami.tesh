@@ -17,10 +17,13 @@
 > [0.000000] [serve/INFO] New client accepted
 > [0.000000] [serve/INFO] Received a START command!
 > [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
 > [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
 > [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
 > [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
 > [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [0.000000] [simulation/INFO] Simulation has finished.
@@ -31,19 +34,19 @@ $ sleep 0.2
 
 ! timeout 3
 & rsg add-actor 'john doe' Fafard -p 35008 -- client-actor-whoami
-> My actor is (pid=2, name='john doe')
+> My actor is (pid=2, name='john doe'), located on Host(name='Fafard')
 
 $ sleep 0.2
 
 ! timeout 3
 & rsg add-actor 'Jane Doe' Bourassa -p 35008 -- client-actor-whoami
-> My actor is (pid=3, name='Jane Doe')
+> My actor is (pid=3, name='Jane Doe'), located on Host(name='Bourassa')
 
 $ sleep 0.2
 
 ! timeout 3
 & rsg add-actor Quidane Ginette -p 35008 -- client-actor-whoami
-> My actor is (pid=4, name='Quidane')
+> My actor is (pid=4, name='Quidane'), located on Host(name='Ginette')
 
 $ sleep 0.4
 

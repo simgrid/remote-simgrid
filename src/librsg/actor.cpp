@@ -1,4 +1,5 @@
 #include "actor.hpp"
+#include "host.hpp"
 #include "connection.hpp"
 #include "../common/assert.hpp"
 
@@ -14,9 +15,18 @@ rsg::Actor* rsg::Actor::self()
     return new Actor(rsg::connection->actor_id());
 }
 
-int rsg::Actor::get_pid()
+rsg::Host* rsg::Actor::get_host()
 {
-    return _id;
+    rsg::pb::Decision decision;
+    auto actor = new rsg::pb::Actor();
+    actor->set_id(_id);
+    decision.set_allocated_actorgethost(actor);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
+
+    return new Host(ack.actorgethost().name());
 }
 
 std::string rsg::Actor::get_name()
@@ -28,9 +38,15 @@ std::string rsg::Actor::get_name()
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
-    RSG_ENFORCE(ack.success(), "This actor does not exist in the simulation");
+    RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
     return ack.actorgetname();
 }
+
+int rsg::Actor::get_pid()
+{
+    return _id;
+}
+
 
 
 bool rsg::this_actor::is_maestro()

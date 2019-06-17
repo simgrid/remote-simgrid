@@ -41,6 +41,7 @@ message Decision {
 
     // methods in rsg::Actor
     Actor actorGetName = 4;
+    Actor actorGetHost = 5;
 
     // static methods in rsg::Host
     string hostByNameOrNull = 6;
