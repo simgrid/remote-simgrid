@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "interthread_messaging.hpp"
+
 namespace rsg
 {
     class TcpSocket;
@@ -35,6 +37,7 @@ struct ActorConnection
     std::string host_name = "unset";
     int actor_id = -1;
     rsg::TcpSocket * socket = nullptr;
+    rsg::message_queue * connect_ack = nullptr;
 };
 
 std::string server_state_to_string(ServerState state);

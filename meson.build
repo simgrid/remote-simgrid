@@ -1,7 +1,7 @@
 project('remote-simgrid', 'cpp',
     version: '0.2.0',
     license: 'LGPL-3.0',
-    meson_version: '>=0.37.1',
+    meson_version: '>=0.42.0',
     default_options: [
         'cpp_std=c++11',
         # Do not use -Wl,--as-needed.
@@ -16,16 +16,19 @@ docopt_dep = dependency('docopt', required: true)
 protobuf_dep = dependency('protobuf', required : true)
 protoc = find_program('protoc', required : true)
 simgrid_dep = dependency('simgrid', required: true)
+thread_dep = dependency('threads', required: true)
 
 rsg_deps = [
     boost_dep,
     docopt_dep,
     protobuf_dep,
-    simgrid_dep
+    simgrid_dep,
+    thread_dep
 ]
 
 librsg_deps = [
     protobuf_dep,
+    thread_dep
 ]
 
 # Generate source files from protobuf schema description.
@@ -102,6 +105,7 @@ pkgc.generate(name: 'librsg',
     libraries: librsg,
     version: meson.project_version(),
     requires: [protobuf_dep],
+    extra_cflags: ['-pthread'],
     description: 'Remote SimGrid client library.'
 )
 

@@ -32,19 +32,25 @@ message CommandAck {
 
 // The only message sent by clients to the RSG server during the simulation.
 message Decision {
+  message CreateActor {
+    string name = 1;
+    Host host = 2;
+  }
+
   oneof type {
     bool quit = 1;
 
     // static methods in rsg::this_actor
     double thisActorSleepFor = 2;
     double thisActorSleepUntil = 3;
+    CreateActor actorCreate = 4;
 
     // methods in rsg::Actor
-    Actor actorGetName = 4;
-    Actor actorGetHost = 5;
+    Actor actorGetName = 5;
+    Actor actorGetHost = 6;
 
     // static methods in rsg::Host
-    string hostByNameOrNull = 6;
+    string hostByNameOrNull = 7;
   }
 }
 
@@ -54,5 +60,6 @@ message DecisionAck {
   oneof data {
     string actorGetName = 2;
     Host actorGetHost = 3;
+    Actor actorCreate = 4;
   }
 }

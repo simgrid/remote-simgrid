@@ -252,8 +252,20 @@ static void handle_command(const rsg::pb::Command & command,
                 actor_connection->socket = issuer_socket;
                 nb_connected_actors++;
 
-                if (server_state == ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION &&
-                    nb_connected_actors == actor_connections.size())
+                if (server_state == ServerState::SIMULATION_RUNNING)
+                {
+                    // Tell the non-initial Actor that the remote client has connected.
+                    RSG_ASSERT(actor_connection->connect_ack != nullptr,
+                        "Invalid dynamic client: No connect_ack message queue");
+                    rsg::InterthreadMessage msg;
+                    msg.type = rsg::InterthreadMessageType::ACTOR_CONNECTED;
+                    auto content = new rsg::ActorConnectedContent();
+                    content->socket = actor_connection->socket;
+                    msg.data = (rsg::InterthreadMessageContent *) content;
+                    actor_connection->connect_ack->push(msg);
+                }
+                else if (server_state == ServerState::WAITING_FOR_ALL_ACTORS_CONNECTION &&
+                         nb_connected_actors == actor_connections.size())
                 {
                     server_state = ServerState::SIMULATION_RUNNING;
                     start_simulation_in_another_thread(platform_file, simgrid_options, to_command, actor_connections);
@@ -451,6 +463,25 @@ int serve(const std::string & platform_file, int server_port, const std::vector<
                 auto data = (rsg::ActorQuitContent *) msg.data;
                 dropped_sockets.push_back(data->socket_to_drop);
                 selector.add(data->socket_to_drop->fd());
+                delete data;
+            } break;
+            case rsg::InterthreadMessageType::ACTOR_CREATE:
+            {
+                // Store that a new connection should happen.
+                auto data = (rsg::ActorCreateContent *) msg.data;
+                RSG_ASSERT(actor_connections.find(data->actor_id) == actor_connections.end(),
+                    "actor_id=%d already exists", data->actor_id);
+                auto actor_connection = new ActorConnection();
+                actor_connection->actor_id = data->actor_id;
+                actor_connection->connect_ack = data->connect_ack;
+                actor_connections.insert({actor_connection->actor_id, actor_connection});
+
+                // Tell the issuer actor that the client can connect.
+                rsg::InterthreadMessage create_ack;
+                create_ack.type = rsg::InterthreadMessageType::ACTOR_CREATE_ACK;
+                create_ack.data = nullptr;
+                data->can_connect_ack->push(create_ack);
+
                 delete data;
             } break;
             default:

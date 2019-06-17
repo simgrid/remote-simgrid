@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <vector>
+
 namespace rsg
 {
 class TcpSocket;
@@ -13,22 +16,25 @@ class DecisionAck;
 //! Manage a connection with the RSG server.
 class Connection
 {
-    friend void connect();
+    friend void connect(int actor_id);
+    friend void * actor_function(void * void_args);
     friend void disconnect();
 
 private:
-    Connection();
+    Connection(const std::string & server_hostname, uint16_t port, int actor_id);
     Connection(const Connection &) = delete;
     ~Connection();
 
 public:
     void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
+    void add_child_thread(pthread_t child);
 
     int actor_id() const;
 
 private:
     int _actor_id = -1;
     TcpSocket * _socket = nullptr;
+    std::vector<pthread_t> _children;
 };
 
 /* Holds a client instance.
@@ -44,6 +50,7 @@ private:
 */
 extern thread_local Connection* connection;
 
+void connect(int actor_id);
 void connect();
 void disconnect();
 

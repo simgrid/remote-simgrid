@@ -10,6 +10,8 @@
    inter-thread messages will be very rare).
 */
 
+#include <string>
+
 #include <boost/lockfree/queue.hpp>
 
 namespace rsg
@@ -22,11 +24,14 @@ enum class InterthreadMessageType
 
     // From Command to SimGrid
     ,START_SIMULATION
+    ,ACTOR_CREATE_ACK
+    ,ACTOR_CONNECTED
 
     // From SimGrid to Command
     ,SIMULATION_FINISHED
     ,SIMULATION_ABORTED
     ,ACTOR_QUIT
+    ,ACTOR_CREATE
 };
 
 // Abstract base class for message content.
@@ -35,6 +40,16 @@ struct InterthreadMessageContent
     ~InterthreadMessageContent();
 };
 
+struct InterthreadMessage
+{
+    InterthreadMessageType type = InterthreadMessageType::UNDEFINED;
+    InterthreadMessageContent * data = nullptr;
+};
+
+// Convenient alias.
+using message_queue = boost::lockfree::queue<rsg::InterthreadMessage>;
+
+// Message-specific data structures.
 struct SimulationAbortedContent : public InterthreadMessageContent
 {
     ~SimulationAbortedContent();
@@ -44,16 +59,25 @@ struct SimulationAbortedContent : public InterthreadMessageContent
 struct ActorQuitContent : public InterthreadMessageContent
 {
     ~ActorQuitContent();
-    rsg::TcpSocket * socket_to_drop;
+    rsg::TcpSocket * socket_to_drop = nullptr;
 };
 
-struct InterthreadMessage
+struct ActorConnectedContent : public InterthreadMessageContent
 {
-    InterthreadMessageType type = InterthreadMessageType::UNDEFINED;
-    InterthreadMessageContent * data = nullptr;
+    ~ActorConnectedContent();
+    rsg::TcpSocket * socket = nullptr;
 };
 
-// Convenient alias
-using message_queue = boost::lockfree::queue<rsg::InterthreadMessage>;
+struct ActorCreateContent : public InterthreadMessageContent
+{
+    ~ActorCreateContent();
+    int actor_id = -1;
+    message_queue * can_connect_ack = nullptr;
+    message_queue * connect_ack = nullptr;
+};
+
+std::string interthread_message_type_to_string(const InterthreadMessageType & type);
+
+void wait_message_reception(message_queue * queue);
 
 }

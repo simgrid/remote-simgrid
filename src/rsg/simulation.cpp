@@ -12,6 +12,10 @@
 
 XBT_LOG_NEW_DEFAULT_CATEGORY(simulation, "The logging channel used in simulation.cpp");
 
+// As I write these lines, this is the SimGrid function to guess the pid of the
+// next Actor. As it is quite internal, SimGrid does not provide headers for it.
+int SIMIX_process_get_maxpid();
+
 struct MaestroArgs
 {
     std::string platform_file;
@@ -24,8 +28,13 @@ Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue 
 {
 }
 
+Actor::Actor(int expected_actor_id, rsg::message_queue * to_command, rsg::message_queue * connect_ack) :
+    _id(expected_actor_id), _to_command(to_command), _connect_ack(connect_ack)
+{
+}
+
 static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack,
-    bool & send_ack, bool & quit_received)
+    rsg::message_queue * to_command, rsg::TcpSocket * socket, bool & send_ack, bool & quit_received)
 {
     using namespace simgrid;
     using namespace simgrid::s4u;
@@ -42,6 +51,48 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         send_ack = false;
     }   break;
     // rsg::Actor methods
+    case rsg::pb::Decision::kActorCreate:
+    {
+        XBT_INFO("Actor::create() received (name='%s', host_name='%s')",
+            decision.actorcreate().name().c_str(), decision.actorcreate().host().name().c_str());
+
+        auto host = Host::by_name(decision.actorcreate().host().name());
+        const int expected_child_pid = SIMIX_process_get_maxpid();
+
+        // Tell the command thread to accept a connection corresponding to this actor.
+        rsg::message_queue * can_connect_ack = new rsg::message_queue(2);
+        rsg::message_queue * connect_ack = new rsg::message_queue(2);
+
+        rsg::InterthreadMessage msg, ack;
+        msg.type = rsg::InterthreadMessageType::ACTOR_CREATE;
+        auto content = new rsg::ActorCreateContent();
+        content->actor_id = expected_child_pid;
+        content->can_connect_ack = can_connect_ack;
+        content->connect_ack = connect_ack;
+        msg.data = (rsg::InterthreadMessageContent *) content;
+        bool could_write = to_command->push(msg);
+        RSG_ASSERT(could_write, "Internal interthread messaging error: Actor could not write ACTOR_CREATE");
+
+        // Wait until the command thread knows about the incoming connection.
+        wait_message_reception(can_connect_ack);
+        bool could_read = can_connect_ack->pop(ack);
+        RSG_ASSERT(could_read, "Internal interthread messaging error: Actor could not read ACTOR_CREATE_ACK");
+        RSG_ASSERT(ack.type == rsg::InterthreadMessageType::ACTOR_CREATE_ACK,
+            "Interthread messaging error: Bad message type (expected ACTOR_CREATE_ACK, got %s)",
+            interthread_message_type_to_string(ack.type).c_str());
+        delete can_connect_ack;
+
+        // Tell the issuer actor that a new actor has been created, so it can connect to it.
+        auto actor = new rsg::pb::Actor();
+        actor->set_id(expected_child_pid);
+        decision_ack.set_allocated_actorcreate(actor);
+        write_message(decision_ack, *socket);
+        send_ack = false;
+
+        // Finally, create the new actor.
+        s4u::Actor::create(decision.actorcreate().name().c_str(), host,
+            ::Actor(expected_child_pid, to_command, connect_ack));
+    } break;
     case rsg::pb::Decision::kActorGetHost:
     {
         XBT_INFO("Actor::get_host() received (actor_id=%d)", decision.actorgethost().id());
@@ -82,7 +133,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } catch (const HostFailureException & e) {
             decision_ack.set_success(false);
         }
-    }   break;
+    } break;
     // rsg::Host methods
     case rsg::pb::Decision::kHostByNameOrNull:
     {
@@ -104,6 +155,27 @@ void Actor::operator()()
         "My actor id is %ld while I expected it to be %d",
         simgrid::s4u::Actor::self()->get_pid(), _id);
 
+    if (_connect_ack != nullptr)
+    {
+        // This is not an initial actor.
+        // It must wait until the remote actor is connected.
+        simgrid::s4u::this_actor::yield();
+
+        wait_message_reception(_connect_ack);
+        rsg::InterthreadMessage msg;
+        bool could_read = _connect_ack->pop(msg);
+        RSG_ASSERT(could_read, "Internal interthread messaging error: Actor could not read ACTOR_CONNECTED");
+        RSG_ASSERT(msg.type == rsg::InterthreadMessageType::ACTOR_CONNECTED,
+            "Interthread messaging error: Bad message type (expected ACTOR_CONNECTED, got %s)",
+            interthread_message_type_to_string(msg.type).c_str());
+        auto data = (rsg::ActorConnectedContent*) msg.data;
+        _socket = data->socket;
+        delete data;
+
+        delete _connect_ack;
+        _connect_ack = nullptr;
+    }
+
     XBT_DEBUG("Hello.");
 
     try
@@ -116,7 +188,7 @@ void Actor::operator()()
 
             rsg::pb::DecisionAck decision_ack;
             bool send_ack;
-            handle_decision(decision, decision_ack, send_ack, quit_received);
+            handle_decision(decision, decision_ack, _to_command, _socket, send_ack, quit_received);
 
             if (send_ack)
             {
@@ -250,16 +322,23 @@ static void connections_unorderedmap_to_vector(
     // Yay, all checks passed!
 }
 
-void start_simulation_in_another_thread(const std::string & platform_file,
-    const std::vector<std::string> & simgrid_options,
-    rsg::message_queue * to_command,
-    const std::unordered_map<int, ActorConnection*> & actor_connections)
+struct StartSimulationArgs
 {
+    std::string platform_file;
+    std::vector<std::string> simgrid_options;
+    rsg::message_queue * to_command;
+    std::unordered_map<int, ActorConnection*> actor_connections;
+};
+
+static void* start_simulation(void * void_args)
+{
+    auto my_args = (StartSimulationArgs *) void_args;
+
     // Run a meastro thread.
     auto args = new MaestroArgs;
-    args->platform_file = platform_file;
-    args->to_command = to_command;
-    connections_unorderedmap_to_vector(actor_connections, args->connection_vector);
+    args->platform_file = my_args->platform_file;
+    args->to_command = my_args->to_command;
+    connections_unorderedmap_to_vector(my_args->actor_connections, args->connection_vector);
     SIMIX_set_maestro(maestro, args);
 
     /* Prepare argc/argv for Engine creation.
@@ -268,23 +347,38 @@ void start_simulation_in_another_thread(const std::string & platform_file,
        - Cleaner methods cannot be be used to set SimGrid options,
          as the context factory is managed at engine creation time.
     */
-    int argc = 2 + simgrid_options.size();
+    int argc = 2 + my_args->simgrid_options.size();
     char * argv[argc];
     argv[0] = strdup("rsg");
     argv[1] = strdup("--cfg=contexts/factory:thread");
     for (int i = 2; i < argc; i++)
-        argv[i] = strdup(simgrid_options[i-2].c_str());
+        argv[i] = strdup(my_args->simgrid_options[i-2].c_str());
     simgrid::s4u::Engine e(&argc, argv);
     for (int i = 0; i < argc; i++)
         free(argv[i]);
-    e.load_platform(platform_file);
+    e.load_platform(my_args->platform_file);
 
     // Become one of the simulated processes (for a very short time).
     // This is required for now (tested with SimGrid-3.22.2).
     RSG_ASSERT(e.get_host_count() > 0,
-        "Error: Provided platform file '%s' contains no host", platform_file.c_str());
+        "Error: Provided platform file '%s' contains no host", my_args->platform_file.c_str());
     sg_actor_attach("temporary", nullptr, e.get_all_hosts()[0], nullptr);
-
-    // Become thread0 again!
     sg_actor_detach();
+    delete my_args;
+    return nullptr;
+}
+
+void start_simulation_in_another_thread(const std::string & platform_file,
+    const std::vector<std::string> & simgrid_options,
+    rsg::message_queue * to_command,
+    const std::unordered_map<int, ActorConnection*> & actor_connections)
+{
+    auto args = new StartSimulationArgs();
+    args->platform_file = platform_file;
+    args->simgrid_options = simgrid_options;
+    args->to_command = to_command;
+    args->actor_connections = actor_connections;
+
+    pthread_t other_thread;
+    pthread_create(&other_thread, nullptr, start_simulation, (void*)args);
 }

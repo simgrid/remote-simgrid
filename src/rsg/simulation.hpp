@@ -13,13 +13,17 @@ struct ActorConnection;
 class Actor
 {
 public:
+    // Initial actors.
     Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command);
+    // Dynamically created actors.
+    Actor(int expected_actor_id, rsg::message_queue * to_command, rsg::message_queue * connect_ack);
     void operator()();
 
 private:
-    rsg::TcpSocket * _socket;
-    int _id;
-    rsg::message_queue * _to_command;
+    rsg::TcpSocket * _socket = nullptr;
+    int _id = -1;
+    rsg::message_queue * _to_command = nullptr;
+    rsg::message_queue * _connect_ack = nullptr;
 };
 
 void start_simulation_in_another_thread(const std::string & platform_file,

@@ -1,0 +1,13 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35010
+
+$ sleep 0.2
+
+! timeout 3
+& rsg add-actor 'john doe' Fafard -p 35010 -- client-actor-create
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35010
