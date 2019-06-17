@@ -72,7 +72,10 @@ rsg::Connection::~Connection()
     for (pthread_t child : _children)
     {
         int ret = pthread_join(child, nullptr);
-        RSG_ENFORCE(ret == 0, "Error while joining thread");
+        if (ret != 0)
+        {
+            printf("Error while joining thread\n");
+        }
     }
 
     try
