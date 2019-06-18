@@ -15,9 +15,10 @@ private:
     Actor(const Actor &) = delete;
 
 public:
-    static Actor* self();
+    static std::shared_ptr<Actor> self();
 
-    static Actor* create(const std::string & name, const std::shared_ptr<Host> & host, const std::function<void(void *)>& code, void * code_data);
+    static std::shared_ptr<Actor> create(const std::string & name, const std::shared_ptr<Host> & host,
+        const std::function<void(void *)>& code, void * code_data);
     // TODO: propose the other create functions (https://simgrid.frama.io/simgrid/app_s4u.html#s4u-actor)
 
     std::shared_ptr<Host> get_host();

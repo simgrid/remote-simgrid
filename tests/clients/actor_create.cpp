@@ -13,8 +13,6 @@ void print_whoami(const char * function_name)
     printf("Actor(pid=%d, name='%s') on Host(name='%s') executing %s\n",
         actor->get_pid(), actor->get_name().c_str(),
         actor->get_host()->get_name().c_str(), function_name);
-
-    delete actor;
 }
 
 void child_actor1(void * args)
@@ -45,6 +43,5 @@ int main(int argc, char * argv[])
     rsg::Actor::create("slow_child", host, child_actor2, new int(10));
     rsg::this_actor::sleep_for(3);
 
-    delete actor;
     return 0;
 }

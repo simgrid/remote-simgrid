@@ -26,12 +26,12 @@ rsg::Actor::Actor(int id) : _id(id)
 {
 }
 
-rsg::Actor* rsg::Actor::self()
+std::shared_ptr<rsg::Actor> rsg::Actor::self()
 {
-    return new Actor(rsg::connection->actor_id());
+    return std::shared_ptr<rsg::Actor>(new Actor(rsg::connection->actor_id()));
 }
 
-rsg::Actor* rsg::Actor::create(const std::string & name, const std::shared_ptr<rsg::Host> & host, const std::function<void(void *)>& code, void * code_data)
+std::shared_ptr<rsg::Actor> rsg::Actor::create(const std::string & name, const std::shared_ptr<rsg::Host> & host, const std::function<void(void *)>& code, void * code_data)
 {
     rsg::pb::Decision decision;
     auto pb_host = new rsg::pb::Host();
@@ -49,7 +49,7 @@ rsg::Actor* rsg::Actor::create(const std::string & name, const std::shared_ptr<r
     std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), code, code_data);
     rsg::connection->add_child_thread(child_thread);
 
-    return new Actor(ack.actorcreate().id());
+    return std::shared_ptr<rsg::Actor>(new Actor(ack.actorcreate().id()));
 }
 
 std::shared_ptr<rsg::Host> rsg::Actor::get_host()
