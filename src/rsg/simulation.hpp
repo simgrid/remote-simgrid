@@ -16,7 +16,8 @@ public:
     // Initial actors.
     Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command);
     // Dynamically created actors.
-    Actor(int expected_actor_id, rsg::message_queue * to_command, rsg::message_queue * connect_ack);
+    Actor(rsg::message_queue * to_command, rsg::message_queue * connect_ack);
+
     void operator()();
 
 private:

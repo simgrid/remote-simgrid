@@ -28,8 +28,8 @@ Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue 
 {
 }
 
-Actor::Actor(int expected_actor_id, rsg::message_queue * to_command, rsg::message_queue * connect_ack) :
-    _id(expected_actor_id), _to_command(to_command), _connect_ack(connect_ack)
+Actor::Actor(rsg::message_queue * to_command, rsg::message_queue * connect_ack) :
+    _to_command(to_command), _connect_ack(connect_ack)
 {
 }
 
@@ -57,16 +57,21 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision.actorcreate().name().c_str(), decision.actorcreate().host().name().c_str());
 
         auto host = Host::by_name(decision.actorcreate().host().name());
-        const int expected_child_pid = SIMIX_process_get_maxpid();
 
-        // Tell the command thread to accept a connection corresponding to this actor.
+        // Prepare interthread message queues.
         rsg::message_queue * can_connect_ack = new rsg::message_queue(2);
         rsg::message_queue * connect_ack = new rsg::message_queue(2);
 
+        // Create the new actor.
+        auto new_actor = s4u::Actor::create(decision.actorcreate().name().c_str(), host,
+            ::Actor(to_command, connect_ack));
+        const int new_actor_pid = new_actor->get_pid();
+
+        // Tell the command thread to accept a connection corresponding to this actor.
         rsg::InterthreadMessage msg, ack;
         msg.type = rsg::InterthreadMessageType::ACTOR_CREATE;
         auto content = new rsg::ActorCreateContent();
-        content->actor_id = expected_child_pid;
+        content->actor_id = new_actor_pid;
         content->can_connect_ack = can_connect_ack;
         content->connect_ack = connect_ack;
         msg.data = (rsg::InterthreadMessageContent *) content;
@@ -84,14 +89,10 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
 
         // Tell the issuer actor that a new actor has been created, so it can connect to it.
         auto actor = new rsg::pb::Actor();
-        actor->set_id(expected_child_pid);
+        actor->set_id(new_actor_pid);
         decision_ack.set_allocated_actorcreate(actor);
         write_message(decision_ack, *socket);
         send_ack = false;
-
-        // Finally, create the new actor.
-        s4u::Actor::create(decision.actorcreate().name().c_str(), host,
-            ::Actor(expected_child_pid, to_command, connect_ack));
     } break;
     case rsg::pb::Decision::kActorGetHost:
     {
@@ -149,18 +150,23 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
 
 void Actor::operator()()
 {
-    // Check that initial state is fine.
-    xbt_assert(simgrid::s4u::Actor::self()->get_pid() == _id,
-        "Something went wrong while executing initial actors: "
-        "My actor id is %ld while I expected it to be %d",
-        simgrid::s4u::Actor::self()->get_pid(), _id);
-
-    if (_connect_ack != nullptr)
+    if (_id != -1)
     {
-        // This is not an initial actor.
-        // It must wait until the remote actor is connected.
+        // Initial actor. Check that initial state is fine.
+        xbt_assert(simgrid::s4u::Actor::self()->get_pid() == _id,
+            "Something went wrong while executing initial actors: "
+            "My actor id is %ld while I expected it to be %d",
+            simgrid::s4u::Actor::self()->get_pid(), _id);
+    }
+    else
+    {
+        // Dynamically created actor.
+        _id = simgrid::s4u::this_actor::get_pid();
+
+        // Yielding so parent knows our pid.
         simgrid::s4u::this_actor::yield();
 
+        // Wait until the remote actor is connected.
         wait_message_reception(_connect_ack);
         rsg::InterthreadMessage msg;
         bool could_read = _connect_ack->pop(msg);

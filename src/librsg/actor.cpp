@@ -1,4 +1,4 @@
-#include <pthread.h>
+#include <thread>
 
 #include "actor.hpp"
 #include "host.hpp"
@@ -7,20 +7,19 @@
 
 #include "rsg.pb.h"
 
-static void * actor_function(void * void_args)
+static void actor_wrapper(int actor_id, const std::function<void(void *)> & code, void * code_data)
 {
-    int * actor_id = (int*) void_args;
     rsg::connection = nullptr;
-    RSG_ENFORCE(*actor_id != -1, "actor_id should not be -1");
-    rsg::connect(*actor_id);
-    delete actor_id;
+    RSG_ENFORCE(actor_id != -1, "actor_id should not be -1");
+    rsg::connect(actor_id);
 
-    printf("Hello from thread!\n");
-    fflush(stdout);
+    try {
+        code(code_data);
+    } catch (const rsg::Error & e) {
+        printf("%s\n", e.what());
+    }
 
     rsg::disconnect();
-
-    return nullptr;
 }
 
 rsg::Actor::Actor(int id) : _id(id)
@@ -32,7 +31,7 @@ rsg::Actor* rsg::Actor::self()
     return new Actor(rsg::connection->actor_id());
 }
 
-rsg::Actor* rsg::Actor::create(const std::string & name, const rsg::Host * host, const std::function<void()>& code)
+rsg::Actor* rsg::Actor::create(const std::string & name, const rsg::Host * host, const std::function<void(void *)>& code, void * code_data)
 {
     rsg::pb::Decision decision;
     auto pb_host = new rsg::pb::Host();
@@ -47,13 +46,7 @@ rsg::Actor* rsg::Actor::create(const std::string & name, const rsg::Host * host,
     RSG_ENFORCE(ack.success(), "Could not create a new Actor");
 
     // Create a thread for the newly-created actor.
-    printf("Creating a new thread. New actor should have id=%d\n", ack.actorcreate().id());
-    fflush(stdout);
-    auto new_actor_id = new int;
-    *new_actor_id = ack.actorcreate().id();
-    pthread_t child_thread;
-    int ret = pthread_create(&child_thread, nullptr, actor_function, new_actor_id);
-    RSG_ENFORCE(ret == 0, "Could not create thread");
+    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), code, code_data);
     rsg::connection->add_child_thread(child_thread);
 
     return new Actor(ack.actorcreate().id());

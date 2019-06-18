@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <thread>
 #include <vector>
 
 namespace rsg
@@ -27,14 +28,14 @@ private:
 
 public:
     void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
-    void add_child_thread(pthread_t child);
+    void add_child_thread(std::thread * child);
 
     int actor_id() const;
 
 private:
     int _actor_id = -1;
     TcpSocket * _socket = nullptr;
-    std::vector<pthread_t> _children;
+    std::vector<std::thread*> _children;
 };
 
 /* Holds a client instance.

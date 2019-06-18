@@ -68,16 +68,6 @@ rsg::Connection::Connection(const std::string & server_hostname, uint16_t port, 
 
 rsg::Connection::~Connection()
 {
-    // Wait for the termination of all children threads.
-    for (pthread_t child : _children)
-    {
-        int ret = pthread_join(child, nullptr);
-        if (ret != 0)
-        {
-            printf("Error while joining thread\n");
-        }
-    }
-
     try
     {
         rsg::pb::Decision decision;
@@ -93,6 +83,12 @@ rsg::Connection::~Connection()
 
     delete _socket;
     _socket = nullptr;
+
+    // Wait for the termination of all children threads.
+    for (std::thread * child : _children)
+    {
+        child->join();
+    }
 }
 
 void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack)
@@ -101,7 +97,7 @@ void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb:
     read_message(decision_ack, *_socket);
 }
 
-void rsg::Connection::add_child_thread(pthread_t child)
+void rsg::Connection::add_child_thread(std::thread * child)
 {
     _children.push_back(child);
 }

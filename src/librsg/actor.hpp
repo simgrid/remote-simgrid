@@ -16,7 +16,7 @@ private:
 public:
     static Actor* self();
 
-    static Actor* create(const std::string & name, const rsg::Host * host, const std::function<void()>& code);
+    static Actor* create(const std::string & name, const rsg::Host * host, const std::function<void(void *)>& code, void * code_data);
     // TODO: propose the other create functions (https://simgrid.frama.io/simgrid/app_s4u.html#s4u-actor)
 
     Host* get_host();

@@ -29,6 +29,6 @@ test('rsg-cli serve-add-actor-start-segfault', tesh, env: test_env, args: [files
 test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill.tesh')])
 test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])
 test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.tesh')])
-#test('actor create', tesh, env: test_env, args: [files('actor/create.tesh')])
+test('actor create', tesh, env: test_env, args: [files('actor/create.tesh')])
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
 test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])
