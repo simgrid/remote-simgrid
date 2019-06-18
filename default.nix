@@ -10,21 +10,25 @@
     };
   })
 , doCoverage ? true
+, useClang ? false
 }:
 
 let
   pkgs = kapack.pkgs;
+  stdenv = if useClang then pkgs.clangStdenv else pkgs.stdenv;
 
   jobs = rec {
-    remote_simgrid = pkgs.stdenv.mkDerivation rec {
+    meson = pkgs.meson.override { inherit stdenv; };
+    remote_simgrid = stdenv.mkDerivation rec {
       pname = "remote-simgrid";
       version = "0.3.0-git";
 
       src = ./.;
-      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
+      nativeBuildInputs = [ meson pkgs.pkgconfig pkgs.ninja ]
         ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
       buildInputs = [ simgrid kapack.docopt_cpp pkgs.boost pkgs.protobuf ];
 
+      preConfigure = "rm -rf build";
       mesonFlags = []
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
       postCheck = pkgs.lib.optionalString doCoverage ''
@@ -38,8 +42,6 @@ let
         cp rsg@sha/*.gc{no,da} $out/cov/rsg@sha/
         cp -r ./cov/* $out/cov
       '';
-
-      preConfigure = "rm -rf build";
 
       doCheck = true;
     };
