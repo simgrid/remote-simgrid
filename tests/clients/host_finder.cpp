@@ -17,14 +17,12 @@ int main(int argc, char * argv[])
     const std::string host_name = std::string(argv[1]);
     auto host = rsg::Host::by_name_or_null(host_name);
     printf("Host(name='%s') found? %d\n", host_name.c_str(), host != nullptr);
-    delete host;
 
     printf("Trying to access Host(name='%s')...", host_name.c_str());
     fflush(stdout);
     try {
         host = rsg::Host::by_name(host_name);
         printf(" Got Host(name='%s')!", host->get_name().c_str());
-        delete host;
     } catch (const std::exception & e) {
         printf(" Exception caught: %s", e.what());
     }

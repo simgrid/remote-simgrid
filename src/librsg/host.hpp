@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace rsg
@@ -14,8 +15,8 @@ private:
     Host(const Host &) = delete;
 
 public:
-    static Host* by_name(const std::string & name);
-    static Host* by_name_or_null(const std::string & name);
+    static std::shared_ptr<Host> by_name(const std::string & name);
+    static std::shared_ptr<Host> by_name_or_null(const std::string & name);
 
     std::string get_name() const;
 

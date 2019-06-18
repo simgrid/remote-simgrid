@@ -9,13 +9,11 @@
 void print_whoami(const char * function_name)
 {
     auto actor = rsg::Actor::self();
-    auto host = actor->get_host();
 
     printf("Actor(pid=%d, name='%s') on Host(name='%s') executing %s\n",
-        actor->get_pid(), actor->get_name().c_str(), host->get_name().c_str(),
-        function_name);
+        actor->get_pid(), actor->get_name().c_str(),
+        actor->get_host()->get_name().c_str(), function_name);
 
-    delete host;
     delete actor;
 }
 
@@ -39,12 +37,7 @@ int main(int argc, char * argv[])
 {
     auto actor = rsg::Actor::self();
     auto my_host = actor->get_host();
-
-    rsg::Host * host = nullptr;
-    if (argc > 1)
-        host = rsg::Host::by_name(std::string(argv[1]));
-    else
-        host = my_host;
+    auto host = argc > 1 ? rsg::Host::by_name(std::string(argv[1])) : my_host;
 
     printf("Actor(pid=%d, name='%s') on Host(name='%s') executing main\n",
         actor->get_pid(), actor->get_name().c_str(), my_host->get_name().c_str());
@@ -52,9 +45,6 @@ int main(int argc, char * argv[])
     rsg::Actor::create("slow_child", host, child_actor2, new int(10));
     rsg::this_actor::sleep_for(3);
 
-    delete my_host;
-    if (host != my_host)
-        delete host;
     delete actor;
     return 0;
 }

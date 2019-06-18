@@ -31,7 +31,7 @@ rsg::Actor* rsg::Actor::self()
     return new Actor(rsg::connection->actor_id());
 }
 
-rsg::Actor* rsg::Actor::create(const std::string & name, const rsg::Host * host, const std::function<void(void *)>& code, void * code_data)
+rsg::Actor* rsg::Actor::create(const std::string & name, const std::shared_ptr<rsg::Host> & host, const std::function<void(void *)>& code, void * code_data)
 {
     rsg::pb::Decision decision;
     auto pb_host = new rsg::pb::Host();
@@ -52,7 +52,7 @@ rsg::Actor* rsg::Actor::create(const std::string & name, const rsg::Host * host,
     return new Actor(ack.actorcreate().id());
 }
 
-rsg::Host* rsg::Actor::get_host()
+std::shared_ptr<rsg::Host> rsg::Actor::get_host()
 {
     rsg::pb::Decision decision;
     auto actor = new rsg::pb::Actor();
@@ -63,7 +63,7 @@ rsg::Host* rsg::Actor::get_host()
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
 
-    return new Host(ack.actorgethost().name());
+    return std::shared_ptr<Host>(new Host(ack.actorgethost().name()));
 }
 
 std::string rsg::Actor::get_name()
