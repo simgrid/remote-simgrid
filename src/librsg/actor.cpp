@@ -16,7 +16,7 @@ static void actor_wrapper(int actor_id, const std::function<void(void *)> & code
     try {
         code(code_data);
     } catch (const rsg::Error & e) {
-        printf("%s\n", e.what());
+        printf("Error caught while running Actor(id=%d): %s\n", actor_id, e.what());
     }
 
     rsg::disconnect();
