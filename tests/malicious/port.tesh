@@ -1,5 +1,3 @@
 ! timeout 3
-! expect signal SIGIOT
 $ client-malicious-port
-> terminate called after throwing an instance of 'rsg::Error'
->   what():  Invalid RSG connection initialization: RSG_SERVER_PORT ('obviously not a port') is not a valid port
+> Invalid RSG connection initialization: RSG_SERVER_PORT ('obviously not a port') is not a valid port
