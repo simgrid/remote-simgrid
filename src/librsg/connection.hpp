@@ -18,8 +18,8 @@ class DecisionAck;
 class Connection
 {
     friend void connect(int actor_id);
-    friend void * actor_function(void * void_args);
     friend void disconnect();
+    friend void * actor_function(void * void_args);
 
 private:
     Connection(const std::string & server_hostname, uint16_t port, int actor_id);

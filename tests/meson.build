@@ -16,6 +16,8 @@ executable('client-sleep-until', ['clients/sleep_until.cpp'], dependencies: libr
 executable('client-actor-whoami', ['clients/actor_whoami.cpp'], dependencies: librsg_dep)
 executable('client-actor-create', ['clients/actor_create.cpp'], dependencies: librsg_dep)
 executable('client-host-finder', ['clients/host_finder.cpp'], dependencies: librsg_dep)
+executable('client-mailbox-sender', ['clients/mailbox_sender.cpp'], dependencies: librsg_dep)
+executable('client-mailbox-receiver', ['clients/mailbox_receiver.cpp'], dependencies: librsg_dep)
 
 # Define some tests
 test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.tesh')])
@@ -32,3 +34,4 @@ test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.t
 test('actor create', tesh, env: test_env, args: [files('actor/create.tesh')])
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
 test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])
+test('mailbox send-receive', tesh, env: test_env, args: [files('mailbox/send-receive.tesh')])

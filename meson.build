@@ -73,7 +73,9 @@ librsg_src = [
     'src/librsg/connection.cpp',
     'src/librsg/connection.hpp',
     'src/librsg/host.cpp',
-    'src/librsg/host.hpp'
+    'src/librsg/host.hpp',
+    'src/librsg/mailbox.cpp',
+    'src/librsg/mailbox.hpp'
 ]
 
 rsg_src += protobuf_generated_src

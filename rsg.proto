@@ -9,6 +9,10 @@ message Host {
   string name = 1;
 }
 
+message Mailbox {
+  string name = 1;
+}
+
 // This is the first message sent by any client to the RSG server.
 message Command {
   message AddActor {
@@ -37,6 +41,12 @@ message Decision {
     Host host = 2;
   }
 
+  message MailboxPut {
+    Mailbox mailbox = 1;
+    bytes data = 2;
+    uint64 simulatedSize = 3;
+  }
+
   oneof type {
     bool quit = 1;
 
@@ -51,6 +61,13 @@ message Decision {
 
     // static methods in rsg::Host
     string hostByNameOrNull = 7;
+
+    // methods in rsg::Mailbox
+    Mailbox mailboxEmpty = 8;
+    Mailbox mailboxListen = 9;
+    Mailbox mailboxReady = 10;
+    MailboxPut mailboxPut = 11;
+    Mailbox mailboxGet = 12;
   }
 }
 
@@ -61,5 +78,6 @@ message DecisionAck {
     string actorGetName = 2;
     Host actorGetHost = 3;
     Actor actorCreate = 4;
+    bytes mailboxGet = 5;
   }
 }

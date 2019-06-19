@@ -50,6 +50,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         quit_received = true;
         send_ack = false;
     }   break;
+
     // rsg::Actor methods
     case rsg::pb::Decision::kActorCreate:
     {
@@ -116,6 +117,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         }
     } break;
+
     // rsg::this_actor methods
     case rsg::pb::Decision::kThisActorSleepFor:
     {
@@ -135,13 +137,55 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         }
     } break;
-    // rsg::Host methods
+
+    // rsg::Host static methods
     case rsg::pb::Decision::kHostByNameOrNull:
     {
         XBT_INFO("Host::by_name_or_null received (name='%s')", decision.hostbynameornull().c_str());
         auto host = Host::by_name_or_null(decision.hostbynameornull());
         decision_ack.set_success(host != nullptr);
     } break;
+
+    // rsg::Mailbox methods
+    case rsg::pb::Decision::kMailboxEmpty:
+    {
+        XBT_INFO("Mailbox::empty received (mbox_name='%s')", decision.mailboxempty().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxempty().name());
+        decision_ack.set_success(mbox->empty());
+    } break;
+    case rsg::pb::Decision::kMailboxListen:
+    {
+        XBT_INFO("Mailbox::listen received (mbox_name='%s')", decision.mailboxlisten().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxlisten().name());
+        decision_ack.set_success(mbox->listen());
+    } break;
+    case rsg::pb::Decision::kMailboxReady:
+    {
+        XBT_INFO("Mailbox::ready received (mbox_name='%s')", decision.mailboxready().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxready().name());
+        decision_ack.set_success(mbox->ready());
+    } break;
+    case rsg::pb::Decision::kMailboxPut:
+    {
+        XBT_INFO("Mailbox::put received (mbox_name='%s')", decision.mailboxput().mailbox().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxput().mailbox().name());
+        const std::string & data = decision.mailboxput().data();
+
+        // Send a std::string, so the receiver knows the size of the real data.
+        auto data_to_transfer = new std::string(data.data(), data.size());
+        mbox->put((void*) data_to_transfer, decision.mailboxput().simulatedsize());
+    } break;
+    case rsg::pb::Decision::kMailboxGet:
+    {
+        XBT_INFO("Mailbox::get received (mbox_name='%s')", decision.mailboxget().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxget().name());
+        std::string * data = (std::string*) mbox->get();
+        decision_ack.set_mailboxget(data->data(), data->size());
+        write_message(decision_ack, *socket);
+        delete data;
+        send_ack = false;
+    } break;
+
     case rsg::pb::Decision::TYPE_NOT_SET:
         RSG_ENFORCE(false, "Received a decision with unset decision type.");
         break;
