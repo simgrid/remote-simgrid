@@ -24,6 +24,4 @@ private:
     std::string _name;
 };
 
-bool operator==(const Host & a, const Host & b);
-
 }

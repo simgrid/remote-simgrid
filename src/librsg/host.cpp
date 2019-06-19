@@ -31,8 +31,3 @@ std::string rsg::Host::get_name() const
 {
     return _name;
 }
-
-bool operator==(const rsg::Host & a, const rsg::Host & b)
-{
-    return a.get_name() == b.get_name();
-}
