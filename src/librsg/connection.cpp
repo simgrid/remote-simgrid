@@ -24,7 +24,7 @@ static void retrieve_rsg_connection_params_from_env(std::string & server_hostnam
     {
         port = std::stoi(std::string(server_port));
     }
-    catch (const rsg::Error & e)
+    catch (const std::logic_error & e)
     {
         throw rsg::Error("Invalid RSG connection initialization: RSG_SERVER_PORT ('%s') is not a valid port", server_port);
     }
@@ -35,7 +35,7 @@ static void retrieve_rsg_connection_params_from_env(std::string & server_hostnam
     {
         actor_id = std::stoi(std::string(initial_actor_id));
     }
-    catch(const std::exception & e)
+    catch(const std::logic_error & e)
     {
         throw rsg::Error("Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID ('%s') is not a valid actor id", initial_actor_id);
     }
