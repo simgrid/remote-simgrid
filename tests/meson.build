@@ -19,6 +19,7 @@ executable('client-actor-create-invalid', ['clients/actor_create_invalid.cpp'], 
 executable('client-host-finder', ['clients/host_finder.cpp'], dependencies: librsg_dep)
 executable('client-mailbox-sender', ['clients/mailbox_sender.cpp'], dependencies: librsg_dep)
 executable('client-mailbox-receiver', ['clients/mailbox_receiver.cpp'], dependencies: librsg_dep)
+executable('client-malicious-actor-id', ['clients/malicious_actor_id.cpp'], dependencies: librsg_dep)
 executable('client-malicious-port', ['clients/malicious_port.cpp'], dependencies: librsg_dep)
 
 # Define some tests
@@ -38,4 +39,5 @@ test('actor create-invalid', tesh, env: test_env, args: [files('actor/create-inv
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
 test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])
 test('mailbox send-receive', tesh, env: test_env, args: [files('mailbox/send-receive.tesh')])
+test('malicious actor-id', tesh, env: test_env, args: [files('malicious/actor-id.tesh')])
 test('malicious port', tesh, env: test_env, args: [files('malicious/port.tesh')])
