@@ -23,18 +23,19 @@ struct MaestroArgs
     std::vector<ActorConnection*> connection_vector;
 };
 
-Actor::Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command) :
-    _socket(socket), _id(expected_actor_id), _to_command(to_command)
+Actor::Actor(RefcountStore * refcount_store, rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command) :
+    _refcount_store(refcount_store), _socket(socket), _id(expected_actor_id), _to_command(to_command)
 {
 }
 
-Actor::Actor(rsg::message_queue * to_command, rsg::message_queue * connect_ack) :
-    _to_command(to_command), _connect_ack(connect_ack)
+Actor::Actor(RefcountStore * refcount_store, rsg::message_queue * to_command, rsg::message_queue * connect_ack) :
+    _refcount_store(refcount_store), _to_command(to_command), _connect_ack(connect_ack)
 {
 }
 
 static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack,
-    rsg::message_queue * to_command, rsg::TcpSocket * socket, bool & send_ack, bool & quit_received)
+    rsg::message_queue * to_command, rsg::TcpSocket * socket, RefcountStore * refcount_store,
+    bool & send_ack, bool & quit_received)
 {
     using namespace simgrid;
     using namespace simgrid::s4u;
@@ -65,7 +66,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
 
         // Create the new actor.
         auto new_actor = s4u::Actor::create(decision.actorcreate().name().c_str(), host,
-            ::Actor(to_command, connect_ack));
+            ::Actor(refcount_store, to_command, connect_ack));
         const int new_actor_pid = new_actor->get_pid();
 
         // Tell the command thread to accept a connection corresponding to this actor.
@@ -135,6 +136,84 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             this_actor::sleep_until(decision.thisactorsleepuntil());
         } catch (const HostFailureException & e) {
             decision_ack.set_success(false);
+        }
+    } break;
+
+    // rsg::Comm methods
+    case rsg::pb::Decision::kCommRefcountIncrease:
+    {
+        XBT_INFO("Comm::refcount_increase received (addr=%lu)", decision.commrefcountincrease().address());
+        auto comm_it = refcount_store->comms.find(decision.commrefcountincrease().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            comm_it->second.remote_ref_count++;
+        }
+    } break;
+    case rsg::pb::Decision::kCommRefcountDecrease:
+    {
+        XBT_INFO("Comm::refcount_decrease received (addr=%lu)", decision.commrefcountdecrease().address());
+        auto comm_it = refcount_store->comms.find(decision.commrefcountdecrease().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            if (comm_it->second.remote_ref_count == 1) {
+                auto comm = (Comm *) comm_it->second.ptr;
+                intrusive_ptr_release(comm);
+                refcount_store->comms.erase(comm_it);
+            } else {
+                comm_it->second.remote_ref_count--;
+            }
+        }
+    } break;
+    case rsg::pb::Decision::kCommStart:
+    {
+        XBT_INFO("Comm::start received (addr=%lu)", decision.commstart().address());
+        auto comm_it = refcount_store->comms.find(decision.commstart().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto comm = (Comm *) comm_it->second.ptr;
+            comm->start();
+        }
+    } break;
+    case rsg::pb::Decision::kCommWaitFor:
+    {
+        XBT_INFO("Comm::start received (addr=%lu)", decision.commwaitfor().comm().address());
+        auto comm_it = refcount_store->comms.find(decision.commwaitfor().comm().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto comm = (Comm *) comm_it->second.ptr;
+            try {
+                comm->wait_for(decision.commwaitfor().timeout());
+            } catch (const simgrid::TimeoutError &) {
+                decision_ack.set_commwaitfor(true);
+            } catch (const simgrid::CancelException &) {
+                decision_ack.set_success(false);
+            }
+        }
+    } break;
+    case rsg::pb::Decision::kCommCancel:
+    {
+        XBT_INFO("Comm::start received (addr=%lu)", decision.commcancel().address());
+        auto comm_it = refcount_store->comms.find(decision.commcancel().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto comm = (Comm *) comm_it->second.ptr;
+            comm->start();
+        }
+    } break;
+    case rsg::pb::Decision::kCommTest:
+    {
+        XBT_INFO("Comm::start received (addr=%lu)", decision.commtest().address());
+        auto comm_it = refcount_store->comms.find(decision.commtest().address());
+        if (comm_it == refcount_store->comms.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto comm = (Comm *) comm_it->second.ptr;
+            decision_ack.set_commtest(comm->test());
         }
     } break;
 
@@ -238,7 +317,8 @@ void Actor::operator()()
 
             rsg::pb::DecisionAck decision_ack;
             bool send_ack;
-            handle_decision(decision, decision_ack, _to_command, _socket, send_ack, quit_received);
+            handle_decision(decision, decision_ack, _to_command, _socket, _refcount_store,
+                send_ack, quit_received);
 
             if (send_ack)
             {
@@ -313,12 +393,15 @@ static void maestro(void * void_args)
         return;
     }
 
+    // Create a unique RefcountStore.
+    auto refcount_store = new RefcountStore;
+
     // Spawn initial actors.
     for (ActorConnection * connection : args->connection_vector)
     {
         auto requested_host = e->host_by_name(connection->host_name);
         simgrid::s4u::Actor::create(connection->actor_name,
-            requested_host, Actor(connection->socket, connection->actor_id, to_command));
+            requested_host, Actor(refcount_store, connection->socket, connection->actor_id, to_command));
     }
 
     // Run the simulation.
@@ -331,6 +414,7 @@ static void maestro(void * void_args)
     msg.type = rsg::InterthreadMessageType::SIMULATION_FINISHED;
     to_command->push(msg);
 
+    delete refcount_store;
     delete args;
 }
 

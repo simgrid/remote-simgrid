@@ -70,6 +70,8 @@ librsg_src = [
     'src/common/network/tcp_socket.cpp',
     'src/librsg/actor.cpp',
     'src/librsg/actor.hpp',
+    'src/librsg/comm.cpp',
+    'src/librsg/comm.hpp',
     'src/librsg/connection.cpp',
     'src/librsg/connection.hpp',
     'src/librsg/host.cpp',

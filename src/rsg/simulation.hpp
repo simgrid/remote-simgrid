@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <simgrid/s4u.hpp>
+
 #include "interthread_messaging.hpp"
 
 namespace rsg
@@ -10,17 +12,31 @@ namespace rsg
 }
 struct ActorConnection;
 
+// Stores references to refcounted SimGrid objects that have
+// remote refcounting management methods.
+struct RefcountStore
+{
+    struct PointerRefcount
+    {
+        void * ptr = nullptr;
+        unsigned int remote_ref_count = 1;
+    };
+
+    std::unordered_map<uint64_t, PointerRefcount> comms;
+};
+
 class Actor
 {
 public:
     // Initial actors.
-    Actor(rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command);
+    Actor(RefcountStore * refcount_store, rsg::TcpSocket * socket, int expected_actor_id, rsg::message_queue * to_command);
     // Dynamically created actors.
-    Actor(rsg::message_queue * to_command, rsg::message_queue * connect_ack);
+    Actor(RefcountStore * refcount_store, rsg::message_queue * to_command, rsg::message_queue * connect_ack);
 
     void operator()();
 
 private:
+    RefcountStore * _refcount_store = nullptr;
     rsg::TcpSocket * _socket = nullptr;
     int _id = -1;
     rsg::message_queue * _to_command = nullptr;

@@ -13,6 +13,10 @@ message Mailbox {
   string name = 1;
 }
 
+message Comm {
+  uint64 address = 1;
+}
+
 // This is the first message sent by any client to the RSG server.
 message Command {
   message AddActor {
@@ -47,6 +51,11 @@ message Decision {
     uint64 simulatedSize = 3;
   }
 
+  message CommWaitFor {
+    Comm comm = 1;
+    double timeout = 2;
+  }
+
   oneof type {
     bool quit = 1;
 
@@ -59,15 +68,23 @@ message Decision {
     Actor actorGetName = 5;
     Actor actorGetHost = 6;
 
+    // methods in rsg::Comm
+    Comm commRefcountIncrease = 7;
+    Comm commRefcountDecrease = 8;
+    Comm commStart = 9;
+    CommWaitFor commWaitFor = 10;
+    Comm commCancel = 11;
+    Comm commTest = 12;
+
     // static methods in rsg::Host
-    string hostByNameOrNull = 7;
+    string hostByNameOrNull = 13;
 
     // methods in rsg::Mailbox
-    Mailbox mailboxEmpty = 8;
-    Mailbox mailboxListen = 9;
-    Mailbox mailboxReady = 10;
-    MailboxPut mailboxPut = 11;
-    Mailbox mailboxGet = 12;
+    Mailbox mailboxEmpty = 14;
+    Mailbox mailboxListen = 15;
+    Mailbox mailboxReady = 16;
+    MailboxPut mailboxPut = 17;
+    Mailbox mailboxGet = 18;
   }
 }
 
@@ -79,5 +96,7 @@ message DecisionAck {
     Host actorGetHost = 3;
     Actor actorCreate = 4;
     bytes mailboxGet = 5;
+    bool commWaitFor = 6; // true if timeout reach.
+    bool commTest = 7;
   }
 }
