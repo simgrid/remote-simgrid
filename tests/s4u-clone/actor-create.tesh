@@ -49,15 +49,15 @@
 > [Jupiter:sender2:(5) 0.070434] [simulation/INFO] Actor::get_host() received (actor_id=5)
 > [Jupiter:sender2:(5) 0.070434] [simulation/INFO] Quit decision received. Goodbye.
 > [Fafard:receiver:(7) 0.070434] [simulation/INFO] Mailbox::get received (mbox_name='mb42')
-> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=6)
-> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=6)
-> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Quit decision received. Goodbye.
-> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=7)
-> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=7)
-> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=7)
-> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=7)
-> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Quit decision received. Goodbye.
-> [0.086825] [simulation/INFO] Simulation has finished.
+> [Ginette:forwarder:(6) 0.086826] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.086826] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.086826] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(7) 0.086826] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086826] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086826] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086826] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086826] [simulation/INFO] Quit decision received. Goodbye.
+> [0.086826] [simulation/INFO] Simulation has finished.
 
 $ sleep 0.2
 
@@ -72,9 +72,9 @@ $ sleep 0.2
 > [Ginette:forwarder:(6) 0.016553] Got 'PopPop!'. Forwarding to 'mb42'...
 > [Tremblay:sender1:(4) 0.025709] I'm done. See you.
 > [Jupiter:sender2:(5) 0.070434] I'm done. See you.
-> [Ginette:forwarder:(6) 0.086825] I'm done. See you.
-> [Fafard:receiver:(7) 0.086825] Got 'GaBuZoMeuoMeu', 'GloubiBoulgaulga' and 'PopPop!'
-> [Fafard:receiver:(7) 0.086825] I'm done. See you.
+> [Ginette:forwarder:(6) 0.086826] I'm done. See you.
+> [Fafard:receiver:(7) 0.086826] Got 'GaBuZoMeu', 'GloubiBoulga' and 'PopPop!'
+> [Fafard:receiver:(7) 0.086826] I'm done. See you.
 
 $ sleep 0.4
 

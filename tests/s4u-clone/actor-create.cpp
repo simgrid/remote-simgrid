@@ -9,7 +9,7 @@ void sender(void * void_args)
     auto mailbox = rsg::Mailbox::by_name(args->mbox);
 
     RSG_INFO("Sending '%s' on '%s'...", args->msg.c_str(), mailbox->get_cname());
-    mailbox->put((void*) args->msg.data(), args->msg.size(), args->msg.size());
+    mailbox->put((void*) args->msg.data(), args->msg.size() + 1, args->msg.size() + 1);
 
     RSG_INFO("I'm done. See you.");
     delete args;
