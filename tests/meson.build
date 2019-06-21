@@ -23,6 +23,7 @@ executable('client-mailbox-receiver', ['clients/mailbox_receiver.cpp'], dependen
 executable('client-mailbox-receiver-async', ['clients/mailbox_receiver_async.cpp'], dependencies: librsg_dep)
 executable('client-malicious-actor-id', ['clients/malicious_actor_id.cpp'], dependencies: librsg_dep)
 executable('client-malicious-port', ['clients/malicious_port.cpp'], dependencies: librsg_dep)
+executable('client-s4u-actor-create', ['s4u-clone/actor-create.cpp'], dependencies: librsg_dep)
 
 # Define some tests
 test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.tesh')])
@@ -46,3 +47,4 @@ test('mailbox send-asyncreceive', tesh, env: test_env, args: [files('mailbox/sen
 test('mailbox asyncsend-asyncreceive', tesh, env: test_env, args: [files('mailbox/asyncsend-asyncreceive.tesh')])
 test('malicious actor-id', tesh, env: test_env, args: [files('malicious/actor-id.tesh')])
 test('malicious port', tesh, env: test_env, args: [files('malicious/port.tesh')])
+test('s4u-clone actor-create', tesh, env: test_env, args: [files('s4u-clone/actor-create.tesh')])

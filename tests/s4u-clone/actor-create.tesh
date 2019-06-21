@@ -1,0 +1,82 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35017 -- --log=serve.thres:critical
+> [0.000000] [serve/INFO] Listening on port 35017
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='sender0', host_name='Tremblay')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='sender1', host_name='Tremblay')
+> [Tremblay:sender0:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Tremblay:sender0:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Tremblay:sender0:(3) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='mitm')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='sender2', host_name='Jupiter')
+> [Tremblay:sender1:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Tremblay:sender1:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Tremblay:sender1:(4) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='mb42')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Ginette')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='forwarder', host_name='Ginette')
+> [Jupiter:sender2:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Jupiter:sender2:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Jupiter:sender2:(5) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='mb42')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Fafard')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='receiver', host_name='Fafard')
+> [Ginette:forwarder:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.000000] [simulation/INFO] Mailbox::get received (mbox_name='mitm')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:receiver:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:receiver:(7) 0.000000] [simulation/INFO] Mailbox::get received (mbox_name='mb42')
+> [Tremblay:sender0:(3) 0.016553] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Tremblay:sender0:(3) 0.016553] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Tremblay:sender0:(3) 0.016553] [simulation/INFO] Quit decision received. Goodbye.
+> [Ginette:forwarder:(6) 0.016553] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.016553] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.016553] [simulation/INFO] Mailbox::put received (mbox_name='mb42')
+> [Tremblay:sender1:(4) 0.025709] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Tremblay:sender1:(4) 0.025709] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Tremblay:sender1:(4) 0.025709] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(7) 0.025709] [simulation/INFO] Mailbox::get received (mbox_name='mb42')
+> [Jupiter:sender2:(5) 0.070434] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Jupiter:sender2:(5) 0.070434] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Jupiter:sender2:(5) 0.070434] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(7) 0.070434] [simulation/INFO] Mailbox::get received (mbox_name='mb42')
+> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Ginette:forwarder:(6) 0.086825] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:receiver:(7) 0.086825] [simulation/INFO] Quit decision received. Goodbye.
+> [0.086825] [simulation/INFO] Simulation has finished.
+
+$ sleep 0.2
+
+! timeout 3
+& rsg add-actor main Fafard -p 35017 -- client-s4u-actor-create Bourassa
+> [Tremblay:sender0:(3) 0.000000] Sending 'PopPop!' on 'mitm'...
+> [Tremblay:sender1:(4) 0.000000] Sending 'GaBuZoMeu' on 'mb42'...
+> [Jupiter:sender2:(5) 0.000000] Sending 'GloubiBoulga' on 'mb42'...
+> [Ginette:forwarder:(6) 0.000000] Reading on 'mitm'...
+> [Fafard:receiver:(7) 0.000000] Reading on 'mb42'...
+> [Tremblay:sender0:(3) 0.016553] I'm done. See you.
+> [Ginette:forwarder:(6) 0.016553] Got 'PopPop!'. Forwarding to 'mb42'...
+> [Tremblay:sender1:(4) 0.025709] I'm done. See you.
+> [Jupiter:sender2:(5) 0.070434] I'm done. See you.
+> [Ginette:forwarder:(6) 0.086825] I'm done. See you.
+> [Fafard:receiver:(7) 0.086825] Got 'GaBuZoMeuoMeu', 'GloubiBoulgaulga' and 'PopPop!'
+> [Fafard:receiver:(7) 0.086825] I'm done. See you.
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35017
