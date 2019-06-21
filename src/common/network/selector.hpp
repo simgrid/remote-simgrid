@@ -10,6 +10,10 @@ class Selector
 public:
     Selector();
     ~Selector();
+    Selector(const Selector &) = delete;
+    Selector(const Selector &&) = delete;
+    Selector & operator=(const Selector&) = delete;
+    Selector & operator=(const Selector&&) = delete;
 
     void add(int fd);
     void remove(int fd);

@@ -12,6 +12,10 @@ class TcpListener
 public:
     TcpListener();
     ~TcpListener();
+    TcpListener(const TcpListener &) = delete;
+    TcpListener(const TcpListener &&) = delete;
+    TcpListener & operator=(const TcpListener&) = delete;
+    TcpListener & operator=(const TcpListener&&) = delete;
 
     void listen(uint16_t port);
     TcpSocket * accept();

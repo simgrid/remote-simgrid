@@ -15,6 +15,10 @@ public:
     TcpSocket();
     TcpSocket(int fd);
     ~TcpSocket();
+    TcpSocket(const TcpSocket &) = delete;
+    TcpSocket(const TcpSocket &&) = delete;
+    TcpSocket & operator=(const TcpSocket&) = delete;
+    TcpSocket & operator=(const TcpSocket&&) = delete;
 
     void connect(const std::string & server_address, uint16_t port);
     void disconnect();
