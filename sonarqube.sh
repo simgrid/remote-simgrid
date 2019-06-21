@@ -9,7 +9,7 @@
 export PLATFORM=x86-64
 
 # Be verbose and fail fast
-set -ex
+set -eux
 
 # Install required software
 installSonarQubeScanner() {
@@ -49,4 +49,4 @@ sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN 
   | grep -v 'INFO: Parsing /home/travis/build/simgrid/simgrid/Testing/CoverageInfo'  \
   | grep -v 'WARN: File not analysed by Sonar, so ignoring coverage: /usr/include/'
 
-exit $outcome
+exit 0
