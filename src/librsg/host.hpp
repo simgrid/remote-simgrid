@@ -19,6 +19,7 @@ public:
     static std::shared_ptr<Host> by_name_or_null(const std::string & name);
 
     std::string get_name() const;
+    const char * get_cname() const;
 
 private:
     std::string _name;

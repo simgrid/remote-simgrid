@@ -31,3 +31,8 @@ std::string rsg::Host::get_name() const
 {
     return _name;
 }
+
+const char * rsg::Host::get_cname() const
+{
+    return _name.c_str();
+}
