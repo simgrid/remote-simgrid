@@ -38,15 +38,26 @@ build_test_nix:
 #   only:
 #   - master
 
-# test-git-unstable:
-#   image: simgrid/unstable
-#   script:
-#     - apt-get update
-#     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
-#     - apt-get install -y python3 # needed by tesh
-#     - apt-get install -y curl unzip default-jre-headless # needed by sonar
-#     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-#     - ./sonarqube.sh make -j $(nproc) VERBOSE=1
+build_test_simgrid/unstable:
+  image: simgrid/unstable
+  stage: build
+  script:
+    ######################
+    # Dependencies setup #
+    ######################
+    - apt-get update
+    - apt-get install -y build-essential pkg-config meson ninja-build libboost-dev protobuf-compiler libprotobuf-dev # needed by rsg
+    - apt-get install -y python3 # needed by tesh
+    - apt-get install -y curl unzip default-jre-headless # needed by sonar
+    # manual docopt-c++ install
+    - apt-get install -y curl cmake
+    - export DOCOPT_REV=3394186f2951d3c7de3745b8c12dd930fe858768
+    - (cd / && curl -L "https://github.com/mpoquet/docopt.cpp/tarball/${DOCOPT_REV}" | tar -xz)
+    - (cd /mpoquet-docopt.cpp-3394186 && cmake . && make install)
+    ##################
+    # RSG build/test #
+    ##################
+    - meson build && meson test --print-errorlogs -C build
 
 # # Test that the git version of RSG compiles with various versions of SimGrid docker image
 # # The script is very similar to above, without sonar
