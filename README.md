@@ -21,6 +21,7 @@ We are currently (2019-06) reimplementing RSG to improve its maintainability and
 
 [![pipeline status](https://framagit.org/simgrid/remote-simgrid/badges/master/pipeline.svg)](https://framagit.org/simgrid/remote-simgrid/pipelines)
 [![coverage report](https://img.shields.io/codecov/c/github/simgrid/remote-simgrid.svg)](https://codecov.io/gh/simgrid/remote-simgrid)
+[![sonar maintainability](https://sonarcloud.io/api/project_badges/measure?project=remote-simgrid&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=remote-simgrid)
 
 ## Contact and License
 
