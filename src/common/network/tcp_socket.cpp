@@ -82,7 +82,7 @@ void rsg::TcpSocket::recv_all(uint8_t * buffer, size_t size)
             {
                 close();
             }
-            catch (const rsg::Error & e) {}
+            catch (const rsg::Error &) {}
             RSG_ENFORCE(0, "Connection lost");
         }
     }
@@ -105,7 +105,7 @@ void rsg::TcpSocket::recv(uint8_t * buffer, size_t size, size_t & bytes_read)
         {
             close();
         }
-        catch (const rsg::Error & e) {}
+        catch (const rsg::Error &) {}
         RSG_ENFORCE(0, "Connection lost");
     }
 }
