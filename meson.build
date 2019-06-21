@@ -107,6 +107,7 @@ install_headers(
     'src/librsg/connection.hpp',
     'src/librsg/engine.hpp',
     'src/librsg/host.hpp',
+    'src/librsg/log.hpp',
     'src/librsg/mailbox.hpp',
     subdir: 'librsg'
 )
