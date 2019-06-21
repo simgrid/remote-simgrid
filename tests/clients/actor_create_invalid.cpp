@@ -3,8 +3,7 @@
 
 #include <string>
 
-#include <librsg/actor.hpp>
-#include <librsg/host.hpp>
+#include <librsg.hpp>
 
 void invalid(void * args)
 {

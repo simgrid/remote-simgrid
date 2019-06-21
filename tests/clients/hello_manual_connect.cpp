@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-#include <librsg/actor.hpp>
-#include <librsg/connection.hpp>
+#include <librsg.hpp>
 
 int main()
 {

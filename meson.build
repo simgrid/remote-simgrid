@@ -68,6 +68,7 @@ librsg_src = [
     'src/common/message.hpp',
     'src/common/network/tcp_socket.hpp',
     'src/common/network/tcp_socket.cpp',
+    'src/librsg.hpp',
     'src/librsg/actor.cpp',
     'src/librsg/actor.hpp',
     'src/librsg/comm.cpp',
@@ -100,9 +101,13 @@ librsg = shared_library('rsg', librsg_src,
 # Install librsg.
 install_headers(
     'src/librsg/actor.hpp',
+    'src/librsg/comm.hpp',
     'src/librsg/connection.hpp',
+    'src/librsg/host.hpp',
+    'src/librsg/mailbox.hpp',
     subdir: 'librsg'
 )
+install_headers('src/librsg.hpp')
 
 pkgc = import('pkgconfig')
 pkgc.generate(name: 'librsg',

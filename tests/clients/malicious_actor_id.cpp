@@ -1,6 +1,6 @@
 #include <stdlib.h>
 
-#include <librsg/connection.hpp>
+#include <librsg.hpp>
 
 int main()
 {

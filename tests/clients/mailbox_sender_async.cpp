@@ -3,10 +3,7 @@
 
 #include <string>
 
-#include <librsg/actor.hpp>
-#include <librsg/comm.hpp>
-#include <librsg/host.hpp>
-#include <librsg/mailbox.hpp>
+#include <librsg.hpp>
 
 int main()
 {

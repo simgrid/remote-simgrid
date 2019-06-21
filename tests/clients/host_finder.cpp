@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <librsg/host.hpp>
+#include <librsg.hpp>
 
 int main(int argc, char * argv[])
 {
