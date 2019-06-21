@@ -21,13 +21,14 @@ void write_message(const Message & message, rsg::TcpSocket & socket)
     // Generate message buffer (header + content).
     const uint32_t content_size = message.ByteSize();
     const uint32_t message_size = content_size + 4;
-    uint8_t * message_content = (uint8_t *) calloc(message_size, sizeof(uint8_t));
+    auto message_content = new uint8_t[message_size]();
     *message_content = content_size; // TODO: set endianness
     bool serialize_ok = message.SerializeToArray(message_content + 4, content_size);
     RSG_ENFORCE(serialize_ok, "Could not serialize Protobuf message");
 
     // Send message on socket.
     socket.send_all(message_content, message_size);
+    delete[] message_content;
 }
 
 template <typename Message>
@@ -46,12 +47,12 @@ void read_message(Message & message, rsg::TcpSocket & socket)
     // Protobuf may encode message of size 0 if they equal default message value.
     if (content_size > 0)
     {
-        uint8_t * content = (uint8_t *) calloc(content_size, sizeof(uint8_t));
+        auto content = new uint8_t[content_size]();
         socket.recv_all(content, content_size);
 
         // Parse content.
         bool deserialize_ok = message.ParseFromArray(content, content_size);
-        free(content);
+        delete[] content;
         RSG_ENFORCE(deserialize_ok, "Could not deserialize Protobuf message");
     }
 }

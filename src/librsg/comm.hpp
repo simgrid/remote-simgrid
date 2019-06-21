@@ -10,7 +10,7 @@ class Comm
 {
     friend class Mailbox;
 private:
-    Comm(uint64_t remote_address, void ** destination_buffer = nullptr);
+    explicit Comm(uint64_t remote_address, void ** destination_buffer = nullptr);
     Comm(const Comm &) = delete;
     Comm & operator=(const Comm &) = delete;
 

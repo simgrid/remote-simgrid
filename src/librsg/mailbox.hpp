@@ -10,7 +10,7 @@ class Comm;
 class Mailbox
 {
 private:
-    Mailbox(const std::string & name);
+    explicit Mailbox(const std::string & name);
     Mailbox(const Mailbox &) = delete;
     Mailbox & operator=(const Mailbox &) = delete;
 

@@ -11,7 +11,7 @@ class Host
 {
     friend class Actor;
 private:
-    Host(const std::string & name);
+    explicit Host(const std::string & name);
     Host(const Host &) = delete;
     Host & operator=(const Host &) = delete;
 

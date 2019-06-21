@@ -21,7 +21,7 @@ int main()
     comm->wait();
 
     std::string text = "Gi nathlam hí";
-    comm = mbox->put_async((void*)text.data(), text.size(), text.size());
+    comm = mbox->put_async((void*)text.data(), text.size() + 1, text.size() + 1);
     comm->wait();
 
     return 0;

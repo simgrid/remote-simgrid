@@ -22,7 +22,7 @@ class Connection
     friend void * actor_function(void * void_args);
 
 private:
-    Connection(const std::string & server_hostname, uint16_t port, int actor_id);
+    explicit Connection(const std::string & server_hostname, uint16_t port, int actor_id);
     Connection(const Connection &) = delete;
     ~Connection();
     Connection & operator=(const Connection &) = delete;

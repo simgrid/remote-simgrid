@@ -10,13 +10,15 @@ namespace rsg
 {
 
 /// rsg's exception class
-struct Error : std::exception
+class Error : public std::exception
 {
+private:
     char text[1024]; //!< The error message
 
+public:
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
     /// Builds an Error with a printf-like format
-    Error(char const* fmt, ...) __attribute__((format(printf,2,3)))
+    explicit Error(char const* fmt, ...) __attribute__((format(printf,2,3)))
     {
         va_list ap;
         va_start(ap, fmt);

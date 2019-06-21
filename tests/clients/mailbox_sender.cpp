@@ -21,7 +21,7 @@ int main()
     mbox->put(&i, 4, 16*1024*1024);
 
     std::string text = "Gi nathlam hí";
-    mbox->put((void*)text.data(), text.size(), text.size());
+    mbox->put((void*)text.data(), text.size() + 1, text.size() + 1);
 
     return 0;
 }
