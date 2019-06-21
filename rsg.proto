@@ -76,17 +76,20 @@ message Decision {
     Comm commCancel = 11;
     Comm commTest = 12;
 
+    // static methods in rsg::Engine
+    bool engineGetClock = 13;
+
     // static methods in rsg::Host
-    string hostByNameOrNull = 13;
+    string hostByNameOrNull = 14;
 
     // methods in rsg::Mailbox
-    Mailbox mailboxEmpty = 14;
-    Mailbox mailboxListen = 15;
-    Mailbox mailboxReady = 16;
-    MailboxPut mailboxPut = 17;
-    MailboxPut mailboxPutAsync = 18;
-    Mailbox mailboxGet = 19;
-    Mailbox mailboxGetAsync = 20;
+    Mailbox mailboxEmpty = 15;
+    Mailbox mailboxListen = 16;
+    Mailbox mailboxReady = 17;
+    MailboxPut mailboxPut = 18;
+    MailboxPut mailboxPutAsync = 19;
+    Mailbox mailboxGet = 20;
+    Mailbox mailboxGetAsync = 21;
   }
 }
 
@@ -104,8 +107,9 @@ message DecisionAck {
     Actor actorCreate = 4;
     CommWaitFor commWaitFor = 5;
     bool commTest = 6;
-    Comm mailboxPutAsync = 7;
-    bytes mailboxGet = 8;
-    Comm mailboxGetAsync = 9;
+    double engineGetClock = 7;
+    Comm mailboxPutAsync = 8;
+    bytes mailboxGet = 9;
+    Comm mailboxGetAsync = 10;
   }
 }

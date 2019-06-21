@@ -75,6 +75,8 @@ librsg_src = [
     'src/librsg/comm.hpp',
     'src/librsg/connection.cpp',
     'src/librsg/connection.hpp',
+    'src/librsg/engine.cpp',
+    'src/librsg/engine.hpp',
     'src/librsg/host.cpp',
     'src/librsg/host.hpp',
     'src/librsg/mailbox.cpp',
@@ -103,6 +105,7 @@ install_headers(
     'src/librsg/actor.hpp',
     'src/librsg/comm.hpp',
     'src/librsg/connection.hpp',
+    'src/librsg/engine.hpp',
     'src/librsg/host.hpp',
     'src/librsg/mailbox.hpp',
     subdir: 'librsg'

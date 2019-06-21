@@ -228,6 +228,11 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         }
     } break;
 
+    // rsg::Engine static methods
+    case rsg::pb::Decision::kEngineGetClock:
+        decision_ack.set_enginegetclock(s4u::Engine::get_instance()->get_clock());
+        break;
+
     // rsg::Host static methods
     case rsg::pb::Decision::kHostByNameOrNull:
     {
