@@ -78,12 +78,16 @@ void rsg::TcpSocket::recv_all(uint8_t * buffer, size_t size)
         RSG_ENFORCE(bytes_recv != -1, "could not recv: %s", strerror(errno));
         if (bytes_recv == 0)
         {
+            const char * connection_lost = "Connection lost";
             try
             {
                 close();
+                RSG_ENFORCE(0, "%s", connection_lost);
             }
-            catch (const rsg::Error &) {}
-            RSG_ENFORCE(0, "Connection lost");
+            catch (const rsg::Error &)
+            {
+                RSG_ENFORCE(0, "%s", connection_lost);
+            }
         }
     }
 }
@@ -101,12 +105,16 @@ void rsg::TcpSocket::recv(uint8_t * buffer, size_t size, size_t & bytes_read)
     bytes_read = bytes_recv;
     if (bytes_recv == 0)
     {
+        const char * connection_lost = "Connection lost";
         try
         {
             close();
+            RSG_ENFORCE(0, "%s", connection_lost);
         }
-        catch (const rsg::Error &) {}
-        RSG_ENFORCE(0, "Connection lost");
+        catch (const rsg::Error &)
+        {
+            RSG_ENFORCE(0, "%s", connection_lost);
+        }
     }
 }
 
