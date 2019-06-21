@@ -19,7 +19,12 @@ struct BarelyConnectedSocketInformation
     uint32_t content_size = 0; // Size of the following content.
     uint8_t * content_buffer = nullptr; // Content buffer. Initialized once content_size is known.
 
+    BarelyConnectedSocketInformation() = default;
+    BarelyConnectedSocketInformation(const BarelyConnectedSocketInformation &) = default;
+    BarelyConnectedSocketInformation(BarelyConnectedSocketInformation &&) = default;
     ~BarelyConnectedSocketInformation();
+    BarelyConnectedSocketInformation & operator=(const BarelyConnectedSocketInformation &) = default;
+    BarelyConnectedSocketInformation & operator=(BarelyConnectedSocketInformation &&) = default;
 };
 
 enum class ServerState
