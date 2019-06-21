@@ -12,6 +12,7 @@ class Mailbox
 private:
     Mailbox(const std::string & name);
     Mailbox(const Mailbox &) = delete;
+    Mailbox & operator=(const Mailbox &) = delete;
 
 public:
     static std::shared_ptr<Mailbox> by_name(const std::string & name);

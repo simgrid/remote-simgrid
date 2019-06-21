@@ -13,6 +13,7 @@ class Host
 private:
     Host(const std::string & name);
     Host(const Host &) = delete;
+    Host & operator=(const Host &) = delete;
 
 public:
     static std::shared_ptr<Host> by_name(const std::string & name);

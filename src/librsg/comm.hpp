@@ -12,6 +12,7 @@ class Comm
 private:
     Comm(uint64_t remote_address, void ** destination_buffer = nullptr);
     Comm(const Comm &) = delete;
+    Comm & operator=(const Comm &) = delete;
 
 public:
     ~Comm();

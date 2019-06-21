@@ -13,6 +13,7 @@ class Actor
 private:
     Actor(int id);
     Actor(const Actor &) = delete;
+    Actor & operator=(const Actor &) = delete;
 
 public:
     static std::shared_ptr<Actor> self();

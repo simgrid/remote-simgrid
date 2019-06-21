@@ -25,6 +25,7 @@ private:
     Connection(const std::string & server_hostname, uint16_t port, int actor_id);
     Connection(const Connection &) = delete;
     ~Connection();
+    Connection & operator=(const Connection &) = delete;
 
 public:
     void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
