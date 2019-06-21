@@ -16,13 +16,14 @@ struct ActorConnection;
 // remote refcounting management methods.
 struct RefcountStore
 {
-    struct PointerRefcount
+    struct Comm
     {
-        void * ptr = nullptr;
+        simgrid::s4u::Comm * comm = nullptr;
+        void ** reception_buffer = nullptr;
         unsigned int remote_ref_count = 1;
     };
 
-    std::unordered_map<uint64_t, PointerRefcount> comms;
+    std::unordered_map<uint64_t, Comm> comms;
 };
 
 class Actor

@@ -142,7 +142,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     // rsg::Comm methods
     case rsg::pb::Decision::kCommRefcountIncrease:
     {
-        XBT_INFO("Comm::refcount_increase received (addr=%lu)", decision.commrefcountincrease().address());
+        XBT_INFO("Comm::refcount_increase received");
         auto comm_it = refcount_store->comms.find(decision.commrefcountincrease().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
@@ -152,13 +152,13 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     } break;
     case rsg::pb::Decision::kCommRefcountDecrease:
     {
-        XBT_INFO("Comm::refcount_decrease received (addr=%lu)", decision.commrefcountdecrease().address());
+        XBT_INFO("Comm::refcount_decrease received");
         auto comm_it = refcount_store->comms.find(decision.commrefcountdecrease().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
         } else {
             if (comm_it->second.remote_ref_count == 1) {
-                auto comm = (Comm *) comm_it->second.ptr;
+                auto comm = comm_it->second.comm;
                 intrusive_ptr_release(comm);
                 refcount_store->comms.erase(comm_it);
             } else {
@@ -168,51 +168,62 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     } break;
     case rsg::pb::Decision::kCommStart:
     {
-        XBT_INFO("Comm::start received (addr=%lu)", decision.commstart().address());
+        XBT_INFO("Comm::start received");
         auto comm_it = refcount_store->comms.find(decision.commstart().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
         } else {
-            auto comm = (Comm *) comm_it->second.ptr;
+            auto comm = comm_it->second.comm;
             comm->start();
         }
     } break;
     case rsg::pb::Decision::kCommWaitFor:
     {
-        XBT_INFO("Comm::start received (addr=%lu)", decision.commwaitfor().comm().address());
+        XBT_INFO("Comm::wait_for received");
         auto comm_it = refcount_store->comms.find(decision.commwaitfor().comm().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
         } else {
-            auto comm = (Comm *) comm_it->second.ptr;
+            auto comm_wait_for = new rsg::pb::DecisionAck_CommWaitFor();
+            auto comm = comm_it->second.comm;
             try {
                 comm->wait_for(decision.commwaitfor().timeout());
+                if (comm_it->second.reception_buffer != nullptr) {
+                    auto received_message = (std::string *) *(comm_it->second.reception_buffer);
+                    comm_wait_for->set_data(*received_message);
+                    delete received_message;
+                    delete comm_it->second.reception_buffer;
+                    comm_it->second.reception_buffer = nullptr;
+                }
+                decision_ack.set_allocated_commwaitfor(comm_wait_for);
             } catch (const simgrid::TimeoutError &) {
-                decision_ack.set_commwaitfor(true);
+                comm_wait_for->set_timeoutreached(true);
+                decision_ack.set_allocated_commwaitfor(comm_wait_for);
             } catch (const simgrid::CancelException &) {
                 decision_ack.set_success(false);
+                delete comm_wait_for;
             }
         }
     } break;
     case rsg::pb::Decision::kCommCancel:
     {
-        XBT_INFO("Comm::start received (addr=%lu)", decision.commcancel().address());
+        XBT_INFO("Comm::cancel received");
         auto comm_it = refcount_store->comms.find(decision.commcancel().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
         } else {
-            auto comm = (Comm *) comm_it->second.ptr;
+            auto comm = comm_it->second.comm;
             comm->start();
         }
     } break;
     case rsg::pb::Decision::kCommTest:
     {
-        XBT_INFO("Comm::start received (addr=%lu)", decision.commtest().address());
+        XBT_INFO("Comm::test received");
         auto comm_it = refcount_store->comms.find(decision.commtest().address());
         if (comm_it == refcount_store->comms.end()) {
             decision_ack.set_success(false);
         } else {
-            auto comm = (Comm *) comm_it->second.ptr;
+            auto comm = comm_it->second.comm;
             decision_ack.set_commtest(comm->test());
         }
     } break;
@@ -254,6 +265,28 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         auto data_to_transfer = new std::string(data.data(), data.size());
         mbox->put((void*) data_to_transfer, decision.mailboxput().simulatedsize());
     } break;
+    case rsg::pb::Decision::kMailboxPutAsync:
+    {
+        XBT_INFO("Mailbox::put_async received (mbox_name='%s')", decision.mailboxputasync().mailbox().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxputasync().mailbox().name());
+        const std::string & data = decision.mailboxputasync().data();
+
+        // Send a std::string, so the receiver knows the size of the real data.
+        auto data_to_transfer = new std::string(data.data(), data.size());
+        auto comm = mbox->put_async((void*) data_to_transfer, decision.mailboxput().simulatedsize());
+        uint64_t comm_address = (uint64_t) comm.get();
+
+        RSG_ASSERT(refcount_store->comms.find(comm_address) == refcount_store->comms.end(),
+            "s4u::Mailbox::put_async returned an already existing Comm");
+        RefcountStore::Comm rf_comm;
+        rf_comm.comm = comm.get();
+        intrusive_ptr_add_ref(rf_comm.comm);
+        refcount_store->comms.insert({comm_address, rf_comm});
+
+        auto pb_comm = new rsg::pb::Comm();
+        pb_comm->set_address(comm_address);
+        decision_ack.set_allocated_mailboxputasync(pb_comm);
+    } break;
     case rsg::pb::Decision::kMailboxGet:
     {
         XBT_INFO("Mailbox::get received (mbox_name='%s')", decision.mailboxget().name().c_str());
@@ -263,6 +296,25 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         write_message(decision_ack, *socket);
         delete data;
         send_ack = false;
+    } break;
+    case rsg::pb::Decision::kMailboxGetAsync:
+    {
+        XBT_INFO("Mailbox::get_async received (mbox_name='%s')", decision.mailboxgetasync().name().c_str());
+        auto mbox = Mailbox::by_name(decision.mailboxgetasync().name());
+        RefcountStore::Comm rf_comm;
+        rf_comm.reception_buffer = new void*;
+        auto comm = mbox->get_async(rf_comm.reception_buffer);
+        uint64_t comm_address = (uint64_t) comm.get();
+
+        RSG_ASSERT(refcount_store->comms.find(comm_address) == refcount_store->comms.end(),
+            "s4u::Mailbox::get_async returned an already existing Comm");
+        rf_comm.comm = comm.get();
+        intrusive_ptr_add_ref(rf_comm.comm);
+        refcount_store->comms.insert({comm_address, rf_comm});
+
+        auto pb_comm = new rsg::pb::Comm();
+        pb_comm->set_address(comm_address);
+        decision_ack.set_allocated_mailboxgetasync(pb_comm);
     } break;
 
     case rsg::pb::Decision::TYPE_NOT_SET:

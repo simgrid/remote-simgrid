@@ -84,19 +84,28 @@ message Decision {
     Mailbox mailboxListen = 15;
     Mailbox mailboxReady = 16;
     MailboxPut mailboxPut = 17;
-    Mailbox mailboxGet = 18;
+    MailboxPut mailboxPutAsync = 18;
+    Mailbox mailboxGet = 19;
+    Mailbox mailboxGetAsync = 20;
   }
 }
 
 // The only message sent by the RSG to a client during the simulation.
 message DecisionAck {
+  message CommWaitFor {
+    bool timeoutReached = 1;
+    bytes data = 2; // only set for async receptions
+  }
+
   bool success = 1;
   oneof data {
     string actorGetName = 2;
     Host actorGetHost = 3;
     Actor actorCreate = 4;
-    bytes mailboxGet = 5;
-    bool commWaitFor = 6; // true if timeout reach.
-    bool commTest = 7;
+    CommWaitFor commWaitFor = 5;
+    bool commTest = 6;
+    Comm mailboxPutAsync = 7;
+    bytes mailboxGet = 8;
+    Comm mailboxGetAsync = 9;
   }
 }

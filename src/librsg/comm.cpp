@@ -4,7 +4,8 @@
 
 #include "rsg.pb.h"
 
-rsg::Comm::Comm(uint64_t remote_address) : _remote_address(remote_address)
+rsg::Comm::Comm(uint64_t remote_address, void ** destination_buffer) :
+    _remote_address(remote_address), _destination_buffer(destination_buffer)
 {
 }
 
@@ -49,7 +50,17 @@ void rsg::Comm::wait_for(double timeout)
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "wait_for(%g) failed on Comm(addr=%lu)", timeout, _remote_address);
-    RSG_ENFORCE(!ack.commwaitfor(), "wait_for(%g) on Comm(addr=%lu): Timeout reached", timeout, _remote_address);
+    RSG_ENFORCE(!ack.commwaitfor().timeoutreached(), "wait_for(%g) on Comm(addr=%lu): Timeout reached", timeout, _remote_address);
+
+    if (_destination_buffer != nullptr)
+    {
+        auto & data = ack.commwaitfor().data();
+        RSG_ASSERT(data.size() > 0, "Received CommWaitFor ack does not contain data while _destination_buffer is not null");
+        // Create a buffer for the user.
+        auto buffer = new uint8_t[data.size()];
+        memcpy(buffer, data.data(), data.size());
+        *_destination_buffer = buffer;
+    }
 }
 
 void rsg::Comm::cancel()

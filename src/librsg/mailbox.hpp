@@ -5,6 +5,7 @@
 
 namespace rsg
 {
+class Comm;
 
 class Mailbox
 {
@@ -20,9 +21,11 @@ public:
     bool ready();
 
     void put(void * data, uint64_t size, uint64_t simulated_size);
+    std::shared_ptr<Comm> put_async(void * data, uint64_t size, uint64_t simulated_size);
 
     void * get();
     void * get(uint64_t & size);
+    std::shared_ptr<Comm> get_async(void ** data);
 
     std::string get_name() const;
     const char * get_cname() const;
