@@ -93,17 +93,23 @@ rsg::Connection::~Connection()
 
 void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack)
 {
+    RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
+
     write_message(decision, *_socket);
     read_message(decision_ack, *_socket);
 }
 
 void rsg::Connection::add_child_thread(std::thread * child)
 {
+    RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
+
     _children.push_back(child);
 }
 
 int rsg::Connection::actor_id() const
 {
+    RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
+
     return _actor_id;
 }
 
