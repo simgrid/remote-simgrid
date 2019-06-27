@@ -13,6 +13,8 @@
 , useClang ? false
 }:
 
+assert kapack.pkgs.lib.assertMsg (!(doCoverage && useClang)) "Cannot do coverage with clang";
+
 let
   pkgs = kapack.pkgs;
   stdenv = if useClang then pkgs.clangStdenv else pkgs.stdenv;
