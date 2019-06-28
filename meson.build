@@ -103,6 +103,7 @@ librsg = shared_library('rsg', librsg_src,
 
 # Install librsg.
 install_headers(
+    'src/common/assert.hpp',
     'src/librsg/actor.hpp',
     'src/librsg/comm.hpp',
     'src/librsg/connection.hpp',
