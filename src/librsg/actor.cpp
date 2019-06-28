@@ -26,12 +26,12 @@ rsg::Actor::Actor(int id) : _id(id)
 {
 }
 
-std::shared_ptr<rsg::Actor> rsg::Actor::self()
+rsg::ActorPtr rsg::Actor::self()
 {
-    return std::shared_ptr<rsg::Actor>(new Actor(rsg::connection->actor_id()));
+    return rsg::ActorPtr(new Actor(rsg::connection->actor_id()));
 }
 
-std::shared_ptr<rsg::Actor> rsg::Actor::create(const std::string & name, const std::shared_ptr<rsg::Host> & host, const std::function<void(void *)>& code, void * code_data)
+rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & host, const std::function<void(void *)>& code, void * code_data)
 {
     rsg::pb::Decision decision;
     auto pb_host = new rsg::pb::Host();
@@ -49,10 +49,10 @@ std::shared_ptr<rsg::Actor> rsg::Actor::create(const std::string & name, const s
     std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), code, code_data);
     rsg::connection->add_child_thread(child_thread);
 
-    return std::shared_ptr<rsg::Actor>(new Actor(ack.actorcreate().id()));
+    return rsg::ActorPtr(new Actor(ack.actorcreate().id()));
 }
 
-std::shared_ptr<rsg::Host> rsg::Actor::get_host()
+rsg::HostPtr rsg::Actor::get_host()
 {
     rsg::pb::Decision decision;
     auto actor = new rsg::pb::Actor();
@@ -63,7 +63,7 @@ std::shared_ptr<rsg::Host> rsg::Actor::get_host()
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
 
-    return std::shared_ptr<Host>(new Host(ack.actorgethost().name()));
+    return rsg::HostPtr(new Host(ack.actorgethost().name()));
 }
 
 std::string rsg::Actor::get_name()

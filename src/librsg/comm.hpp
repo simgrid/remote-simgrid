@@ -2,9 +2,10 @@
 
 #include <cstdint>
 
+#include "pointers.hpp"
+
 namespace rsg
 {
-class Mailbox;
 
 class Comm
 {

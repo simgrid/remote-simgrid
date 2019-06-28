@@ -3,9 +3,10 @@
 #include <memory>
 #include <string>
 
+#include "pointers.hpp"
+
 namespace rsg
 {
-class Comm;
 
 class Mailbox
 {
@@ -15,18 +16,18 @@ private:
     Mailbox & operator=(const Mailbox &) = delete;
 
 public:
-    static std::shared_ptr<Mailbox> by_name(const std::string & name);
+    static MailboxPtr by_name(const std::string & name);
 
     bool empty();
     bool listen();
     bool ready();
 
     void put(void * data, uint64_t size, uint64_t simulated_size);
-    std::shared_ptr<Comm> put_async(void * data, uint64_t size, uint64_t simulated_size);
+    CommPtr put_async(void * data, uint64_t size, uint64_t simulated_size);
 
     void * get();
     void * get(uint64_t & size);
-    std::shared_ptr<Comm> get_async(void ** data);
+    CommPtr get_async(void ** data);
 
     std::string get_name() const;
     const char * get_cname() const;

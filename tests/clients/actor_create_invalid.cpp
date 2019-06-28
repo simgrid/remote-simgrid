@@ -7,7 +7,7 @@
 
 void invalid(void * args)
 {
-    auto parent = (std::shared_ptr<rsg::Actor> *) args;
+    auto parent = (rsg::ActorPtr *) args;
     auto actor = rsg::Actor::self();
     const int my_pid = actor->get_pid();
     const std::string my_name = actor->get_name();
@@ -31,7 +31,7 @@ int main(int argc, char * argv[])
     printf("Actor(pid=%d, name='%s') on Host(name='%s') executing main\n",
         my_pid, my_name.c_str(), my_host->get_name().c_str());
 
-    std::shared_ptr<rsg::Actor> * do_not_do_that = new std::shared_ptr<rsg::Actor>(actor);
+    rsg::ActorPtr * do_not_do_that = new rsg::ActorPtr(actor);
     rsg::Actor::create("invalid", my_host, invalid, (void*) do_not_do_that);
     rsg::this_actor::sleep_until(1);
 

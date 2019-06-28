@@ -7,3 +7,4 @@
 #include <librsg/log.hpp>
 #include <librsg/host.hpp>
 #include <librsg/mailbox.hpp>
+#include <librsg/pointers.hpp>

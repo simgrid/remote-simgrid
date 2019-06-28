@@ -60,7 +60,7 @@ rsg_src = [
     'src/rsg/simulation.cpp',
     'src/rsg/simulation.hpp',
     'src/rsg/simple_commands.cpp',
-    'src/rsg/simple_commands.hpp'
+    'src/rsg/simple_commands.hpp',
 ]
 
 librsg_src = [
@@ -80,7 +80,8 @@ librsg_src = [
     'src/librsg/host.cpp',
     'src/librsg/host.hpp',
     'src/librsg/mailbox.cpp',
-    'src/librsg/mailbox.hpp'
+    'src/librsg/mailbox.hpp',
+    'src/librsg/pointers.hpp',
 ]
 
 rsg_src += protobuf_generated_src
@@ -109,6 +110,7 @@ install_headers(
     'src/librsg/host.hpp',
     'src/librsg/log.hpp',
     'src/librsg/mailbox.hpp',
+    'src/librsg/pointers.hpp',
     subdir: 'librsg'
 )
 install_headers('src/librsg.hpp')

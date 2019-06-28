@@ -4,9 +4,10 @@
 #include <memory>
 #include <string>
 
+#include "pointers.hpp"
+
 namespace rsg
 {
-class Host;
 
 class Actor
 {
@@ -16,13 +17,13 @@ private:
     Actor & operator=(const Actor &) = delete;
 
 public:
-    static std::shared_ptr<Actor> self();
+    static ActorPtr self();
 
-    static std::shared_ptr<Actor> create(const std::string & name, const std::shared_ptr<Host> & host,
+    static ActorPtr create(const std::string & name, const HostPtr & host,
         const std::function<void(void *)>& code, void * code_data);
     // TODO: propose the other create functions (https://simgrid.frama.io/simgrid/app_s4u.html#s4u-actor)
 
-    std::shared_ptr<Host> get_host();
+    HostPtr get_host();
     std::string get_name();
     int get_pid() const;
 

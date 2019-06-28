@@ -9,9 +9,9 @@ rsg::Mailbox::Mailbox(const std::string & name) : _name(name)
 {
 }
 
-std::shared_ptr<rsg::Mailbox> rsg::Mailbox::by_name(const std::string & name)
+rsg::MailboxPtr rsg::Mailbox::by_name(const std::string & name)
 {
-    return std::shared_ptr<rsg::Mailbox>(new rsg::Mailbox(name));
+    return rsg::MailboxPtr(new rsg::Mailbox(name));
 }
 
 bool rsg::Mailbox::empty()
@@ -66,7 +66,7 @@ void rsg::Mailbox::put(void * data, uint64_t size, uint64_t simulated_size)
     RSG_ENFORCE(ack.success(), "Could not put on mailbox='%s'", _name.c_str());
 }
 
-std::shared_ptr<rsg::Comm> rsg::Mailbox::put_async(void * data, uint64_t size, uint64_t simulated_size)
+rsg::CommPtr rsg::Mailbox::put_async(void * data, uint64_t size, uint64_t simulated_size)
 {
     rsg::pb::Decision decision;
     auto mbox = new rsg::pb::Mailbox();
@@ -81,7 +81,7 @@ std::shared_ptr<rsg::Comm> rsg::Mailbox::put_async(void * data, uint64_t size, u
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Could not put_async on mailbox='%s'", _name.c_str());
 
-    return std::shared_ptr<rsg::Comm>(new Comm(ack.mailboxputasync().address()));
+    return rsg::CommPtr(new Comm(ack.mailboxputasync().address()));
 }
 
 void * rsg::Mailbox::get()
@@ -112,7 +112,7 @@ void * rsg::Mailbox::get(uint64_t & size)
     return ret;
 }
 
-std::shared_ptr<rsg::Comm> rsg::Mailbox::get_async(void ** data)
+rsg::CommPtr rsg::Mailbox::get_async(void ** data)
 {
     rsg::pb::Decision decision;
     auto mbox = new rsg::pb::Mailbox();
@@ -123,7 +123,7 @@ std::shared_ptr<rsg::Comm> rsg::Mailbox::get_async(void ** data)
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Could not get on mailbox='%s'", _name.c_str());
 
-    return std::shared_ptr<rsg::Comm>(new Comm(ack.mailboxgetasync().address(), data));
+    return rsg::CommPtr(new Comm(ack.mailboxgetasync().address(), data));
 }
 
 std::string rsg::Mailbox::get_name() const

@@ -3,10 +3,10 @@
 #include <memory>
 #include <string>
 
+#include "pointers.hpp"
+
 namespace rsg
 {
-class Actor;
-
 class Host
 {
     friend class Actor;
@@ -16,8 +16,8 @@ private:
     Host & operator=(const Host &) = delete;
 
 public:
-    static std::shared_ptr<Host> by_name(const std::string & name);
-    static std::shared_ptr<Host> by_name_or_null(const std::string & name);
+    static HostPtr by_name(const std::string & name);
+    static HostPtr by_name_or_null(const std::string & name);
 
     std::string get_name() const;
     const char * get_cname() const;
