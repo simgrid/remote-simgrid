@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 #include "pointers.hpp"
 
@@ -24,6 +25,10 @@ public:
     void cancel();
 
     bool test();
+
+public:
+    static int wait_any_for(const std::vector<CommPtr> & comms, double timeout);
+    static int wait_any(const std::vector<CommPtr> & comms);
 
 private:
     uint64_t _remote_address = 0;

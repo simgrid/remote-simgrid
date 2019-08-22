@@ -227,6 +227,38 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_commtest(comm->test());
         }
     } break;
+    case rsg::pb::Decision::kCommWaitAnyFor:
+    {
+        XBT_INFO("Comm::wait_any_for received");
+
+        std::vector<CommPtr> comms;
+        comms.reserve(decision.commwaitanyfor().comms().size());
+        for (auto comm : decision.commwaitanyfor().comms()) {
+            auto comm_it = refcount_store->comms.find(comm.address());
+            RSG_ENFORCE(comm_it != refcount_store->comms.end(),
+                "cannot wait_any_for on unknown Comm pointer %lu", comm.address());
+            comms.push_back(comm_it->second.comm);
+        }
+
+        auto comm_wait_any_for = new rsg::pb::DecisionAck_CommWaitAnyFor();
+        int finished_index = Comm::wait_any_for(&comms, decision.commwaitanyfor().timeout());
+        comm_wait_any_for->set_finishedcommindex(finished_index);
+
+        // Transfer received data if needed
+        if (finished_index >= 0) { // timeout has NOT been reached
+            auto comm_it = refcount_store->comms.find(decision.commwaitanyfor().comms().Get(finished_index).address());
+            RSG_ASSERT(comm_it != refcount_store->comms.end(), "Comm memory management inconsistency");
+            if (comm_it->second.reception_buffer != nullptr) {
+                auto received_message = (std::string *) *(comm_it->second.reception_buffer);
+                comm_wait_any_for->set_data(*received_message);
+                delete received_message;
+                delete comm_it->second.reception_buffer;
+                comm_it->second.reception_buffer = nullptr;
+            }
+        }
+
+        decision_ack.set_allocated_commwaitanyfor(comm_wait_any_for);
+    } break;
 
     // rsg::Engine static methods
     case rsg::pb::Decision::kEngineGetClock:

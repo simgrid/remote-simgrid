@@ -56,6 +56,11 @@ message Decision {
     double timeout = 2;
   }
 
+  message CommWaitAnyFor {
+    repeated Comm comms = 1;
+    double timeout = 2;
+  }
+
   oneof type {
     bool quit = 1;
 
@@ -75,21 +80,22 @@ message Decision {
     CommWaitFor commWaitFor = 10;
     Comm commCancel = 11;
     Comm commTest = 12;
+    CommWaitAnyFor commWaitAnyFor = 13;
 
     // static methods in rsg::Engine
-    bool engineGetClock = 13;
+    bool engineGetClock = 14;
 
     // static methods in rsg::Host
-    string hostByNameOrNull = 14;
+    string hostByNameOrNull = 15;
 
     // methods in rsg::Mailbox
-    Mailbox mailboxEmpty = 15;
-    Mailbox mailboxListen = 16;
-    Mailbox mailboxReady = 17;
-    MailboxPut mailboxPut = 18;
-    MailboxPut mailboxPutAsync = 19;
-    Mailbox mailboxGet = 20;
-    Mailbox mailboxGetAsync = 21;
+    Mailbox mailboxEmpty = 16;
+    Mailbox mailboxListen = 17;
+    Mailbox mailboxReady = 18;
+    MailboxPut mailboxPut = 19;
+    MailboxPut mailboxPutAsync = 20;
+    Mailbox mailboxGet = 21;
+    Mailbox mailboxGetAsync = 22;
   }
 }
 
@@ -100,6 +106,11 @@ message DecisionAck {
     bytes data = 2; // only set for async receptions
   }
 
+  message CommWaitAnyFor {
+    int32 finishedCommIndex = 1;
+    bytes data = 2;
+  }
+
   bool success = 1;
   oneof data {
     string actorGetName = 2;
@@ -107,9 +118,10 @@ message DecisionAck {
     Actor actorCreate = 4;
     CommWaitFor commWaitFor = 5;
     bool commTest = 6;
-    double engineGetClock = 7;
-    Comm mailboxPutAsync = 8;
-    bytes mailboxGet = 9;
-    Comm mailboxGetAsync = 10;
+    CommWaitAnyFor commWaitAnyFor = 7;
+    double engineGetClock = 8;
+    Comm mailboxPutAsync = 9;
+    bytes mailboxGet = 10;
+    Comm mailboxGetAsync = 11;
   }
 }
