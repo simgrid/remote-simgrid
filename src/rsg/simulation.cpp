@@ -310,7 +310,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
 
         // Send a std::string, so the receiver knows the size of the real data.
         auto data_to_transfer = new std::string(data.data(), data.size());
-        auto comm = mbox->put_async((void*) data_to_transfer, decision.mailboxput().simulatedsize());
+        auto comm = mbox->put_async((void*) data_to_transfer, decision.mailboxputasync().simulatedsize());
         uint64_t comm_address = (uint64_t) comm.get();
 
         RSG_ASSERT(refcount_store->comms.find(comm_address) == refcount_store->comms.end(),
