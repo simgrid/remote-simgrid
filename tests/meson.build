@@ -41,7 +41,7 @@ test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.t
 test('actor create', tesh, env: test_env, args: [files('actor/create.tesh')])
 test('actor create-invalid', tesh, env: test_env, args: [files('actor/create-invalid.tesh')])
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
-test('comm waitany', tesh, env: test_env, args: [files('comm/waitany.tesh')], should_fail: true)
+test('comm waitany', tesh, env: test_env, args: [files('comm/waitany.tesh')])
 test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])
 test('mailbox send-receive', tesh, env: test_env, args: [files('mailbox/send-receive.tesh')])
 test('mailbox asyncsend-receive', tesh, env: test_env, args: [files('mailbox/asyncsend-receive.tesh')])

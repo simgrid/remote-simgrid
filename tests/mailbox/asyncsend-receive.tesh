@@ -27,16 +27,16 @@
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Mailbox::put_async received (mbox_name='testbox')
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Comm::refcount_decrease received
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Comm::wait_for received
-> [Bourassa:receiver:(3) 0.013542] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
-> [Fafard:sender:(2) 0.013542] [simulation/INFO] Mailbox::put_async received (mbox_name='testbox')
-> [Fafard:sender:(2) 0.013542] [simulation/INFO] Comm::refcount_decrease received
-> [Fafard:sender:(2) 0.013542] [simulation/INFO] Comm::wait_for received
-> [Bourassa:receiver:(3) 0.020312] [simulation/INFO] Quit decision received. Goodbye.
-> [Fafard:sender:(2) 0.020312] [simulation/INFO] Comm::refcount_decrease received
-> [Fafard:sender:(2) 0.020312] [simulation/INFO] Quit decision received. Goodbye.
-> [0.020312] [simulation/INFO] Simulation has finished.
-> [0.020312] [serve/INFO] Closing open sockets
-> [0.020312] [serve/INFO] All sockets have been closed
+> [Bourassa:receiver:(3) 2.239689] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
+> [Fafard:sender:(2) 2.239689] [simulation/INFO] Mailbox::put_async received (mbox_name='testbox')
+> [Fafard:sender:(2) 2.239689] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(2) 2.239689] [simulation/INFO] Comm::wait_for received
+> [Bourassa:receiver:(3) 2.246461] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sender:(2) 2.246461] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(2) 2.246461] [simulation/INFO] Quit decision received. Goodbye.
+> [2.246461] [simulation/INFO] Simulation has finished.
+> [2.246461] [serve/INFO] Closing open sockets
+> [2.246461] [serve/INFO] All sockets have been closed
 
 $ sleep 0.2
 
