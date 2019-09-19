@@ -26,6 +26,11 @@ int main(int argc, char * argv[])
         // Retrieve previous socket and tell rsg to use it.
         int socket_fd = atoi(getenv("LIBRSG_SOCKET_FD"));
         rsg::reuse_connected_socket(socket_fd);
+        if (socket_fd != rsg::connection->socket_fd())
+        {
+            RSG_INFO("Socket fd mismatch (expected=%d, got=%d).",
+                socket_fd, rsg::connection->socket_fd());
+        }
 
         RSG_INFO("Yay, I am still in the simulation!");
         rsg::this_actor::sleep_for(5);
