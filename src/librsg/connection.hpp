@@ -34,6 +34,7 @@ public:
     void add_child_thread(std::thread * child);
 
     int actor_id() const;
+    int socket_fd() const;
 
 private:
     int _actor_id = -1;

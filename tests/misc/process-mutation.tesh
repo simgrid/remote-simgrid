@@ -1,0 +1,36 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35019
+> [0.000000] [serve/INFO] Listening on port 35019
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=mutant, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:mutant:(2) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=10)
+> [Fafard:mutant:(2) 10.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:mutant:(2) 10.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:mutant:(2) 10.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:mutant:(2) 10.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:mutant:(2) 10.000000] [simulation/INFO] this_actor::sleep_for received (duration=5)
+> [Fafard:mutant:(2) 15.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:mutant:(2) 15.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:mutant:(2) 15.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [15.000000] [simulation/INFO] Simulation has finished.
+> [15.000000] [serve/INFO] Closing open sockets
+> [15.000000] [serve/INFO] All sockets have been closed
+
+$ sleep 0.2
+
+! timeout 3
+& rsg add-actor mutant Fafard -p 35019 --no-autoconnect -- client-mutant
+> [Fafard:mutant:(2) 10.000000] About to mutate into myself.
+> [Fafard:mutant:(2) 10.000000] Yay, I am still in the simulation!
+> [Fafard:mutant:(2) 15.000000] Goodbye :).
+
+$ sleep 0.4
+
+! timeout 3
+$ rsg start -p 35019

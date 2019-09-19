@@ -124,6 +124,13 @@ int rsg::Connection::actor_id() const
     return _actor_id;
 }
 
+int rsg::Connection::socket_fd() const
+{
+    RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
+
+    return _socket->fd();
+}
+
 void rsg::reuse_connected_socket(int fd)
 {
     RSG_ENFORCE(connection == nullptr, "Invalid rsg::reuse_connected_socket() call: Already connected!");
