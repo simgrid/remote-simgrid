@@ -12,6 +12,20 @@ namespace rsg
     thread_local Connection* connection = nullptr;
 }
 
+static int retrieve_initial_actor_id_from_env()
+{
+    const char * initial_actor_id = std::getenv("RSG_INITIAL_ACTOR_ID");
+    RSG_ENFORCE(initial_actor_id != nullptr, "Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID is not set.");
+    try
+    {
+        return std::stoi(std::string(initial_actor_id));
+    }
+    catch(const std::logic_error & e)
+    {
+        throw rsg::Error("Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID ('%s') is not a valid actor id", initial_actor_id);
+    }
+}
+
 static void retrieve_rsg_connection_params_from_env(std::string & server_hostname, uint16_t & port, int & actor_id)
 {
     const char * c_server_hostname = std::getenv("RSG_SERVER_HOSTNAME");
@@ -29,16 +43,7 @@ static void retrieve_rsg_connection_params_from_env(std::string & server_hostnam
         throw rsg::Error("Invalid RSG connection initialization: RSG_SERVER_PORT ('%s') is not a valid port", server_port);
     }
 
-    const char * initial_actor_id = std::getenv("RSG_INITIAL_ACTOR_ID");
-    RSG_ENFORCE(initial_actor_id != nullptr, "Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID is not set.");
-    try
-    {
-        actor_id = std::stoi(std::string(initial_actor_id));
-    }
-    catch(const std::logic_error & e)
-    {
-        throw rsg::Error("Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID ('%s') is not a valid actor id", initial_actor_id);
-    }
+    actor_id = retrieve_initial_actor_id_from_env();
 }
 
 
@@ -64,6 +69,12 @@ rsg::Connection::Connection(const std::string & server_hostname, uint16_t port, 
 
     if (!command_ack.success())
         printf("connect failed\n");
+}
+
+rsg::Connection::Connection(int fd, int actor_id) : _actor_id(actor_id)
+{
+    // Use an already existing socket.
+    _socket = new TcpSocket(fd);
 }
 
 rsg::Connection::~Connection()
@@ -111,6 +122,14 @@ int rsg::Connection::actor_id() const
     RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
 
     return _actor_id;
+}
+
+void rsg::reuse_connected_socket(int fd)
+{
+    RSG_ENFORCE(connection == nullptr, "Invalid rsg::reuse_connected_socket() call: Already connected!");
+
+    int actor_id = retrieve_initial_actor_id_from_env();
+    connection = new Connection(fd, actor_id);
 }
 
 void rsg::connect(int actor_id)

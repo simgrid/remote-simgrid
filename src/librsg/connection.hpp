@@ -17,12 +17,14 @@ class DecisionAck;
 //! Manage a connection with the RSG server.
 class Connection
 {
+    friend void reuse_connected_socket(int fd);
     friend void connect(int actor_id);
     friend void disconnect();
     friend void * actor_function(void * void_args);
 
 private:
     explicit Connection(const std::string & server_hostname, uint16_t port, int actor_id);
+    explicit Connection(int fd, int actor_id);
     Connection(const Connection &) = delete;
     ~Connection();
     Connection & operator=(const Connection &) = delete;
@@ -52,8 +54,10 @@ private:
 */
 extern thread_local Connection* connection;
 
+void reuse_connected_socket(int fd);
 void connect(int actor_id);
 void connect();
+
 void disconnect();
 
 }
