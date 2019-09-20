@@ -30,28 +30,28 @@
 > [0.000000] [serve/INFO] Closing open sockets
 > [0.000000] [serve/INFO] All sockets have been closed
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor host-exist0 Fafard -p 35009 -- client-host-finder Fafard
 > Host(name='Fafard') found? 1
 > Trying to access Host(name='Fafard')... Got Host(name='Fafard')!
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor host-exist1 Bourassa -p 35009 -- client-host-finder Ginette
 > Host(name='Ginette') found? 1
 > Trying to access Host(name='Ginette')... Got Host(name='Ginette')!
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor hoes-does-not-exist Ginette -p 35009 -- client-host-finder GhostHost
 > Host(name='GhostHost') found? 0
 > Trying to access Host(name='GhostHost')... Exception caught: There is no host named 'GhostHost'
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35009

@@ -6,6 +6,8 @@ test_env = environment()
 test_env.prepend('PATH', meson.build_root(), meson.build_root() + '/tests')
 test_env.prepend('LD_LIBRARY_PATH', meson.build_root())
 test_env.set('TEST_DIR', meson.current_source_dir())
+test_env.set('INTERPROCESS_DELAY', get_option('test_interprocess_delay'))
+test_env.set('START_DELAY', get_option('test_start_delay'))
 
 # Build some client programs.
 executable('client-hello', ['clients/hello.cpp'], dependencies: librsg_dep)

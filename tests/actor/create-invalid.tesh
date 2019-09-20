@@ -20,7 +20,7 @@
 > [ 2.000000] (invalid@Fafard) Quit decision received. Goodbye.
 > [ 2.000000] (maestro@) Simulation has finished.
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor 'almighty' Fafard -p 35012 -- client-actor-create-invalid
@@ -29,7 +29,7 @@ $ sleep 0.2
 > Actor(pid=3, name='invalid') Trying to access a dead actor's properties...
 > Error caught while running Actor(id=3): Actor(id=2) does not exist in the simulation
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35012

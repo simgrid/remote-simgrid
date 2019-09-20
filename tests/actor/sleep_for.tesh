@@ -28,17 +28,17 @@
 > [6.000000] [serve/INFO] Closing open sockets
 > [6.000000] [serve/INFO] All sockets have been closed
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor sleeper1 Fafard -p 35005 -- client-sleep-for 3 2
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor sleeper2 Fafard -p 35005 -- client-sleep-for 6 1
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35005

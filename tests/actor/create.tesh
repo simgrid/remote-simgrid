@@ -44,7 +44,7 @@
 > [10.000000] (slow_child@Fafard) Quit decision received. Goodbye.
 > [10.000000] (maestro@) Simulation has finished.
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor 'almighty' Fafard -p 35010 -- client-actor-create
@@ -52,7 +52,7 @@ $ sleep 0.2
 > Actor(pid=4, name='fast_child') on Host(name='Fafard') executing child_actor1
 > Actor(pid=6, name='slow_child') on Host(name='Fafard') executing child_actor2
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor 'builder' Ginette -p 35010 -- client-actor-create Bourassa
@@ -60,7 +60,7 @@ $ sleep 0.2
 > Actor(pid=5, name='fast_child') on Host(name='Bourassa') executing child_actor1
 > Actor(pid=7, name='slow_child') on Host(name='Bourassa') executing child_actor2
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35010

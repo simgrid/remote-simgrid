@@ -1,0 +1,4 @@
+option('test_interprocess_delay', type:'string', value:'0.2',
+    description : 'The number of seconds between `rsg add-actor` in tests')
+option('test_start_delay', type:'string', value:'0.4',
+    description : 'The number of seconds between the last `rsg add-actor` and `rsg start` in tests')

@@ -38,13 +38,13 @@
 > [2.246461] [serve/INFO] Closing open sockets
 > [2.246461] [serve/INFO] All sockets have been closed
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor 'sender' Fafard -p 35014 -- client-mailbox-sender-async
 > My actor is (pid=2, name='sender'), located on Host(name='Fafard')
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor 'receiver' Bourassa -p 35014 -- client-mailbox-receiver
@@ -56,7 +56,7 @@ $ sleep 0.2
 > Received: 1337 (read 4 bytes)
 > Received: 'Gi nathlam hí'
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35014

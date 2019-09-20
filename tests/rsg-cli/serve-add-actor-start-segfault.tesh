@@ -15,12 +15,12 @@
 > [0.000000] [serve/INFO] Closing open sockets
 > [0.000000] [serve/INFO] All sockets have been closed
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor fautly Jupiter -p 35007 -- client-segfault
 > About to segfault.
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 $ rsg start -p 35007

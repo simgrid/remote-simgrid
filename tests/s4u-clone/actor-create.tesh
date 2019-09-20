@@ -59,7 +59,7 @@
 > [Fafard:receiver:(7) 0.086826] [simulation/INFO] Quit decision received. Goodbye.
 > [0.086826] [simulation/INFO] Simulation has finished.
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor main Fafard -p 35017 -- client-s4u-actor-create Bourassa
@@ -76,7 +76,7 @@ $ sleep 0.2
 > [Fafard:receiver:(7) 0.086826] Got 'GaBuZoMeu', 'GloubiBoulga' and 'PopPop!'
 > [Fafard:receiver:(7) 0.086826] I'm done. See you.
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35017

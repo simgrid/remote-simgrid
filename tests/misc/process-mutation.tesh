@@ -22,7 +22,7 @@
 > [15.000000] [serve/INFO] Closing open sockets
 > [15.000000] [serve/INFO] All sockets have been closed
 
-$ sleep 0.2
+$ sleep ${INTERPROCESS_DELAY}
 
 ! timeout 3
 & rsg add-actor mutant Fafard -p 35019 --no-autoconnect -- client-mutant
@@ -30,7 +30,7 @@ $ sleep 0.2
 > [Fafard:mutant:(2) 10.000000] Yay, I am still in the simulation!
 > [Fafard:mutant:(2) 15.000000] Goodbye :).
 
-$ sleep 0.4
+$ sleep ${START_DELAY}
 
 ! timeout 3
 $ rsg start -p 35019
