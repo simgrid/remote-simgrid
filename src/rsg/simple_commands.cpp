@@ -217,6 +217,10 @@ int status(const std::string & server_hostname, int server_port)
             printf("status refused from server\n");
             return 1;
         }
+        else
+        {
+            printf("{\"nb_connected_actors\":%u}\n", command_ack.status().nbconnectedactors());
+        }
         return 0;
     }
     catch (const rsg::Error & err)

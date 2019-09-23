@@ -222,9 +222,13 @@ static void handle_command(const rsg::pb::Command & command,
             command_ack.set_success(true);
             break;
         case rsg::pb::Command::kStatus:
+        {
             XBT_INFO("Received a STATUS command!");
-            // TODO: implement me
-            break;
+            auto status = new rsg::pb::CommandAck::Status();
+            status->set_nbconnectedactors(nb_connected_actors);
+            command_ack.set_allocated_status(status);
+            command_ack.set_success(true);
+        }   break;
         case rsg::pb::Command::kConnect:
         {
             XBT_INFO("Received a CONNECT command! (actor_id=%d)", command.connect().id());

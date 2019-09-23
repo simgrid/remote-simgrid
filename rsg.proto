@@ -34,8 +34,12 @@ message Command {
 
 // Server's acknowledgment to the client initial command.
 message CommandAck {
+  message Status {
+    uint32 nbConnectedActors = 1;
+  }
   bool success = 1; // Defined for all acknowledgments.
   Actor actor = 2; // Only defined as ADD-ACTOR acknowledgment.
+  Status status = 3; // Only defined as STATUS acknowledgment.
 }
 
 // The only message sent by clients to the RSG server during the simulation.
