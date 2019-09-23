@@ -1,0 +1,12 @@
+! timeout 3
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35022 --daemon
+> [0.000000] [serve/INFO] Listening on port 35022
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a KILL command! Reason: Stop!
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg kill --reason='Stop!' -p 35022

@@ -40,6 +40,7 @@ test('rsg-cli serve-add-actor-bad-cmd', tesh, env: test_env, args: [files('rsg-c
 test('rsg-cli serve-add-actor-start', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start.tesh')])
 test('rsg-cli serve-add-actor-start-manual-connect', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start-manual-connect.tesh')])
 test('rsg-cli serve-add-actor-start-segfault', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start-segfault.tesh')])
+test('rsg-cli serve-daemon', tesh, env: test_env, args: [files('rsg-cli/serve-daemon.tesh')])
 test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill.tesh')])
 test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])
 test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.tesh')])
