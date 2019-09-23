@@ -35,6 +35,7 @@ test('rsg-cli add-actor', tesh, env: test_env, args: [files('rsg-cli/add-actor.t
 test('rsg-cli kill', tesh, env: test_env, args: [files('rsg-cli/kill.tesh')])
 test('rsg-cli start', tesh, env: test_env, args: [files('rsg-cli/start.tesh')])
 test('rsg-cli status', tesh, env: test_env, args: [files('rsg-cli/status.tesh')])
+test('rsg-cli status-retry-timeout', tesh, env: test_env, args: [files('rsg-cli/status-retry-timeout.tesh')])
 test('rsg-cli serve-add-actor-bad-cmd', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-bad-cmd.tesh')])
 test('rsg-cli serve-add-actor-start', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start.tesh')])
 test('rsg-cli serve-add-actor-start-manual-connect', tesh, env: test_env, args: [files('rsg-cli/serve-add-actor-start-manual-connect.tesh')])
