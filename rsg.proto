@@ -103,7 +103,7 @@ message Decision {
   }
 }
 
-// The only message sent by the RSG to a client during the simulation.
+// The only message sent by the RSG server to a client during the simulation.
 message DecisionAck {
   message CommWaitFor {
     bool timeoutReached = 1;
