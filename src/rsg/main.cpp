@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 
+#include <string.h>
+
 #include <docopt/docopt.h>
 
 #include "serve.hpp"
@@ -13,7 +15,7 @@ int main(int argc, char * argv[])
 R"(Remote SimGrid command-line tool.
 
 Usage:
-  rsg serve <platform-file> [--port=<port>] [-- <sg-options>...]
+  rsg serve <platform-file> [--port=<port>] [--daemon] [-- <sg-options>...]
   rsg add-actor <actor-name> <sg-host>
                 [--hostname=<host>] [--port=<port>] [--no-autoconnect]
                 [--] <command> [<command-args>...]
@@ -25,6 +27,7 @@ Usage:
 Options:
   -h --hostname <host>  Server's hostname [default: 127.0.0.1].
   -p --port <port>      Server's TCP port [default: 35000].
+  -d --daemon           Run as a deamon — i.e., in background.
   --retry-timeout <ms>  If set, retry connection until timeout in milliseconds.
 )";
 
@@ -47,6 +50,14 @@ Options:
     {
         std::string platform_file = args["<platform-file>"].asString();
         std::vector<std::string> simgrid_options = args["<sg-options>"].asStringList();
+
+        if (args["--daemon"].asBool()) {
+            if (daemon(1, 1) != 0) {
+                printf("Could not daemon: %s\n", strerror(errno));
+                return 1;
+            }
+        }
+
         return_code = serve(platform_file, server_port, simgrid_options);
     }
     else if (args["kill"].asBool())
