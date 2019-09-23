@@ -1,0 +1,39 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35020
+> [0.000000] [serve/INFO] Listening on port 35020
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=parent, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::create() received (name='newborn', host_name='Fafard')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:parent:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:newborn:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:newborn:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:newborn:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [0.000000] [simulation/INFO] Simulation has finished.
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'parent' Fafard -p 35020 -- client-actor-fork
+> [Fafard:parent:(2) 0.000000] About to fork...
+> [Fafard:parent:(2) 0.000000] The children process has actor_id=3
+> [Fafard:newborn:(3) 0.000000] Hello, I'm a new actor in a new process!
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35020
