@@ -1,5 +1,9 @@
 #include <thread>
 
+#include <sys/types.h>
+#include <string.h>
+#include <unistd.h>
+
 #include "actor.hpp"
 #include "host.hpp"
 #include "connection.hpp"
@@ -50,6 +54,39 @@ rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & 
     rsg::connection->add_child_thread(child_thread);
 
     return rsg::ActorPtr(new Actor(ack.actorcreate().id()));
+}
+
+int rsg::Actor::fork(const std::string & child_name, const HostPtr & host)
+{
+    rsg::pb::Decision decision;
+    auto pb_host = new rsg::pb::Host();
+    pb_host->set_name(host->get_name());
+    auto create_actor = new rsg::pb::Decision_CreateActor();
+    create_actor->set_name(child_name);
+    create_actor->set_allocated_host(pb_host);
+    decision.set_allocated_actorcreate(create_actor);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not create a new Actor");
+
+    /* Call system's fork().
+       - On failure, no child is created and -1 is returned to the parent.
+       - On success, 0 is returned to the child and the child's pid is returned to the parent.
+    */
+    int fork_return = ::fork();
+    RSG_ENFORCE(fork_return != -1, "Cannot fork: %s\n", strerror(errno));
+
+    if (fork_return == 0) // child process
+    {
+        rsg::connection = nullptr;
+        rsg::connect(ack.actorcreate().id());
+        return 0;
+    }
+    else // parent process
+    {
+        return ack.actorcreate().id();
+    }
 }
 
 rsg::HostPtr rsg::Actor::get_host()
