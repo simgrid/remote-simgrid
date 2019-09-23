@@ -15,6 +15,8 @@
 > [0.000000] [serve/INFO] New client accepted
 > [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
 > [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a STATUS command!
+> [0.000000] [serve/INFO] New client accepted
 > [0.000000] [serve/INFO] Received a START command!
 > [0.000000] [simulation/INFO] Starting the simulation.
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
@@ -47,6 +49,12 @@ $ sleep ${INTERPROCESS_DELAY}
 ! timeout 3
 & rsg add-actor Quidane Ginette -p 35008 -- client-actor-whoami
 > My actor is (pid=4, name='Quidane'), located on Host(name='Ginette')
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg status -p 35008
+> {"nb_connected_actors":3}
 
 $ sleep ${START_DELAY}
 
