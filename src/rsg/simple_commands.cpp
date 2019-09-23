@@ -1,3 +1,6 @@
+#include <chrono>
+#include <thread>
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
@@ -193,13 +196,27 @@ int start(const std::string & server_hostname, int server_port)
     }
 }
 
-int status(const std::string & server_hostname, int server_port)
+int status(const std::string & server_hostname, int server_port,
+    int retry_timeout_ms)
 {
     try
     {
         // Connect to the server.
+        auto t0 = std::chrono::steady_clock::now();
+        std::chrono::milliseconds timeout(retry_timeout_ms);
         rsg::TcpSocket socket;
-        socket.connect(server_hostname, server_port);
+        for (bool connected = false; !connected; )
+        {
+            try {
+                socket.connect(server_hostname, server_port);
+                connected = true;
+            } catch (const rsg::Error & e) {
+                if (std::chrono::steady_clock::now() - t0 < timeout)
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                else
+                    throw;
+            }
+        }
 
         // Generate message.
         rsg::pb::Command command;

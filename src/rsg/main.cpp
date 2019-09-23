@@ -18,13 +18,14 @@ Usage:
                 [--hostname=<host>] [--port=<port>] [--no-autoconnect]
                 [--] <command> [<command-args>...]
   rsg start [--hostname=<host>] [--port=<port>]
-  rsg status [--hostname=<host>] [--port=<port>]
+  rsg status [--hostname=<host>] [--port=<port>] [--retry-timeout=<ms>]
   rsg kill [--hostname=<host>] [--reason=<reason>] [--port=<port>]
   rsg --help
 
 Options:
   -h --hostname <host>  Server's hostname [default: 127.0.0.1].
   -p --port <port>      Server's TCP port [default: 35000].
+  --retry-timeout <ms>  If set, retry connection until timeout in milliseconds.
 )";
 
     // Parse CLI arguments.
@@ -61,7 +62,10 @@ Options:
     }
     else if (args["status"].asBool())
     {
-        return_code = status(server_hostname, server_port);
+        int retry_timeout_ms = 0;
+        if (args["--retry-timeout"].isString())
+            retry_timeout_ms = args["--retry-timeout"].asLong();
+        return_code = status(server_hostname, server_port, retry_timeout_ms);
     }
     else if (args["add-actor"].asBool())
     {
