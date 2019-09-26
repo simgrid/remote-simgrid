@@ -89,6 +89,11 @@ bool rsg::Comm::test()
     return ack.commtest();
 }
 
+uint64_t rsg::Comm::remote_address() const
+{
+    return _remote_address;
+}
+
 int rsg::Comm::wait_any_for(const std::vector<rsg::CommPtr> & comms, double timeout)
 {
     rsg::pb::Decision decision;
