@@ -1,0 +1,31 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35025 -- --log=serve.thres:warning "--log=root.fmt:[%9.6r]%e(%P@%h)%e%m%n"
+> [0.000000] [serve/INFO] Listening on port 35025
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [ 0.000000] (maestro@) Starting the simulation.
+> [ 0.000000] (main@Fafard) Actor::get_host() received (actor_id=2)
+> [ 0.000000] (main@Fafard) Actor::create() received (name='child', host_name='Fafard')
+> [ 0.000000] (main@Fafard) Quit decision received. Goodbye.
+> [ 0.000000] (child@Fafard) this_actor::yield received
+> [ 0.000000] (child@Fafard) Quit decision received. Goodbye.
+> [ 0.000000] (maestro@) Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'main' Fafard -p 35025 -- client-actor-create-thread-race
+> main about to call rsg::Actor::create
+> main sleeps for 500 ms (REAL world sleep, not in simulation)
+> main finishes
+> child_actor code starts being executed
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35025
