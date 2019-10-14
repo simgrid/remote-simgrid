@@ -69,37 +69,41 @@ message Decision {
     bool quit = 1;
 
     // static methods in rsg::this_actor
-    double thisActorSleepFor = 2;
-    double thisActorSleepUntil = 3;
-    CreateActor actorCreate = 4;
+    double thisActorExecute = 2;
+    double thisActorSleepFor = 3;
+    double thisActorSleepUntil = 4;
+    bool thisActorYield = 5;
 
     // methods in rsg::Actor
-    Actor actorGetName = 5;
-    Actor actorGetHost = 6;
+    Actor actorGetName = 6;
+    Actor actorGetHost = 7;
+
+    // static methods in rsg::Actor
+    CreateActor actorCreate = 8;
 
     // methods in rsg::Comm
-    Comm commRefcountIncrease = 7;
-    Comm commRefcountDecrease = 8;
-    Comm commStart = 9;
-    CommWaitFor commWaitFor = 10;
-    Comm commCancel = 11;
-    Comm commTest = 12;
-    CommWaitAnyFor commWaitAnyFor = 13;
+    Comm commRefcountIncrease = 9;
+    Comm commRefcountDecrease = 10;
+    Comm commStart = 11;
+    CommWaitFor commWaitFor = 12;
+    Comm commCancel = 13;
+    Comm commTest = 14;
+    CommWaitAnyFor commWaitAnyFor = 15;
 
     // static methods in rsg::Engine
-    bool engineGetClock = 14;
+    bool engineGetClock = 16;
 
     // static methods in rsg::Host
-    string hostByNameOrNull = 15;
+    string hostByNameOrNull = 17;
 
     // methods in rsg::Mailbox
-    Mailbox mailboxEmpty = 16;
-    Mailbox mailboxListen = 17;
-    Mailbox mailboxReady = 18;
-    MailboxPut mailboxPut = 19;
-    MailboxPut mailboxPutAsync = 20;
-    Mailbox mailboxGet = 21;
-    Mailbox mailboxGetAsync = 22;
+    Mailbox mailboxEmpty = 18;
+    Mailbox mailboxListen = 19;
+    Mailbox mailboxReady = 20;
+    MailboxPut mailboxPut = 21;
+    MailboxPut mailboxPutAsync = 22;
+    Mailbox mailboxGet = 23;
+    Mailbox mailboxGetAsync = 24;
   }
 }
 

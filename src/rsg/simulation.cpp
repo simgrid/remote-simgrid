@@ -120,6 +120,15 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     } break;
 
     // rsg::this_actor methods
+    case rsg::pb::Decision::kThisActorExecute:
+    {
+        XBT_INFO("this_actor::execute received (flop=%g)", decision.thisactorexecute());
+        try {
+            this_actor::execute(decision.thisactorexecute());
+        } catch (const HostFailureException & e) {
+            decision_ack.set_success(false);
+        }
+    } break;
     case rsg::pb::Decision::kThisActorSleepFor:
     {
         XBT_INFO("this_actor::sleep_for received (duration=%g)", decision.thisactorsleepfor());
@@ -137,6 +146,11 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } catch (const HostFailureException & e) {
             decision_ack.set_success(false);
         }
+    } break;
+    case rsg::pb::Decision::kThisActorYield:
+    {
+        XBT_INFO("this_actor::yield received");
+        this_actor::yield();
     } break;
 
     // rsg::Comm methods

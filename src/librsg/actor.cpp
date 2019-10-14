@@ -122,11 +122,14 @@ int rsg::Actor::get_pid() const
 }
 
 
-
-bool rsg::this_actor::is_maestro()
+void rsg::this_actor::execute(double flop)
 {
-    // Maestro is in the RSG server, not in any client.
-    return false;
+    rsg::pb::Decision decision;
+    decision.set_thisactorexecute(flop);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    // TODO: propagate failure as exception
 }
 
 void rsg::this_actor::sleep_for(double duration)
@@ -152,4 +155,19 @@ void rsg::this_actor::sleep_until(double timeout)
 int rsg::this_actor::get_pid()
 {
     return rsg::connection->actor_id();
+}
+
+bool rsg::this_actor::is_maestro()
+{
+    // Maestro is in the RSG server, not in any client.
+    return false;
+}
+
+void rsg::this_actor::yield()
+{
+    rsg::pb::Decision decision;
+    decision.set_thisactoryield(true);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
 }

@@ -35,10 +35,13 @@ private:
 
 namespace this_actor
 {
-    bool is_maestro();
+    void execute(double flop);
     void sleep_for(double duration);
     void sleep_until(double timeout);
+    void yield();
+
     int get_pid();
+    bool is_maestro();
 }
 
 }
