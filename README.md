@@ -36,7 +36,7 @@ Install dependencies:
 - docopt-cpp: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA docopt_cpp`
 - Protobuf: `nix-env -i protobuf`
 - SFML-network: `nix-env -i sfml`
-- SimGrid: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA simgrid322_2`
+- SimGrid: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA simgrid324`
 
 Make sure all of them are accessible by pkg-config:
 `pkg-config --cflags --libs docopt protobuf sfml-network simgrid` should
