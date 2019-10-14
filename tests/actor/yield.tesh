@@ -1,0 +1,66 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35024
+> [0.000000] [serve/INFO] Listening on port 35024
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=yielder, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=yielder, host_name=Ginette)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=yielder, host_name=Tremblay)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] this_actor::yield received
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:yielder:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Ginette:yielder:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Tremblay:yielder:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [0.000000] [simulation/INFO] Simulation has finished.
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor yielder Fafard -p 35024 -- client-actor-yield
+> [Fafard:yielder:(2) 0.000000] Hello. About to yield.
+> [Fafard:yielder:(2) 0.000000] Goodbye!
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor yielder Ginette -p 35024 -- client-actor-yield
+> [Ginette:yielder:(3) 0.000000] Hello. About to yield.
+> [Ginette:yielder:(3) 0.000000] Goodbye!
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor yielder Tremblay -p 35024 -- client-actor-yield
+> [Tremblay:yielder:(4) 0.000000] Hello. About to yield.
+> [Tremblay:yielder:(4) 0.000000] Goodbye!
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35024
