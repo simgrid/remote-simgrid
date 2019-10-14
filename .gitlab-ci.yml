@@ -41,6 +41,7 @@ build_test_nix:
 build_test_simgrid/unstable:
   image: simgrid/unstable
   stage: build
+  allow_failure: true
   script:
     ######################
     # Dependencies setup #
