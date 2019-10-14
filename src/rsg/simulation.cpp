@@ -196,7 +196,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
                     comm_it->second.reception_buffer = nullptr;
                 }
                 decision_ack.set_allocated_commwaitfor(comm_wait_for);
-            } catch (const simgrid::TimeoutError &) {
+            } catch (const simgrid::TimeoutException &) {
                 comm_wait_for->set_timeoutreached(true);
                 decision_ack.set_allocated_commwaitfor(comm_wait_for);
             } catch (const simgrid::CancelException &) {
