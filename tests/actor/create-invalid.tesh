@@ -13,6 +13,7 @@
 > [ 0.000000] (almighty@Fafard) Actor::get_name() received (actor_id=2)
 > [ 0.000000] (almighty@Fafard) Actor::create() received (name='invalid', host_name='Fafard')
 > [ 0.000000] (almighty@Fafard) this_actor::sleep_until received (timeout=1)
+> [ 0.000000] (invalid@Fafard) this_actor::yield received
 > [ 0.000000] (invalid@Fafard) Actor::get_name() received (actor_id=3)
 > [ 0.000000] (invalid@Fafard) this_actor::sleep_until received (timeout=2)
 > [ 1.000000] (almighty@Fafard) Quit decision received. Goodbye.

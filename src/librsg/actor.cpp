@@ -1,5 +1,6 @@
 #include <thread>
 
+#include <semaphore.h>
 #include <sys/types.h>
 #include <string.h>
 #include <unistd.h>
@@ -11,13 +12,22 @@
 
 #include "rsg.pb.h"
 
-static void actor_wrapper(int actor_id, const std::function<void(void *)> & code, void * code_data)
+static void actor_wrapper(int actor_id, sem_t * semaphore, const std::function<void(void *)> & code, void * code_data)
 {
-    rsg::connection = nullptr;
-    RSG_ENFORCE(actor_id != -1, "actor_id should not be -1");
-    rsg::connect(actor_id);
+    try {
+        rsg::connection = nullptr;
+        RSG_ENFORCE(actor_id != -1, "actor_id should not be -1");
+        rsg::connect(actor_id);
+        sem_post(semaphore); // Unlocks parent thread.
+    } catch(const rsg::Error & e) {
+        printf("Error caught while connecting Actor(id=%d) to the server: %s\n", actor_id, e.what());
+        sem_post(semaphore); // Unlocks parent thread.
+        throw;
+    }
 
     try {
+        // Yielding here ensures that this thread is executed in mutual execution with its parent thread.
+        rsg::this_actor::yield();
         code(code_data);
     } catch (const rsg::Error & e) {
         printf("Error caught while running Actor(id=%d): %s\n", actor_id, e.what());
@@ -49,9 +59,23 @@ rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & 
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Could not create a new Actor");
 
+    // This thread should NEVER run concurrently with the new actor's thread. To do so:
+    // - A semaphore ensures that this thread waits until the new actor is connected to the server.
+    // - Once connected, the new actor yields so it is stopped at least until this actor triggers a simulation event.
+    sem_t * semaphore = new sem_t;
+    int sem_return = sem_init(semaphore, 0, 0);
+    RSG_ENFORCE(sem_return == 0, "Cannot sem_init: %s\n", strerror(errno));
+
     // Create a thread for the newly-created actor.
-    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), code, code_data);
+    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), semaphore, code, code_data);
     rsg::connection->add_child_thread(child_thread);
+
+    // Wait until the child has connected.
+    sem_return = sem_wait(semaphore);
+    RSG_ENFORCE(sem_return == 0, "Cannot sem_wait: %s\n", strerror(errno));
+    sem_return = sem_destroy(semaphore);
+    RSG_ENFORCE(sem_return == 0, "Cannot sem_destroy: %s\n", strerror(errno));
+    delete semaphore;
 
     return rsg::ActorPtr(new Actor(ack.actorcreate().id()));
 }

@@ -22,14 +22,18 @@
 > [ 0.000000] (builder@Ginette) Actor::create() received (name='fast_child', host_name='Bourassa')
 > [ 0.000000] (almighty@Fafard) Actor::create() received (name='slow_child', host_name='Fafard')
 > [ 0.000000] (builder@Ginette) Actor::create() received (name='slow_child', host_name='Bourassa')
+> [ 0.000000] (fast_child@Fafard) this_actor::yield received
+> [ 0.000000] (almighty@Fafard) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (fast_child@Bourassa) this_actor::yield received
+> [ 0.000000] (builder@Ginette) this_actor::sleep_for received (duration=3)
 > [ 0.000000] (fast_child@Fafard) Actor::get_host() received (actor_id=4)
 > [ 0.000000] (fast_child@Fafard) Actor::get_name() received (actor_id=4)
 > [ 0.000000] (fast_child@Fafard) this_actor::sleep_for received (duration=2)
-> [ 0.000000] (almighty@Fafard) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (slow_child@Fafard) this_actor::yield received
 > [ 0.000000] (fast_child@Bourassa) Actor::get_host() received (actor_id=5)
 > [ 0.000000] (fast_child@Bourassa) Actor::get_name() received (actor_id=5)
 > [ 0.000000] (fast_child@Bourassa) this_actor::sleep_for received (duration=2)
-> [ 0.000000] (builder@Ginette) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (slow_child@Bourassa) this_actor::yield received
 > [ 0.000000] (slow_child@Fafard) Actor::get_host() received (actor_id=6)
 > [ 0.000000] (slow_child@Fafard) Actor::get_name() received (actor_id=6)
 > [ 0.000000] (slow_child@Fafard) this_actor::sleep_for received (duration=10)
