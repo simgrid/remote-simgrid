@@ -31,6 +31,7 @@ executable('client-mailbox-receiver-async', ['clients/mailbox_receiver_async.cpp
 executable('client-malicious-actor-id', ['clients/malicious_actor_id.cpp'], dependencies: librsg_dep)
 executable('client-malicious-port', ['clients/malicious_port.cpp'], dependencies: librsg_dep)
 executable('client-mutant', ['clients/mutant.cpp'], dependencies: librsg_dep)
+executable('client-ompi1', ['clients/ompi1.cpp'], dependencies: librsg_dep)
 executable('client-s4u-actor-create', ['s4u-clone/actor-create.cpp'], dependencies: librsg_dep)
 
 # Define some tests
@@ -63,4 +64,5 @@ test('mailbox asyncsend-asyncreceive', tesh, env: test_env, args: [files('mailbo
 test('malicious actor-id', tesh, env: test_env, args: [files('malicious/actor-id.tesh')])
 test('malicious port', tesh, env: test_env, args: [files('malicious/port.tesh')])
 test('misc process-mutation', tesh, env: test_env, args: [files('misc/process-mutation.tesh')])
+test('use-case ompi1', tesh, env: test_env, args: [files('use-case/ompi1.tesh')])
 test('s4u-clone actor-create', tesh, env: test_env, args: [files('s4u-clone/actor-create.tesh')])
