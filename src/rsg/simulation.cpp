@@ -439,6 +439,8 @@ void Actor::operator()()
     }
     catch (const rsg::Error & e)
     {
+        XBT_ERROR("%s", e.what());
+
         // Tell the command thread that an actor failed.
         rsg::InterthreadMessage msg;
         msg.type = rsg::InterthreadMessageType::SIMULATION_ABORTED;
