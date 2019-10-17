@@ -10,6 +10,7 @@
 > [0.000000] [serve/INFO] Received a START command!
 > [0.000000] [xbt_cfg/INFO] Configuration change: Set 'contexts/factory' to 'thread'
 > [0.000000] [simulation/INFO] Starting the simulation.
+> [Jupiter:fautly:(2) 0.000000] ../src/rsg/simulation.cpp:442: [simulation/ERROR] Connection lost
 > [0.000000] [simulation/INFO] Simulation has finished.
 > [0.000000] [serve/INFO] Simulation aborted: Problem detected with remote actor_id=2: Connection lost
 > [0.000000] [serve/INFO] Closing open sockets
