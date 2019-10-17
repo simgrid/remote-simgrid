@@ -15,6 +15,8 @@
 #include "assert.hpp"
 #include "network/tcp_socket.hpp"
 
+#include <string.h>
+
 template <typename Message>
 void write_message(const Message & message, rsg::TcpSocket & socket)
 {
@@ -22,7 +24,7 @@ void write_message(const Message & message, rsg::TcpSocket & socket)
     const uint32_t content_size = message.ByteSize();
     const uint32_t message_size = content_size + 4;
     auto message_content = new uint8_t[message_size]();
-    *message_content = content_size; // TODO: set endianness
+    memcpy(message_content, &content_size, 4); // TODO: set endianness
     bool serialize_ok = message.SerializeToArray(message_content + 4, content_size);
     RSG_ENFORCE(serialize_ok, "Could not serialize Protobuf message");
 
