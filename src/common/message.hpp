@@ -55,6 +55,6 @@ void read_message(Message & message, rsg::TcpSocket & socket)
         // Parse content.
         bool deserialize_ok = message.ParseFromArray(content, content_size);
         delete[] content;
-        RSG_ENFORCE(deserialize_ok, "Could not deserialize Protobuf message");
+        RSG_ENFORCE(deserialize_ok, "Could not deserialize Protobuf message of content_size=%u", content_size);
     }
 }
