@@ -17,18 +17,18 @@ int main()
     auto comm = mbox->get_async((void**) &i);
     comm->wait();
     printf("Received: %d\n", *i);
-    delete i;
+    delete[] i;
 
     comm = mbox->get_async((void**) &i);
     comm->wait();
     printf("Received: %d\n", *i);
-    delete i;
+    delete[] i;
 
     char * text;
     comm = mbox->get_async((void**) &text);
     comm->wait();
     printf("Received: '%s'", text);
-    delete text;
+    delete[] text;
 
     return 0;
 }

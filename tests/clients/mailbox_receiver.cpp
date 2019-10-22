@@ -18,16 +18,16 @@ int main()
 
     int * i = (int *) mbox->get();
     printf("Received: %d\n", *i);
-    delete i;
+    delete[] i;
 
     uint64_t bytes_read;
     i = (int *) mbox->get(bytes_read);
     printf("Received: %d (read %lu bytes)\n", *i, bytes_read);
-    delete i;
+    delete[] i;
 
     char * text = (char *) mbox->get();
     printf("Received: '%s'", text);
-    delete text;
+    delete[] text;
 
     return 0;
 }

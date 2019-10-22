@@ -40,8 +40,8 @@ int main()
     }
 
     RSG_INFO("All comms have finished. Received %d and %d", *recv_data1, *recv_data2);
-    delete recv_data1;
-    delete recv_data2;
+    delete[] recv_data1;
+    delete[] recv_data2;
 
     return 0;
 }

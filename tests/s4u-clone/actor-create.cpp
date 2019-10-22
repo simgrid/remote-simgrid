@@ -30,7 +30,7 @@ void forwarder(void * void_args)
     out->put(msg, bytes_read, bytes_read);
 
     RSG_INFO("I'm done. See you.");
-    delete msg;
+    delete[] msg;
     delete args;
 }
 
@@ -45,9 +45,9 @@ static void receiver(void * void_args)
     auto msg3 = (char *) mailbox->get();
     RSG_INFO("Got '%s', '%s' and '%s'", msg1, msg2, msg3);
 
-    delete msg1;
-    delete msg2;
-    delete msg3;
+    delete[] msg1;
+    delete[] msg2;
+    delete[] msg3;
 
     RSG_INFO("I'm done. See you.");
     delete mailbox_name;
