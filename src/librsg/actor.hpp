@@ -20,7 +20,9 @@ public:
     static ActorPtr self();
 
     static ActorPtr create(const std::string & name, const HostPtr & host,
-        const std::function<void(void *)>& code, void * code_data);
+        const std::function<void(void *)>& code, void * code_arg,
+        std::function<void(void *)> before_connect_code = std::function<void(void *)>(), void * before_connect_code_arg = nullptr,
+        std::function<void(void *)> after_connect_code = std::function<void(void *)>(), void * after_connect_code_arg = nullptr);
     // TODO: propose the other create functions (https://simgrid.frama.io/simgrid/app_s4u.html#s4u-actor)
 
     static int fork(const std::string & child_name, const HostPtr & host); // calls system's fork(). return value is POXIX with actor ids.

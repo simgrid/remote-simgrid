@@ -12,12 +12,16 @@
 
 #include "rsg.pb.h"
 
-static void actor_wrapper(int actor_id, sem_t * semaphore, const std::function<void(void *)> & code, void * code_data)
+static void actor_wrapper(int actor_id, sem_t * semaphore, const std::function<void(void *)> & code, void * code_arg,
+    std::function<void(void *)> before_connect_code, void * before_connect_code_arg,
+    std::function<void(void *)> after_connect_code, void * after_connect_code_arg)
 {
     try {
         rsg::connection = nullptr;
         RSG_ENFORCE(actor_id != -1, "actor_id should not be -1");
+        if (before_connect_code) { before_connect_code(before_connect_code_arg); }
         rsg::connect(actor_id);
+        if (after_connect_code) { after_connect_code(after_connect_code_arg); }
         sem_post(semaphore); // Unlocks parent thread.
     } catch(const rsg::Error & e) {
         printf("Error caught while connecting Actor(id=%d) to the server: %s\n", actor_id, e.what());
@@ -28,7 +32,7 @@ static void actor_wrapper(int actor_id, sem_t * semaphore, const std::function<v
     try {
         // Yielding here ensures that this thread is executed in mutual execution with its parent thread.
         rsg::this_actor::yield();
-        code(code_data);
+        code(code_arg);
     } catch (const rsg::Error & e) {
         printf("Error caught while running Actor(id=%d): %s\n", actor_id, e.what());
     }
@@ -45,7 +49,9 @@ rsg::ActorPtr rsg::Actor::self()
     return rsg::ActorPtr(new Actor(rsg::connection->actor_id()));
 }
 
-rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & host, const std::function<void(void *)>& code, void * code_data)
+rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & host, const std::function<void(void *)>& code, void * code_arg,
+    std::function<void(void *)> before_connect_code, void * before_connect_code_arg,
+    std::function<void(void *)> after_connect_code, void * after_connect_code_arg)
 {
     rsg::pb::Decision decision;
     auto pb_host = new rsg::pb::Host();
@@ -67,7 +73,8 @@ rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & 
     RSG_ENFORCE(sem_return == 0, "Cannot sem_init: %s\n", strerror(errno));
 
     // Create a thread for the newly-created actor.
-    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), semaphore, code, code_data);
+    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), semaphore, code, code_arg,
+        before_connect_code, before_connect_code_arg, after_connect_code, after_connect_code_arg);
     rsg::connection->add_child_thread(child_thread);
 
     // Wait until the child has connected.
