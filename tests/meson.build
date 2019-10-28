@@ -50,7 +50,7 @@ test('rsg-cli serve-kill', tesh, env: test_env, args: [files('rsg-cli/serve-kill
 test('actor sleep_for', tesh, env: test_env, args: [files('actor/sleep_for.tesh')])
 test('actor sleep_until', tesh, env: test_env, args: [files('actor/sleep_until.tesh')])
 test('actor create', tesh, env: test_env, args: [files('actor/create.tesh')])
-test('actor create-connection-hooks', tesh, env: test_env, args: [files('actor/create_connection_hooks.tesh')])
+test('actor create-connection-hooks', tesh, env: test_env, args: [files('actor/create-connection-hooks.tesh')])
 test('actor create-invalid', tesh, env: test_env, args: [files('actor/create-invalid.tesh')])
 test('actor create-thread-race', tesh, env: test_env, args: [files('actor/create-thread-race.tesh')])
 test('actor execute', tesh, env: test_env, args: [files('actor/execute.tesh')])
