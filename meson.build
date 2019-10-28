@@ -81,6 +81,8 @@ librsg_src = [
     'src/librsg/host.hpp',
     'src/librsg/mailbox.cpp',
     'src/librsg/mailbox.hpp',
+    'src/librsg/mutex.cpp',
+    'src/librsg/mutex.hpp',
     'src/librsg/pointers.hpp',
 ]
 

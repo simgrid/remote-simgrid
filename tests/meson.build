@@ -16,6 +16,7 @@ executable('client-segfault', ['clients/segfault.cpp'], dependencies: librsg_dep
 executable('client-sleep-for', ['clients/sleep_for.cpp'], dependencies: librsg_dep)
 executable('client-sleep-until', ['clients/sleep_until.cpp'], dependencies: librsg_dep)
 executable('client-actor-create', ['clients/actor_create.cpp'], dependencies: librsg_dep)
+executable('client-burst', ['clients/burst_create_actor.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-connection-hooks', ['clients/actor_create_connection_hooks.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-invalid', ['clients/actor_create_invalid.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-thread-race', ['clients/actor_create_thread_race.cpp'], dependencies: librsg_dep)
@@ -32,6 +33,7 @@ executable('client-mailbox-receiver-async', ['clients/mailbox_receiver_async.cpp
 executable('client-malicious-actor-id', ['clients/malicious_actor_id.cpp'], dependencies: librsg_dep)
 executable('client-malicious-port', ['clients/malicious_port.cpp'], dependencies: librsg_dep)
 executable('client-mutant', ['clients/mutant.cpp'], dependencies: librsg_dep)
+executable('client-mutex-simple', ['clients/mutex_simple.cpp'], dependencies: librsg_dep)
 executable('client-ompi1', ['clients/ompi1.cpp'], dependencies: librsg_dep)
 executable('client-s4u-actor-create', ['s4u-clone/actor-create.cpp'], dependencies: librsg_dep)
 

@@ -367,7 +367,16 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         pb_comm->set_address(comm_address);
         decision_ack.set_allocated_mailboxgetasync(pb_comm);
     } break;
+    case rsg::pb::Decision::kMutexCreate:
+    {
+        XBT_INFO("Mutex::create received");
+        auto mutex = Mutex::create();
+        uint64_t mutex_address = (uint64_t) mutex.get();
 
+        auto pb_mutex = new rsg::pb::Mutex();
+        pb_mutex->set_address(mutex_address);
+        decision_ack.set_allocated_mutexcreate(pb_mutex);
+    } break;
     case rsg::pb::Decision::TYPE_NOT_SET:
         RSG_ENFORCE(false, "Received a decision with unset decision type.");
         break;
