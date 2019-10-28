@@ -16,7 +16,6 @@ executable('client-segfault', ['clients/segfault.cpp'], dependencies: librsg_dep
 executable('client-sleep-for', ['clients/sleep_for.cpp'], dependencies: librsg_dep)
 executable('client-sleep-until', ['clients/sleep_until.cpp'], dependencies: librsg_dep)
 executable('client-actor-create', ['clients/actor_create.cpp'], dependencies: librsg_dep)
-executable('client-burst', ['clients/burst_create_actor.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-connection-hooks', ['clients/actor_create_connection_hooks.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-invalid', ['clients/actor_create_invalid.cpp'], dependencies: librsg_dep)
 executable('client-actor-create-thread-race', ['clients/actor_create_thread_race.cpp'], dependencies: librsg_dep)
