@@ -12,7 +12,7 @@ void prehook(void * arg)
 
 void posthook(void * arg)
 {
-    printf("prehook arg=%p\n", arg);
+    printf("posthook arg=%p\n", arg);
 }
 
 void child_actor(void * arg)

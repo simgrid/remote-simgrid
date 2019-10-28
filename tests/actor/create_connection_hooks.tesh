@@ -39,7 +39,7 @@ $ sleep ${INTERPROCESS_DELAY}
 & rsg add-actor 'almighty' Fafard -p 35027 -- client-actor-create-connection-hooks
 > Actor(pid=2, name='almighty') on Host(name='Fafard') executing main
 > prehook arg=(nil)
-> prehook arg=0x3
+> posthook arg=0x3
 > [Fafard:fast_child:(4) 0.000000] child_actor arg=(nil)
 
 $ sleep ${INTERPROCESS_DELAY}
@@ -48,7 +48,7 @@ $ sleep ${INTERPROCESS_DELAY}
 & rsg add-actor 'builder' Ginette -p 35027 -- client-actor-create-connection-hooks
 > Actor(pid=3, name='builder') on Host(name='Ginette') executing main
 > prehook arg=(nil)
-> prehook arg=0x3
+> posthook arg=0x3
 > [Ginette:fast_child:(5) 0.000000] child_actor arg=(nil)
 
 $ sleep ${START_DELAY}
