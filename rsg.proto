@@ -17,6 +17,10 @@ message Comm {
   uint64 address = 1;
 }
 
+message ConditionVariable {
+  uint64 address = 1;
+}
+
 message Mutex {
   uint64 address = 1;
 }

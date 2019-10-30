@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <condition_variable>
 
 #include "pointers.hpp"
 
@@ -16,8 +17,10 @@ private:
     ConditionVariable & operator=(const ConditionVariable &) = delete;
 
 public:
-    void wait(MutexPtr lock);
-    void wait(std::unique_lock<Mutex> & lock);
+    ~ConditionVariable();
+
+    void wait(rsg::MutexPtr lock);
+    void wait(std::unique_lock<rsg::Mutex> & lock);
 
     std::cv_status wait_until(std::unique_lock<Mutex> & lock, double timeout_time);
     std::cv_status wait_for(std::unique_lock<Mutex> & lock, double duration);

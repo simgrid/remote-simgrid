@@ -1,3 +1,4 @@
+#include "mutex.hpp"
 #include "connection.hpp"
 #include "condition_variable.hpp"
 #include "../common/assert.hpp"
@@ -13,28 +14,24 @@ rsg::ConditionVariable::~ConditionVariable()
     rsg::pb::Decision decision;
     auto comm = new rsg::pb::ConditionVariable();
     comm->set_address(_remote_address);
-    decision.set_allocated_commrefcountdecrease(comm);
-
-    rsg::pb::DecisionAck ack;
-    rsg::connection->send_decision(decision, ack);
 }
 
-void wait(MutexPtr lock)
+void wait(rsg::MutexPtr lock)
 {
 
 }
 
-void wait(std::unique_lock<Mutex> & lock)
+void wait(std::unique_lock<rsg::Mutex> & lock)
 {
 
 }
 
-std::cv_status wait_until(std::unique_lock<Mutex> & lock, double timeout_time)
+std::cv_status wait_until(std::unique_lock<rsg::Mutex> & lock, double timeout_time)
 {
     return std::cv_status::no_timeout;
 }
 
-std::cv_status wait_for(std::unique_lock<Mutex> & lock, double duration)
+std::cv_status wait_for(std::unique_lock<rsg::Mutex> & lock, double duration)
 {
     return std::cv_status::no_timeout;
 }
