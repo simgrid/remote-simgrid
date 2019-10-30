@@ -111,6 +111,11 @@ message Decision {
 
     // methods in rsg::Mutex
     bool mutexCreate = 25;
+    Mutex mutexRefcountIncrease = 26;
+    Mutex mutexRefcountDecrease = 27;
+    Mutex mutexLock = 28;
+    Mutex mutexUnlock = 29;
+    Mutex mutexTryLock = 30;
   }
 }
 
@@ -139,5 +144,6 @@ message DecisionAck {
     bytes mailboxGet = 10;
     Comm mailboxGetAsync = 11;
     Mutex mutexCreate = 12;
+    bool mutexTryLock = 13;
   }
 }

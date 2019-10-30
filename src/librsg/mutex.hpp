@@ -15,10 +15,14 @@ private:
     Mutex & operator=(const Mutex &) = delete;
 
 public:
-    static MutexPtr create();
+    ~Mutex();
+
     void lock();
     void unlock();
     bool try_lock();
+
+public:
+    static MutexPtr create();
 
 private:
     uint64_t _remote_address = 0;
