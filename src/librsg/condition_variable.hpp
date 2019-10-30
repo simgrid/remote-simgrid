@@ -16,9 +16,18 @@ private:
     ConditionVariable & operator=(const ConditionVariable &) = delete;
 
 public:
+    void wait(MutexPtr lock);
+    void wait(std::unique_lock<Mutex> & lock);
+
+    std::cv_status wait_until(std::unique_lock<Mutex> & lock, double timeout_time);
+    std::cv_status wait_for(std::unique_lock<Mutex> & lock, double duration);
+
+    void notify_one();
+    void notify_all();
 
 private:
     uint64_t _remote_address = 0;
+
 };
 
 }
