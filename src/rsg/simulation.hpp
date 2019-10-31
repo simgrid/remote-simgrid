@@ -29,8 +29,15 @@ struct RefcountStore
         unsigned int remote_ref_count = 1;
     };
 
+    struct ConditionVariable
+    {
+        simgrid::s4u::ConditionVariable * condition_variable = nullptr;
+        unsigned int remote_ref_count = 1;
+    };
+
     std::unordered_map<uint64_t, Comm> comms;
     std::unordered_map<uint64_t, Mutex> mutexes;
+    std::unordered_map<uint64_t, ConditionVariable> condition_variables;
 };
 
 class Actor
