@@ -20,10 +20,9 @@ public:
     ~ConditionVariable();
 
     void wait(rsg::MutexPtr lock);
-    void wait(std::unique_lock<rsg::Mutex> & lock);
 
-    std::cv_status wait_until(std::unique_lock<Mutex> & lock, double timeout_time);
-    std::cv_status wait_for(std::unique_lock<Mutex> & lock, double duration);
+    std::cv_status wait_until(rsg::MutexPtr lock, double timeout_time);
+    std::cv_status wait_for(rsg::MutexPtr lock, double duration);
 
     void notify_one();
     void notify_all();

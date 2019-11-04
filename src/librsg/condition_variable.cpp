@@ -16,32 +16,83 @@ rsg::ConditionVariable::~ConditionVariable()
     comm->set_address(_remote_address);
 }
 
-void wait(rsg::MutexPtr lock)
+void rsg::ConditionVariable::wait(rsg::MutexPtr lock)
 {
+    rsg::pb::Decision decision;
+    auto comm = new rsg::pb::ConditionVariable();
+    auto mutex = new rsg::pb::Mutex();
+    comm->set_address(_remote_address);
+    mutex->set_address(lock->_remote_address);
+    auto cv_wait  = new rsg::pb::Decision_ConditionVariableWait();
+    cv_wait->set_allocated_mutex(mutex);
+    cv_wait->set_allocated_conditionvariable(comm);
+    decision.set_allocated_conditionvariablewait(cv_wait);
 
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not wait on ConditionVariable");
 }
 
-void wait(std::unique_lock<rsg::Mutex> & lock)
+std::cv_status rsg::ConditionVariable::wait_until(rsg::MutexPtr lock, double timeout_time)
 {
+    rsg::pb::Decision decision;
+    auto comm = new rsg::pb::ConditionVariable();
+    auto mutex = new rsg::pb::Mutex();
+    comm->set_address(_remote_address);
+    mutex->set_address(lock->_remote_address);
+    auto cv_waituntil  = new rsg::pb::Decision_ConditionVariableWaitUntil();
+    cv_waituntil->set_allocated_mutex(mutex);
+    cv_waituntil->set_allocated_conditionvariable(comm);
+    cv_waituntil->set_timeout_time(timeout_time);
+    decision.set_allocated_conditionvariablewaituntil(cv_waituntil);
 
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not wait_until on ConditionVariable");
+
+    return 0 == ack.conditionvariablewaituntil() ? std::cv_status::no_timeout : std::cv_status::timeout;
 }
 
-std::cv_status wait_until(std::unique_lock<rsg::Mutex> & lock, double timeout_time)
+std::cv_status rsg::ConditionVariable::wait_for(rsg::MutexPtr lock, double duration)
 {
-    return std::cv_status::no_timeout;
+    rsg::pb::Decision decision;
+    auto comm = new rsg::pb::ConditionVariable();
+    auto mutex = new rsg::pb::Mutex();
+    comm->set_address(_remote_address);
+    mutex->set_address(lock->_remote_address);
+    auto cv_waitfor  = new rsg::pb::Decision_ConditionVariableWaitFor();
+    cv_waitfor->set_allocated_mutex(mutex);
+    cv_waitfor->set_allocated_conditionvariable(comm);
+    cv_waitfor->set_duration(duration);
+    decision.set_allocated_conditionvariablewaitfor(cv_waitfor);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not wait_for on ConditionVariable");
+
+    return 0 == ack.conditionvariablewaituntil() ? std::cv_status::no_timeout : std::cv_status::timeout;
 }
 
-std::cv_status wait_for(std::unique_lock<rsg::Mutex> & lock, double duration)
+void rsg::ConditionVariable::notify_one()
 {
-    return std::cv_status::no_timeout;
+    rsg::pb::Decision decision;
+    auto comm = new rsg::pb::ConditionVariable();
+    comm->set_address(_remote_address);
+    decision.set_allocated_conditionvariablenotifyone(comm);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not notify_one on ConditionVariable");
 }
 
-void notify_one()
+void rsg::ConditionVariable::notify_all()
 {
+    rsg::pb::Decision decision;
+    auto comm = new rsg::pb::ConditionVariable();
+    comm->set_address(_remote_address);
+    decision.set_allocated_conditionvariablenotifyall(comm);
 
-}
-
-void notify_all()
-{
-
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not notify_one on ConditionVariable");
 }
