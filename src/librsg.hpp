@@ -2,6 +2,7 @@
 
 #include <librsg/actor.hpp>
 #include <librsg/comm.hpp>
+#include <librsg/condition_variable.hpp>
 #include <librsg/connection.hpp>
 #include <librsg/engine.hpp>
 #include <librsg/log.hpp>

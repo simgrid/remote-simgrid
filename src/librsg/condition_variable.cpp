@@ -9,6 +9,18 @@ rsg::ConditionVariable::ConditionVariable(uint64_t remote_address) :
     _remote_address(remote_address) {
 }
 
+rsg::ConditionVariablePtr rsg::ConditionVariable::create()
+{
+    rsg::pb::Decision decision;
+    decision.set_conditionvariablecreate(true);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    if (!ack.success())
+        return nullptr;
+    return rsg::ConditionVariablePtr(new rsg::ConditionVariable(ack.conditionvariablecreate().address()));
+}
+
 rsg::ConditionVariable::~ConditionVariable()
 {
     rsg::pb::Decision decision;

@@ -30,6 +30,8 @@ public:
 private:
     uint64_t _remote_address = 0;
 
+public:
+    static ConditionVariablePtr create();
 };
 
 }
