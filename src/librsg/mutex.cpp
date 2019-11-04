@@ -15,8 +15,7 @@ rsg::MutexPtr rsg::Mutex::create()
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
-    if (!ack.success())
-        return nullptr;
+    RSG_ENFORCE(ack.success(), "Could not Mutex::create()");
     return rsg::MutexPtr(new rsg::Mutex(ack.mutexcreate().address()));
 }
 
@@ -41,6 +40,7 @@ void rsg::Mutex::lock()
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not Mutex::lock(addr=%lu)", _remote_address);
 }
 
 /** @brief Release the ownership of the mutex, unleashing a blocked actor (if any)
@@ -56,6 +56,7 @@ void rsg::Mutex::unlock()
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not Mutex::unlock(addr=%lu)", _remote_address);
 }
 
 /** @brief Acquire the mutex if it's free, and return false (without blocking) if not */
@@ -68,6 +69,6 @@ bool rsg::Mutex::try_lock()
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
-    RSG_ENFORCE(ack.success(), "Could not try_unlock(addr=%lu)", _remote_address);
+    RSG_ENFORCE(ack.success(), "Could not Mutex::try_lock(addr=%lu)", _remote_address);
     return ack.mutextrylock();
 }
