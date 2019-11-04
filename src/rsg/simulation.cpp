@@ -503,7 +503,7 @@ void Actor::operator()()
     }
     catch (const rsg::Error & e)
     {
-        XBT_ERROR("%s", e.what());
+        XBT_INFO("%s", e.what());
 
         // Tell the command thread that an actor failed.
         rsg::InterthreadMessage msg;
