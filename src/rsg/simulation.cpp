@@ -378,16 +378,6 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         pb_mutex->set_address(mutex_address);
         decision_ack.set_allocated_mutexcreate(pb_mutex);
     } break;
-    case rsg::pb::Decision::kMutexRefcountIncrease:
-    {
-        XBT_INFO("Mutex::refcount_increase received");
-        auto mutex_it = refcount_store->comms.find(decision.commrefcountincrease().address());
-        if (mutex_it == refcount_store->comms.end()) {
-            decision_ack.set_success(false);
-        } else {
-            mutex_it->second.remote_ref_count++;
-        }
-    } break;
     case rsg::pb::Decision::kMutexRefcountDecrease:
     {
         XBT_INFO("Mutex::refcount_decrease received");

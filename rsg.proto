@@ -111,7 +111,6 @@ message Decision {
 
     // methods in rsg::Mutex
     bool mutexCreate = 25;
-    Mutex mutexRefcountIncrease = 26;
     Mutex mutexRefcountDecrease = 27;
     Mutex mutexLock = 28;
     Mutex mutexUnlock = 29;
