@@ -367,12 +367,17 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         pb_comm->set_address(comm_address);
         decision_ack.set_allocated_mailboxgetasync(pb_comm);
     } break;
+
     //rsg::Mutex methods
     case rsg::pb::Decision::kMutexCreate:
     {
         XBT_INFO("Mutex::create received");
         auto mutex = Mutex::create();
+        RefcountStore::Mutex rf_mutex;
         uint64_t mutex_address = (uint64_t) mutex.get();
+        rf_mutex.mutex = mutex.get();
+        intrusive_ptr_add_ref(rf_mutex.mutex);
+        refcount_store->mutexs.insert({mutex_address, rf_mutex});
 
         auto pb_mutex = new rsg::pb::Mutex();
         pb_mutex->set_address(mutex_address);
