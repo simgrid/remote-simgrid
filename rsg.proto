@@ -86,7 +86,6 @@ message Decision {
     CreateActor actorCreate = 8;
 
     // methods in rsg::Comm
-    Comm commRefcountIncrease = 9;
     Comm commRefcountDecrease = 10;
     Comm commStart = 11;
     CommWaitFor commWaitFor = 12;

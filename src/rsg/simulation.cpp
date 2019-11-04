@@ -154,16 +154,6 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     } break;
 
     // rsg::Comm methods
-    case rsg::pb::Decision::kCommRefcountIncrease:
-    {
-        XBT_INFO("Comm::refcount_increase received");
-        auto comm_it = refcount_store->comms.find(decision.commrefcountincrease().address());
-        if (comm_it == refcount_store->comms.end()) {
-            decision_ack.set_success(false);
-        } else {
-            comm_it->second.remote_ref_count++;
-        }
-    } break;
     case rsg::pb::Decision::kCommRefcountDecrease:
     {
         XBT_INFO("Comm::refcount_decrease received");
