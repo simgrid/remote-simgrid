@@ -23,7 +23,14 @@ struct RefcountStore
         unsigned int remote_ref_count = 1;
     };
 
+    struct Mutex
+    {
+        simgrid::s4u::Mutex * mutex = nullptr;
+        unsigned int remote_ref_count = 1;
+    };
+
     std::unordered_map<uint64_t, Comm> comms;
+    std::unordered_map<uint64_t, Mutex> mutexs;
 };
 
 class Actor

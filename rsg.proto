@@ -17,6 +17,10 @@ message Comm {
   uint64 address = 1;
 }
 
+message Mutex {
+  uint64 address = 1;
+}
+
 // This is the first message sent by any client to the RSG server.
 message Command {
   message AddActor {
@@ -104,6 +108,13 @@ message Decision {
     MailboxPut mailboxPutAsync = 22;
     Mailbox mailboxGet = 23;
     Mailbox mailboxGetAsync = 24;
+
+    // methods in rsg::Mutex
+    bool mutexCreate = 25;
+    Mutex mutexRefcountDecrease = 27;
+    Mutex mutexLock = 28;
+    Mutex mutexUnlock = 29;
+    Mutex mutexTryLock = 30;
   }
 }
 
@@ -131,5 +142,7 @@ message DecisionAck {
     Comm mailboxPutAsync = 9;
     bytes mailboxGet = 10;
     Comm mailboxGetAsync = 11;
+    Mutex mutexCreate = 12;
+    bool mutexTryLock = 13;
   }
 }

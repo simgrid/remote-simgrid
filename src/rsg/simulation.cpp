@@ -368,6 +368,70 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         decision_ack.set_allocated_mailboxgetasync(pb_comm);
     } break;
 
+    //rsg::Mutex methods
+    case rsg::pb::Decision::kMutexCreate:
+    {
+        XBT_INFO("Mutex::create received");
+        auto mutex = Mutex::create();
+        RefcountStore::Mutex rf_mutex;
+        uint64_t mutex_address = (uint64_t) mutex.get();
+        rf_mutex.mutex = mutex.get();
+        intrusive_ptr_add_ref(rf_mutex.mutex);
+        refcount_store->mutexs.insert({mutex_address, rf_mutex});
+
+        auto pb_mutex = new rsg::pb::Mutex();
+        pb_mutex->set_address(mutex_address);
+        decision_ack.set_allocated_mutexcreate(pb_mutex);
+    } break;
+    case rsg::pb::Decision::kMutexRefcountDecrease:
+    {
+        XBT_INFO("Mutex::refcount_decrease received");
+        auto mutex_it = refcount_store->mutexs.find(decision.mutexrefcountdecrease().address());
+        if (mutex_it == refcount_store->mutexs.end()) {
+            decision_ack.set_success(false);
+        } else {
+            if (mutex_it->second.remote_ref_count == 1) {
+                auto mutex = mutex_it->second.mutex;
+                intrusive_ptr_release(mutex);
+                refcount_store->mutexs.erase(mutex_it);
+            } else {
+                mutex_it->second.remote_ref_count--;
+            }
+        }
+    } break;
+    case rsg::pb::Decision::kMutexLock:
+    {
+        XBT_INFO("Mutex::lock received");
+        auto mutex_it = refcount_store->mutexs.find(decision.mutexlock().address());
+        if (mutex_it == refcount_store->mutexs.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto mutex = mutex_it->second.mutex;
+            mutex->lock();
+        }
+    } break;
+    case rsg::pb::Decision::kMutexUnlock:
+    {
+        XBT_INFO("Mutex::unlock received");
+        auto mutex_it = refcount_store->mutexs.find(decision.mutexunlock().address());
+        if (mutex_it == refcount_store->mutexs.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto mutex = mutex_it->second.mutex;
+            mutex->unlock();
+        }
+    } break;
+    case rsg::pb::Decision::kMutexTryLock:
+    {
+        XBT_INFO("Mutex::try_lock received");
+        auto mutex_it = refcount_store->mutexs.find(decision.mutexunlock().address());
+        if (mutex_it == refcount_store->mutexs.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto mutex = mutex_it->second.mutex;
+            decision_ack.set_mutextrylock(mutex->try_lock());
+        }
+    } break;
     case rsg::pb::Decision::TYPE_NOT_SET:
         RSG_ENFORCE(false, "Received a decision with unset decision type.");
         break;
