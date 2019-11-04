@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 #include "pointers.hpp"
 
 namespace rsg
