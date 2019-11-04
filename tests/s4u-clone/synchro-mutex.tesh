@@ -20,119 +20,119 @@
 > [Jupiter:worker:(4) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(5) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Tremblay')
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Mutex::lock
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Mutex::unlock
-> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Mutex::lock received
 > [Jupiter:worker:(6) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(7) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Tremblay')
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Mutex::lock
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Mutex::unlock
-> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(5) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Mutex::lock received
 > [Jupiter:worker:(8) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=8)
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=8)
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=8)
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=8)
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(6) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(9) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Tremblay')
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Mutex::lock
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=9)
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=9)
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=9)
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=9)
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Mutex::unlock
-> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(7) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=8)
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=8)
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=8)
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=8)
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Mutex::lock received
 > [Jupiter:worker:(10) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=10)
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=10)
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=10)
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=10)
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(8) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=9)
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=9)
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=9)
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=9)
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(11) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Tremblay')
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Mutex::lock
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=11)
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=11)
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=11)
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=11)
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Mutex::unlock
-> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(9) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=10)
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=10)
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=10)
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=10)
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Mutex::lock received
 > [Jupiter:worker:(12) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=12)
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=12)
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=12)
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=12)
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(10) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=11)
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=11)
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=11)
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=11)
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(13) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Tremblay')
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Tremblay')
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Mutex::lock
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=13)
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=13)
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=13)
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=13)
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Mutex::unlock
-> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(11) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=12)
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=12)
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=12)
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=12)
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Mutex::lock received
 > [Jupiter:worker:(14) 0.000000] [simulation/INFO] this_actor::yield received
 > [Tremblay:main:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=10)
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Mutex::lock
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=14)
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=14)
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=14)
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=14)
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Mutex::unlock
-> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(12) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=13)
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=13)
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=13)
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=13)
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Mutex::lock received
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] this_actor::yield received
-> [Tremblay:worker:(15) 0.000000] [simulation/INFO] Mutex::lock
+> [Tremblay:worker:(13) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=14)
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=14)
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=14)
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=14)
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Tremblay:worker:(15) 0.000000] [simulation/INFO] Mutex::lock received
+> [Jupiter:worker:(14) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=15)
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=15)
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=15)
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=15)
-> [Tremblay:worker:(15) 0.000000] [simulation/INFO] Mutex::unlock
+> [Tremblay:worker:(15) 0.000000] [simulation/INFO] Mutex::unlock received
 > [Tremblay:worker:(15) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Tremblay:main:(3) 10.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
 > [Tremblay:main:(3) 10.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)

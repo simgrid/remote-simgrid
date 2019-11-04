@@ -1,7 +1,6 @@
 #include <librsg.hpp>
 
 #include <mutex> /* std::mutex and std::lock_guard */
-#include "simgrid/s4u.hpp" /* All of S4U */
 
 constexpr int NB_ACTOR = 6;
 
