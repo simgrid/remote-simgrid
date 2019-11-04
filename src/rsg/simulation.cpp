@@ -447,6 +447,11 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         XBT_INFO("ConditionVariable::create received");
         auto condition_variable = ConditionVariable::create();
         uint64_t condition_variable_address = (uint64_t) condition_variable.get();
+        RefcountStore::ConditionVariable rf_cv;
+
+        rf_cv.condition_variable = condition_variable.get();
+        intrusive_ptr_add_ref(rf_cv.condition_variable);
+        refcount_store->condition_variables.insert({condition_variable_address, rf_cv});
 
         auto pb_condition_variable = new rsg::pb::ConditionVariable();
         pb_condition_variable->set_address(condition_variable_address);
