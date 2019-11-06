@@ -98,6 +98,7 @@ message Decision {
 
     // static methods in rsg::Host
     string hostByNameOrNull = 17;
+    bool hostCurrent = 31;
 
     // methods in rsg::Mailbox
     Mailbox mailboxEmpty = 18;
@@ -138,6 +139,7 @@ message DecisionAck {
     bool commTest = 6;
     CommWaitAnyFor commWaitAnyFor = 7;
     double engineGetClock = 8;
+    Host hostCurrent = 14;
     Comm mailboxPutAsync = 9;
     bytes mailboxGet = 10;
     Comm mailboxGetAsync = 11;

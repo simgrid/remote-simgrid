@@ -276,6 +276,13 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         auto host = Host::by_name_or_null(decision.hostbynameornull());
         decision_ack.set_success(host != nullptr);
     } break;
+    case rsg::pb::Decision::kHostCurrent:
+    {
+        XBT_INFO("Host::current received");
+        auto host = new rsg::pb::Host();
+        host->set_name(s4u::Host::current()->get_name());
+        decision_ack.set_allocated_hostcurrent(host);
+    } break;
 
     // rsg::Mailbox methods
     case rsg::pb::Decision::kMailboxEmpty:

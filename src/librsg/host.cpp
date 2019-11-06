@@ -27,6 +27,17 @@ rsg::HostPtr rsg::Host::by_name_or_null(const std::string & name)
     return rsg::HostPtr(new rsg::Host(name));
 }
 
+rsg::HostPtr rsg::Host::current()
+{
+    rsg::pb::Decision decision;
+    decision.set_hostcurrent(true);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Could not Host::current()");
+    return rsg::HostPtr(new rsg::Host(ack.hostcurrent().name()));
+}
+
 std::string rsg::Host::get_name() const
 {
     return _name;

@@ -17,6 +17,7 @@ private:
 public:
     static HostPtr by_name(const std::string & name);
     static HostPtr by_name_or_null(const std::string & name);
+    static HostPtr current();
 
     std::string get_name() const;
     const char * get_cname() const;

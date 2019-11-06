@@ -21,12 +21,15 @@
 > [0.000000] [simulation/INFO] Starting the simulation.
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Host::current received
 > [Fafard:john doe:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
 > [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Host::current received
 > [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
 > [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Host::current received
 > [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [0.000000] [simulation/INFO] Simulation has finished.
 > [0.000000] [serve/INFO] Closing open sockets
