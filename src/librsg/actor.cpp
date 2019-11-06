@@ -120,6 +120,26 @@ int rsg::Actor::fork(const std::string & child_name, const HostPtr & host)
     }
 }
 
+void rsg::Actor::join()
+{
+    join(-1);
+}
+
+void rsg::Actor::join(double timeout)
+{
+    rsg::pb::Decision decision;
+    auto actor = new rsg::pb::Actor();
+    actor->set_id(_id);
+    auto actor_join = new rsg::pb::Decision_ActorJoin();
+    actor_join->set_allocated_actor(actor);
+    actor_join->set_timeout(timeout);
+    decision.set_allocated_actorjoin(actor_join);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
+    RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
+}
+
 rsg::HostPtr rsg::Actor::get_host()
 {
     rsg::pb::Decision decision;

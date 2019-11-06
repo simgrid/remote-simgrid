@@ -53,6 +53,11 @@ message Decision {
     Host host = 2;
   }
 
+  message ActorJoin {
+    Actor actor = 1;
+    double timeout = 2;
+  }
+
   message MailboxPut {
     Mailbox mailbox = 1;
     bytes data = 2;
@@ -81,6 +86,7 @@ message Decision {
     // methods in rsg::Actor
     Actor actorGetName = 6;
     Actor actorGetHost = 7;
+    ActorJoin actorJoin = 32;
 
     // static methods in rsg::Actor
     CreateActor actorCreate = 8;

@@ -118,6 +118,16 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         }
     } break;
+    case rsg::pb::Decision::kActorJoin:
+    {
+        XBT_INFO("Actor::join() received (actor_id=%d, timeout=%g)", decision.actorjoin().actor().id(), decision.actorjoin().timeout());
+        auto actor = s4u::Actor::by_pid(decision.actorjoin().actor().id());
+        if (actor != nullptr) {
+            actor->join(decision.actorjoin().timeout());
+        } else {
+            decision_ack.set_success(false);
+        }
+    } break;
 
     // rsg::this_actor methods
     case rsg::pb::Decision::kThisActorExecute:

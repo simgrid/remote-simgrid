@@ -25,6 +25,8 @@ public:
     // TODO: propose the other create functions (https://simgrid.frama.io/simgrid/app_s4u.html#s4u-actor)
 
     static int fork(const std::string & child_name, const HostPtr & host); // calls system's fork(). return value is POXIX with actor ids.
+    void join();
+    void join(double timeout);
 
     HostPtr get_host();
     std::string get_name();

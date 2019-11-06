@@ -1,0 +1,106 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35029 -- --log=serve.thres:critical
+> [0.000000] [serve/INFO] Listening on port 35029
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::current received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='sleeper1', host_name='Fafard')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::join() received (actor_id=3, timeout=2)
+> [Fafard:sleeper1:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:sleeper1:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sleeper1:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sleeper1:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Host::current received
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::create() received (name='sleeper2', host_name='Fafard')
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 2.000000] [simulation/INFO] Actor::join() received (actor_id=4, timeout=4)
+> [Fafard:sleeper2:(4) 2.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:sleeper2:(4) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:sleeper2:(4) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:sleeper2:(4) 2.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:sleeper1:(3) 3.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sleeper1:(3) 3.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sleeper1:(3) 3.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sleeper2:(4) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:sleeper2:(4) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:sleeper2:(4) 5.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Host::current received
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::create() received (name='sleeper3', host_name='Fafard')
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Actor::join() received (actor_id=5, timeout=2)
+> [Fafard:sleeper3:(5) 5.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:sleeper3:(5) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:sleeper3:(5) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:sleeper3:(5) 5.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Host::current received
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Actor::create() received (name='sleeper4', host_name='Fafard')
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 7.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 7.000000] [simulation/INFO] this_actor::sleep_for received (duration=4)
+> [Fafard:sleeper4:(6) 7.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:sleeper4:(6) 7.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:sleeper4:(6) 7.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:sleeper4:(6) 7.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:sleeper3:(5) 8.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:sleeper3:(5) 8.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:sleeper3:(5) 8.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sleeper4:(6) 10.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:sleeper4:(6) 10.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:sleeper4:(6) 10.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:main:(2) 11.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 11.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 11.000000] [simulation/INFO] Actor::join() received (actor_id=6, timeout=1)
+> [Fafard:main:(2) 11.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 11.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 11.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:main:(2) 12.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 12.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 12.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [12.000000] [simulation/INFO] Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor main Fafard -p 35029 -- client-s4u-actor-join Bourassa
+> [Fafard:main:(2) 0.000000] Start sleeper
+> [Fafard:main:(2) 0.000000] Join the sleeper (timeout 2)
+> [Fafard:sleeper1:(3) 0.000000] Sleeper started
+> [Fafard:main:(2) 2.000000] Start sleeper
+> [Fafard:main:(2) 2.000000] Join the sleeper (timeout 4)
+> [Fafard:sleeper2:(4) 2.000000] Sleeper started
+> [Fafard:sleeper1:(3) 3.000000] I'm done. See you!
+> [Fafard:sleeper2:(4) 5.000000] I'm done. See you!
+> [Fafard:main:(2) 5.000000] Start sleeper
+> [Fafard:main:(2) 5.000000] Join the sleeper (timeout 2)
+> [Fafard:sleeper3:(5) 5.000000] Sleeper started
+> [Fafard:main:(2) 7.000000] Start sleeper
+> [Fafard:main:(2) 7.000000] Waiting 4
+> [Fafard:sleeper4:(6) 7.000000] Sleeper started
+> [Fafard:sleeper3:(5) 8.000000] I'm done. See you!
+> [Fafard:sleeper4:(6) 10.000000] I'm done. See you!
+> [Fafard:main:(2) 11.000000] Join the sleeper after its end (timeout 1)
+> [Fafard:main:(2) 11.000000] exception caught. should not happen, FIXME
+> [Fafard:main:(2) 12.000000] Goodbye now!
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35029
