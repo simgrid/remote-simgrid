@@ -30,7 +30,7 @@ struct RefcountStore
     };
 
     std::unordered_map<uint64_t, Comm> comms;
-    std::unordered_map<uint64_t, Mutex> mutexs;
+    std::unordered_map<uint64_t, Mutex> mutexes;
 };
 
 class Actor

@@ -384,7 +384,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         uint64_t mutex_address = (uint64_t) mutex.get();
         rf_mutex.mutex = mutex.get();
         intrusive_ptr_add_ref(rf_mutex.mutex);
-        refcount_store->mutexs.insert({mutex_address, rf_mutex});
+        refcount_store->mutexes.insert({mutex_address, rf_mutex});
 
         auto pb_mutex = new rsg::pb::Mutex();
         pb_mutex->set_address(mutex_address);
@@ -393,14 +393,14 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     case rsg::pb::Decision::kMutexRefcountDecrease:
     {
         XBT_INFO("Mutex::refcount_decrease received");
-        auto mutex_it = refcount_store->mutexs.find(decision.mutexrefcountdecrease().address());
-        if (mutex_it == refcount_store->mutexs.end()) {
+        auto mutex_it = refcount_store->mutexes.find(decision.mutexrefcountdecrease().address());
+        if (mutex_it == refcount_store->mutexes.end()) {
             decision_ack.set_success(false);
         } else {
             if (mutex_it->second.remote_ref_count == 1) {
                 auto mutex = mutex_it->second.mutex;
                 intrusive_ptr_release(mutex);
-                refcount_store->mutexs.erase(mutex_it);
+                refcount_store->mutexes.erase(mutex_it);
             } else {
                 mutex_it->second.remote_ref_count--;
             }
@@ -409,8 +409,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     case rsg::pb::Decision::kMutexLock:
     {
         XBT_INFO("Mutex::lock received");
-        auto mutex_it = refcount_store->mutexs.find(decision.mutexlock().address());
-        if (mutex_it == refcount_store->mutexs.end()) {
+        auto mutex_it = refcount_store->mutexes.find(decision.mutexlock().address());
+        if (mutex_it == refcount_store->mutexes.end()) {
             decision_ack.set_success(false);
         } else {
             auto mutex = mutex_it->second.mutex;
@@ -420,8 +420,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     case rsg::pb::Decision::kMutexUnlock:
     {
         XBT_INFO("Mutex::unlock received");
-        auto mutex_it = refcount_store->mutexs.find(decision.mutexunlock().address());
-        if (mutex_it == refcount_store->mutexs.end()) {
+        auto mutex_it = refcount_store->mutexes.find(decision.mutexunlock().address());
+        if (mutex_it == refcount_store->mutexes.end()) {
             decision_ack.set_success(false);
         } else {
             auto mutex = mutex_it->second.mutex;
@@ -431,8 +431,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     case rsg::pb::Decision::kMutexTryLock:
     {
         XBT_INFO("Mutex::try_lock received");
-        auto mutex_it = refcount_store->mutexs.find(decision.mutexunlock().address());
-        if (mutex_it == refcount_store->mutexs.end()) {
+        auto mutex_it = refcount_store->mutexes.find(decision.mutexunlock().address());
+        if (mutex_it == refcount_store->mutexes.end()) {
             decision_ack.set_success(false);
         } else {
             auto mutex = mutex_it->second.mutex;
