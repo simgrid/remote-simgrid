@@ -113,6 +113,7 @@ install_headers(
     'src/librsg/host.hpp',
     'src/librsg/log.hpp',
     'src/librsg/mailbox.hpp',
+    'src/librsg/mutex.hpp',
     'src/librsg/pointers.hpp',
     subdir: 'librsg'
 )
