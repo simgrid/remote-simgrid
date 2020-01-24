@@ -15,7 +15,7 @@
 
 int add_actor(const std::string & server_hostname, int server_port,
     const std::string & actor_name, const std::string & vhost_name,
-    bool autoconnect, const std::string & command_to_run,
+    bool autoconnect, bool fork, const std::string & command_to_run,
     const std::vector<std::string> & command_args)
 {
     try
@@ -46,12 +46,16 @@ int add_actor(const std::string & server_hostname, int server_port,
             return 1;
         }
 
-        // Create the requested process
-        errno = 0;
-        pid_t pid = fork();
-        RSG_ENFORCE(pid != -1, "Cannot create a new process: %s", strerror(errno));
+        pid_t pid = -1;
+        if (fork)
+        {
+            // Create the requested process
+            errno = 0;
+            pid = ::fork();
+            RSG_ENFORCE(pid != -1, "Cannot create a new process: %s", strerror(errno));
+        }
 
-        if (pid == 0) // Child
+        if (!fork || pid == 0) // Child process (or parent if fork is disabled)
         {
             // Prepare execvp "argv".
             const size_t nb_args = command_args.size() + 2;
