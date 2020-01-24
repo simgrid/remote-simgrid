@@ -58,6 +58,7 @@ test('actor create-thread-race', tesh, env: test_env, args: [files('actor/create
 test('actor execute', tesh, env: test_env, args: [files('actor/execute.tesh')])
 test('actor fork', tesh, env: test_env, args: [files('actor/fork.tesh')])
 test('actor whoami', tesh, env: test_env, args: [files('actor/whoami.tesh')])
+test('actor whoami-nofork', tesh, env: test_env, args: [files('actor/whoami-nofork.tesh')])
 test('actor yield', tesh, env: test_env, args: [files('actor/yield.tesh')])
 test('comm waitany', tesh, env: test_env, args: [files('comm/waitany.tesh')])
 test('host finder', tesh, env: test_env, args: [files('host/finder.tesh')])
