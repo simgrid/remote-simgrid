@@ -1,7 +1,7 @@
 { kapack ? import
-    (fetchTarball "https://github.com/oar-team/kapack/archive/master.tar.gz")
+    (fetchTarball "https://github.com/oar-team/nur-kapack/archive/master.tar.gz")
   {}
-, simgrid ? kapack.simgrid324
+, simgrid ? kapack.simgrid-325
 , doCoverage ? true
 , useClang ? false
 }:
@@ -20,7 +20,7 @@ let
 
       src = ./.;
       nativeBuildInputs = [ meson pkgs.pkgconfig pkgs.ninja ]
-        ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
+        ++ pkgs.lib.optional doCoverage [ pkgs.gcovr ];
       buildInputs = [ simgrid kapack.docopt_cpp pkgs.boost pkgs.protobuf ];
 
       preConfigure = "rm -rf build";
