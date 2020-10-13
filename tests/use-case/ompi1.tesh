@@ -47,12 +47,12 @@
 > [Fafard:rank1:(3) 0.007162] [simulation/INFO] Mailbox::put received (mbox_name='bg_1')
 > [Fafard:bg_1:(5) 0.007162] [simulation/INFO] Comm::refcount_decrease received
 > [Fafard:bg_1:(5) 0.007162] [simulation/INFO] Comm::wait_any_for received
-> [Fafard:rank1:(3) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
 > [Fafard:bg_1:(5) 0.007357] [simulation/INFO] Comm::refcount_decrease received
 > [Fafard:bg_1:(5) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
-> [Bourassa:rank0:(2) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:rank1:(3) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
 > [Bourassa:bg_0:(4) 0.007357] [simulation/INFO] Comm::refcount_decrease received
 > [Bourassa:bg_0:(4) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:rank0:(2) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
 > [0.007357] [simulation/INFO] Simulation has finished.
 > [0.007357] [serve/INFO] Closing open sockets
 > [0.007357] [serve/INFO] All sockets have been closed
@@ -70,8 +70,8 @@ $ sleep ${INTERPROCESS_DELAY}
 > Non-command comm has finished
 > terminate background actor
 > wait_any on 1 comms
-> exit
 > TERMINATE command received
+> exit
 
 $ sleep ${INTERPROCESS_DELAY}
 
@@ -86,8 +86,8 @@ $ sleep ${INTERPROCESS_DELAY}
 > Non-command comm has finished
 > terminate background actor
 > wait_any on 1 comms
-> exit
 > TERMINATE command received
+> exit
 
 $ sleep ${START_DELAY}
 
