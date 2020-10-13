@@ -1,5 +1,5 @@
 project('remote-simgrid', 'cpp',
-    version: '0.2.0',
+    version: '0.3.0',
     license: 'LGPL-3.0',
     meson_version: '>=0.42.0',
     default_options: [

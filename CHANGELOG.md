@@ -8,6 +8,9 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 
 [//]: =========================================================================
 ## [Unreleased]
+
+[//]: =========================================================================
+## [0.3.0] - 2020-10-13
 ### Changed (breaks everything)
 - Full reimplementation with different API and dependencies.
 - A single `rsg` program is used to start the RSG server,
@@ -57,5 +60,6 @@ Initial release.
 [semver]: http://semver.org/spec/v2.0.0.html
 [protobuf]: https://github.com/protocolbuffers/protobuf
 
-[Unreleased]: https://github.com/simgrid/remote-simgrid/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/simgrid/remote-simgrid/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/simgrid/remote-simgrid/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/simgrid/remote-simgrid/compare/v0.1.0...v0.2.0
