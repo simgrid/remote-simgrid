@@ -1,0 +1,95 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35026
+> [0.000000] [serve/INFO] Listening on port 35026
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=rank0, host_name=Bourassa)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=rank1, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Bourassa:rank0:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Bourassa:rank0:(2) 0.000000] [simulation/INFO] Actor::create() received (name='bg_0', host_name='Bourassa')
+> [Fafard:rank1:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:rank1:(3) 0.000000] [simulation/INFO] Actor::create() received (name='bg_1', host_name='Fafard')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [Bourassa:rank0:(2) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='bg_0')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=5)
+> [Fafard:rank1:(3) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='bg_1')
+> [Bourassa:bg_0:(4) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:bg_1:(5) 0.000000] [simulation/INFO] this_actor::yield received
+> [Bourassa:bg_0:(4) 0.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='bg_0')
+> [Fafard:bg_1:(5) 0.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='bg_1')
+> [Bourassa:bg_0:(4) 0.000000] [simulation/INFO] Comm::wait_any_for received
+> [Fafard:bg_1:(5) 0.000000] [simulation/INFO] Comm::wait_any_for received
+> [Fafard:rank1:(3) 0.000195] [simulation/INFO] Mailbox::get received (mbox_name='cb_1')
+> [Fafard:bg_1:(5) 0.000195] [simulation/INFO] Mailbox::get_async received (mbox_name='1')
+> [Bourassa:rank0:(2) 0.000195] [simulation/INFO] Mailbox::get received (mbox_name='cb_0')
+> [Bourassa:bg_0:(4) 0.000195] [simulation/INFO] Mailbox::put_async received (mbox_name='1')
+> [Fafard:bg_1:(5) 0.000195] [simulation/INFO] Mailbox::get_async received (mbox_name='bg_1')
+> [Bourassa:bg_0:(4) 0.000195] [simulation/INFO] Mailbox::get_async received (mbox_name='bg_0')
+> [Fafard:bg_1:(5) 0.000195] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:bg_1:(5) 0.000195] [simulation/INFO] Comm::wait_any_for received
+> [Bourassa:bg_0:(4) 0.000195] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:bg_0:(4) 0.000195] [simulation/INFO] Comm::wait_any_for received
+> [Fafard:bg_1:(5) 0.006966] [simulation/INFO] Mailbox::put received (mbox_name='cb_1')
+> [Bourassa:bg_0:(4) 0.006966] [simulation/INFO] Mailbox::put received (mbox_name='cb_0')
+> [Bourassa:rank0:(2) 0.007162] [simulation/INFO] Mailbox::put received (mbox_name='bg_0')
+> [Bourassa:bg_0:(4) 0.007162] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:bg_0:(4) 0.007162] [simulation/INFO] Comm::wait_any_for received
+> [Fafard:rank1:(3) 0.007162] [simulation/INFO] Mailbox::put received (mbox_name='bg_1')
+> [Fafard:bg_1:(5) 0.007162] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:bg_1:(5) 0.007162] [simulation/INFO] Comm::wait_any_for received
+> [Fafard:rank1:(3) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:bg_1:(5) 0.007357] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:bg_1:(5) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:rank0:(2) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:bg_0:(4) 0.007357] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:bg_0:(4) 0.007357] [simulation/INFO] Quit decision received. Goodbye.
+> [0.007357] [simulation/INFO] Simulation has finished.
+> [0.007357] [serve/INFO] Closing open sockets
+> [0.007357] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'rank0' Bourassa -p 35026 -- client-ompi1 0
+> create background actor
+> tell background actor to do operation
+> wait_any on 1 comms
+> wait until operation is done
+> SEND command received
+> wait_any on 2 comms
+> Non-command comm has finished
+> terminate background actor
+> wait_any on 1 comms
+> exit
+> TERMINATE command received
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'rank1' Fafard -p 35026 -- client-ompi1 1
+> create background actor
+> tell background actor to do operation
+> wait_any on 1 comms
+> wait until operation is done
+> RECV command received
+> wait_any on 2 comms
+> Non-command comm has finished
+> terminate background actor
+> wait_any on 1 comms
+> exit
+> TERMINATE command received
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35026

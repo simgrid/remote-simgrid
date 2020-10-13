@@ -1,0 +1,155 @@
+syntax = "proto3";
+package rsg.pb;
+
+message Actor {
+  int32 id = 1;
+}
+
+message Host {
+  string name = 1;
+}
+
+message Mailbox {
+  string name = 1;
+}
+
+message Comm {
+  uint64 address = 1;
+}
+
+message Mutex {
+  uint64 address = 1;
+}
+
+// This is the first message sent by any client to the RSG server.
+message Command {
+  message AddActor {
+    string actorName = 1;
+    string hostName = 2;
+  }
+  oneof type {
+    AddActor addActor = 1;
+    bool start = 2;
+    string kill = 3;
+    bool status = 4;
+    Actor connect = 5;
+  }
+}
+
+// Server's acknowledgment to the client initial command.
+message CommandAck {
+  message Status {
+    uint32 nbConnectedActors = 1;
+  }
+  bool success = 1; // Defined for all acknowledgments.
+  Actor actor = 2; // Only defined as ADD-ACTOR acknowledgment.
+  Status status = 3; // Only defined as STATUS acknowledgment.
+}
+
+// The only message sent by clients to the RSG server during the simulation.
+message Decision {
+  message CreateActor {
+    string name = 1;
+    Host host = 2;
+  }
+
+  message ActorJoin {
+    Actor actor = 1;
+    double timeout = 2;
+  }
+
+  message MailboxPut {
+    Mailbox mailbox = 1;
+    bytes data = 2;
+    uint64 simulatedSize = 3;
+  }
+
+  message CommWaitFor {
+    Comm comm = 1;
+    double timeout = 2;
+  }
+
+  message CommWaitAnyFor {
+    repeated Comm comms = 1;
+    double timeout = 2;
+  }
+
+  oneof type {
+    bool quit = 1;
+
+    // static methods in rsg::this_actor
+    double thisActorExecute = 2;
+    double thisActorSleepFor = 3;
+    double thisActorSleepUntil = 4;
+    bool thisActorYield = 5;
+
+    // methods in rsg::Actor
+    Actor actorGetName = 6;
+    Actor actorGetHost = 7;
+    ActorJoin actorJoin = 32;
+
+    // static methods in rsg::Actor
+    CreateActor actorCreate = 8;
+
+    // methods in rsg::Comm
+    Comm commRefcountDecrease = 10;
+    Comm commStart = 11;
+    CommWaitFor commWaitFor = 12;
+    Comm commCancel = 13;
+    Comm commTest = 14;
+    CommWaitAnyFor commWaitAnyFor = 15;
+
+    // static methods in rsg::Engine
+    bool engineGetClock = 16;
+
+    // static methods in rsg::Host
+    string hostByNameOrNull = 17;
+    bool hostCurrent = 31;
+
+    // methods in rsg::Mailbox
+    Mailbox mailboxEmpty = 18;
+    Mailbox mailboxListen = 19;
+    Mailbox mailboxReady = 20;
+    MailboxPut mailboxPut = 21;
+    MailboxPut mailboxPutAsync = 22;
+    Mailbox mailboxGet = 23;
+    Mailbox mailboxGetAsync = 24;
+
+    // methods in rsg::Mutex
+    bool mutexCreate = 25;
+    Mutex mutexRefcountDecrease = 27;
+    Mutex mutexLock = 28;
+    Mutex mutexUnlock = 29;
+    Mutex mutexTryLock = 30;
+  }
+}
+
+// The only message sent by the RSG server to a client during the simulation.
+message DecisionAck {
+  message CommWaitFor {
+    bool timeoutReached = 1;
+    bytes data = 2; // only set for async receptions
+  }
+
+  message CommWaitAnyFor {
+    int32 finishedCommIndex = 1;
+    bytes data = 2;
+  }
+
+  bool success = 1;
+  oneof data {
+    string actorGetName = 2;
+    Host actorGetHost = 3;
+    Actor actorCreate = 4;
+    CommWaitFor commWaitFor = 5;
+    bool commTest = 6;
+    CommWaitAnyFor commWaitAnyFor = 7;
+    double engineGetClock = 8;
+    Host hostCurrent = 14;
+    Comm mailboxPutAsync = 9;
+    bytes mailboxGet = 10;
+    Comm mailboxGetAsync = 11;
+    Mutex mutexCreate = 12;
+    bool mutexTryLock = 13;
+  }
+}

@@ -1,0 +1,16 @@
+! timeout 3
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35013
+> [0.000000] [serve/INFO] Listening on port 35013
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=malicious, host_name=Bourassa)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a KILL command! Reason: could not connect: invalid actor_id 'clearly not an actor_id'
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'malicious' Bourassa --no-autoconnect -p 35013 -- client-malicious-actor-id
+> Killing the server, as this process had no/invalid actor_id.
+> Invalid RSG connection initialization: RSG_INITIAL_ACTOR_ID ('clearly not an actor_id') is not a valid actor id

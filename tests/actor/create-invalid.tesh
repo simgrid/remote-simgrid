@@ -1,0 +1,36 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35012 -- --log=serve.thres:warning "--log=root.fmt:[%9.6r]%e(%P@%h)%e%m%n"
+> [0.000000] [serve/INFO] Listening on port 35012
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=almighty, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [ 0.000000] (maestro@) Starting the simulation.
+> [ 0.000000] (almighty@Fafard) Actor::get_host() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::get_name() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::create() received (name='invalid', host_name='Fafard')
+> [ 0.000000] (almighty@Fafard) this_actor::sleep_until received (timeout=1)
+> [ 0.000000] (invalid@Fafard) this_actor::yield received
+> [ 0.000000] (invalid@Fafard) Actor::get_name() received (actor_id=3)
+> [ 0.000000] (invalid@Fafard) this_actor::sleep_until received (timeout=2)
+> [ 1.000000] (almighty@Fafard) Quit decision received. Goodbye.
+> [ 2.000000] (invalid@Fafard) Actor::get_name() received (actor_id=2)
+> [ 2.000000] (invalid@Fafard) Quit decision received. Goodbye.
+> [ 2.000000] (maestro@) Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'almighty' Fafard -p 35012 -- client-actor-create-invalid
+> Actor(pid=2, name='almighty') on Host(name='Fafard') executing main
+> Actor(pid=2, name='almighty') goodbye!
+> Actor(pid=3, name='invalid') Trying to access a dead actor's properties...
+> Error caught while running Actor(id=3): Actor(id=2) does not exist in the simulation
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35012

@@ -1,0 +1,84 @@
+variables:
+  GIT_SUBMODULE_STRATEGY: none
+
+stages:
+  - build
+  - deploy
+
+build_test_nix:
+  image: simgrid/ci-empty-nixos
+  stage: build
+  script:
+    # Update external cache.
+    - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
+    # Build and test, with coverage.
+    - nix-build && cp -rL result ./rsg
+    # Print coverage textual report, so Gitlab can attribute a coverage metrics to this job.
+    - cat ./rsg/cov/report.txt
+    # Upload coverage data to codecov.io
+    - nix-env -i gcc
+    - bash <(curl -s https://codecov.io/bash)
+  # artifacts:
+  #   when: always
+  #   paths:
+  #     - /builds/simgrid/remote-simgrid/rsg/cov/report.txt
+  #     - /builds/simgrid/remote-simgrid/rsg/cov/report-html
+
+# pages:
+#   image: simgrid/ci-empty-nixos
+#   stage: deploy
+#   dependencies:
+#     - build_test_nix
+#   script:
+#     - mkdir -p public/coverage
+#     - mv rsg/cov/report-html/* public/coverage/
+#   artifacts:
+#     paths:
+#     - public
+#   only:
+#   - master
+
+build_test_simgrid/unstable:
+  image: simgrid/unstable
+  stage: build
+  allow_failure: true
+  script:
+    ######################
+    # Dependencies setup #
+    ######################
+    - apt-get update
+    - apt-get install -y build-essential pkg-config meson ninja-build libboost-dev protobuf-compiler libprotobuf-dev # needed by rsg
+    - apt-get install -y python3 # needed by tesh
+    - apt-get install -y curl unzip default-jre-headless # needed by sonar
+    # manual docopt-c++ install
+    - apt-get install -y curl cmake
+    - export DOCOPT_REV=3394186f2951d3c7de3745b8c12dd930fe858768
+    - (cd / && curl -L "https://github.com/mpoquet/docopt.cpp/tarball/${DOCOPT_REV}" | tar -xz)
+    - (cd /mpoquet-docopt.cpp-3394186 && cmake . && make install)
+    ##################
+    # RSG build/test #
+    ##################
+    - meson build -Db_coverage=true -Dtest_interprocess_delay=0.5 -Dtest_start_delay=1.0
+    - ./sonarqube.sh ninja -C build -v
+
+# # Test that the git version of RSG compiles with various versions of SimGrid docker image
+# # The script is very similar to above, without sonar
+# .build_git: &build_git
+#   script:
+#     - apt-get update
+#     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+#     - apt-get install -y python3 # needed by tesh
+#     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
+#     - make -j $(nproc) VERBOSE=1
+#     - ctest --output-on-failure
+
+
+# test-git-v3.22:
+#   image: simgrid/stable:v3.22.2
+#   <<: *build_git
+
+# Older versions are broken because of the killed MailboxPtr type
+
+#test-git-v3.21:
+#  image: simgrid/stable:v3_21
+#  <<: *build_git

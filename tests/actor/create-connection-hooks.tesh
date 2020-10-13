@@ -1,0 +1,57 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35027 -- --log=serve.thres:warning "--log=root.fmt:[%9.6r]%e(%P@%h)%e%m%n"
+> [0.000000] [serve/INFO] Listening on port 35027
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=almighty, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=builder, host_name=Ginette)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [ 0.000000] (maestro@) Starting the simulation.
+> [ 0.000000] (almighty@Fafard) Actor::get_host() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::get_name() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::create() received (name='fast_child', host_name='Fafard')
+> [ 0.000000] (builder@Ginette) Actor::get_host() received (actor_id=3)
+> [ 0.000000] (builder@Ginette) Actor::get_name() received (actor_id=3)
+> [ 0.000000] (builder@Ginette) Actor::create() received (name='fast_child', host_name='Ginette')
+> [ 0.000000] (almighty@Fafard) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (builder@Ginette) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (fast_child@Fafard) this_actor::yield received
+> [ 0.000000] (fast_child@Ginette) this_actor::yield received
+> [ 0.000000] (fast_child@Fafard) Actor::get_name() received (actor_id=4)
+> [ 0.000000] (fast_child@Fafard) Actor::get_host() received (actor_id=4)
+> [ 0.000000] (fast_child@Fafard) Quit decision received. Goodbye.
+> [ 0.000000] (fast_child@Ginette) Actor::get_name() received (actor_id=5)
+> [ 0.000000] (fast_child@Ginette) Actor::get_host() received (actor_id=5)
+> [ 0.000000] (fast_child@Ginette) Quit decision received. Goodbye.
+> [ 3.000000] (builder@Ginette) Quit decision received. Goodbye.
+> [ 3.000000] (almighty@Fafard) Quit decision received. Goodbye.
+> [ 3.000000] (maestro@) Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'almighty' Fafard -p 35027 -- client-actor-create-connection-hooks
+> Actor(pid=2, name='almighty') on Host(name='Fafard') executing main
+> prehook arg=(nil)
+> posthook arg=0x3
+> [Fafard:fast_child:(4) 0.000000] child_actor arg=(nil)
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'builder' Ginette -p 35027 -- client-actor-create-connection-hooks
+> Actor(pid=3, name='builder') on Host(name='Ginette') executing main
+> prehook arg=(nil)
+> posthook arg=0x3
+> [Ginette:fast_child:(5) 0.000000] child_actor arg=(nil)
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35027

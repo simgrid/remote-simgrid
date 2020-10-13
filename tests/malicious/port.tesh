@@ -1,0 +1,3 @@
+! timeout 3
+$ client-malicious-port
+> Invalid RSG connection initialization: RSG_SERVER_PORT ('obviously not a port') is not a valid port

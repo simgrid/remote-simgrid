@@ -1,0 +1,64 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35018
+> [0.000000] [serve/INFO] Listening on port 35018
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=waitany, host_name=Tremblay)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Mailbox::put_async received (mbox_name='mailbox')
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Mailbox::put_async received (mbox_name='mailbox')
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='mailbox')
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='mailbox')
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000000] [simulation/INFO] Comm::wait_any_for received
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Comm::wait_any_for received
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.000195] [simulation/INFO] Comm::wait_any_for received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Comm::wait_any_for received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Comm::refcount_decrease received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Comm::refcount_decrease received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Comm::refcount_decrease received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Comm::refcount_decrease received
+> [Tremblay:waitany:(2) 0.069657] [simulation/INFO] Quit decision received. Goodbye.
+> [0.069657] [simulation/INFO] Simulation has finished.
+> [0.069657] [serve/INFO] Closing open sockets
+> [0.069657] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'waitany' Tremblay -p 35018 -- client-comm-waitany
+> [Tremblay:waitany:(2) 0.000000] Sending and receiving 42 and 51 asynchronously
+> [Tremblay:waitany:(2) 0.000000] All comms have started.
+> [Tremblay:waitany:(2) 0.000000] Waiting for a first comm to finish via wait_any
+> [Tremblay:waitany:(2) 0.000195] A comm has finished (index=0)
+> [Tremblay:waitany:(2) 0.000195] Waiting for the other pending comms to finish via wait_any_for (timeout=1)
+> [Tremblay:waitany:(2) 0.000195] A comm has finished (index=1, #comms=3)
+> [Tremblay:waitany:(2) 0.069657] A comm has finished (index=0, #comms=2)
+> [Tremblay:waitany:(2) 0.069657] A comm has finished (index=0, #comms=1)
+> [Tremblay:waitany:(2) 0.069657] All comms have finished. Received 42 and 51
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35018

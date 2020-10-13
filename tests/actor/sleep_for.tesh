@@ -1,0 +1,44 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35005
+> [0.000000] [serve/INFO] Listening on port 35005
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=sleeper1, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=sleeper2, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:sleeper1:(2) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 1.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 2.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 2.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 3.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 4.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:sleeper2:(3) 4.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper2:(3) 5.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:sleeper1:(2) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sleeper2:(3) 6.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [6.000000] [simulation/INFO] Simulation has finished.
+> [6.000000] [serve/INFO] Closing open sockets
+> [6.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor sleeper1 Fafard -p 35005 -- client-sleep-for 3 2
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor sleeper2 Fafard -p 35005 -- client-sleep-for 6 1
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35005

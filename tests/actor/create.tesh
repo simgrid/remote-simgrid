@@ -1,0 +1,70 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35010 -- --log=serve.thres:warning "--log=root.fmt:[%9.6r]%e(%P@%h)%e%m%n"
+> [0.000000] [serve/INFO] Listening on port 35010
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=almighty, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=builder, host_name=Ginette)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [ 0.000000] (maestro@) Starting the simulation.
+> [ 0.000000] (almighty@Fafard) Actor::get_host() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::get_name() received (actor_id=2)
+> [ 0.000000] (almighty@Fafard) Actor::create() received (name='fast_child', host_name='Fafard')
+> [ 0.000000] (builder@Ginette) Actor::get_host() received (actor_id=3)
+> [ 0.000000] (builder@Ginette) Host::by_name_or_null received (name='Bourassa')
+> [ 0.000000] (builder@Ginette) Actor::get_name() received (actor_id=3)
+> [ 0.000000] (builder@Ginette) Actor::create() received (name='fast_child', host_name='Bourassa')
+> [ 0.000000] (almighty@Fafard) Actor::create() received (name='slow_child', host_name='Fafard')
+> [ 0.000000] (builder@Ginette) Actor::create() received (name='slow_child', host_name='Bourassa')
+> [ 0.000000] (fast_child@Fafard) this_actor::yield received
+> [ 0.000000] (almighty@Fafard) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (fast_child@Bourassa) this_actor::yield received
+> [ 0.000000] (builder@Ginette) this_actor::sleep_for received (duration=3)
+> [ 0.000000] (fast_child@Fafard) Actor::get_host() received (actor_id=4)
+> [ 0.000000] (fast_child@Fafard) Actor::get_name() received (actor_id=4)
+> [ 0.000000] (fast_child@Fafard) this_actor::sleep_for received (duration=2)
+> [ 0.000000] (slow_child@Fafard) this_actor::yield received
+> [ 0.000000] (fast_child@Bourassa) Actor::get_host() received (actor_id=5)
+> [ 0.000000] (fast_child@Bourassa) Actor::get_name() received (actor_id=5)
+> [ 0.000000] (fast_child@Bourassa) this_actor::sleep_for received (duration=2)
+> [ 0.000000] (slow_child@Bourassa) this_actor::yield received
+> [ 0.000000] (slow_child@Fafard) Actor::get_host() received (actor_id=6)
+> [ 0.000000] (slow_child@Fafard) Actor::get_name() received (actor_id=6)
+> [ 0.000000] (slow_child@Fafard) this_actor::sleep_for received (duration=10)
+> [ 0.000000] (slow_child@Bourassa) Actor::get_host() received (actor_id=7)
+> [ 0.000000] (slow_child@Bourassa) Actor::get_name() received (actor_id=7)
+> [ 0.000000] (slow_child@Bourassa) this_actor::sleep_for received (duration=10)
+> [ 2.000000] (fast_child@Bourassa) Quit decision received. Goodbye.
+> [ 2.000000] (fast_child@Fafard) Quit decision received. Goodbye.
+> [ 3.000000] (builder@Ginette) Quit decision received. Goodbye.
+> [ 3.000000] (almighty@Fafard) Quit decision received. Goodbye.
+> [10.000000] (slow_child@Bourassa) Quit decision received. Goodbye.
+> [10.000000] (slow_child@Fafard) Quit decision received. Goodbye.
+> [10.000000] (maestro@) Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'almighty' Fafard -p 35010 -- client-actor-create
+> Actor(pid=2, name='almighty') on Host(name='Fafard') executing main
+> Actor(pid=4, name='fast_child') on Host(name='Fafard') executing child_actor1
+> Actor(pid=6, name='slow_child') on Host(name='Fafard') executing child_actor2
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'builder' Ginette -p 35010 -- client-actor-create Bourassa
+> Actor(pid=3, name='builder') on Host(name='Ginette') executing main
+> Actor(pid=5, name='fast_child') on Host(name='Bourassa') executing child_actor1
+> Actor(pid=7, name='slow_child') on Host(name='Bourassa') executing child_actor2
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35010

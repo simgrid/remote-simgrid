@@ -1,0 +1,330 @@
+! timeout 5
+! output ignore
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35030
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! output ignore
+& rsg add-actor '00' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '01' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '02' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '03' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '04' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '05' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '06' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '07' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '08' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '09' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '10' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '11' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '12' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '13' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '14' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '15' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '16' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '17' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '18' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '19' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '20' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '21' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '22' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '23' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '24' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '25' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '26' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '27' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '28' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '29' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '30' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '31' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '32' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '33' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '34' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '35' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '36' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '37' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '38' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '39' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '40' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '41' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '42' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '43' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '44' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '45' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '46' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '47' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '48' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '49' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '50' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '51' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '52' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '53' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '54' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '55' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '56' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '57' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '58' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '59' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '60' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '61' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '62' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '63' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '64' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '65' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '66' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '67' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '68' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '69' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '70' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '71' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '72' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '73' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '74' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '75' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '76' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '77' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '78' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '79' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '80' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '81' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '82' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '83' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '84' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '85' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '86' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '87' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '88' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '89' Bourassa -p 35030 -- client-actor-whoami
+
+
+! output ignore
+& rsg add-actor '90' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '91' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '92' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '93' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '94' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '95' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '96' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '97' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '98' Bourassa -p 35030 -- client-actor-whoami
+
+! output ignore
+& rsg add-actor '99' Bourassa -p 35030 -- client-actor-whoami
+
+
+$ sleep ${START_DELAY}
+
+$ sleep ${START_DELAY}
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg status -p 35030
+> {"nb_connected_actors":100}
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35030

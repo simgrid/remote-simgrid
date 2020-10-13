@@ -1,5 +1,0 @@
-! timeout 5
-! ignore ^Thrift:.*|DBG—.*
-$ ${bindir:=.}/rsg_server -p ${resources:=.}/two_hosts_platform_with_props.xml -d ${bintestdir:=.}/deploy.xml
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] Host message : Hello, I'm host1
->[0.000000] [RSG_THRIFT_REMOTE_SERVER/INFO] nothing : (null)

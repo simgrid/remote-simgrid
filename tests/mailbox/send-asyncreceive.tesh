@@ -1,0 +1,62 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35015
+> [0.000000] [serve/INFO] Listening on port 35015
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=sender, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=receiver, host_name=Bourassa)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Mailbox::empty received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='testbox')
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Mailbox::listen received (mbox_name='testbox')
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Mailbox::ready received (mbox_name='testbox')
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Mailbox::put received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(2) 0.006771] [simulation/INFO] Mailbox::put received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 0.006771] [simulation/INFO] Mailbox::get_async received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 0.006771] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:receiver:(3) 0.006771] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(2) 2.239689] [simulation/INFO] Mailbox::put received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 2.239689] [simulation/INFO] Mailbox::get_async received (mbox_name='testbox')
+> [Bourassa:receiver:(3) 2.239689] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:receiver:(3) 2.239689] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(2) 2.246461] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:receiver:(3) 2.246461] [simulation/INFO] Comm::refcount_decrease received
+> [Bourassa:receiver:(3) 2.246461] [simulation/INFO] Quit decision received. Goodbye.
+> [2.246461] [simulation/INFO] Simulation has finished.
+> [2.246461] [serve/INFO] Closing open sockets
+> [2.246461] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'sender' Fafard -p 35015 -- client-mailbox-sender
+> My actor is (pid=2, name='sender'), located on Host(name='Fafard')
+> mbox 'testbox' empty? 1
+> mbox 'testbox' listen? 0
+> mbox 'testbox' ready? 0
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'receiver' Bourassa -p 35015 -- client-mailbox-receiver-async
+> My actor is (pid=3, name='receiver'), located on Host(name='Bourassa')
+> Received: 1337
+> Received: 1337
+> Received: 'Gi nathlam hí'
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35015

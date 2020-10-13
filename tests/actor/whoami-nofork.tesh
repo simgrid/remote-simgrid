@@ -1,0 +1,65 @@
+! timeout 3
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35031
+> [0.000000] [serve/INFO] Listening on port 35031
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=john doe, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=Jane Doe, host_name=Bourassa)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=Quidane, host_name=Ginette)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a STATUS command!
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Host::current received
+> [Fafard:john doe:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Host::current received
+> [Bourassa:Jane Doe:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Host::current received
+> [Ginette:Quidane:(4) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [0.000000] [simulation/INFO] Simulation has finished.
+> [0.000000] [serve/INFO] Closing open sockets
+> [0.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'john doe' Fafard -p 35031 --no-fork -- client-actor-whoami
+> My actor is (pid=2, name='john doe'), located on Host(name='Fafard')
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor 'Jane Doe' Bourassa -p 35031 --no-fork -- client-actor-whoami
+> My actor is (pid=3, name='Jane Doe'), located on Host(name='Bourassa')
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor Quidane Ginette -p 35031 --no-fork -- client-actor-whoami
+> My actor is (pid=4, name='Quidane'), located on Host(name='Ginette')
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg status -p 35031
+> {"nb_connected_actors":3}
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35031
