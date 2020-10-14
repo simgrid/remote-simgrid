@@ -149,14 +149,14 @@ message Decision {
     Mutex mutexTryLock = 30;
 
     // methods in rsg::ConditionVariable
-    bool conditionVariableCreate = 31;
-    ConditionVariable conditionVariableRefcountIncrease = 32;
-    ConditionVariable conditionVariableRefcountDecrease = 33;
-    ConditionVariableWait conditionVariableWait = 34;
-    ConditionVariableWaitUntil conditionVariableWaitUntil = 35;
-    ConditionVariableWaitFor conditionVariableWaitFor = 36;
-    ConditionVariable conditionVariableNotifyOne = 37;
-    ConditionVariable conditionVariableNotifyAll = 38;
+    bool conditionVariableCreate = 33;
+    ConditionVariable conditionVariableRefcountIncrease = 34;
+    ConditionVariable conditionVariableRefcountDecrease = 35;
+    ConditionVariableWait conditionVariableWait = 36;
+    ConditionVariableWaitUntil conditionVariableWaitUntil = 37;
+    ConditionVariableWaitFor conditionVariableWaitFor = 38;
+    ConditionVariable conditionVariableNotifyOne = 39;
+    ConditionVariable conditionVariableNotifyAll = 40;
   }
 }
 
@@ -187,8 +187,8 @@ message DecisionAck {
     Comm mailboxGetAsync = 11;
     Mutex mutexCreate = 12;
     bool mutexTryLock = 13;
-    ConditionVariable conditionVariableCreate = 14;
-    ConditionVariableStatus conditionVariableWaitFor = 15;
-    ConditionVariableStatus conditionVariableWaitUntil = 16;
+    ConditionVariable conditionVariableCreate = 15;
+    ConditionVariableStatus conditionVariableWaitFor = 16;
+    ConditionVariableStatus conditionVariableWaitUntil = 17;
   }
 }
