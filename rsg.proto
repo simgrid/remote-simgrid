@@ -150,13 +150,12 @@ message Decision {
 
     // methods in rsg::ConditionVariable
     bool conditionVariableCreate = 33;
-    ConditionVariable conditionVariableRefcountIncrease = 34;
-    ConditionVariable conditionVariableRefcountDecrease = 35;
-    ConditionVariableWait conditionVariableWait = 36;
-    ConditionVariableWaitUntil conditionVariableWaitUntil = 37;
-    ConditionVariableWaitFor conditionVariableWaitFor = 38;
-    ConditionVariable conditionVariableNotifyOne = 39;
-    ConditionVariable conditionVariableNotifyAll = 40;
+    ConditionVariable conditionVariableRefcountDecrease = 34;
+    ConditionVariableWait conditionVariableWait = 35;
+    ConditionVariableWaitUntil conditionVariableWaitUntil = 36;
+    ConditionVariableWaitFor conditionVariableWaitFor = 37;
+    ConditionVariable conditionVariableNotifyOne = 38;
+    ConditionVariable conditionVariableNotifyAll = 39;
   }
 }
 

@@ -457,16 +457,6 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         pb_condition_variable->set_address(condition_variable_address);
         decision_ack.set_allocated_conditionvariablecreate(pb_condition_variable);
     } break;
-    case rsg::pb::Decision::kConditionVariableRefcountIncrease:
-    {
-        XBT_INFO("ConditionVariable::refcount_increase received");
-        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablerefcountincrease().address());
-        if (condition_variable_it == refcount_store->condition_variables.end()) {
-            decision_ack.set_success(false);
-        } else {
-            condition_variable_it->second.remote_ref_count++;
-        }
-    } break;
     case rsg::pb::Decision::kConditionVariableRefcountDecrease:
     {
         XBT_INFO("ConditionVariable::refcount_decrease received");
