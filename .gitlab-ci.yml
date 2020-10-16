@@ -9,15 +9,15 @@ build_test_nix:
   image: simgrid/ci-empty-nixos
   stage: build
   script:
+    - export NIX_ARGS="--arg doCoverage true --arg coverageCoveralls true"
     # Update external cache.
-    - nix-shell --pure --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
+    - nix-shell --pure ${NIX_ARGS} --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
     # Build and test, with coverage.
-    - nix-build && cp -rL result ./rsg
+    - nix-build ${NIX_ARGS} && cp -rL result ./rsg
     # Print coverage textual report, so Gitlab can attribute a coverage metrics to this job.
-    - cat ./rsg/cov/report.txt
+    - cat ./rsg/cov-report/file-summary.txt
     # Upload coverage data to codecov.io
-    - nix-env -i gcc
-    - bash <(curl -s https://codecov.io/bash)
+    - bash <(curl -s https://codecov.io/bash) -f ./rsg/cov-report/coveralls.json
   # artifacts:
   #   when: always
   #   paths:
