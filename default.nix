@@ -26,6 +26,7 @@ let
       buildInputs = [ simgrid kapack.docopt_cpp pkgs.boost pkgs.protobuf ];
 
       preConfigure = "rm -rf build cov";
+      mesonBuildType = "debug";
       mesonFlags = []
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
       preCheck = pkgs.lib.optionalString doCoverage ''
