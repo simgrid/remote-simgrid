@@ -1,0 +1,102 @@
+! timeout 5
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35033
+> [0.000000] [serve/INFO] Listening on port 35033
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] ConditionVariable::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='go', host_name='Fafard')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='hello', host_name='Fafard')
+> [Fafard:go:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='hello', host_name='Fafard')
+> [Fafard:go:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=5)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='hello', host_name='Fafard')
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=0)
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:hello:(5) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=6)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='hello', host_name='Fafard')
+> [Fafard:hello:(4) 0.000000] [simulation/INFO] ConditionVariable::wait received
+> [Fafard:hello:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:hello:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:hello:(5) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:hello:(6) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=7)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=5)
+> [Fafard:hello:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:hello:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:hello:(6) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:hello:(7) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:hello:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:hello:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:hello:(7) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:hello:(5) 1.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:hello:(5) 1.000000] [simulation/INFO] ConditionVariable::wait received
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] ConditionVariable::wait received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:go:(3) 2.000000] [simulation/INFO] ConditionVariable::notify_all received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:hello:(4) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:hello:(4) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:hello:(4) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:hello:(5) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:hello:(5) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:hello:(5) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:hello:(4) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:hello:(5) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:hello:(6) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:hello:(7) 3.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:hello:(7) 3.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:hello:(7) 3.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:hello:(7) 3.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:hello:(7) 3.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:main:(2) 5.000000] [simulation/INFO] ConditionVariable::refcount_decrease received
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Mutex::refcount_decrease received
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [5.000000] [simulation/INFO] Simulation has finished.
+> [5.000000] [serve/INFO] Closing open sockets
+> [5.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 5
+& rsg add-actor main Fafard -p 35033 -- client-condvar-notify-all Fafard
+> [Fafard:hello:(4) 0.000000] my_id=0. Sleeping for 0 seconds
+> [Fafard:hello:(5) 0.000000] my_id=1. Sleeping for 1 seconds
+> [Fafard:hello:(6) 0.000000] my_id=2. Sleeping for 2 seconds
+> [Fafard:hello:(7) 0.000000] my_id=3. Sleeping for 3 seconds
+> [Fafard:go:(3) 2.000000] Notifying all actors. They should all print hello (now or in the future)
+> [Fafard:hello:(4) 2.000000] Hello! I am id=0
+> [Fafard:hello:(5) 2.000000] Hello! I am id=1
+> [Fafard:hello:(6) 2.000000] Hello! I am id=2
+> [Fafard:hello:(7) 3.000000] Hello! I am id=3
+
+$ sleep ${START_DELAY}
+
+! timeout 5
+$ rsg start -p 35033
