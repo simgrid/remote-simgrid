@@ -35,6 +35,7 @@ executable('client-mutant', ['clients/mutant.cpp'], dependencies: librsg_dep)
 executable('client-ompi1', ['clients/ompi1.cpp'], dependencies: librsg_dep)
 executable('client-s4u-actor-create', ['s4u-clone/actor-create.cpp'], dependencies: librsg_dep)
 executable('client-s4u-actor-join', ['s4u-clone/actor-join.cpp'], dependencies: librsg_dep)
+executable('client-s4u-synchro-condition-variable', ['s4u-clone/synchro-condition-variable.cpp'], dependencies: librsg_dep)
 executable('client-s4u-synchro-mutex', ['s4u-clone/synchro-mutex.cpp'], dependencies: librsg_dep)
 
 # Define some tests
@@ -73,4 +74,5 @@ test('use-case connection-burst', tesh, env: test_env, args: [files('use-case/co
 test('use-case ompi1', tesh, env: test_env, args: [files('use-case/ompi1.tesh')])
 test('s4u-clone actor-create', tesh, env: test_env, args: [files('s4u-clone/actor-create.tesh')])
 test('s4u-clone actor-join', tesh, env: test_env, args: [files('s4u-clone/actor-join.tesh')])
+test('s4u-clone synchro-condition-variable', tesh, env: test_env, args: [files('s4u-clone/synchro-condition-variable.tesh')])
 test('s4u-clone synchro-mutex', tesh, env: test_env, args: [files('s4u-clone/synchro-mutex.tesh')])

@@ -1,0 +1,45 @@
+#!/usr/bin/env tesh
+
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35032 -- --log=serve.thres:critical
+> [0.000000] [serve/INFO] Listening on port 35032
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] ConditionVariable::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Host::by_name_or_null received (name='Jupiter')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='worker', host_name='Jupiter')
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::lock received
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] ConditionVariable::wait received
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Mutex::lock received
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] ConditionVariable::notify_one received
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::unlock received
+> [Jupiter:worker:(3) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::join() received (actor_id=3, timeout=-1)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::refcount_decrease received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [0.000000] [simulation/INFO] Simulation has finished.
+
+$ sleep ${INTERPROCESS_DELAY}
+
+& rsg add-actor main Fafard -p 35032 -- client-s4u-synchro-condition-variable
+> [Jupiter:worker:(3) 0.000000] Start processing data which is 'Example data'.
+> [Jupiter:worker:(3) 0.000000] Signal to master that the data processing is completed, and exit.
+> [Fafard:main:(2) 0.000000] data is now 'Example data after processing'.
+
+$ sleep ${START_DELAY}
+
+$ rsg start -p 35032
