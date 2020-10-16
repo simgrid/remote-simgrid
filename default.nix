@@ -3,6 +3,7 @@
   {}
 , simgrid ? kapack.simgrid-325
 , doCoverage ? true
+, coverageCoveralls ? false
 , useClang ? false
 }:
 
@@ -20,22 +21,36 @@ let
 
       src = ./.;
       nativeBuildInputs = [ meson pkgs.pkgconfig pkgs.ninja ]
-        ++ pkgs.lib.optional doCoverage [ pkgs.gcovr ];
+        ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
       buildInputs = [ simgrid kapack.docopt_cpp pkgs.boost pkgs.protobuf ];
 
-      preConfigure = "rm -rf build";
+      preConfigure = "rm -rf build cov";
       mesonFlags = []
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
+      preCheck = pkgs.lib.optionalString doCoverage ''
+        mkdir ../cov
+        cp rsg@exe/*.gcno ../cov/
+        cp rsg@sha/*.gcno ../cov/
+        export GCOV_PREFIX=$(realpath ../cov)
+        export GCOV_PREFIX_STRIP=5
+        export GCOV_ERROR_FILE=/dev/null # do not break logs with gcov messages
+      '';
       postCheck = pkgs.lib.optionalString doCoverage ''
-        mkdir -p ./cov/report-html
-        gcovr . -e '.*rsg\.pb\..*' -o ./cov/report.txt 2>/dev/null
-        gcovr . -e '.*rsg\.pb\..*' -o ./cov/report-html/index.html --html-details 2>/dev/null
+        cd ../cov
+        gcov -p *.gcno 1>/dev/null 2>&1
+        mkdir report
+        gcovr -g -k -r .. --filter '\.\./src/' \
+          --txt report/file-summary.txt \
+          --csv report/file-summary.csv \
+          --json-summary report/file-summary.json \
+      '' + pkgs.lib.optionalString coverageCoveralls ''
+          --coveralls report/coveralls.json \
+      '' + ''
+          --print-summary
+          cd -
       '';
       postInstall = pkgs.lib.optionalString doCoverage ''
-        mkdir -p $out/cov/rsg@exe $out/cov/rsg@sha
-        cp rsg@exe/*.gc{no,da} $out/cov/rsg@exe/
-        cp rsg@sha/*.gc{no,da} $out/cov/rsg@sha/
-        cp -r ./cov/* $out/cov
+        cp -r ../cov/report $out/cov-report
       '';
 
       doCheck = true;
