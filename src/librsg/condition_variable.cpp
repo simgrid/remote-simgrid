@@ -24,20 +24,20 @@ rsg::ConditionVariablePtr rsg::ConditionVariable::create()
 rsg::ConditionVariable::~ConditionVariable()
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
-    comm->set_address(_remote_address);
+    auto cond_var = new rsg::pb::ConditionVariable();
+    cond_var->set_address(_remote_address);
 }
 
 void rsg::ConditionVariable::wait(rsg::MutexPtr lock)
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
+    auto cond_var = new rsg::pb::ConditionVariable();
     auto mutex = new rsg::pb::Mutex();
-    comm->set_address(_remote_address);
+    cond_var->set_address(_remote_address);
     mutex->set_address(lock->_remote_address);
     auto cv_wait  = new rsg::pb::Decision_ConditionVariableWait();
     cv_wait->set_allocated_mutex(mutex);
-    cv_wait->set_allocated_conditionvariable(comm);
+    cv_wait->set_allocated_conditionvariable(cond_var);
     decision.set_allocated_conditionvariablewait(cv_wait);
 
     rsg::pb::DecisionAck ack;
@@ -48,13 +48,13 @@ void rsg::ConditionVariable::wait(rsg::MutexPtr lock)
 std::cv_status rsg::ConditionVariable::wait_until(rsg::MutexPtr lock, double timeout_time)
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
+    auto cond_var = new rsg::pb::ConditionVariable();
     auto mutex = new rsg::pb::Mutex();
-    comm->set_address(_remote_address);
+    cond_var->set_address(_remote_address);
     mutex->set_address(lock->_remote_address);
     auto cv_waituntil  = new rsg::pb::Decision_ConditionVariableWaitUntil();
     cv_waituntil->set_allocated_mutex(mutex);
-    cv_waituntil->set_allocated_conditionvariable(comm);
+    cv_waituntil->set_allocated_conditionvariable(cond_var);
     cv_waituntil->set_timeout_time(timeout_time);
     decision.set_allocated_conditionvariablewaituntil(cv_waituntil);
 
@@ -68,13 +68,13 @@ std::cv_status rsg::ConditionVariable::wait_until(rsg::MutexPtr lock, double tim
 std::cv_status rsg::ConditionVariable::wait_for(rsg::MutexPtr lock, double duration)
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
+    auto cond_var = new rsg::pb::ConditionVariable();
     auto mutex = new rsg::pb::Mutex();
-    comm->set_address(_remote_address);
+    cond_var->set_address(_remote_address);
     mutex->set_address(lock->_remote_address);
     auto cv_waitfor  = new rsg::pb::Decision_ConditionVariableWaitFor();
     cv_waitfor->set_allocated_mutex(mutex);
-    cv_waitfor->set_allocated_conditionvariable(comm);
+    cv_waitfor->set_allocated_conditionvariable(cond_var);
     cv_waitfor->set_duration(duration);
     decision.set_allocated_conditionvariablewaitfor(cv_waitfor);
 
@@ -88,9 +88,9 @@ std::cv_status rsg::ConditionVariable::wait_for(rsg::MutexPtr lock, double durat
 void rsg::ConditionVariable::notify_one()
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
-    comm->set_address(_remote_address);
-    decision.set_allocated_conditionvariablenotifyone(comm);
+    auto cond_var = new rsg::pb::ConditionVariable();
+    cond_var->set_address(_remote_address);
+    decision.set_allocated_conditionvariablenotifyone(cond_var);
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
@@ -100,9 +100,9 @@ void rsg::ConditionVariable::notify_one()
 void rsg::ConditionVariable::notify_all()
 {
     rsg::pb::Decision decision;
-    auto comm = new rsg::pb::ConditionVariable();
-    comm->set_address(_remote_address);
-    decision.set_allocated_conditionvariablenotifyall(comm);
+    auto cond_var = new rsg::pb::ConditionVariable();
+    cond_var->set_address(_remote_address);
+    decision.set_allocated_conditionvariablenotifyall(cond_var);
 
     rsg::pb::DecisionAck ack;
     rsg::connection->send_decision(decision, ack);
