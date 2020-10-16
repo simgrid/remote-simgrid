@@ -26,6 +26,10 @@ rsg::ConditionVariable::~ConditionVariable()
     rsg::pb::Decision decision;
     auto cond_var = new rsg::pb::ConditionVariable();
     cond_var->set_address(_remote_address);
+    decision.set_allocated_conditionvariablerefcountdecrease(cond_var);
+
+    rsg::pb::DecisionAck ack;
+    rsg::connection->send_decision(decision, ack);
 }
 
 void rsg::ConditionVariable::wait(rsg::MutexPtr lock)

@@ -30,6 +30,7 @@
 > [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
 > [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::join() received (actor_id=3, timeout=-1)
 > [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::refcount_decrease received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] ConditionVariable::refcount_decrease received
 > [Fafard:main:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
 > [0.000000] [simulation/INFO] Simulation has finished.
 
