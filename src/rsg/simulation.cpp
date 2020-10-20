@@ -239,7 +239,17 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         } else {
             auto comm = comm_it->second.comm;
-            decision_ack.set_commtest(comm->test());
+            bool is_terminated = comm->test();
+            auto comm_test = new rsg::pb::DecisionAck_CommTest();
+            comm_test->set_isterminated(is_terminated);
+            if (is_terminated && comm_it->second.reception_buffer != nullptr) {
+                auto received_message = (std::string *) *(comm_it->second.reception_buffer);
+                comm_test->set_data(*received_message);
+                delete received_message;
+                delete comm_it->second.reception_buffer;
+                comm_it->second.reception_buffer = nullptr;
+            }
+            decision_ack.set_allocated_commtest(comm_test);
         }
     } break;
     case rsg::pb::Decision::kCommWaitAnyFor:

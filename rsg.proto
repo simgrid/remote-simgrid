@@ -171,13 +171,18 @@ message DecisionAck {
     bytes data = 2;
   }
 
+  message CommTest {
+    bool isTerminated = 1;
+    bytes data = 2; // only set for async receptions when data needs to be transferred
+  }
+
   bool success = 1;
   oneof data {
     string actorGetName = 2;
     Host actorGetHost = 3;
     Actor actorCreate = 4;
     CommWaitFor commWaitFor = 5;
-    bool commTest = 6;
+    CommTest commTest = 6;
     CommWaitAnyFor commWaitAnyFor = 7;
     double engineGetClock = 8;
     Host hostCurrent = 14;

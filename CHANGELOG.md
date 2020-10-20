@@ -12,6 +12,11 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 ### Added
 - Support for condition variables, with the same API as in s4u.
 
+### Fixed
+- Comm::test() never transferred data to reception comms,
+  which was invalid as clients can do Comm::test() + sleep loops to wait for the
+  transfer completion.
+
 [//]: =========================================================================
 ## [0.3.0] - 2020-10-13
 ### Changed (breaks everything)

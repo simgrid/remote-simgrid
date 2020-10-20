@@ -86,7 +86,17 @@ bool rsg::Comm::test()
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Could not test Comm(addr=%lu)", _remote_address);
 
-    return ack.commtest();
+    auto & data = ack.commtest().data();
+    if (data.size() > 0)
+    {
+        RSG_ASSERT(_destination_buffer != nullptr, "Received CommTest ack contains data the while _destination_buffer is null");
+        // Create a buffer for the user.
+        auto buffer = new uint8_t[data.size()];
+        memcpy(buffer, data.data(), data.size());
+        *_destination_buffer = buffer;
+    }
+
+    return ack.commtest().isterminated();
 }
 
 uint64_t rsg::Comm::remote_address() const
