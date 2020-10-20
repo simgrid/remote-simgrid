@@ -17,7 +17,8 @@ distributed application or infrastructure !
 
 SimGrid is a strong and mature framework to study distributed
 algorithms or applications.
-We are currently (2019-06) reimplementing RSG to improve its maintainability and robustness.
+The current (2020-10) RSG implementation aims at robustness,
+all supported features should be tested.
 
 [![pipeline status](https://framagit.org/simgrid/remote-simgrid/badges/master/pipeline.svg)](https://framagit.org/simgrid/remote-simgrid/pipelines)
 [![coverage report](https://img.shields.io/codecov/c/github/simgrid/remote-simgrid.svg)](https://codecov.io/gh/simgrid/remote-simgrid)
@@ -35,15 +36,14 @@ SimGrid is released under LGPL-2.1 and Remote SimGrid is released under LGPL-3.0
 Install dependencies:
 - docopt-cpp: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA docopt_cpp`
 - Protobuf: `nix-env -i protobuf`
-- SFML-network: `nix-env -i sfml`
 - SimGrid: `nix-env -f https://github.com/oar-team/kapack/archive/master.tar.gz -iA simgrid324`
 
 Make sure all of them are accessible by pkg-config:
-`pkg-config --cflags --libs docopt protobuf sfml-network simgrid` should
+`pkg-config --cflags --libs docopt protobuf simgrid` should
 output how to link and include all the libraries.
 If this is not the case, update your PKG_CONFIG_PATH environment variable.
 
-Then, this is classical meson build:
+Then, Remote SimGrid is built with the [Meson](https://mesonbuild.com/) build system:
 
 ```
 meson build # --prefix=/install/directory
