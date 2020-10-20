@@ -18,7 +18,7 @@ void hello(void * arg)
     {
         std::unique_lock<rsg::Mutex> lock(*mutex);
         while (!ready)
-            cv->wait(mutex);
+            cv->wait(lock);
 
         RSG_INFO("Hello! I am id=%d", *my_id);
     }

@@ -28,7 +28,7 @@ static void worker_fun(void * args)
 static void wait_worker(rsg::ConditionVariablePtr cv, rsg::MutexPtr mutex)
 {
   std::unique_lock<rsg::Mutex> lock(*mutex);
-  cv->wait(mutex);
+  cv->wait(lock);
 }
 
 int main(int argc, char** argv)
