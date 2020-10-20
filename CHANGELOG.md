@@ -9,6 +9,9 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 [//]: =========================================================================
 ## [Unreleased]
 
+### Added
+- Support for condition variables, with the same API as in s4u.
+
 [//]: =========================================================================
 ## [0.3.0] - 2020-10-13
 ### Changed (breaks everything)
