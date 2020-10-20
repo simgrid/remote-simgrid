@@ -44,7 +44,7 @@ let
       '' + pkgs.lib.optionalString coverageHtml ''
         mkdir -p report/html
       '' + ''
-        gcovr -g -k -r .. --filter '\.\./src/' \
+        gcovr -g -k -r .. --filter '\.\./src/' --exclude '.*tcp_socket.*' \
           --txt report/file-summary.txt \
           --csv report/file-summary.csv \
           --json-summary report/file-summary.json \
