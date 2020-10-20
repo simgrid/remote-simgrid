@@ -181,17 +181,6 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             }
         }
     } break;
-    case rsg::pb::Decision::kCommStart:
-    {
-        XBT_INFO("Comm::start received");
-        auto comm_it = refcount_store->comms.find(decision.commstart().address());
-        if (comm_it == refcount_store->comms.end()) {
-            decision_ack.set_success(false);
-        } else {
-            auto comm = comm_it->second.comm;
-            comm->start();
-        }
-    } break;
     case rsg::pb::Decision::kCommWaitFor:
     {
         XBT_INFO("Comm::wait_for received");

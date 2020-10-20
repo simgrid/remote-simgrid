@@ -119,7 +119,7 @@ message Decision {
 
     // methods in rsg::Comm
     Comm commRefcountDecrease = 10;
-    Comm commStart = 11;
+    // Comm commStart = 11; // commented for now, as it is not implemented in s4u for Comm
     CommWaitFor commWaitFor = 12;
     Comm commCancel = 13;
     Comm commTest = 14;

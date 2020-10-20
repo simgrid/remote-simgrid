@@ -19,7 +19,6 @@ private:
 public:
     ~Comm();
 
-    void start();
     void wait();
     void wait_for(double timeout);
     void cancel();

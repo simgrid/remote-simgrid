@@ -20,18 +20,6 @@ rsg::Comm::~Comm()
     rsg::connection->send_decision(decision, ack);
 }
 
-void rsg::Comm::start()
-{
-    rsg::pb::Decision decision;
-    auto comm = new rsg::pb::Comm();
-    comm->set_address(_remote_address);
-    decision.set_allocated_commstart(comm);
-
-    rsg::pb::DecisionAck ack;
-    rsg::connection->send_decision(decision, ack);
-    RSG_ENFORCE(ack.success(), "Could not start Comm(addr=%lu)", _remote_address);
-}
-
 void rsg::Comm::wait()
 {
     return wait_for(-1);
