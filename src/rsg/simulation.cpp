@@ -384,6 +384,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         RefcountStore::Mutex rf_mutex;
         uint64_t mutex_address = (uint64_t) mutex.get();
         rf_mutex.mutex = mutex.get();
+        rf_mutex.lock = new std::unique_lock<simgrid::s4u::Mutex>(*mutex, std::defer_lock);
         intrusive_ptr_add_ref(rf_mutex.mutex);
         refcount_store->mutexes.insert({mutex_address, rf_mutex});
 
@@ -400,6 +401,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } else {
             if (mutex_it->second.remote_ref_count == 1) {
                 auto mutex = mutex_it->second.mutex;
+                delete mutex_it->second.lock;
                 intrusive_ptr_release(mutex);
                 refcount_store->mutexes.erase(mutex_it);
             } else {
@@ -482,8 +484,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
             decision_ack.set_success(false);
         } else {
             auto condition_variable = condition_variable_it->second.condition_variable;
-            auto mutex = mutex_it->second.mutex;
-            condition_variable->wait(mutex);
+            auto mutex_lock = mutex_it->second.lock;
+            condition_variable->wait(*mutex_lock);
         }
     } break;
     case rsg::pb::Decision::kConditionVariableWaitUntil:
@@ -494,11 +496,10 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         if (condition_variable_it == refcount_store->condition_variables.end() || mutex_it == refcount_store->mutexes.end()) {
             decision_ack.set_success(false);
         } else {
-            auto timeout = decision.conditionvariablewaituntil().timeout_time();
+            auto timeout_time = decision.conditionvariablewaituntil().timeout_time();
             auto condition_variable = condition_variable_it->second.condition_variable;
-            // We use adopt_lock because the mutex should already already be locked by the client.
-            std::unique_lock<Mutex> lock(*mutex_it->second.mutex, std::adopt_lock);
-            auto cv_status = condition_variable->wait_until(lock, timeout);
+            auto mutex_lock = mutex_it->second.lock;
+            auto cv_status = condition_variable->wait_until(*mutex_lock, timeout_time);
             auto pb_cv_status = (cv_status == std::cv_status::no_timeout) ? rsg::pb::ConditionVariableStatus::no_timeout : rsg::pb::ConditionVariableStatus::timeout;
             decision_ack.set_conditionvariablewaituntil(pb_cv_status);
         }
@@ -514,9 +515,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } else {
             auto duration = decision.conditionvariablewaitfor().duration();
             auto condition_variable = condition_variable_it->second.condition_variable;
-            // We use adopt_lock because the mutex should already already be locked by the client.
-            std::unique_lock<Mutex> lock(*mutex_it->second.mutex, std::adopt_lock);
-            auto cv_status = condition_variable->wait_for(lock, duration);
+            auto mutex_lock = mutex_it->second.lock;
+            auto cv_status = condition_variable->wait_for(*mutex_lock, duration);
             auto pb_cv_status = (cv_status == std::cv_status::no_timeout) ? rsg::pb::ConditionVariableStatus::no_timeout : rsg::pb::ConditionVariableStatus::timeout;
             decision_ack.set_conditionvariablewaitfor(pb_cv_status);
         }

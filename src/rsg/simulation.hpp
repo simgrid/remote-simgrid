@@ -26,6 +26,7 @@ struct RefcountStore
     struct Mutex
     {
         simgrid::s4u::Mutex * mutex = nullptr;
+        std::unique_lock<simgrid::s4u::Mutex> * lock = nullptr;
         unsigned int remote_ref_count = 1;
     };
 
