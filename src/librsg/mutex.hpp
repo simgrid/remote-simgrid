@@ -6,6 +6,7 @@ namespace rsg
 {
 class Mutex
 {
+    friend class ConditionVariable;
 private:
     explicit Mutex(uint64_t remote_address);
     Mutex(const Mutex &) = delete;

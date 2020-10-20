@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <mutex>
 
 #include <simgrid/actor.h>
 #include <simgrid/s4u.hpp>
@@ -383,6 +384,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         RefcountStore::Mutex rf_mutex;
         uint64_t mutex_address = (uint64_t) mutex.get();
         rf_mutex.mutex = mutex.get();
+        rf_mutex.lock = new std::unique_lock<simgrid::s4u::Mutex>(*mutex, std::defer_lock);
         intrusive_ptr_add_ref(rf_mutex.mutex);
         refcount_store->mutexes.insert({mutex_address, rf_mutex});
 
@@ -399,6 +401,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } else {
             if (mutex_it->second.remote_ref_count == 1) {
                 auto mutex = mutex_it->second.mutex;
+                delete mutex_it->second.lock;
                 intrusive_ptr_release(mutex);
                 refcount_store->mutexes.erase(mutex_it);
             } else {
@@ -437,6 +440,107 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         } else {
             auto mutex = mutex_it->second.mutex;
             decision_ack.set_mutextrylock(mutex->try_lock());
+        }
+    } break;
+
+    //rsg::ConditionVariable methods
+    case rsg::pb::Decision::kConditionVariableCreate:
+    {
+        XBT_INFO("ConditionVariable::create received");
+        auto condition_variable = ConditionVariable::create();
+        uint64_t condition_variable_address = (uint64_t) condition_variable.get();
+        RefcountStore::ConditionVariable rf_cv;
+
+        rf_cv.condition_variable = condition_variable.get();
+        intrusive_ptr_add_ref(rf_cv.condition_variable);
+        refcount_store->condition_variables.insert({condition_variable_address, rf_cv});
+
+        auto pb_condition_variable = new rsg::pb::ConditionVariable();
+        pb_condition_variable->set_address(condition_variable_address);
+        decision_ack.set_allocated_conditionvariablecreate(pb_condition_variable);
+    } break;
+    case rsg::pb::Decision::kConditionVariableRefcountDecrease:
+    {
+        XBT_INFO("ConditionVariable::refcount_decrease received");
+        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablerefcountdecrease().address());
+        if (condition_variable_it == refcount_store->condition_variables.end()) {
+            decision_ack.set_success(false);
+        } else {
+            if (condition_variable_it->second.remote_ref_count == 1) {
+                auto condition_variable = condition_variable_it->second.condition_variable;
+                intrusive_ptr_release(condition_variable);
+                refcount_store->condition_variables.erase(condition_variable_it);
+            } else {
+                condition_variable_it->second.remote_ref_count--;
+            }
+        }
+    } break;
+    case rsg::pb::Decision::kConditionVariableWait:
+    {
+        XBT_INFO("ConditionVariable::wait received");
+        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablewait().conditionvariable().address());
+        auto mutex_it = refcount_store->mutexes.find(decision.conditionvariablewait().mutex().address());
+        if (condition_variable_it == refcount_store->condition_variables.end() || mutex_it == refcount_store->mutexes.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto condition_variable = condition_variable_it->second.condition_variable;
+            auto mutex_lock = mutex_it->second.lock;
+            condition_variable->wait(*mutex_lock);
+        }
+    } break;
+    case rsg::pb::Decision::kConditionVariableWaitUntil:
+    {
+        XBT_INFO("ConditionVariable::wait_until received");
+        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablewaituntil().conditionvariable().address());
+        auto mutex_it = refcount_store->mutexes.find(decision.conditionvariablewaituntil().mutex().address());
+        if (condition_variable_it == refcount_store->condition_variables.end() || mutex_it == refcount_store->mutexes.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto timeout_time = decision.conditionvariablewaituntil().timeout_time();
+            auto condition_variable = condition_variable_it->second.condition_variable;
+            auto mutex_lock = mutex_it->second.lock;
+            auto cv_status = condition_variable->wait_until(*mutex_lock, timeout_time);
+            auto pb_cv_status = (cv_status == std::cv_status::no_timeout) ? rsg::pb::ConditionVariableStatus::no_timeout : rsg::pb::ConditionVariableStatus::timeout;
+            decision_ack.set_conditionvariablewaituntil(pb_cv_status);
+        }
+    } break;
+    case rsg::pb::Decision::kConditionVariableWaitFor:
+    {
+        XBT_INFO("ConditionVariable::wait_for received");
+        auto condition_variable_it = refcount_store->condition_variables.find(
+            decision.conditionvariablewaitfor().conditionvariable().address());
+        auto mutex_it = refcount_store->mutexes.find(decision.conditionvariablewaitfor().mutex().address());
+        if (condition_variable_it == refcount_store->condition_variables.end() || mutex_it == refcount_store->mutexes.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto duration = decision.conditionvariablewaitfor().duration();
+            auto condition_variable = condition_variable_it->second.condition_variable;
+            auto mutex_lock = mutex_it->second.lock;
+            auto cv_status = condition_variable->wait_for(*mutex_lock, duration);
+            auto pb_cv_status = (cv_status == std::cv_status::no_timeout) ? rsg::pb::ConditionVariableStatus::no_timeout : rsg::pb::ConditionVariableStatus::timeout;
+            decision_ack.set_conditionvariablewaitfor(pb_cv_status);
+        }
+    } break;
+    case rsg::pb::Decision::kConditionVariableNotifyOne:
+    {
+        XBT_INFO("ConditionVariable::notify_one received");
+        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablenotifyone().address());
+        if (condition_variable_it == refcount_store->condition_variables.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto condition_variable = condition_variable_it->second.condition_variable;
+            condition_variable->notify_one();
+        }
+    } break;
+    case rsg::pb::Decision::kConditionVariableNotifyAll:
+    {
+        XBT_INFO("ConditionVariable::notify_all received");
+        auto condition_variable_it = refcount_store->condition_variables.find(decision.conditionvariablenotifyall().address());
+        if (condition_variable_it == refcount_store->condition_variables.end()) {
+            decision_ack.set_success(false);
+        } else {
+            auto condition_variable = condition_variable_it->second.condition_variable;
+            condition_variable->notify_all();
         }
     } break;
     case rsg::pb::Decision::TYPE_NOT_SET:

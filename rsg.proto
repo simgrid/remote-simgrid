@@ -17,6 +17,15 @@ message Comm {
   uint64 address = 1;
 }
 
+message ConditionVariable {
+  uint64 address = 1;
+}
+
+enum ConditionVariableStatus {
+  no_timeout = 0;
+  timeout = 1;
+}
+
 message Mutex {
   uint64 address = 1;
 }
@@ -74,6 +83,23 @@ message Decision {
     double timeout = 2;
   }
 
+  message ConditionVariableWait {
+    ConditionVariable conditionVariable = 1;
+    Mutex mutex = 2;
+  }
+
+  message ConditionVariableWaitUntil {
+    ConditionVariable conditionVariable = 1;
+    Mutex mutex = 2;
+    double timeout_time = 3;
+  }
+
+  message ConditionVariableWaitFor {
+    ConditionVariable conditionVariable = 1;
+    Mutex mutex = 2;
+    double duration = 3;
+  }
+
   oneof type {
     bool quit = 1;
 
@@ -121,6 +147,15 @@ message Decision {
     Mutex mutexLock = 28;
     Mutex mutexUnlock = 29;
     Mutex mutexTryLock = 30;
+
+    // methods in rsg::ConditionVariable
+    bool conditionVariableCreate = 33;
+    ConditionVariable conditionVariableRefcountDecrease = 34;
+    ConditionVariableWait conditionVariableWait = 35;
+    ConditionVariableWaitUntil conditionVariableWaitUntil = 36;
+    ConditionVariableWaitFor conditionVariableWaitFor = 37;
+    ConditionVariable conditionVariableNotifyOne = 38;
+    ConditionVariable conditionVariableNotifyAll = 39;
   }
 }
 
@@ -151,5 +186,8 @@ message DecisionAck {
     Comm mailboxGetAsync = 11;
     Mutex mutexCreate = 12;
     bool mutexTryLock = 13;
+    ConditionVariable conditionVariableCreate = 15;
+    ConditionVariableStatus conditionVariableWaitFor = 16;
+    ConditionVariableStatus conditionVariableWaitUntil = 17;
   }
 }

@@ -73,6 +73,8 @@ librsg_src = [
     'src/librsg/actor.hpp',
     'src/librsg/comm.cpp',
     'src/librsg/comm.hpp',
+    'src/librsg/condition_variable.cpp',
+    'src/librsg/condition_variable.hpp',
     'src/librsg/connection.cpp',
     'src/librsg/connection.hpp',
     'src/librsg/engine.cpp',

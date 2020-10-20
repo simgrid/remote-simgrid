@@ -1,0 +1,176 @@
+! timeout 5
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35034
+> [0.000000] [serve/INFO] Listening on port 35034
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Mutex::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] ConditionVariable::create received
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='go', host_name='Fafard')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='competitor', host_name='Fafard')
+> [Fafard:go:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='competitor', host_name='Fafard')
+> [Fafard:go:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=5)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='competitor', host_name='Fafard')
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=0)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:competitor:(5) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=6)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='competitor', host_name='Fafard')
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.000000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(5) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:competitor:(6) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=7)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=5)
+> [Fafard:competitor:(6) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:competitor:(6) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:competitor:(6) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=2)
+> [Fafard:competitor:(7) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:competitor:(7) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:competitor:(7) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:competitor:(7) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=3)
+> [Fafard:competitor:(4) 0.250000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.250000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.250000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.250000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.250000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 0.500000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.500000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.500000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.500000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.500000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 0.750000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.750000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.750000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 0.750000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 0.750000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(5) 1.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:competitor:(5) 1.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 1.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 1.000000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 1.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.000000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 1.250000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.250000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.250000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.250000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.250000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(5) 1.500000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 1.500000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 1.500000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 1.500000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 1.500000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 1.500000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.500000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.500000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.500000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.500000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(4) 1.750000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.750000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.750000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 1.750000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 1.750000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] ConditionVariable::wait_until received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:go:(3) 2.000000] [simulation/INFO] ConditionVariable::notify_all received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=5)
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=5)
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:go:(3) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:competitor:(5) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_name() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Actor::get_host() received (actor_id=6)
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:competitor:(4) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:competitor:(6) 2.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:competitor:(7) 3.000000] [simulation/INFO] Mutex::lock received
+> [Fafard:competitor:(7) 3.000000] [simulation/INFO] Actor::get_name() received (actor_id=7)
+> [Fafard:competitor:(7) 3.000000] [simulation/INFO] Actor::get_host() received (actor_id=7)
+> [Fafard:competitor:(7) 3.000000] [simulation/INFO] Mutex::unlock received
+> [Fafard:competitor:(7) 3.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:main:(2) 5.000000] [simulation/INFO] ConditionVariable::refcount_decrease received
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Mutex::refcount_decrease received
+> [Fafard:main:(2) 5.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [5.000000] [simulation/INFO] Simulation has finished.
+> [5.000000] [serve/INFO] Closing open sockets
+> [5.000000] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 5
+& rsg add-actor main Fafard -p 35034 -- client-s4u-synchro-condition-variable-waituntil Fafard
+> [Fafard:competitor:(4) 0.000000] Sleeping for 0 s
+> [Fafard:competitor:(4) 0.000000] About to call wait_until...
+> [Fafard:competitor:(5) 0.000000] Sleeping for 1 s
+> [Fafard:competitor:(6) 0.000000] Sleeping for 2 s
+> [Fafard:competitor:(7) 0.000000] Sleeping for 3 s
+> [Fafard:competitor:(4) 0.250000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 0.250000] About to call wait_until...
+> [Fafard:competitor:(4) 0.500000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 0.500000] About to call wait_until...
+> [Fafard:competitor:(4) 0.750000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 0.750000] About to call wait_until...
+> [Fafard:competitor:(5) 1.000000] About to call wait_until...
+> [Fafard:competitor:(4) 1.000000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 1.000000] About to call wait_until...
+> [Fafard:competitor:(4) 1.250000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 1.250000] About to call wait_until...
+> [Fafard:competitor:(5) 1.500000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(5) 1.500000] About to call wait_until...
+> [Fafard:competitor:(4) 1.500000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 1.500000] About to call wait_until...
+> [Fafard:competitor:(4) 1.750000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 1.750000] About to call wait_until...
+> [Fafard:competitor:(6) 2.000000] About to call wait_until...
+> [Fafard:go:(3) 2.000000] Go go go!
+> [Fafard:competitor:(5) 2.000000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(5) 2.000000] Running! id=1
+> [Fafard:competitor:(4) 2.000000] Out of wait_until: timeout reached :(
+> [Fafard:competitor:(4) 2.000000] Running! id=0
+> [Fafard:competitor:(6) 2.000000] Out of wait_until: YAY notified!
+> [Fafard:competitor:(6) 2.000000] Running! id=2
+> [Fafard:competitor:(7) 3.000000] Running! id=3
+
+$ sleep ${START_DELAY}
+
+! timeout 5
+$ rsg start -p 35034
