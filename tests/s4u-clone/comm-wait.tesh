@@ -1,0 +1,162 @@
+! timeout 5
+! ignore .*Configuration change.*
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35036
+> [0.000000] [serve/INFO] Listening on port 35036
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=main, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> [0.000000] [simulation/INFO] Starting the simulation.
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=2)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='sender', host_name='Fafard')
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=3)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Actor::create() received (name='receiver', host_name='Fafard')
+> [Fafard:sender:(3) 0.000000] [simulation/INFO] this_actor::yield received
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=4)
+> [Fafard:main:(2) 0.000000] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:sender:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=5)
+> [Fafard:receiver:(4) 0.000000] [simulation/INFO] this_actor::yield received
+> [Fafard:receiver:(4) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 0.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 0.000000] [simulation/INFO] this_actor::sleep_for received (duration=1)
+> [Fafard:receiver:(4) 1.000000] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 1.000000] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 1.000000] [simulation/INFO] Mailbox::get_async received (mbox_name='receiver')
+> [Fafard:receiver:(4) 1.000000] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Mailbox::put_async received (mbox_name='receiver')
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 5.000000] [simulation/INFO] this_actor::sleep_for received (duration=0.5)
+> [Fafard:sender:(3) 5.500000] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 5.500000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 5.500000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 5.500000] [simulation/INFO] this_actor::sleep_for received (duration=0.5)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Mailbox::get_async received (mbox_name='receiver')
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 5.998244] [simulation/INFO] this_actor::sleep_for received (duration=0.7)
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Mailbox::put_async received (mbox_name='receiver')
+> [Fafard:sender:(3) 6.000000] [simulation/INFO] Comm::wait_for received
+> [Fafard:receiver:(4) 6.698244] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 6.698244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 6.698244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 6.698244] [simulation/INFO] this_actor::sleep_for received (duration=0.7)
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Mailbox::put_async received (mbox_name='receiver')
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 6.998244] [simulation/INFO] this_actor::sleep_for received (duration=0.5)
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Mailbox::get_async received (mbox_name='receiver')
+> [Fafard:receiver:(4) 7.398244] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(3) 7.498244] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 7.498244] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 7.498244] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 7.498244] [simulation/INFO] this_actor::sleep_for received (duration=0.5)
+> [Fafard:sender:(3) 7.998244] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 7.998244] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 7.998244] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 7.998244] [simulation/INFO] this_actor::sleep_for received (duration=0.5)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Mailbox::get_async received (mbox_name='receiver')
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 8.396487] [simulation/INFO] this_actor::sleep_for received (duration=0.7)
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Comm::test received
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Mailbox::put_async received (mbox_name='receiver')
+> [Fafard:sender:(3) 8.498244] [simulation/INFO] Comm::wait_for received
+> [Fafard:receiver:(4) 9.096487] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 9.096487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 9.096487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 9.096487] [simulation/INFO] this_actor::sleep_for received (duration=0.7)
+> [Fafard:sender:(3) 9.496487] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:sender:(3) 9.496487] [simulation/INFO] Actor::get_name() received (actor_id=3)
+> [Fafard:sender:(3) 9.496487] [simulation/INFO] Actor::get_host() received (actor_id=3)
+> [Fafard:sender:(3) 9.496487] [simulation/INFO] Mailbox::put received (mbox_name='receiver')
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Comm::test received
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Mailbox::get_async received (mbox_name='receiver')
+> [Fafard:receiver:(4) 9.796487] [simulation/INFO] Comm::wait_for received
+> [Fafard:sender:(3) 9.796682] [simulation/INFO] Quit decision received. Goodbye.
+> [Fafard:receiver:(4) 9.796682] [simulation/INFO] Actor::get_name() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796682] [simulation/INFO] Actor::get_host() received (actor_id=4)
+> [Fafard:receiver:(4) 9.796682] [simulation/INFO] Comm::refcount_decrease received
+> [Fafard:receiver:(4) 9.796682] [simulation/INFO] Quit decision received. Goodbye.
+> [9.796682] [simulation/INFO] Simulation has finished.
+> [9.796682] [serve/INFO] Closing open sockets
+> [9.796682] [serve/INFO] All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 5
+& rsg add-actor main Fafard -p 35036 -- client-s4u-comm-wait Fafard
+> [Fafard:sender:(3) 0.000000] Sleeping for 5 s
+> [Fafard:receiver:(4) 0.000000] Sleeping for 1 s
+> [Fafard:receiver:(4) 1.000000] Waiting for message #0
+> [Fafard:sender:(3) 5.000000] Sending 'Message 0' to 'receiver' (482117300 bytes)
+> [Fafard:sender:(3) 5.000000] Message not fully sent yet. Sleeping 0.5 s
+> [Fafard:sender:(3) 5.500000] Message not fully sent yet. Sleeping 0.5 s
+> [Fafard:receiver:(4) 5.998244] Received 'Message 0'
+> [Fafard:receiver:(4) 5.998244] Waiting for message #1
+> [Fafard:receiver:(4) 5.998244] Message not fully received yet. Sleeping 0.7 s
+> [Fafard:sender:(3) 6.000000] Sending 'Message 1' to 'receiver' (482117300 bytes)
+> [Fafard:receiver:(4) 6.698244] Message not fully received yet. Sleeping 0.7 s
+> [Fafard:sender:(3) 6.998244] Sending 'Message 2' to 'receiver' (482117300 bytes)
+> [Fafard:sender:(3) 6.998244] Message not fully sent yet. Sleeping 0.5 s
+> [Fafard:receiver:(4) 7.398244] Received 'Message 1'
+> [Fafard:receiver:(4) 7.398244] Waiting for message #2
+> [Fafard:sender:(3) 7.498244] Message not fully sent yet. Sleeping 0.5 s
+> [Fafard:sender:(3) 7.998244] Message not fully sent yet. Sleeping 0.5 s
+> [Fafard:receiver:(4) 8.396487] Received 'Message 2'
+> [Fafard:receiver:(4) 8.396487] Waiting for message #3
+> [Fafard:receiver:(4) 8.396487] Message not fully received yet. Sleeping 0.7 s
+> [Fafard:sender:(3) 8.498244] Sending 'Message 3' to 'receiver' (482117300 bytes)
+> [Fafard:receiver:(4) 9.096487] Message not fully received yet. Sleeping 0.7 s
+> [Fafard:sender:(3) 9.496487] Sending 'finalize' to 'receiver'
+> [Fafard:receiver:(4) 9.796487] Received 'Message 3'
+> [Fafard:receiver:(4) 9.796487] Waiting for message #4
+> [Fafard:receiver:(4) 9.796682] Received 'finalize'
+
+$ sleep ${START_DELAY}
+
+! timeout 5
+$ rsg start -p 35036
