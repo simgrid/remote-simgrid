@@ -86,7 +86,7 @@ std::cv_status rsg::ConditionVariable::wait_for(std::unique_lock<rsg::Mutex> & l
     rsg::connection->send_decision(decision, ack);
     RSG_ENFORCE(ack.success(), "Could not wait_for on ConditionVariable");
 
-    return 0 == ack.conditionvariablewaituntil() ? std::cv_status::no_timeout : std::cv_status::timeout;
+    return 0 == ack.conditionvariablewaitfor() ? std::cv_status::no_timeout : std::cv_status::timeout;
 }
 
 void rsg::ConditionVariable::notify_one()
