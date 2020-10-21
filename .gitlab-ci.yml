@@ -38,10 +38,9 @@ build_test_nix:
 #   only:
 #   - master
 
-build_test_simgrid/unstable:
+sonar_static_analysis:
   image: simgrid/unstable
   stage: build
-  allow_failure: true
   script:
     ######################
     # Dependencies setup #
