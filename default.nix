@@ -4,6 +4,7 @@
 , simgrid ? kapack.simgrid-325
 , doCoverage ? true
 , coverageCoveralls ? false
+, coverageGcovTxt ? false
 , coverageHtml ? false
 , useClang ? false
 }:
@@ -41,6 +42,9 @@ let
         cd ../cov
         gcov -p *.gcno 1>/dev/null 2>&1
         mkdir report
+      '' + pkgs.lib.optionalString coverageGcovTxt ''
+        mkdir -p report/gcov-txt
+        cp \^\#src\#*.gcov report/gcov-txt/
       '' + pkgs.lib.optionalString coverageHtml ''
         mkdir -p report/html
       '' + ''
