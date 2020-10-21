@@ -3,26 +3,27 @@ variables:
 
 stages:
   - build
-  - deploy
+  - sonar
 
 build_test_nix:
   image: simgrid/ci-empty-nixos
   stage: build
   script:
-    - export NIX_ARGS="--arg doCoverage true --arg coverageCoveralls true"
+    - export NIX_ARGS="--arg doCoverage true --arg coverageCoveralls true --arg coverageGcovTxt true"
     # Update external cache.
     - nix-shell --pure ${NIX_ARGS} --command ${CI_PROJECT_DIR}/tools/ci/list-store-paths-for-cachix.bash | cachix push simgrid
     # Build and test, with coverage.
     - nix-build ${NIX_ARGS} && cp -rL result ./rsg
     # Print coverage textual report, so Gitlab can attribute a coverage metrics to this job.
     - cat ./rsg/cov-report/file-summary.txt
+    # Put gcov file at the right tree depth
+    - cp -r rsg/cov-report/gcov-txt ./
     # Upload coverage data to codecov.io
     - bash <(curl -s https://codecov.io/bash) -f ./rsg/cov-report/coveralls.json
-  # artifacts:
-  #   when: always
-  #   paths:
-  #     - /builds/simgrid/remote-simgrid/rsg/cov/report.txt
-  #     - /builds/simgrid/remote-simgrid/rsg/cov/report-html
+  artifacts:
+    when: always
+    paths:
+      - /builds/simgrid/remote-simgrid/gcov-txt
 
 # pages:
 #   image: simgrid/ci-empty-nixos
@@ -40,7 +41,9 @@ build_test_nix:
 
 sonar_static_analysis:
   image: simgrid/unstable
-  stage: build
+  stage: sonar
+  dependencies:
+    - build_test_nix
   script:
     ######################
     # Dependencies setup #
