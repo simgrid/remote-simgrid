@@ -13,7 +13,7 @@ set -eux
 
 # Install required software
 installSonarQubeScanner() {
-  local SONAR_SCANNER_VERSION=3.3.0.1492
+  local SONAR_SCANNER_VERSION=4.5.0.2216
   export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION
   rm -rf $SONAR_SCANNER_HOME
   mkdir -p $SONAR_SCANNER_HOME
