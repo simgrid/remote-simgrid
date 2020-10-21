@@ -37,8 +37,7 @@ cp ./build-wrapper-linux-x86/libinterceptor-x86_64.so ./build-wrapper-linux-x86/
 # triggers the compilation through the build wrapper to gather compilation database
 ./build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-outputs "$@"
 
-# generate the gcov files
-meson test --print-errorlogs -C build
+# do not run tests : no dynamic analysis, coverage analysis, ect.
 
 # and finally execute the actual SonarQube analysis
 # (the SONAR_TOKEN is set from the travis web interface, to not expose it with an ongoing "set -x")

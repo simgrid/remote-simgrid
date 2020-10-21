@@ -58,7 +58,7 @@ build_test_simgrid/unstable:
     ##################
     # RSG build/test #
     ##################
-    - meson build -Db_coverage=true -Dtest_interprocess_delay=0.5 -Dtest_start_delay=1.0
+    - meson build
     - ./sonarqube.sh ninja -C build -v
 
 # # Test that the git version of RSG compiles with various versions of SimGrid docker image
