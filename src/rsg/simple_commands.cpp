@@ -15,6 +15,7 @@
 
 int add_actor(const std::string & server_hostname, int server_port,
     const std::string & actor_name, const std::string & vhost_name,
+    const std::string & think_time,
     bool autoconnect, bool fork, const std::string & command_to_run,
     const std::vector<std::string> & command_args)
 {
@@ -80,6 +81,18 @@ int add_actor(const std::string & server_hostname, int server_port,
 
             try
             {
+                // Check that think_time has a supported syntax.
+                // Only constant double values are supported for now.
+                errno = 0;
+                char* endptr = nullptr;
+                double think_time_double = strtod(think_time.c_str(), &endptr);
+                bool conversion_success = endptr != think_time.c_str() && *endptr == '\0' && errno != ERANGE;
+                RSG_ENFORCE(conversion_success, "think-time ('%s') is not a valid double", think_time.c_str());
+                RSG_ENFORCE(think_time_double >= 0, "think-time (%g) should not be negative", think_time_double);
+
+                ret = setenv("RSG_THINK_TIME", think_time.c_str(), 1);
+                RSG_ENFORCE(ret == 0, "Cannot setenv RSG_THINK_TIME to '%s': %s", think_time.c_str(), strerror(errno));
+
                 if (autoconnect)
                 {
                     ret = setenv("RSG_AUTOCONNECT", "1", 1);

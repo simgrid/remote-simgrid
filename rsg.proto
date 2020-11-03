@@ -100,6 +100,8 @@ message Decision {
     double duration = 3;
   }
 
+  double think_time = 40; // The amount of time the client took to take its decision (seconds)
+
   oneof type {
     bool quit = 1;
 
