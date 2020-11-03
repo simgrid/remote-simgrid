@@ -1,0 +1,32 @@
+! timeout 3
+! ignore .*Configuration change.*
+! ignore .*Sleeping for
+& rsg serve ${TEST_DIR:=.}/platforms/small_platform.xml -p 35038 -- "--log=root.fmt:(%i:%P@%h)%e%m%n"
+> [0.000000] [serve/INFO] Listening on port 35038
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received an ADD_ACTOR command! (actor_name=measurer, host_name=Fafard)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a CONNECT command! (actor_id=2)
+> [0.000000] [serve/INFO] New client accepted
+> [0.000000] [serve/INFO] Received a START command!
+> (0:maestro@) Starting the simulation.
+> (2:measurer@Fafard) Quit decision received. Goodbye.
+> (0:maestro@) Simulation has finished.
+> (0:maestro@) Closing open sockets
+> (0:maestro@) All sockets have been closed
+
+$ sleep ${INTERPROCESS_DELAY}
+
+! timeout 3
+& rsg add-actor measurer Fafard -p 35038 --think-time=AS_MEASURED_BY_CLIENT -- client-misc-time-autoincrease
+> Time has increased consistently
+> Time has increased consistently
+> Time has increased consistently
+> Time has increased consistently
+> Time has increased consistently
+> Bye!
+
+$ sleep ${START_DELAY}
+
+! timeout 3
+$ rsg start -p 35038
