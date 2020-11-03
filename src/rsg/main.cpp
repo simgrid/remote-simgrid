@@ -19,6 +19,7 @@ Usage:
   rsg add-actor <actor-name> <sg-host>
                 [--hostname=<host>] [--port=<port>]
                 [--no-autoconnect] [--no-fork]
+                [--think-time=<mode>]
                 [--] <command> [<command-args>...]
   rsg start [--hostname=<host>] [--port=<port>]
   rsg status [--hostname=<host>] [--port=<port>] [--retry-timeout=<ms>]
@@ -30,6 +31,9 @@ Options:
   -p --port <port>      Server's TCP port [default: 35000].
   -d --daemon           Run as a deamon — i.e., in background.
   --retry-timeout <ms>  If set, retry connection until timeout in milliseconds.
+  --think-time=<mode>   How to simulate the real process time between two RSG
+                        calls. Currently, only a constant time is implemented.
+                        Nothing is simulated if this time is 0. [default: 0]
 )";
 
     // Parse CLI arguments.
@@ -83,12 +87,13 @@ Options:
     {
         std::string actor_name = args["<actor-name>"].asString();
         std::string vhost_name = args["<sg-host>"].asString();
+        std::string think_time = args["--think-time"].asString();
         bool autoconnect = !args["--no-autoconnect"].asBool();
         bool fork = !args["--no-fork"].asBool();
         std::string command = args["<command>"].asString();
         std::vector<std::string> command_args = args["<command-args>"].asStringList();
         return_code = add_actor(server_hostname, server_port, actor_name, vhost_name,
-            autoconnect, fork, command, command_args);
+            think_time, autoconnect, fork, command, command_args);
     }
 
     return return_code;

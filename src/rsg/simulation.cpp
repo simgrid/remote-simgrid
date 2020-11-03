@@ -41,6 +41,14 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     using namespace simgrid;
     using namespace simgrid::s4u;
 
+    // Simulate the remote actor thinking time if requested.
+    double remote_think_time = decision.think_time();
+    RSG_ENFORCE(remote_think_time >= 0, "Invalid actor thinking time received (%g)", remote_think_time);
+    if (remote_think_time > 0) {
+        XBT_INFO("Sleeping for %g s (remote actor's think time)", remote_think_time);
+        this_actor::sleep_for(remote_think_time);
+    }
+
     decision_ack.set_success(true);
     send_ack = true;
 

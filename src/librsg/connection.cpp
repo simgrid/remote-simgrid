@@ -46,6 +46,22 @@ static void retrieve_rsg_connection_params_from_env(std::string & server_hostnam
     actor_id = retrieve_initial_actor_id_from_env();
 }
 
+static double retrieve_rsg_think_time_from_env()
+{
+    const char * think_time = std::getenv("RSG_THINK_TIME");
+    if (think_time == nullptr)
+        return 0;
+
+    errno = 0;
+    char* endptr = nullptr;
+    double think_time_double = strtod(think_time, &endptr);
+    bool conversion_success = endptr != think_time && *endptr == '\0' && errno != ERANGE;
+    RSG_ENFORCE(conversion_success, "RSG_THINK_TIME ('%s') is not a valid double", think_time);
+    RSG_ENFORCE(think_time_double >= 0, "RSG_THINK_TIME (%g) should not be negative", think_time_double);
+
+    return think_time_double;
+}
+
 
 rsg::Connection::Connection(const std::string & server_hostname, uint16_t port, int actor_id) : _actor_id(actor_id)
 {
@@ -69,6 +85,9 @@ rsg::Connection::Connection(const std::string & server_hostname, uint16_t port, 
 
     if (!command_ack.success())
         printf("connect failed\n");
+
+    // Retrieve variables from environment.
+    decision_think_time = retrieve_rsg_think_time_from_env();
 }
 
 rsg::Connection::Connection(int fd, int actor_id) : _actor_id(actor_id)
@@ -102,9 +121,13 @@ rsg::Connection::~Connection()
     }
 }
 
-void rsg::Connection::send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack)
+void rsg::Connection::send_decision(rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack)
 {
     RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
+
+    // Add think time to take this decision if requested.
+    if (decision_think_time > 0)
+        decision.set_think_time(decision_think_time);
 
     write_message(decision, *_socket);
     read_message(decision_ack, *_socket);

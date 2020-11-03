@@ -30,7 +30,7 @@ private:
     Connection & operator=(const Connection &) = delete;
 
 public:
-    void send_decision(const rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
+    void send_decision(rsg::pb::Decision & decision, rsg::pb::DecisionAck & decision_ack);
     void add_child_thread(std::thread * child);
 
     int actor_id() const;
@@ -40,6 +40,7 @@ private:
     int _actor_id = -1;
     TcpSocket * _socket = nullptr;
     std::vector<std::thread*> _children;
+    double decision_think_time = 0;
 };
 
 /* Holds a client instance.
