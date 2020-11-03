@@ -11,6 +11,13 @@ As the project is currently unstable, Remote Simgrid's API is not defined yet.
 
 ### Added
 - Support for condition variables, with the same API as in s4u.
+- Support for automatically increasing time between the RSG calls of an actor.
+  This can either be done with a constant time increase for each call
+  (which should keep deterministic results), or by injecting the time measured
+  by the client (which leads to non-deterministic results).
+  Default behavior remains the same as before,
+  that is to say a constant time increase of 0.
+
 
 ### Fixed
 - Comm::test() never transferred data to reception comms,
