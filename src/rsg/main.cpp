@@ -32,7 +32,10 @@ Options:
   -d --daemon           Run as a deamon — i.e., in background.
   --retry-timeout <ms>  If set, retry connection until timeout in milliseconds.
   --think-time=<mode>   How to simulate the real process time between two RSG
-                        calls. Currently, only a constant time is implemented.
+                        calls. Either a constant floating-point time or
+                        AS_MEASURED_BY_CLIENT, which lets RSG clients inject
+                        their measured time in the simulation. Please note that
+                        AS_MEASURED_BY_CLIENT implies non-deterministic results.
                         Nothing is simulated if this time is 0. [default: 0]
 )";
 

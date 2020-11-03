@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <string>
 #include <thread>
 #include <vector>
@@ -40,7 +41,9 @@ private:
     int _actor_id = -1;
     TcpSocket * _socket = nullptr;
     std::vector<std::thread*> _children;
+    bool measure_think_time = false;
     double decision_think_time = 0;
+    std::chrono::steady_clock::time_point tp_think_time_begin;
 };
 
 /* Holds a client instance.

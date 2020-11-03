@@ -46,20 +46,28 @@ static void retrieve_rsg_connection_params_from_env(std::string & server_hostnam
     actor_id = retrieve_initial_actor_id_from_env();
 }
 
-static double retrieve_rsg_think_time_from_env()
+static void retrieve_rsg_think_time_from_env(bool & measure_think_time, double & think_time_double)
 {
+    // Default behavior. Used if RSG_THINK_TIME is unset.
+    measure_think_time = false;
+    think_time_double = 0;
+
     const char * think_time = std::getenv("RSG_THINK_TIME");
     if (think_time == nullptr)
-        return 0;
+        return;
 
+    if (std::string(think_time) == "AS_MEASURED_BY_CLIENT") {
+        measure_think_time = true;
+        return;
+    }
+
+    // Remaining case is a double value in RSG_THINK_TIME, meaning a constant time increase.
     errno = 0;
     char* endptr = nullptr;
-    double think_time_double = strtod(think_time, &endptr);
+    think_time_double = strtod(think_time, &endptr);
     bool conversion_success = endptr != think_time && *endptr == '\0' && errno != ERANGE;
     RSG_ENFORCE(conversion_success, "RSG_THINK_TIME ('%s') is not a valid double", think_time);
     RSG_ENFORCE(think_time_double >= 0, "RSG_THINK_TIME (%g) should not be negative", think_time_double);
-
-    return think_time_double;
 }
 
 
@@ -86,8 +94,10 @@ rsg::Connection::Connection(const std::string & server_hostname, uint16_t port, 
     if (!command_ack.success())
         printf("connect failed\n");
 
-    // Retrieve variables from environment.
-    decision_think_time = retrieve_rsg_think_time_from_env();
+    // Retrieve think time mode from environment.
+    retrieve_rsg_think_time_from_env(measure_think_time, decision_think_time);
+    if (measure_think_time)
+        tp_think_time_begin = std::chrono::steady_clock::now();
 }
 
 rsg::Connection::Connection(int fd, int actor_id) : _actor_id(actor_id)
@@ -126,11 +136,20 @@ void rsg::Connection::send_decision(rsg::pb::Decision & decision, rsg::pb::Decis
     RSG_ENFORCE(connection != nullptr, "Invalid librsg call: No connection to rsg server");
 
     // Add think time to take this decision if requested.
-    if (decision_think_time > 0)
+    if (measure_think_time) {
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::nanoseconds>(now - tp_think_time_begin).count();
+        decision.set_think_time(elapsed / 1e9);
+    } else {
         decision.set_think_time(decision_think_time);
+    }
 
     write_message(decision, *_socket);
     read_message(decision_ack, *_socket);
+
+    if (measure_think_time) {
+        tp_think_time_begin = std::chrono::steady_clock::now();
+    }
 }
 
 void rsg::Connection::add_child_thread(std::thread * child)
