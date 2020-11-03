@@ -75,6 +75,7 @@ test('mailbox asyncsend-asyncreceive', tesh, env: test_env, args: [files('mailbo
 test('malicious actor-id', tesh, env: test_env, args: [files('malicious/actor-id.tesh')])
 test('malicious port', tesh, env: test_env, args: [files('malicious/port.tesh')])
 test('misc process-mutation', tesh, env: test_env, args: [files('misc/process-mutation.tesh')])
+test('misc think-time', tesh, env: test_env, args: [files('misc/think-time.tesh')])
 test('use-case connection-burst', tesh, env: test_env, args: [files('use-case/connection-burst.tesh')])
 test('use-case ompi1', tesh, env: test_env, args: [files('use-case/ompi1.tesh')])
 test('s4u-clone actor-create', tesh, env: test_env, args: [files('s4u-clone/actor-create.tesh')])
