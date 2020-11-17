@@ -32,8 +32,8 @@ let
         ++ pkgs.lib.optional doCoverage [ "-Db_coverage=true" ];
       preCheck = pkgs.lib.optionalString doCoverage ''
         mkdir ../cov
-        cp rsg@exe/*.gcno ../cov/
-        cp rsg@sha/*.gcno ../cov/
+        cp rsg.p/*.gcno ../cov/
+        cp librsg.so.p/*.gcno ../cov/
         export GCOV_PREFIX=$(realpath ../cov)
         export GCOV_PREFIX_STRIP=5
         export GCOV_ERROR_FILE=/dev/null # do not break logs with gcov messages
