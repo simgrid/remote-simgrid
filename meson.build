@@ -3,7 +3,7 @@ project('remote-simgrid', 'cpp',
     license: 'LGPL-3.0',
     meson_version: '>=0.42.0',
     default_options: [
-        'cpp_std=c++11',
+        'cpp_std=c++14',
         # Do not use -Wl,--as-needed.
         # librsg has a constructor and its link should always be kept.
         'b_asneeded=false'
