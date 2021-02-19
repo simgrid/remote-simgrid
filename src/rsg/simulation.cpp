@@ -369,7 +369,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         auto mbox = Mailbox::by_name(decision.mailboxgetasync().name());
         RefcountStore::Comm rf_comm;
         rf_comm.reception_buffer = new void*;
-        auto comm = mbox->get_async<void *>(rf_comm.reception_buffer);
+        auto comm = mbox->get_async<void>(rf_comm.reception_buffer);
         uint64_t comm_address = (uint64_t) comm.get();
 
         RSG_ASSERT(refcount_store->comms.find(comm_address) == refcount_store->comms.end(),
