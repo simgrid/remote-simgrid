@@ -357,7 +357,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     {
         XBT_INFO("Mailbox::get received (mbox_name='%s')", decision.mailboxget().name().c_str());
         auto mbox = Mailbox::by_name(decision.mailboxget().name());
-        std::string *data = mbox->get();
+        std::string *data = (std::string *)mbox->get();
         decision_ack.set_mailboxget(data->data(), data->size());
         write_message(decision_ack, *socket);
         delete data;
