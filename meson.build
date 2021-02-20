@@ -110,6 +110,7 @@ install_headers(
     'src/common/assert.hpp',
     'src/librsg/actor.hpp',
     'src/librsg/comm.hpp',
+    'src/librsg/condition_variable.hpp',
     'src/librsg/connection.hpp',
     'src/librsg/engine.hpp',
     'src/librsg/host.hpp',
