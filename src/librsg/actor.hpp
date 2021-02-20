@@ -29,7 +29,7 @@ public:
     void join(double timeout);
 
     HostPtr get_host();
-    std::string get_name();
+    std::string get_name() const;
     int get_pid() const;
 
 private:

@@ -47,20 +47,18 @@ void rsg::TcpSocket::connect(const std::string & server_address, uint16_t port)
     _connected = true;
 }
 
-void rsg::TcpSocket::send_all(const uint8_t * buffer, size_t size)
-{
-    RSG_ASSERT(_fd != -1, "Wrong TcpSocket::send_all call: Invalid socket");
-    RSG_ASSERT(_connected, "Wrong TcpSocket::send_all call: Not connected");
+void rsg::TcpSocket::send_all(const uint8_t *buffer, size_t size) const {
+  RSG_ASSERT(_fd != -1, "Wrong TcpSocket::send_all call: Invalid socket");
+  RSG_ASSERT(_connected, "Wrong TcpSocket::send_all call: Not connected");
 
-    for (size_t sent = 0; sent < size; )
-    {
-        errno = 0;
-        size_t remaining_size = size - sent;
-        ssize_t bytes_sent = ::send(_fd, buffer + sent, remaining_size, 0);
-        sent += bytes_sent;
+  for (size_t sent = 0; sent < size;) {
+    errno = 0;
+    size_t remaining_size = size - sent;
+    ssize_t bytes_sent = ::send(_fd, buffer + sent, remaining_size, 0);
+    sent += bytes_sent;
 
-        RSG_ENFORCE(bytes_sent != -1, "Could not send: %s", strerror(errno));
-    }
+    RSG_ENFORCE(bytes_sent != -1, "Could not send: %s", strerror(errno));
+  }
 }
 
 void rsg::TcpSocket::recv_all(uint8_t * buffer, size_t size)

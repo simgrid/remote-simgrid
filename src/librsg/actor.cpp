@@ -68,21 +68,22 @@ rsg::ActorPtr rsg::Actor::create(const std::string & name, const rsg::HostPtr & 
     // This thread should NEVER run concurrently with the new actor's thread. To do so:
     // - A semaphore ensures that this thread waits until the new actor is connected to the server.
     // - Once connected, the new actor yields so it is stopped at least until this actor triggers a simulation event.
-    sem_t * semaphore = new sem_t;
-    int sem_return = sem_init(semaphore, 0, 0);
+    sem_t semaphore;
+    int sem_return = sem_init(&semaphore, 0, 0);
     RSG_ENFORCE(sem_return == 0, "Cannot sem_init: %s\n", strerror(errno));
 
     // Create a thread for the newly-created actor.
-    std::thread * child_thread = new std::thread(actor_wrapper, ack.actorcreate().id(), semaphore, code, code_arg,
-        before_connect_code, before_connect_code_arg, after_connect_code, after_connect_code_arg);
+    std::thread *child_thread =
+        new std::thread(actor_wrapper, ack.actorcreate().id(), &semaphore, code,
+                        code_arg, before_connect_code, before_connect_code_arg,
+                        after_connect_code, after_connect_code_arg);
     rsg::connection->add_child_thread(child_thread);
 
     // Wait until the child has connected.
-    sem_return = sem_wait(semaphore);
+    sem_return = sem_wait(&semaphore);
     RSG_ENFORCE(sem_return == 0, "Cannot sem_wait: %s\n", strerror(errno));
-    sem_return = sem_destroy(semaphore);
+    sem_return = sem_destroy(&semaphore);
     RSG_ENFORCE(sem_return == 0, "Cannot sem_destroy: %s\n", strerror(errno));
-    delete semaphore;
 
     return rsg::ActorPtr(new Actor(ack.actorcreate().id()));
 }
@@ -154,17 +155,17 @@ rsg::HostPtr rsg::Actor::get_host()
     return rsg::HostPtr(new Host(ack.actorgethost().name()));
 }
 
-std::string rsg::Actor::get_name()
-{
-    rsg::pb::Decision decision;
-    auto actor = new rsg::pb::Actor();
-    actor->set_id(_id);
-    decision.set_allocated_actorgetname(actor);
+std::string rsg::Actor::get_name() const {
+  rsg::pb::Decision decision;
+  auto actor = new rsg::pb::Actor();
+  actor->set_id(_id);
+  decision.set_allocated_actorgetname(actor);
 
-    rsg::pb::DecisionAck ack;
-    rsg::connection->send_decision(decision, ack);
-    RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation", _id);
-    return ack.actorgetname();
+  rsg::pb::DecisionAck ack;
+  rsg::connection->send_decision(decision, ack);
+  RSG_ENFORCE(ack.success(), "Actor(id=%d) does not exist in the simulation",
+              _id);
+  return ack.actorgetname();
 }
 
 int rsg::Actor::get_pid() const

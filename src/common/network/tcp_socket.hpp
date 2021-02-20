@@ -13,7 +13,7 @@ class TcpSocket
 {
 public:
     TcpSocket();
-    TcpSocket(int fd);
+    explicit TcpSocket(int fd);
     ~TcpSocket();
     TcpSocket(const TcpSocket &) = delete;
     TcpSocket(const TcpSocket &&) = delete;
@@ -23,7 +23,7 @@ public:
     void connect(const std::string & server_address, uint16_t port);
     void disconnect();
 
-    void send_all(const uint8_t * buffer, size_t size);
+    void send_all(const uint8_t *buffer, size_t size) const;
     void recv_all(uint8_t * buffer, size_t size);
     void recv(uint8_t * buffer, size_t size, size_t & bytes_read);
 
