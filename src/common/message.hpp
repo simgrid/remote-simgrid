@@ -21,7 +21,7 @@ template <typename Message>
 void write_message(const Message & message, rsg::TcpSocket & socket)
 {
     // Generate message buffer (header + content).
-    const uint32_t content_size = message.ByteSize();
+    const uint32_t content_size = message.ByteSizeLong();
     const uint32_t message_size = content_size + 4;
     auto message_content = new uint8_t[message_size]();
     memcpy(message_content, &content_size, 4); // TODO: set endianness
