@@ -23,13 +23,14 @@ void write_message(const Message & message, rsg::TcpSocket & socket)
     // Generate message buffer (header + content).
     const uint32_t content_size = message.ByteSizeLong();
     const uint32_t message_size = content_size + 4;
-    uint8_t message_content[message_size];
+    auto message_content = new uint8_t[message_size]();
     memcpy(message_content, &content_size, 4); // TODO: set endianness
     bool serialize_ok = message.SerializeToArray(message_content + 4, content_size);
     RSG_ENFORCE(serialize_ok, "Could not serialize Protobuf message");
 
     // Send message on socket.
     socket.send_all(message_content, message_size);
+    delete[] message_content;
 }
 
 template <typename Message>
