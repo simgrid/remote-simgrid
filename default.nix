@@ -1,7 +1,7 @@
 { kapack ? import
     (fetchTarball "https://github.com/oar-team/nur-kapack/archive/master.tar.gz")
   {}
-, simgrid ? kapack.simgrid
+, simgrid ? kapack.simgrid-327
 , doCoverage ? true
 , coverageCoveralls ? false
 , coverageGcovTxt ? false
@@ -16,13 +16,12 @@ let
   stdenv = if useClang then pkgs.clangStdenv else pkgs.stdenv;
 
   jobs = rec {
-    meson = pkgs.meson.override { inherit stdenv; };
     remote_simgrid = stdenv.mkDerivation rec {
       pname = "remote-simgrid";
       version = "0.3.0-git";
 
       src = ./.;
-      nativeBuildInputs = [ meson pkgs.pkgconfig pkgs.ninja ]
+      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
         ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
       buildInputs = [ simgrid pkgs.docopt_cpp pkgs.boost pkgs.protobuf ];
 
