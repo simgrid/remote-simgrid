@@ -1,7 +1,7 @@
 { kapack ? import
     (fetchTarball "https://github.com/oar-team/nur-kapack/archive/master.tar.gz")
   {}
-, simgrid ? kapack.simgrid-327
+, simgrid ? kapack.simgrid-328
 , doCoverage ? true
 , coverageCoveralls ? false
 , coverageGcovTxt ? false
