@@ -20,9 +20,9 @@
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::empty received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::listen received (mbox_name='testbox')
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Comm::wait_for received
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::ready received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
-> [Fafard:sender:(2) 0.000000] [simulation/INFO] Comm::wait_for received
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Mailbox::put_async received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.006771] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Comm::refcount_decrease received
