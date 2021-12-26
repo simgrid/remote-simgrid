@@ -40,7 +40,7 @@ build_test_nix:
 #   - master
 
 sonar_static_analysis:
-  image: simgrid/stable:v3.28
+  image: simgrid/stable:v3.29
   stage: sonar
   dependencies:
     - build_test_nix
