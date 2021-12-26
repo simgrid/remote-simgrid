@@ -263,7 +263,8 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         }
 
         auto comm_wait_any_for = new rsg::pb::DecisionAck_CommWaitAnyFor();
-        int finished_index = Comm::wait_any_for(&comms, decision.commwaitanyfor().timeout());
+        int finished_index =
+            Comm::wait_any_for(comms, decision.commwaitanyfor().timeout());
         comm_wait_any_for->set_finishedcommindex(finished_index);
 
         // Transfer received data if needed
@@ -357,7 +358,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
     {
         XBT_INFO("Mailbox::get received (mbox_name='%s')", decision.mailboxget().name().c_str());
         auto mbox = Mailbox::by_name(decision.mailboxget().name());
-        std::string *data = (std::string *)mbox->get();
+        auto *data = (std::string *)mbox->get<std::string>();
         decision_ack.set_mailboxget(data->data(), data->size());
         write_message(decision_ack, *socket);
         delete data;
@@ -369,7 +370,7 @@ static void handle_decision(const rsg::pb::Decision & decision, rsg::pb::Decisio
         auto mbox = Mailbox::by_name(decision.mailboxgetasync().name());
         RefcountStore::Comm rf_comm;
         rf_comm.reception_buffer = new void*;
-        auto comm = mbox->get_async(rf_comm.reception_buffer);
+        auto comm = mbox->get_async<void>(rf_comm.reception_buffer);
         uint64_t comm_address = (uint64_t) comm.get();
 
         RSG_ASSERT(refcount_store->comms.find(comm_address) == refcount_store->comms.end(),
