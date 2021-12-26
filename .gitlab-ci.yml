@@ -63,21 +63,20 @@ sonar_static_analysis:
     - meson build
     - ./sonarqube.sh ninja -C build -v
 
-# # Test that the git version of RSG compiles with various versions of SimGrid docker image
-# # The script is very similar to above, without sonar
-# .build_git: &build_git
-#   script:
-#     - apt-get update
-#     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
-#     - apt-get install -y python3 # needed by tesh
-#     - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-#     - make -j $(nproc) VERBOSE=1
-#     - ctest --output-on-failure
+# Test that the git version of RSG compiles with various versions of SimGrid docker image
+# The script is very similar to above, without sonar
+.build_git: &build_git
+  script:
+    - apt-get update
+    - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+    - apt-get install -y python3 # needed by tesh
+    - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
+    - make -j $(nproc) VERBOSE=1
+    - ctest --output-on-failure
 
-
-# test-git-v3.22:
-#   image: simgrid/stable:v3.22.2
-#   <<: *build_git
+test-git-sg3.29:
+  image: simgrid/stable:v3.29
+  <<: *build_git
 
 # Older versions are broken because of the killed MailboxPtr type
 
