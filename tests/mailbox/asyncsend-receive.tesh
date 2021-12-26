@@ -20,9 +20,9 @@
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Actor::get_name() received (actor_id=3)
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::empty received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::listen received (mbox_name='testbox')
+> [Fafard:sender:(2) 0.000000] [simulation/INFO] Comm::wait_for received
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::ready received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.000000] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
-> [Fafard:sender:(2) 0.000000] [simulation/INFO] Comm::wait_for received
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Mailbox::put_async received (mbox_name='testbox')
 > [Bourassa:receiver:(3) 0.006771] [simulation/INFO] Mailbox::get received (mbox_name='testbox')
 > [Fafard:sender:(2) 0.006771] [simulation/INFO] Comm::refcount_decrease received
@@ -50,7 +50,7 @@ $ sleep ${INTERPROCESS_DELAY}
 & rsg add-actor 'receiver' Bourassa -p 35014 -- client-mailbox-receiver
 > My actor is (pid=3, name='receiver'), located on Host(name='Bourassa')
 > mbox 'testbox' empty? 1
-> mbox 'testbox' listen? 0
+> mbox 'testbox' listen? 1
 > mbox 'testbox' ready? 0
 > Received: 1337
 > Received: 1337 (read 4 bytes)

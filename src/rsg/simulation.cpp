@@ -760,7 +760,7 @@ static void* start_simulation(void * void_args)
     args->platform_file = my_args->platform_file;
     args->to_command = my_args->to_command;
     connections_unorderedmap_to_vector(my_args->actor_connections, args->connection_vector);
-    SIMIX_set_maestro(maestro, args);
+    simgrid_set_maestro(maestro, args);
 
     /* Prepare argc/argv for Engine creation.
        - Changing the maestro thread is only supported for the thread context factory,
