@@ -44,7 +44,7 @@ $ sleep ${INTERPROCESS_DELAY}
 & rsg add-actor 'sender' Fafard -p 35015 -- client-mailbox-sender
 > My actor is (pid=2, name='sender'), located on Host(name='Fafard')
 > mbox 'testbox' empty? 1
-> mbox 'testbox' listen? 0
+> mbox 'testbox' listen? 1
 > mbox 'testbox' ready? 0
 
 $ sleep ${INTERPROCESS_DELAY}

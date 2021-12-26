@@ -50,7 +50,7 @@ $ sleep ${INTERPROCESS_DELAY}
 & rsg add-actor 'receiver' Bourassa -p 35014 -- client-mailbox-receiver
 > My actor is (pid=3, name='receiver'), located on Host(name='Bourassa')
 > mbox 'testbox' empty? 1
-> mbox 'testbox' listen? 0
+> mbox 'testbox' listen? 1
 > mbox 'testbox' ready? 0
 > Received: 1337
 > Received: 1337 (read 4 bytes)
