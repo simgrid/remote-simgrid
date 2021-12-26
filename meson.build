@@ -1,7 +1,7 @@
 project('remote-simgrid', 'cpp',
     version: '0.3.0',
     license: 'LGPL-3.0',
-    meson_version: '>=0.42.0',
+    meson_version: '>=0.46.0',
     default_options: [
         'cpp_std=c++14',
         # Do not use -Wl,--as-needed.
