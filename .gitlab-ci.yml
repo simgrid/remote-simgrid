@@ -79,8 +79,7 @@ sonar_static_analysis:
     # RSG build/test #
     ##################
     - meson build
-    - ninja -C build -v
-    - ninja -C test -v
+    - ninja -C build test -v
 
 test-git-sg3.29:
   image: simgrid/stable:v3.29
