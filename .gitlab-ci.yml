@@ -45,7 +45,6 @@ sonar_static_analysis:
   dependencies:
     - build_test_nix
   script:
-    ######################
     # Dependencies setup #
     ######################
     - apt-get update
@@ -57,7 +56,6 @@ sonar_static_analysis:
     - export DOCOPT_REV=3394186f2951d3c7de3745b8c12dd930fe858768
     - (cd / && curl -L "https://github.com/mpoquet/docopt.cpp/tarball/${DOCOPT_REV}" | tar -xz)
     - (cd /mpoquet-docopt.cpp-3394186 && cmake . && make install)
-    ##################
     # RSG build/test #
     ##################
     - meson build
@@ -68,19 +66,22 @@ sonar_static_analysis:
 .build_git: &build_git
   stage: build
   script:
+    # Dependencies setup #
+    ######################
     - apt-get update
-    - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
+    - apt-get install -y build-essential pkg-config meson ninja-build libboost-dev protobuf-compiler libprotobuf-dev # needed by rsg
     - apt-get install -y python3 # needed by tesh
-    - cmake . -DCMAKE_BUILD_TYPE=Debug -Denable_warnings=ON -Dtreat_warnings_as_errors=OFF
-    - make -j $(nproc) VERBOSE=1
-    - ctest --output-on-failure
+    # manual docopt-c++ install
+    - apt-get install -y curl cmake
+    - export DOCOPT_REV=3394186f2951d3c7de3745b8c12dd930fe858768
+    - (cd / && curl -L "https://github.com/mpoquet/docopt.cpp/tarball/${DOCOPT_REV}" | tar -xz)
+    - (cd /mpoquet-docopt.cpp-3394186 && cmake . && make install)
+    # RSG build/test #
+    ##################
+    - meson build
+    - ninja -C build -v
+    - ninja -C test -v
 
 test-git-sg3.29:
   image: simgrid/stable:v3.29
   <<: *build_git
-
-# Older versions are broken because of the killed MailboxPtr type
-
-#test-git-v3.21:
-#  image: simgrid/stable:v3_21
-#  <<: *build_git
