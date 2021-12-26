@@ -66,6 +66,7 @@ sonar_static_analysis:
 # Test that the git version of RSG compiles with various versions of SimGrid docker image
 # The script is very similar to above, without sonar
 .build_git: &build_git
+  stage: build
   script:
     - apt-get update
     - apt-get install -y cmake build-essential libzmq3-dev libthrift-dev thrift-compiler libboost-dev libboost-program-options-dev
