@@ -22,7 +22,7 @@ let
 
       src = ./.;
       nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
-        ++ pkgs.lib.optional doCoverage [ kapack.gcovr ];
+        ++ pkgs.lib.optional doCoverage [ pkgs.gcovr ];
       buildInputs = [ simgrid pkgs.docopt_cpp pkgs.boost pkgs.protobuf ];
 
       preConfigure = "rm -rf build cov";
