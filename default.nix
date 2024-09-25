@@ -1,6 +1,7 @@
-{ kapack ? import
-    (fetchTarball "https://github.com/oar-team/nur-kapack/archive/master.tar.gz")
-  {}
+{ kapack ? import (fetchTarball {
+    url = "https://github.com/oar-team/nur-kapack/archive/0d4b1953409f8580bdc0000d999ae4c95d637b37.tar.gz";
+    sha256 = "sha256:1ap9x390h7ii9zb867dqiqpxkm88520g8yp5ngssa3bw47lyyjxa";
+  }) {}
 , simgrid ? kapack.simgrid-329
 , doCoverage ? true
 , coverageCoveralls ? false
@@ -21,7 +22,7 @@ let
       version = "0.3.0-git";
 
       src = ./.;
-      nativeBuildInputs = [ pkgs.meson pkgs.pkg-config pkgs.ninja ]
+      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
         ++ pkgs.lib.optional doCoverage [ pkgs.gcovr ];
       buildInputs = [ simgrid pkgs.docopt_cpp pkgs.boost pkgs.protobuf ];
 
