@@ -1,13 +1,13 @@
-FROM nixos/nix:2.2.1
+FROM nixos/nix:2.24.7
 RUN nix-channel --remove nixpkgs \
- && nix-channel --add https://nixos.org/channels/nixos-19.03 nixpkgs \
+ && nix-channel --add https://nixos.org/channels/nixos-24.05 nixpkgs \
  && nix-channel --update \
  && nix-env -f '<nixpkgs>' -iA \
       bash \
       coreutils \
       curl \
       findutils \
-      gitMinimal \
+      git \
       glibc \
       gnugrep \
       gnused \
