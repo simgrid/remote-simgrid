@@ -21,7 +21,7 @@ let
       version = "0.3.0-git";
 
       src = ./.;
-      nativeBuildInputs = [ pkgs.meson pkgs.pkgconfig pkgs.ninja ]
+      nativeBuildInputs = [ pkgs.meson pkgs.pkg-config pkgs.ninja ]
         ++ pkgs.lib.optional doCoverage [ pkgs.gcovr ];
       buildInputs = [ simgrid pkgs.docopt_cpp pkgs.boost pkgs.protobuf ];
 
